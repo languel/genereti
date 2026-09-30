@@ -1,0 +1,41 @@
+# Local Python / JS environments
+.venv/
+__pycache__/
+*.py[cod]
+node_modules/
+
+# Downloaded model weights and generated Core ML models
+models/
+web/models/*.task
+*.mlpackage/
+*.mlmodelc/
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.bin
+
+# Local datasets, training runs, media, captures, and experiments
+artifacts/
+training/
+experiments/
+vendor/
+.playwright-cli/
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.wav
+*.aiff
+*.log
+integrations/touchdesigner/*.tox
+scripts/train_klee.py
+integrations/comfyui_genereti/workflows/LTX-*.json
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/
+# Browser runtime libraries are redistributable source assets required by the app
+!web/vendor/
+!web/vendor/**

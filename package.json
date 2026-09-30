@@ -1,0 +1,7 @@
+{
+  "name": "genereti",
+  "private": true,
+  "type": "module",
+  "scripts": {"start": "./run.sh"},
+  "dependencies": {"@mediapipe/tasks-vision": "0.10.32", "p5": "1.11.11"}
+}

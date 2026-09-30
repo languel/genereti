@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Genereti connections</title><link rel="stylesheet" href="style.css"></head>
+<body><main style="max-width:900px;margin:3rem auto;padding:1.5rem">
+<header><div class="brand">Genereti <span>connections</span></div><a href="/">← Back to Genereti</a></header>
+<h1>Connect Genereti to your creative tools</h1>
+<p>Genereti runs its image generator on an Apple silicon Mac and publishes the latest frame locally. Its p5.js and ComfyUI source nodes can also run independently on a PC with ComfyUI.</p>
+<h2>TouchDesigner</h2><p>Add a Web Render TOP with <code>http://127.0.0.1:8765/output</code>. Use a custom 512 × 512 resolution, turn off “Only Update when Loaded,” and enable “Cook Always.”</p>
+<h2>p5.js</h2><p>Open <code>http://127.0.0.1:8765/p5</code> for the live stage. The <code>GeneretiClient</code> browser module is available at <code>/genereti-client.js</code>.</p>
+<h2>ComfyUI</h2><p>Install the included node packs with <code>scripts/install_comfy.sh</code> and restart ComfyUI. Open <code>Genereti-Live-Inputs.json</code> for doodle, camera, and window sources, or <code>Genereti-p5-Sketch.json</code> for an interactive sketch connected to the generator.</p><p>The source-only workflows <code>Genereti-Input-Sources.json</code> and <code>Genereti-p5-Source.json</code> preview and save their source on a PC without calling the Core ML backend.</p>
+<p><a href="https://github.com/languel/genereti">Genereti on GitHub ↗</a></p>
+</main></body></html>

@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Genereti · Output</title><link rel="stylesheet" href="/style.css"><style>#feed{width:100vw;height:100vh;object-fit:contain;display:block}</style></head><body class="output-page"><canvas id="feed" width="256" height="256"></canvas><div class="output-note">Waiting for generation. Start live in the Genereti control page. Click here for fullscreen.</div><script type="module">
+const feed=document.getElementById('feed'),ctx=feed.getContext('2d');let last='';
+// Complete HTTP responses also work in embedded browsers that wait for page load.
+async function frame(){try{const response=await fetch('/api/frame.jpg');if(response.ok){const id=response.headers.get('X-Frame');if(id!==last){const image=await createImageBitmap(await response.blob());if(feed.width!==image.width){feed.width=image.width;feed.height=image.height;}ctx.drawImage(image,0,0);image.close();last=id;feed.dataset.frame=id;document.body.classList.add('active');}else await response.arrayBuffer();}}catch{document.body.classList.remove('active');}setTimeout(frame,33);}frame();
+document.body.onclick=()=>document.documentElement.requestFullscreen?.();
+</script></body></html>

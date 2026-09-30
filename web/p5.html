@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><link rel="icon" href="/favicon.svg" type="image/svg+xml"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Genereti · p5.js live stage</title><style>
+body{margin:0;background:#080b0e;color:#d5dad5;font:13px -apple-system,sans-serif;overflow:hidden}canvas{display:block}header{position:absolute;z-index:2;top:0;left:0;right:0;padding:20px 24px;display:flex;gap:18px;align-items:center;background:linear-gradient(#080b0eee,transparent)}a{color:#d1ec9c;text-decoration:none}button,select{font:inherit;background:#222a2d;color:#eee;border:1px solid #495057;border-radius:4px;padding:6px 9px}.note{position:absolute;bottom:20px;left:24px;color:#a4aaa8}#feed{display:none}</style><script src="/vendor/p5.min.js"></script></head><body>
+<header><b>Genereti × p5.js</b><select id="effect" aria-label="Stage effect"><option value="mirror">Mirrored stage</option><option value="tiles">Moving tiles</option><option value="plain">Plain output</option></select><button id="fullscreen">Fullscreen</button><a href="/" target="_blank">Controls ↗</a></header><div class="note" id="note">Waiting for new generated frames. Start live in the control page.</div><img id="feed" alt="Generated stream"><script>
+const feed=document.getElementById('feed');let sourceReady=false;
+async function connect(){try{const state=await fetch('/api/status').then(r=>r.json());if(state.frame){if(!feed.src)feed.src='/stream.mjpg';sourceReady=true;document.getElementById('note').textContent='Live AI texture · move the pointer · p5.js composites between generated frames';return;}}catch{}setTimeout(connect,1200);}connect();
+function setup(){createCanvas(windowWidth,windowHeight);pixelDensity(1);frameRate(30);}
+function windowResized(){resizeCanvas(windowWidth,windowHeight);}
+function draw(){background(8,11,14);if(!sourceReady||!feed.naturalWidth){fill(150);textAlign(CENTER);textSize(20);text('Start live in Genereti',width/2,height/2);return;}
+ const effect=document.getElementById('effect').value;
+ const s=Math.min(width,height)*.86;
+ if(effect==='plain'){drawingContext.drawImage(feed,(width-s)/2,(height-s)/2,s,s);return;}
+ if(effect==='mirror'){
+  push();translate(width/2,height/2);rotate((mouseX/width-.5)*.18);const sz=Math.min(width/2,height*.75);
+  drawingContext.drawImage(feed,-sz,-sz/2,sz,sz);scale(-1,1);drawingContext.drawImage(feed,-sz,-sz/2,sz,sz);pop();
+ }else{const tile=Math.max(100,Math.min(width,height)/3),drift=sin(frameCount*.013)*tile*.1;
+  for(let y=-1;y<height/tile+1;y++)for(let x=-1;x<width/tile+1;x++){push();translate((x+.5)*tile+drift,(y+.5)*tile);rotate(sin(frameCount*.008+x+y)*.09);drawingContext.drawImage(feed,-tile*.47,-tile*.47,tile*.94,tile*.94);pop();}}
+}
+document.getElementById('fullscreen').onclick=()=>document.documentElement.requestFullscreen();
+</script></body></html>
