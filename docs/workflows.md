@@ -36,4 +36,4 @@ Then restart ComfyUI. `Genereti-Live-Inputs.json` shows doodle, webcam, and wind
 
 The Genereti Generate node calls the local Core ML server, so this node requires Genereti running on the same Mac. The capture and p5 nodes can also serve as independent ComfyUI sources on a PC.
 
-When upgrading from the older RTGen node pack, restart ComfyUI so it loads the renamed Genereti node classes, then open the supplied `Genereti-*.json` workflow. Tabs already open in ComfyUI retain their old labels and node classes in memory; save any unsaved edits before closing or replacing those tabs.
+When upgrading from an older custom-node pack, restart ComfyUI so it loads the renamed Genereti node classes, then open the supplied `Genereti-*.json` workflow. Tabs already open in ComfyUI retain their old labels and node classes in memory; save any unsaved edits before closing or replacing those tabs.

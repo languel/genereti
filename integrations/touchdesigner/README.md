@@ -12,4 +12,4 @@ The builder creates a uniquely named component and saves `Genereti.tox` to your 
 
 TouchDesigner can send a camera or window feed through the browser input, or post an image to `/api/generate` from a background worker. Keep HTTP generation off TouchDesigner’s render thread. The app listens on this Mac’s loopback interface by default.
 
-If an older project already has an RTGen-labeled component, run the builder to create a fresh Genereti component. The builder intentionally leaves existing operators untouched; reconnect downstream TOPs to the new component's `out1` when ready.
+If an existing project has an older-labeled component, run the builder to create a fresh Genereti component. The builder intentionally leaves existing operators untouched; reconnect downstream TOPs to the new component's `out1` when ready.
