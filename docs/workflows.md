@@ -35,3 +35,5 @@ Then restart ComfyUI. `Genereti-Live-Inputs.json` shows doodle, webcam, and wind
 `Genereti-p5-Sketch.json` is an interactive-source graph that sends its canvas to the Genereti generator. `Genereti-p5-Source.json` previews and saves the p5 canvas without a generator, so it also works on a PC. Type or paste p5.js code into the node, click Run, draw in its canvas, and queue the workflow to capture the canvas as an IMAGE. Mouse drawing and keyboard input are supported while the sketch canvas has focus. Its output can feed Genereti or any other ComfyUI image graph.
 
 The Genereti Generate node calls the local Core ML server, so this node requires Genereti running on the same Mac. The capture and p5 nodes can also serve as independent ComfyUI sources on a PC.
+
+When upgrading from the older RTGen node pack, restart ComfyUI so it loads the renamed Genereti node classes, then open the supplied `Genereti-*.json` workflow. Tabs already open in ComfyUI retain their old labels and node classes in memory; save any unsaved edits before closing or replacing those tabs.

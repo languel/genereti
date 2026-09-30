@@ -11,3 +11,5 @@ exec(open('/path/to/genereti/integrations/touchdesigner/create_genereti.py').rea
 The builder creates a uniquely named component and saves `Genereti.tox` to your home folder. It does not replace existing operators. Use `out1` as a normal TOP texture. `/p5` is an alternative URL for the p5.js stage.
 
 TouchDesigner can send a camera or window feed through the browser input, or post an image to `/api/generate` from a background worker. Keep HTTP generation off TouchDesigner’s render thread. The app listens on this Mac’s loopback interface by default.
+
+If an older project already has an RTGen-labeled component, run the builder to create a fresh Genereti component. The builder intentionally leaves existing operators untouched; reconnect downstream TOPs to the new component's `out1` when ready.
