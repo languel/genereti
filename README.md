@@ -12,6 +12,8 @@ Start with the [student quickstart](docs/student-quickstart.md). It covers setup
 - Guide generation with sketches, camera or shared-window captures, and optional Canny, depth, and pose controls.
 - Use the output as a live image stream in p5.js or TouchDesigner.
 - Build ComfyUI graphs with Genereti generation, live input capture, or an interactive p5.js sketch node.
+- Send a queued ComfyUI image to a fullscreen projector window.
+- Teach standard diffusion with an SD 1.5 bottle graph, then compare a fast direct-prompt Qwen Image 2.1 graph.
 - Run the optional SD-Turbo, anime, and control model downloads when you want those modes.
 
 Genereti is designed for responsive visuals, not full-resolution batch art. The 256px SDXS path has measured around 25–28 generated frames/s on one M-series Mac, with controls and other models running more slowly. Results vary by Mac, model warmup, and settings; this is not 30-fps video diffusion.
@@ -21,6 +23,7 @@ Genereti is designed for responsive visuals, not full-resolution batch art. The 
 - [Student quickstart](docs/student-quickstart.md)
 - [Apple silicon and PC support](docs/platform-support.md)
 - [Web app, p5.js, TouchDesigner, and ComfyUI](docs/workflows.md)
+- [Classic SD 1.5 and Qwen Image 2.1 in ComfyUI](docs/comfy-sd15-and-qwen21.md)
 - [Ready-to-use prompts](docs/prompts.md)
 - [Model sources, setup, and licenses](docs/models.md)
 - [Agent guide](AGENTS.md)
@@ -32,6 +35,7 @@ Genereti is designed for responsive visuals, not full-resolution batch art. The 
 - `integrations/comfyui_genereti/`: Genereti generate and output nodes, with example workflows.
 - `integrations/genereti_comfy_inputs/`: doodle, webcam, and window/screen capture nodes.
 - `integrations/genereti_comfy_p5/`: separate interactive p5.js sketch source node.
+- `integrations/genereti_comfy_projector/`: click-to-open, screen-filling Comfy image output window.
 - `integrations/touchdesigner/`: TouchDesigner component builder and instructions.
 - `scripts/`: environment setup, model conversion/download, and Comfy install helpers.
 

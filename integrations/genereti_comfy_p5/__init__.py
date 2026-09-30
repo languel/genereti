@@ -64,17 +64,27 @@ class GeneretiP5Sketch(io.ComfyNode):
                     socketless=True,
                     extra_dict={"widgetType": "GENERETI_P5_SKETCH"},
                 ),
+                io.Int.Input(
+                    "canvas_revision",
+                    default=0,
+                    min=0,
+                    max=2147483647,
+                    step=1,
+                    socketless=True,
+                    extra_dict={"widgetType": "GENERETI_P5_REVISION"},
+                ),
             ],
             outputs=[io.Image.Output(display_name="IMAGE")],
         )
 
     @classmethod
-    def fingerprint_inputs(cls, sketch):
-        # Each queue uploads a unique [temp] PNG of the live browser canvas.
-        return sketch
+    def fingerprint_inputs(cls, sketch, canvas_revision):
+        # The sketch source and debounced interaction revision both participate
+        # in Comfy's Run (on change) cache key.
+        return sketch, canvas_revision
 
     @classmethod
-    def execute(cls, sketch):
+    def execute(cls, sketch, canvas_revision):
         image = _load_canvas(sketch)
         return io.NodeOutput(image, ui=ui.PreviewImage(image, cls=cls))
 

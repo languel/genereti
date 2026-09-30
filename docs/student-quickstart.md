@@ -58,7 +58,9 @@ With ComfyUI installed locally, stop it and run:
 ./scripts/install_comfy.sh "$HOME/Documents/ComfyUI"
 ```
 
-Start ComfyUI again and open **Genereti-Live-Inputs.json** from the workflows menu. The doodle source works with Painter; webcam and window capture need the browser UI open and their respective **Start** buttons clicked. The p5.js example is a separate workflow, **Genereti-p5-Sketch.json**: edit the sketch, click Run, draw with the mouse, use the keyboard controls shown in its code, then queue to capture the canvas.
+Start ComfyUI again and open **Genereti-Live-Inputs.json** from the workflows menu. The doodle source works with Painter; webcam and window capture need the browser UI open and their respective **Start** buttons clicked. The p5.js example is a separate workflow, **Genereti-p5-Sketch.json**: edit the sketch, click Run, draw with the mouse, use the keyboard controls shown in its code, then queue to capture the canvas. In **Run (on change)** mode, each finished drawing gesture or key release can queue a new frame. For a plain diffusion lesson, open **Genereti-Classic-SD15-Bottle.json**; for a smaller Qwen 2.1 speed preset, use **Genereti-Qwen-2.1-Fast.json**.
+
+To send a queued image to a projector, add a **Genereti Projector** node after any IMAGE-producing source, click **Open projector window**, move the new window to the projector display, and click **Enter fullscreen** there.
 
 See [workflows.md](workflows.md) for details, including p5, TouchDesigner, and the web output URLs.
 

@@ -23,6 +23,7 @@ link_node() {
 link_node genereti_comfy_bridge "$ROOT/integrations/comfyui_genereti"
 link_node genereti_comfy_inputs "$ROOT/integrations/genereti_comfy_inputs"
 link_node genereti_comfy_p5 "$ROOT/integrations/genereti_comfy_p5"
+link_node genereti_comfy_projector "$ROOT/integrations/genereti_comfy_projector"
 WORKFLOWS="$COMFY/user/default/workflows"
 mkdir -p "$WORKFLOWS"
 for workflow in "$ROOT"/integrations/comfyui_genereti/workflows/Genereti-*.json; do
@@ -33,6 +34,7 @@ done
 cat <<MSG
 
 ComfyUI install complete. Restart ComfyUI, refresh its page, then open a
-Genereti-*.json workflow from the Workflows menu. Keep the Genereti Mac app
+Genereti-*.json workflow from the Workflows menu. The install also adds the
+Genereti Projector image output node. Keep the Genereti Mac app
 running for its Core ML Generate and Live Frame nodes.
 MSG

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Genereti Projector</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; background: #000; color: #fff; font: 14px system-ui, sans-serif; }
+    body { display: grid; place-items: center; overflow: hidden; }
+    #image { display: block; width: 100vw; height: 100vh; object-fit: contain; }
+    #message { position: fixed; inset: 0; display: grid; place-items: center; color: #aaa; }
+    #controls { position: fixed; right: 14px; bottom: 14px; display: flex; gap: 8px; opacity: .28; transition: opacity .15s; }
+    #controls:hover, #controls:focus-within { opacity: 1; }
+    button { border: 1px solid #777; border-radius: 5px; padding: 9px 12px; color: #fff; background: #171717dd; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div id="message">Open this window from the Genereti Projector node, then queue an image.</div>
+  <img id="image" alt="ComfyUI projector output" hidden>
+  <div id="controls"><button id="fullscreen" type="button">Enter fullscreen</button></div>
+  <script>
+    const image = document.querySelector('#image');
+    const message = document.querySelector('#message');
+    window.addEventListener('message', (event) => {
+      if (event.origin !== window.location.origin || event.data?.type !== 'genereti-projector-image') return;
+      image.src = event.data.src;
+      image.hidden = false;
+      message.hidden = true;
+    });
+    document.querySelector('#fullscreen').addEventListener('click', async () => {
+      if (!document.fullscreenElement) await document.documentElement.requestFullscreen?.();
+      else await document.exitFullscreen?.();
+    });
+    document.addEventListener('fullscreenchange', () => {
+      document.querySelector('#fullscreen').textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Enter fullscreen';
+    });
+    window.opener?.postMessage({ type: 'genereti-projector-ready' }, window.location.origin);
+  </script>
+</body>
+</html>

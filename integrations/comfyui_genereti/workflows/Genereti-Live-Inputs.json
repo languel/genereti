@@ -370,7 +370,7 @@
       ],
       "properties": {
         "Node name for S&R": "GeneretiGenerate",
-        "cnr_id": "genereti-bridge",
+        "cnr_id": "genereti_comfy_bridge",
         "ver": "0.1.0"
       },
       "widgets_values": [

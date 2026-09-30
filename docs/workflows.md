@@ -24,7 +24,7 @@ To send a TouchDesigner image into Genereti, use the browser’s camera/window i
 
 ## ComfyUI
 
-Install the three node packs and example workflows:
+Install the Genereti node packs and example workflows:
 
 ```sh
 ./scripts/install_comfy.sh "$HOME/Documents/ComfyUI"
@@ -34,6 +34,12 @@ Then restart ComfyUI. `Genereti-Live-Inputs.json` shows doodle, webcam, and wind
 
 `Genereti-p5-Sketch.json` is an interactive-source graph that sends its canvas to the Genereti generator. `Genereti-p5-Source.json` previews and saves the p5 canvas without a generator, so it also works on a PC. Type or paste p5.js code into the node, click Run, draw in its canvas, and queue the workflow to capture the canvas as an IMAGE. Mouse drawing and keyboard input are supported while the sketch canvas has focus. Its output can feed Genereti or any other ComfyUI image graph.
 
+The p5 source node also increments a hidden canvas revision after each mouse/touch gesture or key release. With ComfyUI's **Run (on change)** mode enabled, a completed interaction queues the latest canvas without queuing every animation frame. See [the classic SD 1.5 and Qwen 2.1 guide](comfy-sd15-and-qwen21.md) for the bottle demo and a smaller direct-prompt Qwen workflow.
+
+The separate **Genereti Projector** node accepts an IMAGE and passes it through. Click **Open projector window** in the node, move the new window onto the projector display, then queue the graph to update the image. Use the projector window's own fullscreen button after moving it to the display you want.
+
 The Genereti Generate node calls the local Core ML server, so this node requires Genereti running on the same Mac. The capture and p5 nodes can also serve as independent ComfyUI sources on a PC.
 
 When upgrading from an older custom-node pack, restart ComfyUI so it loads the renamed Genereti node classes, then open the supplied `Genereti-*.json` workflow. Tabs already open in ComfyUI retain their old labels and node classes in memory; save any unsaved edits before closing or replacing those tabs.
+
+If ComfyUI reports a missing Genereti node, close stale workflow tabs, rerun `scripts/install_comfy.sh` for the active ComfyUI folder, restart ComfyUI, and reopen the current workflow from its Workflows menu. The installer links all four node packs and copies the current example workflows; it does not install model weights. The bridge's Generate and Live Frame nodes also need the Genereti server running on the same Mac.

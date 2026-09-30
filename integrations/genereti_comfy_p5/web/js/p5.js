@@ -62,6 +62,20 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
     window.addEventListener('error', (event) => parent.postMessage({type:'error', message:event.message || 'Sketch error'}, '*'));
     try {
       new window.p5();
+      let interactionTimer;
+      const notifyCanvasChanged = () => {
+        clearTimeout(interactionTimer);
+        interactionTimer = setTimeout(() => parent.postMessage({type:'canvas-change'}, '*'), 180);
+      };
+      document.addEventListener('pointerdown', (event) => {
+        if (event.target?.setPointerCapture && event.pointerId != null) {
+          try { event.target.setPointerCapture(event.pointerId); } catch (_) {}
+        }
+      }, true);
+      document.addEventListener('pointerup', notifyCanvasChanged, true);
+      document.addEventListener('pointercancel', notifyCanvasChanged, true);
+      document.addEventListener('touchend', notifyCanvasChanged, true);
+      window.addEventListener('keyup', notifyCanvasChanged, true);
       setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(() => {
         if (!stage.querySelector('canvas')) {
           parent.postMessage({type:'error', message:'No canvas was created (p5=' + typeof window.p5 + ', setup=' + typeof window.setup + ').'}, '*');
@@ -135,7 +149,10 @@ function makeP5Editor(node, inputName) {
     const widget = node.widgets?.find((item) => item.name === inputName);
     if (widget) widget.value = textarea.value;
     clearTimeout(state.timer);
-    state.timer = setTimeout(runSketch, 900);
+    state.timer = setTimeout(() => {
+      runSketch();
+      signalWorkflowChanged(node, widget);
+    }, 900);
   });
 
   const widget = node.addDOMWidget(inputName, "GENERETI_P5_SKETCH", container, {
@@ -168,11 +185,39 @@ function makeP5Editor(node, inputName) {
       state.pendingCapture.resolve(event.data.data);
       state.pendingCapture = null;
     }
+    if (event.data?.type === "canvas-change") markCanvasChanged(node);
   });
 
   runSketch();
   widget.computeSize = (width) => [width, 590];
   return { widget };
+}
+
+function makeRevisionWidget(node, inputName) {
+  const element = document.createElement("div");
+  element.style.display = "none";
+  const widget = node.addDOMWidget(inputName, "GENERETI_P5_REVISION", element, {
+    serialize: true,
+    getValue() { return Number(widget.value) || 0; },
+    setValue(value) { widget.value = Number(value) || 0; },
+  });
+  widget.value = 0;
+  widget.computeSize = () => [0, 0];
+  return { widget };
+}
+
+function markCanvasChanged(node) {
+  const revision = node.widgets?.find((widget) => widget.name === "canvas_revision");
+  if (!revision) return;
+  revision.value = (Number(revision.value) || 0) + 1;
+  signalWorkflowChanged(node, revision);
+}
+
+function signalWorkflowChanged(node, widget) {
+  widget?.callback?.(widget.value, app.canvas, node, null, null);
+  node.graph?.change?.(node);
+  if (!node.graph) app.graph?.change?.(node);
+  node.setDirtyCanvas?.(true, true);
 }
 
 function captureSketchDataUrl(node) {
@@ -216,7 +261,10 @@ app.registerExtension({
   name: "Genereti.ComfyP5.InteractiveSketch",
 
   getCustomWidgets() {
-    return { GENERETI_P5_SKETCH: makeP5Editor };
+    return {
+      GENERETI_P5_SKETCH: makeP5Editor,
+      GENERETI_P5_REVISION: makeRevisionWidget,
+    };
   },
 
   nodeCreated(node) {
