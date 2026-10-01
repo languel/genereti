@@ -12,7 +12,9 @@
 This milestone explores Genereti as a composable, real-time NPR renderer. It adds:
 
 - A **Composite · SDXS + Canny** pipeline that runs sketch-guided SDXS and Canny-guided SD-Turbo as separate branches, then blends them using crossfade, screen, multiply, or difference. The branches may use different source images for sketch structure and Canny contours.
-- Separate palette-reference transfer using global Lab chroma statistics, plus black/white levels, gamma, emboss, sharpening, learned upscaling, and fast interpolation.
+- Independent guide-polarity switches for SDXS sketch, Canny, depth, and pose; composite mode can invert the sketch and Canny branches separately.
+- An emboss-first finish stack, followed by palette-reference transfer using global Lab chroma statistics, black/white levels, gamma, brightness, contrast, saturation, learned upscaling, sharpening, and fast interpolation.
+- A controlled Real-ESRGAN feedback loop: run 1–4 learned upscales, downsample each intermediate result to generation size, then blend it with the original pre-upscaler frame before the next pass. Final output can stay at source size, use 2×, or use native 4× dimensions.
 - Resolution selection based on installed packages. The local 512px packages enable SDXS text and sketch. Canny/Turbo composite remains available at 256px because that is where the required packages are installed.
 - Optional Core ML Real-ESRGAN AnimeVideo and General 4× packages, installed with `./scripts/download_upscaler.sh` or `./scripts/download_models.sh --with-upscaler`. The download script verifies pinned archive SHA-256 hashes. Model weights and compiled packages remain outside Git.
 - Documentation and starter studies in `docs/experiments.md`, with model/package notes in `docs/models.md`.
@@ -24,10 +26,10 @@ The measurements in `docs/experiments.md` are from this development Mac and shou
 - `web/index.html`, `web/app.js`, and `web/style.css`: experiment controls, resolution/model-aware availability, independent image sources, palette reference, post-processing UI, and scene/preset state.
 - `server.py`: loopback FastAPI/WebSocket bridge, request validation, resolution switching, guide preprocessing, model inference, and post-processing integration.
 - `engine.py`: Core ML inference and the two-branch composite path.
-- `postprocess.py`: layer blending, Lab palette transfer, levels, emboss, sharpen, and resampling.
+- `postprocess.py`: layer blending, emboss-first finishing, Lab palette transfer, levels/BCS controls, recursive learned upscaling, sharpening, and resampling.
 - `coreml_upscaler.py`: lazy Core ML Real-ESRGAN model loading and fixed-size frame inference.
 - `scripts/download_upscaler.sh`: checksummed optional model download.
-- `tests/test_postprocess.py`: focused unit tests for composite endpoints, palette transfer, levels, and scaling.
+- `tests/test_postprocess.py` and `tests/test_guides.py` / `tests/test_server_guides.py`: unit coverage for post-processing and guide inversion routing.
 - `integrations/`: ComfyUI nodes/workflows, TouchDesigner bridge, and p5 integration.
 
 ## Verification for this milestone
@@ -36,7 +38,8 @@ The measurements in `docs/experiments.md` are from this development Mac and shou
 - Python bytecode compilation for `server.py`, `engine.py`, `postprocess.py`, `coreml_upscaler.py`, `guides.py`, and `tests/test_postprocess.py`
 - Shell syntax checks for `run.sh`, `scripts/download_models.sh`, and `scripts/download_upscaler.sh`
 - `git diff --check`
-- `python -m unittest discover -s tests -v`: four post-processing tests pass.
+- `.venv/bin/python -m unittest discover -s tests -v`: twelve tests pass, including post-processing feedback, BCS, emboss order, and independent guide inversion.
+- Playwright CLI checks passed on desktop and a 390 × 844 viewport: selecting a learned upscaler reveals its loop controls, editable parameters and saved presets retain the settings, and the browser console reports no errors.
 - The live API was exercised with 512px text/sketch, independent composite guides and palette references, and Real-ESRGAN output at enlarged dimensions.
 
 ## Next useful work

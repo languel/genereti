@@ -29,3 +29,7 @@ class GuideProcessor:
             pixels=((depth-far)/max(near-far,1e-6)*255).clip(0,255).astype(np.uint8)
             return Image.fromarray(pixels).convert('RGB')
         return image
+
+def invert_guide(image):
+    """Swap light and dark values in a prepared visual guide."""
+    return ImageOps.invert(image.convert('RGB'))

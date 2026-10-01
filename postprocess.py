@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 import numpy as np
-from PIL import Image, ImageFilter
+from PIL import Image, ImageEnhance, ImageFilter
 
 
 def composite_layers(sdxs: Image.Image, canny: Image.Image, *, mode='normal', mix=.5) -> Image.Image:
@@ -54,14 +54,28 @@ def apply_postprocessing(
     black_point: int = 0,
     white_point: int = 255,
     gamma: float = 1,
+    brightness: float = 1,
+    contrast: float = 1,
+    saturation: float = 1,
     sharpen: float = 0,
     emboss: float = 0,
     learned_upscale: Callable[[Image.Image], Image.Image] | None = None,
+    upscale_iterations: int = 1,
+    upscale_feedback: float = .75,
+    upscale_output: str = '4x',
     upscale: int = 1,
     upscale_filter: str = 'lanczos',
 ) -> Image.Image:
-    """Apply palette transfer, levels, relief, sharpening, then spatial scaling."""
+    """Apply emboss, color/tone, recursive learned upscaling, and final scaling."""
     result = image.convert('RGB')
+    source_size = result.size
+
+    # Emboss changes the source relief before palette and tonal work, so it can
+    # become part of the color treatment and of every learned-upscale pass.
+    emboss = float(np.clip(emboss, 0, 1))
+    if emboss:
+        result = Image.blend(result, result.filter(ImageFilter.EMBOSS).convert('RGB'), emboss)
+
     if reference is not None and palette_strength > 0:
         result = transfer_palette(result, reference, palette_strength)
 
@@ -74,12 +88,37 @@ def apply_postprocessing(
         lut = np.rint(np.power(values, 1 / gamma) * 255).astype(np.uint8)
         result = result.point(list(lut) * 3)
 
-    emboss = float(np.clip(emboss, 0, 1))
-    if emboss:
-        result = Image.blend(result, result.filter(ImageFilter.EMBOSS).convert('RGB'), emboss)
+    brightness = float(np.clip(brightness, 0, 4))
+    contrast = float(np.clip(contrast, 0, 4))
+    saturation = float(np.clip(saturation, 0, 4))
+    if brightness != 1:
+        result = ImageEnhance.Brightness(result).enhance(brightness)
+    if contrast != 1:
+        result = ImageEnhance.Contrast(result).enhance(contrast)
+    if saturation != 1:
+        result = ImageEnhance.Color(result).enhance(saturation)
 
     if learned_upscale is not None:
-        result = learned_upscale(result).convert('RGB')
+        base = result.copy()
+        feedback_input = base
+        iterations = int(np.clip(upscale_iterations, 1, 4))
+        feedback = float(np.clip(upscale_feedback, 0, 1))
+        for index in range(iterations):
+            enlarged = learned_upscale(feedback_input).convert('RGB')
+            if index + 1 < iterations:
+                lowpass = enlarged.resize(source_size, Image.Resampling.LANCZOS)
+                feedback_input = Image.blend(base, lowpass, feedback)
+            else:
+                result = enlarged
+
+        output_sizes = {
+            '4x': (source_size[0] * 4, source_size[1] * 4),
+            '2x': (source_size[0] * 2, source_size[1] * 2),
+            'source': source_size,
+        }
+        target_size = output_sizes.get(upscale_output, output_sizes['4x'])
+        if result.size != target_size:
+            result = result.resize(target_size, Image.Resampling.LANCZOS)
 
     sharpen = float(np.clip(sharpen, 0, 4))
     if sharpen:

@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field, ValidationError
 from PIL import Image, UnidentifiedImageError
+from guides import invert_guide
 from postprocess import apply_postprocessing
 from coreml_upscaler import MODELS as UPSCALER_MODELS
 
@@ -33,6 +34,10 @@ class GenerateRequest(BaseModel):
     canny_control_scale: float = Field(default=.44, ge=0, le=65504, allow_inf_nan=False)
     composite_mix: float = Field(default=.5, ge=0, le=1, allow_inf_nan=False)
     composite_mode: Literal['normal','screen','multiply','difference'] = 'normal'
+    invert_sketch_guide: bool = False
+    invert_canny_guide: bool = False
+    invert_depth_guide: bool = False
+    invert_pose_guide: bool = False
     feedback: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
     noise_phase: float = Field(default=0, ge=-1e6, le=1e6)
     image: str | None = Field(default=None, max_length=2_800_000)
@@ -42,9 +47,15 @@ class GenerateRequest(BaseModel):
     black_point: int = Field(default=0, ge=0, le=254)
     white_point: int = Field(default=255, ge=1, le=255)
     gamma: float = Field(default=1, ge=.1, le=5, allow_inf_nan=False)
+    brightness: float = Field(default=1, ge=0, le=4, allow_inf_nan=False)
+    contrast: float = Field(default=1, ge=0, le=4, allow_inf_nan=False)
+    saturation: float = Field(default=1, ge=0, le=4, allow_inf_nan=False)
     sharpen: float = Field(default=.35, ge=0, le=4, allow_inf_nan=False)
     emboss: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
     ai_upscaler: Literal['off','animevideo','general'] = 'off'
+    upscale_iterations: int = Field(default=1, ge=1, le=4)
+    upscale_feedback: float = Field(default=.75, ge=0, le=1, allow_inf_nan=False)
+    upscale_output: Literal['4x','2x','source'] = '4x'
     upscale: Literal[1,2,4] = 1
     upscale_filter: Literal['nearest','bilinear','bicubic','lanczos'] = 'lanczos'
     preprocess: bool = True
@@ -140,14 +151,32 @@ class Runtime:
                 guide_image=image
             elif data.mode in ('canny','depth','pose','sketch'):
                 guide_image=image
+            if data.mode=='composite':
+                if data.invert_canny_guide and guide_image is not None:
+                    guide_image=invert_guide(guide_image)
+                if data.invert_sketch_guide and image is not None:
+                    image=invert_guide(image)
+            else:
+                invert_guide_for_mode={
+                    'sketch':data.invert_sketch_guide,
+                    'canny':data.invert_canny_guide,
+                    'depth':data.invert_depth_guide,
+                    'pose':data.invert_pose_guide,
+                }.get(data.mode,False)
+                if invert_guide_for_mode and guide_image is not None:
+                    guide_image=invert_guide(guide_image)
+                    image=guide_image
             if data.return_guide and guide_image is not None:
                 g=io.BytesIO();guide_image.save(g,format='JPEG',quality=90)
                 guide='data:image/jpeg;base64,'+base64.b64encode(g.getvalue()).decode()
         preprocess_ms=(time.perf_counter()-preprocess_start)*1000
         postprocess_values={
             'palette_strength':data.palette_strength,'black_point':data.black_point,
-            'white_point':data.white_point,'gamma':data.gamma,'sharpen':data.sharpen,
+            'white_point':data.white_point,'gamma':data.gamma,'brightness':data.brightness,
+            'contrast':data.contrast,'saturation':data.saturation,'sharpen':data.sharpen,
             'emboss':data.emboss,'ai_upscaler':data.ai_upscaler,
+            'upscale_iterations':data.upscale_iterations,'upscale_feedback':data.upscale_feedback,
+            'upscale_output':data.upscale_output,
             'upscale':data.upscale,'upscale_filter':data.upscale_filter,
         }
         learned_upscale=None;upscaler_load_ms=0
@@ -159,7 +188,9 @@ class Runtime:
                 upscaler_load_ms=round((time.perf_counter()-load_start)*1000,2)
             learned_upscale=self.upscalers[data.ai_upscaler].upscale
         args=data.model_dump(exclude={'image','control_image','reference_image','id','preprocess','return_guide',
-            'palette_strength','black_point','white_point','gamma','sharpen','emboss','ai_upscaler','upscale','upscale_filter'})
+            'invert_sketch_guide','invert_canny_guide','invert_depth_guide','invert_pose_guide',
+            'palette_strength','black_point','white_point','gamma','brightness','contrast','saturation','sharpen','emboss',
+            'ai_upscaler','upscale_iterations','upscale_feedback','upscale_output','upscale','upscale_filter'})
         if data.mode=='composite':args['control_image']=guide_image
         output, metrics=self.engine.generate(image=image,**args)
         postprocess_start=time.perf_counter()

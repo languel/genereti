@@ -10,7 +10,7 @@ Start with the [student quickstart](docs/student-quickstart.md). It covers setup
 
 - Generate live text-to-image and image-to-image frames in the local web app.
 - Guide generation with sketches, camera or shared-window captures, and optional Canny, depth, and pose controls. The experimental composite runs SDXS sketch and SD-Turbo Canny as separate image branches, then blends them.
-- Experiment with a separate Canny shape source, palette-reference transfer, levels, emboss, sharpening, and larger output resampling.
+- Experiment with a separate Canny shape source, palette-reference transfer, emboss-first color/tone controls, recursive learned-upscaler feedback, sharpening, and output sizing.
 - Use the output as a live image stream in p5.js or TouchDesigner.
 - Build ComfyUI graphs with Genereti generation, live input capture, or an interactive p5.js sketch node.
 - Send a queued ComfyUI image to a fullscreen projector window.

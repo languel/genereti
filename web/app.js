@@ -56,7 +56,8 @@ function connection(){
    $('fps').textContent=running?fps.toFixed(1):'—';
    $('latency').textContent=`${Math.round(now-sentAt)} ms round trip`;
    const upscaler=result.postprocess?.ai_upscaler;
-   const upscalerLabel=upscaler&&upscaler!=='off'?` + Real-ESRGAN ${upscaler==='animevideo'?'AnimeVideo':'General'} 4×`:'';
+   const upscaleIterations=Number(result.postprocess?.upscale_iterations||1);
+   const upscalerLabel=upscaler&&upscaler!=='off'?` + Real-ESRGAN ${upscaler==='animevideo'?'AnimeVideo':'General'} 4×${upscaleIterations>1?` · ${upscaleIterations} feedback passes`:''}`:'';
    $('model').textContent=`${result.model}${result.style==='anime'?' + Anime LoRA':''}${upscalerLabel} · ${result.size} × ${result.size} · Core ML`;
    output.dataset.frame=String(result.frame); output.dataset.inferenceMs=String(result.inference_ms);
   }catch(error){message('Could not display the generated frame: '+error.message,true);}
@@ -96,6 +97,10 @@ function updateMode(){
  $('compositeMixWrap').hidden=mode!=='composite';
  $('compositeModeWrap').hidden=mode!=='composite';
  $('compositeGuideWrap').hidden=mode!=='composite';
+ $('invertSketchWrap').hidden=!['sketch','composite'].includes(mode);
+ $('invertCannyWrap').hidden=!['canny','composite'].includes(mode);
+ $('invertDepthWrap').hidden=mode!=='depth';
+ $('invertPoseWrap').hidden=mode!=='pose';
  $('strengthWrap').hidden=mode!=='image';
  $('motionWrap').hidden=false;
  $('rawGuideWrap').hidden=!['canny','depth'].includes(mode);
@@ -122,7 +127,12 @@ function updateAvailability(data){
   const first=[...$('mode').options].find(option=>!option.disabled);
   if(first)$('mode').value=first.value;
  }
+ updateUpscalerControls();
  updateMode();
+}
+function updateUpscalerControls(){
+ const enabled=$('aiUpscaler').value!=='off';
+ for(const id of ['upscaleIterationsWrap','upscaleFeedbackWrap','upscaleOutputWrap'])$(id).hidden=!enabled;
 }
 function updateSizeOptions(data){
  const select=$('size'),sizes=data.available_sizes||[];
@@ -264,9 +274,13 @@ function frame(now){
    const request={id:++frameId,style:$('style').value,preprocess:!$('rawGuide').checked,return_guide:true,prompt:$('prompt').value,prompt_b:$('promptB').value,prompt_mix:parameterValue('mix'),mode,
     seed:Number($('seed').value)||0,strength:parameterValue('strength'),control_scale:parameterValue('control'),
     canny_control_scale:parameterValue('cannyControl'),composite_mix:parameterValue('compositeMix'),composite_mode:$('compositeMode').value,
+    invert_sketch_guide:$('invertSketch').checked,invert_canny_guide:$('invertCanny').checked,
+    invert_depth_guide:$('invertDepth').checked,invert_pose_guide:$('invertPose').checked,
     feedback:parameterValue('feedback'),noise_phase:phase,palette_strength:parameterValue('paletteStrength'),
     black_point:Math.round(parameterValue('blackPoint')),white_point:Math.round(parameterValue('whitePoint')),gamma:parameterValue('gamma'),
+    brightness:parameterValue('brightness'),contrast:parameterValue('contrast'),saturation:parameterValue('saturation'),
     sharpen:parameterValue('sharpen'),emboss:parameterValue('emboss'),ai_upscaler:$('aiUpscaler').value,
+    upscale_iterations:Number($('upscaleIterations').value),upscale_feedback:parameterValue('upscaleFeedback'),upscale_output:$('upscaleOutput').value,
     upscale:Number($('upscale').value),upscale_filter:$('upscaleFilter').value,
     image:capturedInput,control_image:shapeGuideDataUrl,reference_image:referenceDataUrl};
    const {image:ignoredImage,control_image:ignoredControlImage,reference_image:ignoredReference,...requestMetadata}=request;
@@ -328,7 +342,7 @@ $('shapeGuideFile').onchange=async()=>{
  }catch(error){message('Canny guide image could not be loaded: '+error.message,true);}
 };
 $('pose').onchange=()=>{if($('pose').checked){startPose();if($('mode').value!=='pose')$('mode').value='sketch';}else{$('mode').value='image';}updateMode();};
-const parameterLimits={control:[0,65504],cannyControl:[0,65504],compositeMix:[0,1],strength:[.05,1],motion:[0,100],mix:[0,1],feedback:[0,1],maxfps:[1,120],paletteStrength:[0,1],blackPoint:[0,254],whitePoint:[1,255],gamma:[.1,5],sharpen:[0,4],emboss:[0,1]};
+const parameterLimits={control:[0,65504],cannyControl:[0,65504],compositeMix:[0,1],strength:[.05,1],motion:[0,100],mix:[0,1],feedback:[0,1],maxfps:[1,120],paletteStrength:[0,1],blackPoint:[0,254],whitePoint:[1,255],gamma:[.1,5],brightness:[0,4],contrast:[0,4],saturation:[0,4],sharpen:[0,4],emboss:[0,1],upscaleFeedback:[0,1]};
 function parameterValue(id){
  const value=Number($(`${id}Value`).value);
  return Number.isFinite(value)?value:parameterLimits[id][0];
@@ -359,6 +373,8 @@ for(const id of Object.keys(parameterLimits)){
 }
 $('promptB').addEventListener('input',()=>{updateMode();});
 $('size').onchange=()=>changeModelSize(Number($('size').value));
+$('aiUpscaler').onchange=updateUpscalerControls;
+updateUpscalerControls();
 $('upscale').onchange=()=>{};
 function point(e){const box=input.getBoundingClientRect();return[(e.clientX-box.left)*512/box.width,(e.clientY-box.top)*512/box.height];}
 input.onpointerdown=e=>{if($('source').value!=='draw')return;e.preventDefault();drawing=true;lastPoint=point(e);input.setPointerCapture(e.pointerId);};
@@ -494,8 +510,8 @@ $('record').onclick=()=>{
 window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)&&!$('helpDialog').open){e.preventDefault();if(ready)setRunning(!running);}});
 window.addEventListener('beforeunload',()=>{releaseMedia();poseWorker?.terminate();socket?.close();});
 window.genereti={get state(){return{ready,running,busy,frame:lastFrame,metrics:lastStats};},setPrompt(prompt){$('prompt').value=prompt;},pause(){setRunning(false);},start(){if(ready)setRunning(true);}};
-const savedFields=['prompt','promptB','source','mode','style','seed','rawGuide','mirror','compositeMode','aiUpscaler','upscale','upscaleFilter'];
-const parameterFields=['control','cannyControl','compositeMix','strength','motion','mix','feedback','maxfps','paletteStrength','blackPoint','whitePoint','gamma','sharpen','emboss'];
+const savedFields=['prompt','promptB','source','mode','style','seed','rawGuide','invertSketch','invertCanny','invertDepth','invertPose','mirror','compositeMode','aiUpscaler','upscaleIterations','upscaleOutput','upscale','upscaleFilter'];
+const parameterFields=['control','cannyControl','compositeMix','strength','motion','mix','feedback','maxfps','paletteStrength','blackPoint','whitePoint','gamma','brightness','contrast','saturation','sharpen','emboss','upscaleFeedback'];
 function readSettings(){
  return Object.fromEntries([
   ...savedFields.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]),
@@ -513,6 +529,7 @@ function restoreSettings(settings={}){
   if(stored!==undefined)number.value=stored;
   syncParameter(id,'number');
  }
+ updateUpscalerControls();
  updateMode();
 }
 const userPresetsKey='genereti-presets-v1';
