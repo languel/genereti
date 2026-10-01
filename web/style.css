@@ -2,3 +2,76 @@
 
 #guide{position:absolute;inset:0;z-index:1;pointer-events:none}.advanced-grid select{display:block;margin-top:7px;width:100%}.control-row{grid-template-columns:minmax(170px,1.2fr) 1fr 1fr .85fr}
 @media(max-width:800px){.control-row{grid-template-columns:1fr 1fr}}
+
+/* Compact, experiment-first control surface. */
+@media(min-width:1400px){main{max-width:1840px}}
+header{min-height:60px;padding:10px 24px}
+main{padding-top:16px}
+.workspace{gap:20px}
+.surface-head{height:36px;margin-bottom:8px}
+.surface-foot{min-height:40px;padding:5px 0}
+.controls{margin-top:12px;padding-top:14px}
+.prompt-row{grid-template-columns:58px minmax(0,1fr) 220px;gap:12px}
+textarea{min-height:56px;padding:9px 11px;line-height:1.4}
+.preset-tools{display:flex;align-items:center;gap:5px;min-width:0}
+.preset-tools select{flex:1;min-width:0}
+.preset-tools button{padding:7px 9px;font-size:12px}
+.preset-area{min-width:0;width:100%}
+.preset-save-form{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:5px;align-items:center}
+.preset-save-form button{padding:7px 8px;font-size:12px}
+.preset-save-error{grid-column:1/-1;color:#ffc1b6;font-size:11px}
+.output-actions{flex-wrap:wrap;justify-content:flex-end}
+.output-actions button{font-size:11px;padding:5px 7px}
+.control-row{grid-template-columns:minmax(190px,1.25fr) repeat(auto-fit,minmax(125px,1fr));gap:16px;margin:15px 0 13px}
+.control-row label,.advanced-grid>label{font-size:11px}
+.control-row select{margin-top:5px;padding:7px 9px}
+.param-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:20px}
+.param-value{width:68px!important;min-width:0!important;padding:1px 3px!important;background:transparent!important;border:1px solid transparent!important;border-radius:3px!important;color:var(--text)!important;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+.param-value:hover{border-color:var(--edge)!important}
+.param-value:focus{background:#202326!important;border-color:#66705a!important}
+.param-value[data-outside-slider="true"]{color:var(--accent)!important}
+.param-value::-webkit-inner-spin-button,.param-value::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.param-value[type=number]{appearance:textfield;-moz-appearance:textfield}
+.param-control input[type=range]{margin:5px 0 0}
+.control-row .seed-label>div{margin-top:5px}
+.control-row .seed-label input{max-width:none}
+.advanced-grid{grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin-top:14px}
+.post-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-top:14px}
+.post-grid>label,.reference-control{font-size:11px;color:var(--muted);display:block;min-width:0}
+.post-grid>label select{display:block;margin-top:5px;width:100%}
+.reference-control{display:flex;flex-direction:column;gap:6px}
+.guide-source{font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:6px;min-width:0}
+.guide-source>div{display:flex;gap:6px}
+.guide-source button{font-size:11px;padding:6px 8px}
+.guide-source small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:15px}
+.reference-actions{display:flex;gap:6px}
+.reference-actions button{font-size:11px;padding:6px 8px}
+.reference-control small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-height:15px}
+#paletteWrap.inactive-control{opacity:.5}
+.control-row .size-label select{display:block;margin-top:5px;width:100%;padding:7px 8px}
+.advanced-grid>label:not(.check) select,.advanced-grid>label:not(.check)>input:not([type=range]){margin-top:5px}
+.advanced-grid .param-control input[type=range]{display:block}
+.subtle{margin-top:10px}
+details{padding-top:11px}
+summary{font-size:11px}
+@media(max-width:800px){
+ header{padding:10px 16px}
+ .workspace{gap:12px}
+ .prompt-row{grid-template-columns:1fr 190px;gap:8px}
+ .prompt-label{grid-column:1/-1}
+ .control-row{grid-template-columns:1fr 1fr;gap:14px;margin:13px 0}
+ .advanced-grid{grid-template-columns:1fr 1fr;gap:12px}
+ .post-grid{grid-template-columns:1fr 1fr;gap:12px}
+ .surface-foot .output-actions{justify-content:flex-start}
+}
+@media(max-width:500px){
+ .header-actions{gap:7px}
+ #status{max-width:72px;white-space:nowrap;overflow:hidden}
+ #run{flex-shrink:0;white-space:nowrap;padding-left:7px;padding-right:7px}
+ .header-actions>a{white-space:nowrap}
+ .prompt-row{grid-template-columns:1fr}
+ .prompt-label{grid-column:auto}
+ .preset-tools{grid-column:1}
+ .advanced-grid{grid-template-columns:1fr}
+ .post-grid{grid-template-columns:1fr}
+}

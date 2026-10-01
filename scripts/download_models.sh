@@ -5,13 +5,15 @@ cd "$ROOT"
 SIZE="${GENERETI_SIZE:-256}"
 GUIDES=0
 ANIME=0
+UPSCALER=0
 while (($#)); do
   case "$1" in
     --size) SIZE="${2:?--size needs 256, 384, or 512}"; shift 2 ;;
     --with-guides) GUIDES=1; shift ;;
     --with-anime) ANIME=1; shift ;;
+    --with-upscaler) UPSCALER=1; shift ;;
     -h|--help)
-      echo "Usage: scripts/download_models.sh [--size 256|384|512] [--with-guides] [--with-anime]"
+      echo "Usage: scripts/download_models.sh [--size 256|384|512] [--with-guides] [--with-anime] [--with-upscaler]"
       exit 0 ;;
     *) echo "Unknown option: $1" >&2; exit 2 ;;
   esac
@@ -30,4 +32,5 @@ if ((GUIDES)); then
   .venv/bin/python scripts/prepare_depth.py
 fi
 if ((ANIME)); then .venv/bin/python scripts/convert_anime.py --size "$SIZE"; fi
+if ((UPSCALER)); then ./scripts/download_upscaler.sh; fi
 echo "Models ready under models/$SIZE. Run ./Start-Genereti.command"

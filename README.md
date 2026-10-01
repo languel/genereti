@@ -9,7 +9,8 @@ Start with the [student quickstart](docs/student-quickstart.md). It covers setup
 ## What you can do
 
 - Generate live text-to-image and image-to-image frames in the local web app.
-- Guide generation with sketches, camera or shared-window captures, and optional Canny, depth, and pose controls.
+- Guide generation with sketches, camera or shared-window captures, and optional Canny, depth, and pose controls. The experimental composite runs SDXS sketch and SD-Turbo Canny as separate image branches, then blends them.
+- Experiment with a separate Canny shape source, palette-reference transfer, levels, emboss, sharpening, and larger output resampling.
 - Use the output as a live image stream in p5.js or TouchDesigner.
 - Build ComfyUI graphs with Genereti generation, live input capture, or an interactive p5.js sketch node.
 - Send a queued ComfyUI image to a fullscreen projector window.
@@ -25,6 +26,7 @@ Genereti is designed for responsive visuals, not full-resolution batch art. The 
 - [Web app, p5.js, TouchDesigner, and ComfyUI](docs/workflows.md)
 - [Classic SD 1.5 and Qwen Image 2.1 in ComfyUI](docs/comfy-sd15-and-qwen21.md)
 - [Ready-to-use prompts](docs/prompts.md)
+- [Art workflows: composites, 512px, and post-processing](docs/experiments.md)
 - [Model sources, setup, and licenses](docs/models.md)
 - [Agent guide](AGENTS.md)
 

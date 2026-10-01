@@ -8,6 +8,7 @@ from collections import OrderedDict
 from time import perf_counter
 import numpy as np
 from PIL import Image, ImageOps
+from postprocess import composite_layers
 import coremltools as ct
 import torch
 from transformers import CLIPTextModel, CLIPTokenizer
@@ -89,7 +90,37 @@ class Engine:
         return self.noises[seed]
 
     def generate(self, prompt, image=None, *, mode='text', seed=42, strength=.65,
-                 control_scale=.8, feedback=0., noise_phase=0., prompt_b='', prompt_mix=0., style='base'):
+                 control_scale=.8, canny_control_scale=None, composite_mix=.5,
+                 composite_mode='normal', control_image=None, feedback=0., noise_phase=0.,
+                 prompt_b='', prompt_mix=0., style='base'):
+        if mode == 'composite':
+            required = ('controlled_unet', 'control_canny', 'turbo_residual_unet')
+            missing = [name for name in required if not (self.directory / f'{name}.mlpackage').exists()]
+            if image is None:
+                raise ValueError('Composite mode needs a drawing or image input.')
+            if missing:
+                raise ValueError(f'Composite mode is unavailable at {self.size}px; missing {", ".join(missing)}.')
+            started = perf_counter()
+            sketch, sketch_metrics = self.generate(
+                prompt, image, mode='sketch', seed=seed, control_scale=control_scale,
+                noise_phase=noise_phase, prompt_b=prompt_b, prompt_mix=prompt_mix, style=style)
+            canny, canny_metrics = self.generate(
+                prompt, control_image if control_image is not None else image, mode='canny', seed=seed,
+                control_scale=control_scale if canny_control_scale is None else canny_control_scale,
+                noise_phase=noise_phase, prompt_b=prompt_b, prompt_mix=prompt_mix, style='base')
+            result = composite_layers(sketch, canny, mode=composite_mode, mix=composite_mix)
+            return result, {
+                'inference_ms': round((perf_counter() - started) * 1000, 2),
+                'prompt_ms': round(sketch_metrics['prompt_ms'] + canny_metrics['prompt_ms'], 2),
+                'encode_ms': 0,
+                'unet_ms': round(sketch_metrics['unet_ms'] + canny_metrics['unet_ms'], 2),
+                'decode_ms': round(sketch_metrics['decode_ms'] + canny_metrics['decode_ms'], 2),
+                'control_ms': round(sketch_metrics['control_ms'] + canny_metrics['control_ms'], 2),
+                'model': 'SDXS DreamShaper + SD-Turbo Canny',
+                'style': style, 'mode': mode, 'size': self.size, 'seed': seed, 'timestep': 999,
+                'composite_mode': composite_mode, 'composite_mix': float(composite_mix),
+                'branches': {'sdxs': sketch_metrics, 'canny': canny_metrics},
+            }
         start = perf_counter()
         turbo = mode in ('image','canny','depth','pose')
         embeds = self.encode_prompt(prompt, turbo=turbo)

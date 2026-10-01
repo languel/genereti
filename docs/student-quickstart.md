@@ -40,6 +40,14 @@ For the optional anime style:
 ./scripts/download_models.sh --with-anime
 ```
 
+For an optional learned 4× upscaler, install the compact Core ML packages:
+
+```sh
+./scripts/download_upscaler.sh
+```
+
+Or add `--with-upscaler` to the model download command. Genereti's Post-processing panel enables the learned models that are installed.
+
 Check [models and licenses](models.md) before enabling or sharing any download. We keep weights out of the repository because they are large and have separate terms.
 
 ## Try a live input

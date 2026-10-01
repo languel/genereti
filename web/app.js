@@ -5,11 +5,14 @@ const video = $('video');
 const capture = document.createElement('canvas'); capture.width=capture.height=512;
 const capctx=capture.getContext('2d');
 let ready=false, running=false, busy=false, socket, retryTimer, sentAt=0, frameId=0;
-let stream, uploadedImage, fileURL, recording, chunks=[], lastFrame=0, phase=0, demoTime=0;
+let stream, uploadedImage, fileURL, referenceDataUrl=null, referenceName='', referenceFileURL=null, shapeGuideDataUrl=null, shapeGuideName='', shapeGuideFileURL=null, recording, chunks=[], lastFrame=0, phase=0, demoTime=0;
 let showingGuide=false;
 let previousRAF=performance.now(), fpsTimes=[], lastSent=0, timeout, lastStats;
+let pendingGeneration=null,lastGeneration=null;
 let poseWorker, poseReady=false, poseBusy=false, poseLandmarks=[], lastPose=0;
 let drawing=false, lastPoint, pointer={x:.5,y:.5};
+let availableModels=new Set(),availableUpscalers=new Set();
+let changingSize=false;
 const presets={
  robot:'a friendly colorful toy robot, full body, rounded metal body, waving arms, beautiful studio lighting, 3d render',
  stage:'A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition',
@@ -36,6 +39,7 @@ function connection(){
   const result=JSON.parse(data);
   if(result.type==='error'){
    busy=false;
+   pendingGeneration=null;
    if(result.status===429){message(result.error,true);lastSent=performance.now()+500;return;}
    message(result.error,true);setRunning(false);message(result.error,true);return;
   }
@@ -44,12 +48,16 @@ function connection(){
    const img=new Image(); img.src=result.image; await img.decode();
    if(output.width!==img.naturalWidth) output.width=output.height=img.naturalWidth;
    out.drawImage(img,0,0);lastFrame=result.frame;lastStats=result;
-   $('empty').hidden=true;$('save').disabled=false;$('record').disabled=false;
+   if(pendingGeneration){lastGeneration={...pendingGeneration,completedAt:new Date().toISOString()};pendingGeneration=null;}
+   $('empty').hidden=true;
+   for(const id of ['save','copyImage','saveScene','copyScene','record'])$(id).disabled=false;
    const now=performance.now(); fpsTimes.push(now);if(fpsTimes.length>30)fpsTimes.shift();
    const fps=fpsTimes.length>1?(fpsTimes.length-1)*1000/(now-fpsTimes[0]):1000/(now-sentAt);
    $('fps').textContent=running?fps.toFixed(1):'—';
    $('latency').textContent=`${Math.round(now-sentAt)} ms round trip`;
-   $('model').textContent=`${result.model}${result.style==='anime'?' + Anime LoRA':''} · ${result.size} × ${result.size} · Core ML`;
+   const upscaler=result.postprocess?.ai_upscaler;
+   const upscalerLabel=upscaler&&upscaler!=='off'?` + Real-ESRGAN ${upscaler==='animevideo'?'AnimeVideo':'General'} 4×`:'';
+   $('model').textContent=`${result.model}${result.style==='anime'?' + Anime LoRA':''}${upscalerLabel} · ${result.size} × ${result.size} · Core ML`;
    output.dataset.frame=String(result.frame); output.dataset.inferenceMs=String(result.inference_ms);
   }catch(error){message('Could not display the generated frame: '+error.message,true);}
   busy=false;
@@ -66,8 +74,7 @@ async function pollStatus(){
   if(data.error)message(data.error,true);
   if(ready&& !$('empty').hidden)$('empty').querySelector('small').textContent='Press Start live to generate.';
   if(ready&&!lastFrame) $('model').textContent=`Local models · ${data.size} × ${data.size} · Core ML`;
-  if(ready&&data.available_models){for(const mode of ['canny','depth','pose'])$('mode').querySelector(`[value=${mode}]`).disabled=!data.available_models.includes('control_'+mode);$('style').querySelector('[value=anime]').disabled=!data.available_models.includes('anime_unet');}
-  $('mode').querySelector('[value=sketch]').disabled=ready&&!data.controlnet;
+  if(data.available_models){availableModels=new Set(data.available_models);availableUpscalers=new Set(data.available_upscalers||[]);updateAvailability(data);}
  }catch{ready=false;$('run').disabled=true;$('status').textContent='Server offline';}
 }
 function releaseMedia(){
@@ -77,14 +84,68 @@ function releaseMedia(){
  uploadedImage=null;poseLandmarks=[];
 }
 function updateMode(){
- if(['text','image'].includes($('mode').value)){showingGuide=false;$('guide').hidden=true;$('guideToggle').textContent='View guide';}
- $('guideToggle').disabled=['text','image'].includes($('mode').value);
- $('controlWrap').hidden=!['sketch','canny','depth','pose'].includes($('mode').value);
- $('style').disabled=!['text','sketch'].includes($('mode').value);
- if($('mode').value==='pose'&&$('source').value==='camera'){$('pose').checked=true;startPose();}
- $('strengthWrap').hidden=$('mode').value!=='image';
- if($('mode').value==='text'){ $('controlWrap').hidden=true; $('strengthWrap').hidden=true; }
- // Keep fixed column positions without adding a dead slider.
+ const mode=$('mode').value, source=$('source').value;
+ if(['text','image'].includes(mode)){showingGuide=false;$('guide').hidden=true;$('guideToggle').textContent='View guide';}
+ $('guideToggle').disabled=['text','image'].includes(mode);
+ $('controlWrap').hidden=!['sketch','canny','depth','pose','composite'].includes(mode);
+ const guideNames={sketch:'Sketch influence',canny:'Canny influence',depth:'Depth influence',pose:'Pose influence',composite:'Sketch influence'};
+ $('controlLabel').textContent=guideNames[mode]||'Guide influence';
+ $('controlValue').setAttribute('aria-label',`${guideNames[mode]||'Guide'} value`);
+ $('styleWrap').hidden=!['text','sketch','composite'].includes(mode);
+ $('cannyControlWrap').hidden=mode!=='composite';
+ $('compositeMixWrap').hidden=mode!=='composite';
+ $('compositeModeWrap').hidden=mode!=='composite';
+ $('compositeGuideWrap').hidden=mode!=='composite';
+ $('strengthWrap').hidden=mode!=='image';
+ $('motionWrap').hidden=false;
+ $('rawGuideWrap').hidden=!['canny','depth'].includes(mode);
+ $('feedbackWrap').hidden=mode!=='image';
+ $('mixWrap').hidden=!$('promptB').value.trim();
+ $('poseWrap').hidden=source!=='camera';
+ $('mirrorWrap').hidden=source!=='camera';
+ if(mode==='pose'&&source==='camera'){$('pose').checked=true;startPose();}
+ if($('pose').checked&&source==='camera'&&!poseWorker)startPose();
+}
+function updateAvailability(data){
+ const has=name=>availableModels.has(name);
+ updateSizeOptions(data);
+ $('mode').querySelector('[value=text]').disabled=!has('unet');
+ $('mode').querySelector('[value=image]').disabled=!(has('turbo_unet')&&has('encoder'));
+ $('mode').querySelector('[value=sketch]').disabled=!has('controlled_unet');
+ for(const name of ['canny','depth','pose'])$('mode').querySelector(`[value=${name}]`).disabled=!(has(`control_${name}`)&&has('turbo_residual_unet'));
+ $('mode').querySelector('[value=composite]').disabled=!(has('controlled_unet')&&has('control_canny')&&has('turbo_residual_unet'));
+ $('style').querySelector('[value=anime]').disabled=!(has('anime_unet')&&has('anime_controlled_unet'));
+ for(const option of $('aiUpscaler').options)if(option.value!=='off')option.disabled=!availableUpscalers.has(option.value);
+ if($('aiUpscaler').selectedOptions[0]?.disabled)$('aiUpscaler').value='off';
+ if($('style').selectedOptions[0]?.disabled)$('style').value='base';
+ if($('mode').selectedOptions[0]?.disabled){
+  const first=[...$('mode').options].find(option=>!option.disabled);
+  if(first)$('mode').value=first.value;
+ }
+ updateMode();
+}
+function updateSizeOptions(data){
+ const select=$('size'),sizes=data.available_sizes||[];
+ const current=select.value;
+ select.replaceChildren(...sizes.map(value=>new Option(`${value} × ${value}`,String(value))));
+ select.dataset.activeSize=String(data.size??256);
+ if(!changingSize)select.value=String(data.size??current??256);
+ if(!select.options.length){select.add(new Option(`${data.size||256} × ${data.size||256}`,String(data.size||256)));select.value=String(data.size||256);}
+}
+async function changeModelSize(size){
+ if(!size||Number(size)===Number($('size').dataset.activeSize))return;
+ changingSize=true;setRunning(false);$('size').disabled=true;
+ message(`Loading ${size}px Core ML models… this may take a while the first time.`);
+ try{
+  const response=await fetch('/api/config/size',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({size:Number(size)})});
+  const result=await response.json();if(!response.ok)throw new Error(result.detail||'Could not load the selected model size.');
+  message(`${result.size}px models ready. Some pipelines are available only at 256px.`);
+ }catch(error){message(error.message,true);}
+ finally{changingSize=false;await pollStatus();$('size').disabled=false;}
+}
+function updateReferenceControls(){
+ const enabled=Boolean(referenceDataUrl);$('paletteStrength').disabled=!enabled;$('paletteStrengthValue').disabled=!enabled;
+ $('paletteWrap').classList.toggle('inactive-control',!enabled);
 }
 function clear(){ctx.fillStyle='white';ctx.fillRect(0,0,512,512);}
 function sourceChanged(){
@@ -179,7 +240,7 @@ function drawDemo(t){
 }
 function frame(now){
  const dt=Math.min((now-previousRAF)/1000,.1);previousRAF=now;
- const motion=Number($('motion').value);
+ const motion=parameterValue('motion');
  demoTime+=dt*motion*2;
  if($('source').value==='demo'){if($('mode').value==='pose')drawPose(demoPose(demoTime));else drawDemo(demoTime);}
  if(['camera','screen','file'].includes($('source').value)){
@@ -192,16 +253,24 @@ function frame(now){
    }else ctx.drawImage(capture,0,0);
   }
  }
- if(running&&ready&&!busy&&socket?.readyState===WebSocket.OPEN&&now-lastSent>1000/Number($('maxfps').value)){
+ if(running&&ready&&!busy&&socket?.readyState===WebSocket.OPEN&&now-lastSent>1000/parameterValue('maxfps')){
   const source=$('source').value,mode=$('mode').value;
   const hasInput=mode==='text'||['demo','draw'].includes(source)||uploadedImage||video.readyState>=2;
   if(hasInput && !(source==='camera'&&$('pose').checked&&!poseLandmarks.length)){
    busy=true;sentAt=lastSent=now;
    // Keep sketches anchored; noise morph only in text and image modes.
-   if(mode==='text'||mode==='image')phase+=motion*.035;
-   const request={id:++frameId,style:$('style').value,preprocess:!$('rawGuide').checked,return_guide:true,prompt:$('prompt').value,prompt_b:$('promptB').value,prompt_mix:Number($('mix').value),mode,
-    seed:Number($('seed').value)||0,strength:Number($('strength').value),control_scale:Number($('control').value),
-    feedback:Number($('feedback').value),noise_phase:phase,image:mode==='text'?null:input.toDataURL('image/jpeg',.9)};
+   phase+=motion*.035;
+   const capturedInput=mode==='text'?null:input.toDataURL('image/jpeg',.9);
+   const request={id:++frameId,style:$('style').value,preprocess:!$('rawGuide').checked,return_guide:true,prompt:$('prompt').value,prompt_b:$('promptB').value,prompt_mix:parameterValue('mix'),mode,
+    seed:Number($('seed').value)||0,strength:parameterValue('strength'),control_scale:parameterValue('control'),
+    canny_control_scale:parameterValue('cannyControl'),composite_mix:parameterValue('compositeMix'),composite_mode:$('compositeMode').value,
+    feedback:parameterValue('feedback'),noise_phase:phase,palette_strength:parameterValue('paletteStrength'),
+    black_point:Math.round(parameterValue('blackPoint')),white_point:Math.round(parameterValue('whitePoint')),gamma:parameterValue('gamma'),
+    sharpen:parameterValue('sharpen'),emboss:parameterValue('emboss'),ai_upscaler:$('aiUpscaler').value,
+    upscale:Number($('upscale').value),upscale_filter:$('upscaleFilter').value,
+    image:capturedInput,control_image:shapeGuideDataUrl,reference_image:referenceDataUrl};
+   const {image:ignoredImage,control_image:ignoredControlImage,reference_image:ignoredReference,...requestMetadata}=request;
+   pendingGeneration={startedAt:new Date().toISOString(),settings:{...readSettings(),referenceIncluded:Boolean(referenceDataUrl),referenceName,shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName},request:requestMetadata,inputDataUrl:capturedInput,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName};
    socket.send(JSON.stringify(request));
    timeout=setTimeout(()=>{message('Generation timed out; reconnecting.',true);socket.close();},120000);
   }
@@ -224,12 +293,73 @@ $('file').onchange=async()=>{
   notice('');
  }catch(error){message('File could not be loaded: '+error.message,true);}
 };
-$('pose').onchange=()=>{if($('pose').checked){startPose();if($('mode').value!=='pose')$('mode').value='sketch';}else{$('mode').value='image';}updateMode();};
-$('preset').onchange=()=>{const key=$('preset').value;if(!key)return;$('prompt').value=presets[key];
- if(key==='jellyfish'||key==='tree'||key==='portrait'){$('source').value='text';sourceChanged();}
- else{$('source').value='demo';sourceChanged();}
+$('chooseReference').onclick=()=>$('referenceFile').click();
+$('clearReference').onclick=()=>{
+ if(referenceFileURL)URL.revokeObjectURL(referenceFileURL);
+ referenceFileURL=null;referenceDataUrl=null;referenceName='';$('referenceFile').value='';
+ $('referenceName').textContent='No palette image loaded';$('clearReference').disabled=true;
+ updateReferenceControls();
 };
-for(const id of ['control','strength','motion','mix','feedback','maxfps']) $(id).addEventListener('input',()=>$(id+'Value').textContent=id==='maxfps'?$(id).value:Number($(id).value).toFixed(2));
+$('referenceFile').onchange=async()=>{
+ const file=$('referenceFile').files[0];if(!file)return;
+ try{
+  if(referenceFileURL)URL.revokeObjectURL(referenceFileURL);
+  referenceFileURL=URL.createObjectURL(file);const image=new Image();image.src=referenceFileURL;await image.decode();
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=512;fitImage(canvas.getContext('2d'),image);
+  referenceDataUrl=canvas.toDataURL('image/jpeg',.9);referenceName=file.name;
+  $('referenceName').textContent=`${file.name} · palette only`;$('clearReference').disabled=false;
+  updateReferenceControls();
+ }catch(error){message('Palette reference could not be loaded: '+error.message,true);}
+};
+$('chooseShapeGuide').onclick=()=>$('shapeGuideFile').click();
+$('clearShapeGuide').onclick=()=>{
+ if(shapeGuideFileURL)URL.revokeObjectURL(shapeGuideFileURL);
+ shapeGuideFileURL=null;shapeGuideDataUrl=null;shapeGuideName='';$('shapeGuideFile').value='';
+ $('shapeGuideName').textContent='Uses the main input unless an image is selected';$('clearShapeGuide').disabled=true;
+};
+$('shapeGuideFile').onchange=async()=>{
+ const file=$('shapeGuideFile').files[0];if(!file)return;
+ try{
+  if(shapeGuideFileURL)URL.revokeObjectURL(shapeGuideFileURL);
+  shapeGuideFileURL=URL.createObjectURL(file);const image=new Image();image.src=shapeGuideFileURL;await image.decode();
+  const canvas=document.createElement('canvas');canvas.width=canvas.height=512;fitImage(canvas.getContext('2d'),image);
+  shapeGuideDataUrl=canvas.toDataURL('image/jpeg',.9);shapeGuideName=file.name;
+  $('shapeGuideName').textContent=`${file.name} · Canny shape only`;$('clearShapeGuide').disabled=false;
+ }catch(error){message('Canny guide image could not be loaded: '+error.message,true);}
+};
+$('pose').onchange=()=>{if($('pose').checked){startPose();if($('mode').value!=='pose')$('mode').value='sketch';}else{$('mode').value='image';}updateMode();};
+const parameterLimits={control:[0,65504],cannyControl:[0,65504],compositeMix:[0,1],strength:[.05,1],motion:[0,100],mix:[0,1],feedback:[0,1],maxfps:[1,120],paletteStrength:[0,1],blackPoint:[0,254],whitePoint:[1,255],gamma:[.1,5],sharpen:[0,4],emboss:[0,1]};
+function parameterValue(id){
+ const value=Number($(`${id}Value`).value);
+ return Number.isFinite(value)?value:parameterLimits[id][0];
+}
+function formatParameter(id,value){return id==='maxfps'?String(Math.round(value)):Number(value).toFixed(2);}
+function syncParameter(id,source){
+ const range=$(id),number=$(`${id}Value`),[min,max]=parameterLimits[id];
+ if(source==='range'){
+  number.value=formatParameter(id,Number(range.value));
+ }else{
+  let value=Number(number.value);
+  if(!Number.isFinite(value))value=Number(range.value);
+  value=Math.min(max,Math.max(min,value));
+  number.value=formatParameter(id,value);
+  range.value=String(value); // The slider clamps to its display range; the number remains authoritative.
+ }
+ const value=Number(number.value),outside=value<Number(range.min)||value>Number(range.max);
+ number.dataset.outsideSlider=String(outside);
+ number.title=outside?`Using ${formatParameter(id,value)} directly; slider display is limited to ${range.min}–${range.max}.`:'Click to type a value.';
+}
+for(const id of Object.keys(parameterLimits)){
+ $(id).addEventListener('input',()=>syncParameter(id,'range'));
+ $(`${id}Value`).addEventListener('change',()=>syncParameter(id,'number'));
+ $(`${id}Value`).addEventListener('keydown',event=>{
+  if(event.key==='Enter'){$(`${id}Value`).blur();}
+  if(event.key==='Escape'){syncParameter(id,'range');$(`${id}Value`).blur();}
+ });
+}
+$('promptB').addEventListener('input',()=>{updateMode();});
+$('size').onchange=()=>changeModelSize(Number($('size').value));
+$('upscale').onchange=()=>{};
 function point(e){const box=input.getBoundingClientRect();return[(e.clientX-box.left)*512/box.width,(e.clientY-box.top)*512/box.height];}
 input.onpointerdown=e=>{if($('source').value!=='draw')return;e.preventDefault();drawing=true;lastPoint=point(e);input.setPointerCapture(e.pointerId);};
 input.onpointermove=e=>{if(!drawing)return;const next=point(e);ctx.strokeStyle=e.buttons===2?'white':'#111';stroke([lastPoint,next],Number($('brush').value)*(e.buttons===2?3:1));lastPoint=next;};
@@ -238,7 +368,119 @@ input.oncontextmenu=e=>e.preventDefault();
 $('help').onclick=()=>$('helpDialog').showModal();
 $('full').onclick=()=>output.requestFullscreen().catch(error=>message(error.message,true));
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
-$('save').onclick=()=>output.toBlob(blob=>download(blob,`genereti-${Date.now()}.png`));
+function dataURLToBlob(dataURL){
+ const [header,encoded]=dataURL.split(',',2),mime=header.match(/^data:([^;]+)/)?.[1]||'application/octet-stream';
+ const binary=atob(encoded),bytes=new Uint8Array(binary.length);
+ for(let index=0;index<binary.length;index++)bytes[index]=binary.charCodeAt(index);
+ return new Blob([bytes],{type:mime});
+}
+function canvasBlob(canvas,type='image/png'){
+ return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('Could not encode image.')),type));
+}
+const crcTable=(()=>{
+ const table=new Uint32Array(256);
+ for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xedb88320^(c>>>1):c>>>1;table[n]=c>>>0;}
+ return table;
+})();
+function crc32(bytes){let crc=0xffffffff;for(const byte of bytes)crc=crcTable[(crc^byte)&255]^(crc>>>8);return(crc^0xffffffff)>>>0;}
+function pngChunk(type,payload){
+ const typeBytes=new TextEncoder().encode(type),body=new Uint8Array(typeBytes.length+payload.length);body.set(typeBytes);body.set(payload,typeBytes.length);
+ const chunk=new Uint8Array(12+payload.length),view=new DataView(chunk.buffer);
+ view.setUint32(0,payload.length);chunk.set(body,4);view.setUint32(8+payload.length,crc32(body));return chunk;
+}
+async function embedPNGMetadata(blob,metadata){
+ const bytes=new Uint8Array(await blob.arrayBuffer()),signature=[137,80,78,71,13,10,26,10];
+ if(signature.some((byte,index)=>bytes[index]!==byte))throw new Error('Generated image is not a PNG.');
+ let offset=8,iend=-1;
+ while(offset+12<=bytes.length){
+  const length=new DataView(bytes.buffer,bytes.byteOffset+offset,4).getUint32(0),type=new TextDecoder().decode(bytes.subarray(offset+4,offset+8));
+  if(type==='IEND'){iend=offset;break;}
+  offset+=12+length;
+ }
+ if(iend<0)throw new Error('PNG is missing its end marker.');
+ const keyword=new TextEncoder().encode('Genereti Metadata'),text=new TextEncoder().encode(JSON.stringify(metadata,null,2));
+ const payload=new Uint8Array(keyword.length+5+text.length);let cursor=0;
+ payload.set(keyword,cursor);cursor+=keyword.length;payload[cursor++]=0;payload[cursor++]=0;payload[cursor++]=0;payload[cursor++]=0;payload[cursor++]=0;payload.set(text,cursor);
+ const chunk=pngChunk('iTXt',payload),result=new Uint8Array(bytes.length+chunk.length);
+ result.set(bytes.subarray(0,iend),0);result.set(chunk,iend);result.set(bytes.subarray(iend),iend+chunk.length);
+ return new Blob([result],{type:'image/png'});
+}
+function metadataForLastGeneration(){
+ if(!lastGeneration)throw new Error('Wait for a generated frame before exporting.');
+ const {settings,request,inputDataUrl,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName,startedAt,completedAt}=lastGeneration;
+ const result=Object.fromEntries(Object.entries(lastStats||{}).filter(([key,value])=>key!=='image'&&key!=='guide'&&value!==undefined&&typeof value!=='function'));
+ return {
+  format:'genereti-scene-v1',app:'Genereti',createdAt:completedAt||startedAt,
+  source:{kind:settings.source,mode:request.mode,imageIncluded:Boolean(inputDataUrl),mimeType:inputDataUrl?.match(/^data:([^;]+)/)?.[1]||null,
+   referenceIncluded:Boolean(referenceDataUrl),referenceName:referenceName||null,
+   shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName:shapeGuideName||null},
+  settings,request,result,
+ };
+}
+function safeStamp(iso){return(iso||new Date().toISOString()).replace(/[:.]/g,'-');}
+async function outcomeWithMetadata(metadata=metadataForLastGeneration()){return embedPNGMetadata(await canvasBlob(output),metadata);}
+async function loadImage(dataURL){const image=new Image();image.src=dataURL;await image.decode();return image;}
+function wrapCanvasText(context,text,x,y,maxWidth,lineHeight,maxLines=3){
+ const words=String(text||'').split(/\s+/);let line='',lines=0;
+ for(const word of words){const next=line?`${line} ${word}`:word;if(context.measureText(next).width>maxWidth&&line){context.fillText(line,x,y);y+=lineHeight;line=word;if(++lines>=maxLines)return;}else line=next;}
+ if(line&&lines<maxLines)context.fillText(line,x,y);
+}
+async function sceneBoard(metadata,sourceDataUrl,outcomeDataUrl,referenceDataUrl,shapeGuideDataUrl){
+ const hasReference=Boolean(referenceDataUrl),hasShapeGuide=Boolean(shapeGuideDataUrl),columns=2+Number(hasReference)+Number(hasShapeGuide);
+ const canvas=document.createElement('canvas');canvas.width=columns===2?1400:columns===3?1660:1695;canvas.height=columns===2?900:920;
+ const context=canvas.getContext('2d'),top=105,side=columns===2?580:columns===3?460:380;
+ const positions=columns===2?[70,750]:columns===3?[55,600,1145]:[35,450,865,1280];
+ const panels=[{label:'SHAPE SOURCE',url:sourceDataUrl},{label:'CANNY SHAPE GUIDE',url:shapeGuideDataUrl},{label:'PALETTE REFERENCE',url:referenceDataUrl},{label:'GENERATED OUTCOME',url:outcomeDataUrl}]
+  .filter(panel=>panel.label==='SHAPE SOURCE'||panel.label==='GENERATED OUTCOME'||Boolean(panel.url));
+ context.fillStyle='#17191b';context.fillRect(0,0,canvas.width,canvas.height);
+ context.fillStyle='#eceeeb';context.font='600 30px Inter, -apple-system, sans-serif';context.fillText('Genereti · Live image scene',70,52);
+ context.fillStyle='#a4aaa8';context.font='16px Inter, -apple-system, sans-serif';context.textAlign='right';context.fillText(new Date(metadata.createdAt).toLocaleString(),canvas.width-50,50);context.textAlign='left';
+ for(let index=0;index<panels.length;index++){
+  const panel=panels[index],x=positions[index];context.fillStyle='#202326';context.fillRect(x,top,side,side);
+  context.fillStyle='#eceeeb';context.font=columns===4?'600 12px Inter, -apple-system, sans-serif':'600 17px Inter, -apple-system, sans-serif';context.fillText(panel.label,x,top-18);
+  if(panel.url){const image=await loadImage(panel.url);context.drawImage(image,x,top,side,side);}
+  else{context.fillStyle='#a4aaa8';context.font='20px Inter, -apple-system, sans-serif';context.textAlign='center';context.fillText('Text prompt only',x+side/2,top+side/2);context.textAlign='left';}
+ }
+ const dividerY=columns===2?720:columns===3?620:520,left=positions[0],contentWidth=canvas.width-left-50;
+ context.strokeStyle='#363a3e';context.beginPath();context.moveTo(left,dividerY);context.lineTo(left+contentWidth,dividerY);context.stroke();
+ context.fillStyle='#d1ec9c';context.font='600 14px Inter, -apple-system, sans-serif';context.fillText(`${metadata.result.model||'Local model'} · ${metadata.source.mode} · seed ${metadata.settings.seed}`,left,dividerY+32);
+ context.fillStyle='#eceeeb';context.font='17px Inter, -apple-system, sans-serif';wrapCanvasText(context,metadata.settings.prompt,left,dividerY+64,contentWidth,24,3);
+ context.fillStyle='#a4aaa8';context.font='14px Inter, -apple-system, sans-serif';
+ context.fillText(`Sketch ${metadata.request.control_scale} · Canny ${metadata.request.canny_control_scale} · palette ${metadata.request.palette_strength} · sharpen ${metadata.request.sharpen} · ${metadata.result.inference_ms??'—'} ms`,left,canvas.height-24);
+ return canvasBlob(canvas);
+}
+function concatBytes(parts){const length=parts.reduce((sum,part)=>sum+part.length,0),result=new Uint8Array(length);let offset=0;for(const part of parts){result.set(part,offset);offset+=part.length;}return result;}
+function zipStored(entries){
+ const encoder=new TextEncoder(),local=[],central=[];let localOffset=0;
+ const now=new Date(),dosTime=(now.getHours()<<11)|(now.getMinutes()<<5)|(Math.floor(now.getSeconds()/2)),dosDate=((Math.max(1980,now.getFullYear())-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+ for(const entry of entries){
+  const name=encoder.encode(entry.name),data=entry.bytes,crc=crc32(data),header=new Uint8Array(30+name.length),view=new DataView(header.buffer);
+  view.setUint32(0,0x04034b50,true);view.setUint16(4,20,true);view.setUint16(6,0x0800,true);view.setUint16(8,0,true);view.setUint16(10,dosTime,true);view.setUint16(12,dosDate,true);view.setUint32(14,crc,true);view.setUint32(18,data.length,true);view.setUint32(22,data.length,true);view.setUint16(26,name.length,true);view.setUint16(28,0,true);header.set(name,30);local.push(header,data);
+  const directory=new Uint8Array(46+name.length),dv=new DataView(directory.buffer);
+  dv.setUint32(0,0x02014b50,true);dv.setUint16(4,20,true);dv.setUint16(6,20,true);dv.setUint16(8,0x0800,true);dv.setUint16(10,0,true);dv.setUint16(12,dosTime,true);dv.setUint16(14,dosDate,true);dv.setUint32(16,crc,true);dv.setUint32(20,data.length,true);dv.setUint32(24,data.length,true);dv.setUint16(28,name.length,true);dv.setUint16(30,0,true);dv.setUint16(32,0,true);dv.setUint16(34,0,true);dv.setUint16(36,0,true);dv.setUint32(38,0,true);dv.setUint32(42,localOffset,true);directory.set(name,46);central.push(directory);localOffset+=header.length+data.length;
+ }
+ const centralBytes=concatBytes(central),end=new Uint8Array(22),view=new DataView(end.buffer);view.setUint32(0,0x06054b50,true);view.setUint16(4,0,true);view.setUint16(6,0,true);view.setUint16(8,entries.length,true);view.setUint16(10,entries.length,true);view.setUint32(12,centralBytes.length,true);view.setUint32(16,localOffset,true);view.setUint16(20,0,true);
+ return new Blob([...local,centralBytes,end],{type:'application/zip'});
+}
+async function copyToClipboard(imageBlob,metadata){
+ if(!navigator.clipboard?.write||!window.ClipboardItem)throw new Error('Image clipboard is unavailable here. Open Genereti from its local server in Chrome or Safari.');
+ await navigator.clipboard.write([new ClipboardItem({'image/png':imageBlob,'text/plain':new Blob([JSON.stringify(metadata,null,2)],{type:'text/plain'})})]);
+}
+$('save').onclick=async()=>{try{const metadata=metadataForLastGeneration(),blob=await outcomeWithMetadata(metadata);download(blob,`genereti-image-${safeStamp(metadata.createdAt)}.png`);message('Saved PNG with embedded Genereti metadata.');}catch(error){message(error.message,true);}};
+$('copyImage').onclick=async()=>{try{const metadata=metadataForLastGeneration(),blob=await outcomeWithMetadata(metadata);await copyToClipboard(blob,metadata);message('Copied the image with embedded Genereti metadata.');}catch(error){message(error.message,true);}};
+$('saveScene').onclick=async()=>{try{
+ const metadata=metadataForLastGeneration(),sourceDataUrl=lastGeneration?.inputDataUrl,shapeGuideDataUrl=lastGeneration?.shapeGuideDataUrl,referenceDataUrl=lastGeneration?.referenceDataUrl,guideDataUrl=lastStats?.guide,outcome=await outcomeWithMetadata(metadata),entries=[
+  {name:'outcome.png',bytes:new Uint8Array(await outcome.arrayBuffer())},
+  {name:'metadata.json',bytes:new TextEncoder().encode(JSON.stringify(metadata,null,2))},
+  {name:'README.txt',bytes:new TextEncoder().encode('Genereti scene export\n\nsource.jpg (or source.png) is the exact input image sent to the SDXS branch. shape-guide.jpg is an optional independent Canny structure guide. reference.jpg is an optional palette reference. outcome.png is the generated result and embeds metadata. guide.jpg is included when the pipeline returned a preprocessed guide. metadata.json records the prompt, controls, post-processing, and result metrics. Text-only scenes omit the source image.\n')},
+ ];
+ if(sourceDataUrl){const source=dataURLToBlob(sourceDataUrl),extension=source.type==='image/png'?'png':'jpg';entries.push({name:`source.${extension}`,bytes:new Uint8Array(await source.arrayBuffer())});}
+ if(shapeGuideDataUrl){const shape=dataURLToBlob(shapeGuideDataUrl),extension=shape.type==='image/png'?'png':'jpg';entries.push({name:`shape-guide.${extension}`,bytes:new Uint8Array(await shape.arrayBuffer())});}
+ if(referenceDataUrl){const reference=dataURLToBlob(referenceDataUrl),extension=reference.type==='image/png'?'png':'jpg';entries.push({name:`reference.${extension}`,bytes:new Uint8Array(await reference.arrayBuffer())});}
+ if(guideDataUrl){const guide=dataURLToBlob(guideDataUrl),extension=guide.type==='image/png'?'png':'jpg';entries.push({name:`guide.${extension}`,bytes:new Uint8Array(await guide.arrayBuffer())});}
+ const zip=zipStored(entries),stamp=safeStamp(metadata.createdAt);download(zip,`genereti-scene-${stamp}.zip`);message('Saved scene ZIP with source, outcome, and metadata.');
+ }catch(error){message(error.message,true);}};
+ $('copyScene').onclick=async()=>{try{const metadata=metadataForLastGeneration(),sourceDataUrl=lastGeneration?.inputDataUrl,referenceDataUrl=lastGeneration?.referenceDataUrl,shapeGuideDataUrl=lastGeneration?.shapeGuideDataUrl,outcomeDataUrl=output.toDataURL('image/png'),board=await embedPNGMetadata(await sceneBoard(metadata,sourceDataUrl,outcomeDataUrl,referenceDataUrl,shapeGuideDataUrl),metadata);await copyToClipboard(board,metadata);message('Copied the source + guides + outcome scene board with metadata.');}catch(error){message(error.message,true);}};
 $('record').onclick=()=>{
  if(recording?.state==='recording'){recording.stop();$('record').textContent='Record';return;}
  if(!window.MediaRecorder){message('This browser does not support recording.',true);return;}
@@ -252,12 +494,91 @@ $('record').onclick=()=>{
 window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)&&!$('helpDialog').open){e.preventDefault();if(ready)setRunning(!running);}});
 window.addEventListener('beforeunload',()=>{releaseMedia();poseWorker?.terminate();socket?.close();});
 window.genereti={get state(){return{ready,running,busy,frame:lastFrame,metrics:lastStats};},setPrompt(prompt){$('prompt').value=prompt;},pause(){setRunning(false);},start(){if(ready)setRunning(true);}};
-const savedFields=['prompt','promptB','source','mode','style','seed','strength','control','motion','mix','feedback','maxfps','rawGuide','mirror'];
+const savedFields=['prompt','promptB','source','mode','style','seed','rawGuide','mirror','compositeMode','aiUpscaler','upscale','upscaleFilter'];
+const parameterFields=['control','cannyControl','compositeMix','strength','motion','mix','feedback','maxfps','paletteStrength','blackPoint','whitePoint','gamma','sharpen','emboss'];
+function readSettings(){
+ return Object.fromEntries([
+  ...savedFields.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]),
+  ...parameterFields.map(id=>[id,parameterValue(id)]),
+ ]);
+}
+function restoreSettings(settings={}){
+ if(settings.source!==undefined){$('source').value=settings.source;sourceChanged();}
+ for(const id of savedFields)if(settings[id]!==undefined&&id!=='source'){
+  if($(id).type==='checkbox')$(id).checked=Boolean(settings[id]);else $(id).value=settings[id];
+ }
+ for(const id of parameterFields){
+  const number=$(`${id}Value`);
+  const stored=settings[id]??settings[`${id}_value`];
+  if(stored!==undefined)number.value=stored;
+  syncParameter(id,'number');
+ }
+ updateMode();
+}
+const userPresetsKey='genereti-presets-v1';
+let userPresets=[];
+try{userPresets=JSON.parse(localStorage.getItem(userPresetsKey)||'[]');if(!Array.isArray(userPresets))userPresets=[];}catch{userPresets=[];}
+function renderPresetOptions(selected=''){
+ const select=$('preset'), group=[...select.querySelectorAll('optgroup')].find(node=>node.label==='Saved setups');
+ if(group)group.remove();
+ if(userPresets.length){
+  const saved=document.createElement('optgroup');saved.label='Saved setups';
+  for(const preset of userPresets){const option=new Option(preset.name,`saved:${preset.id}`);saved.append(option);}
+  select.append(saved);
+ }
+ select.value=selected;
+ $('deletePreset').disabled=!selected.startsWith('saved:');
+}
+function persistPresets(){
+ try{localStorage.setItem(userPresetsKey,JSON.stringify(userPresets));}catch{message('Could not save presets in this browser.',true);}
+}
+$('preset').onchange=()=>{
+ closePresetEditor();
+ const key=$('preset').value;
+ if(key.startsWith('saved:')){
+  const selected=userPresets.find(item=>item.id===key.slice(6));
+  if(selected)restoreSettings(selected.settings);
+ }else if(key.startsWith('prompt:')){
+  const name=key.slice(7);$('prompt').value=presets[name]||'';
+  $('source').value=['jellyfish','tree','portrait'].includes(name)?'text':'demo';
+  sourceChanged();
+ }
+ $('deletePreset').disabled=!key.startsWith('saved:');
+};
+$('savePreset').onclick=()=>{
+ $('presetTools').hidden=true;
+ $('presetSaveError').hidden=true;
+ $('presetSaveForm').hidden=false;
+ $('presetName').value='';
+ $('presetName').focus();
+};
+function closePresetEditor(){
+ $('presetSaveForm').hidden=true;
+ $('presetTools').hidden=false;
+ $('presetSaveError').hidden=true;
+}
+$('cancelPresetSave').onclick=closePresetEditor;
+$('presetSaveForm').addEventListener('submit',event=>{
+ event.preventDefault();
+ const name=$('presetName').value.trim();
+ if(!name){$('presetSaveError').hidden=false;$('presetName').focus();return;}
+ const preset={id:crypto.randomUUID(),name,settings:readSettings()};
+ userPresets.push(preset);persistPresets();renderPresetOptions(`saved:${preset.id}`);
+ closePresetEditor();
+ message(`Saved preset “${preset.name}”.`);
+});
+$('deletePreset').onclick=()=>{
+ const key=$('preset').value;
+ if(!key.startsWith('saved:'))return;
+ const selected=userPresets.find(item=>item.id===key.slice(6));
+ userPresets=userPresets.filter(item=>item.id!==key.slice(6));
+ persistPresets();renderPresetOptions();
+ if(selected)message(`Deleted preset “${selected.name}”.`);
+};
+renderPresetOptions();updateReferenceControls();
 try{
  const saved=JSON.parse(localStorage.getItem('genereti-controls')||'{}');
- for(const id of savedFields)if(saved[id]!==undefined){if($(id).type==='checkbox')$(id).checked=saved[id];else $(id).value=saved[id];}
- const selectedMode=$('mode').value;sourceChanged();$('mode').value=selectedMode;updateMode();
- for(const id of ['control','strength','motion','mix','feedback','maxfps'])$(id).dispatchEvent(new Event('input'));
+ restoreSettings(saved);
 }catch{clear();updateMode();}
-document.addEventListener('change',()=>{try{localStorage.setItem('genereti-controls',JSON.stringify(Object.fromEntries(savedFields.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]))));}catch{}});
+document.addEventListener('change',()=>{try{localStorage.setItem('genereti-controls',JSON.stringify(readSettings()));}catch{}});
 connection();pollStatus();setInterval(pollStatus,3000);requestAnimationFrame(frame);
