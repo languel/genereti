@@ -8,7 +8,7 @@ Start with the [student quickstart](docs/student-quickstart.md). It covers setup
 
 ## Excalidraw workspace branch
 
-On `excalidraw-host`, the local app opens directly into a full-screen Excalidraw workspace. **Genereti** opens the native dockable sidebar containing input sources, model controls, presets, post-processing and exports. Generated output renders on the drawing canvas. The classic interface remains at `/lab.html`. See [the workspace guide](docs/excalidraw-host.md). This is the first canvas-host milestone; keyframe animation is not implemented yet.
+On `excalidraw-host`, the local app opens directly into a full-screen Excalidraw workspace. **Genereti** opens the native dockable sidebar containing input sources, model controls, presets, post-processing and exports. Generated output renders on the drawing canvas. The classic interface remains at `/lab.html`. See [the workspace guide](docs/excalidraw-host.md). The icon toolbar supports drawing over generated output, with input above or below the result. Optional **Frame input** combines editable shapes/images with live media. The sidebar stays open while drawing and includes a **Performance** monitor. Prompt edits apply with **Cmd+Enter** (or Ctrl+Enter); enable **Live prompt** for updates as you type. Keyframe animation is not implemented yet.
 
 ## What you can do
 

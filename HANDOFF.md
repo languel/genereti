@@ -9,9 +9,9 @@
 
 ## Latest milestone: Excalidraw is the host
 
-The default `/` page is a single Excalidraw document, not an editor iframe within the old layout. Native Sidebar, Footer, top-right UI and custom embeddable renderers host Genereti. All existing control IDs and event handlers remain active, including model-aware settings, numeric overrides, presets, independent guides, post-processing, captures and scene exports. `/lab.html` preserves the checkpoint's classic page, with its embedded drawing editor. External p5/TouchDesigner/Comfy bridges and generator contracts are unchanged.
+The default `/` page is a single Excalidraw document, not an editor iframe within the old layout. Native Sidebar, a unified icon toolbar in the Footer, and custom embeddable renderers host Genereti. All existing control IDs and event handlers remain active, including model-aware settings, numeric overrides, presets, independent guides, post-processing, captures and scene exports. `/lab.html` preserves the checkpoint's classic page, with its embedded drawing editor. External p5/TouchDesigner/Comfy bridges and generator contracts are unchanged.
 
-Read `docs/excalidraw-host.md` for controls and implementation details. Source selection starts with Shapes. The input crop remains world coordinates 0,0–512,512. Live output, external source previews and optional guide previews are runtime embeddables excluded from editable guide export and autosave. Output geometry lasts for the current session; animation/keyframes and persistent workspace layout remain future work.
+Read `docs/excalidraw-host.md` for controls and implementation details. Source selection starts with Shapes. The default input crop uses world coordinates 0,0–512,512; optional Frame input selects a native frame and crops its contents. Live output, external source previews and optional guide previews are runtime embeddables excluded from editable guide export and autosave. Detached output placement, overlay mode and input ordering persist locally. Animation/keyframes and a complete saved workspace layout remain future work.
 
 Verification: rebuilt the local editor bundle; 21 Python tests passed; browser exercised live generation with the sidebar hidden, sidebar reopen, demo/file/vector source switching, preset save/delete, drawing download/reopen, PNG download and scene ZIP download. PNG metadata was read with Pillow after loading pixels; the ZIP contained source, outcome, guide, metadata and an editable drawing with no runtime preview elements. Both default host and classic iframe page loaded without page errors in the final check. Camera/screen permission prompts were not exercised.
 
@@ -98,3 +98,17 @@ Color following now ignores neutral white/gray/black source pixels instead of de
 ## Live output on Excalidraw canvas
 
 Added Output in canvas footer mode with native Generated frame and native embeddable element using renderEmbeddable for live results. Parent caches/forwards output data through DrawingBridge; no per-frame file accumulation. Expanded canvas fills viewport and hides separate result panel. Input export/scene serialization filters customData.generetiOutput elements, preventing output feedback or huge snapshots. Mode remembered locally; moved output geometry retained during current session, not reload. Stable initializeEditor callback avoids restoring/refitting on each React live update. Internal live-output hyperlink UI hidden; no external page loaded. Verified live result rendered, native element selected/moved, and output interaction left input raster unchanged. docs/drawing-editor.md updated.
+
+### Frame input and painting below output
+
+The Excalidraw host now has a toolbar Draw over output button and Output view controls for input above/below output, frame input and native frame selection. Below hides the raw marks while retaining pointer input and model guidance. Frame input crops editable shapes/images and combines a transparent drawing layer with an external live source. Overlay follows selected frame geometry. The sidebar stays open during canvas interaction and closes only explicitly. See docs/excalidraw-host.md for controls and verification limits. Rebuild editor source using npm run build:editor.
+
+### Browser performance pass
+
+Performance sidebar details and window.genereti.performance snapshot/reset expose bounded mean/P95 timings, long tasks, output/export counts and server-busy retries. Live preview images now update directly without React host rerenders. Steady editable input encoding is cached; hidden guide previews are not returned/decoded; drawing raster exports are rate limited and skipped in external source-only mode. docs/excalidraw-host.md records 256px measurement scope. Backend/model files were unchanged. A separate producer was active during later browser checks; do not run competing producers for benchmarks.
+
+### Prompt submission checkpoint
+
+Prompt A/B edits remain drafts until Cmd+Enter, Ctrl+Enter or the apply icon. Live prompt is an opt-in toggle, remembered locally and off by default. Presets and window.genereti.setPrompt apply immediately. Generated metadata records applied text rather than drafts. Browser checks intercepted outgoing requests: typing retained the previous prompt, Cmd+Enter applied the draft, and Live prompt applied Prompt B edits. No real generation was needed for this check.
+
+The user's later 10 FPS report was traced to post-processing settings, not an additional confirmed Excalidraw regression. Use the Performance post-processing row and compare identical model size, upscaler/pass count and request limit before interpreting frame rates.

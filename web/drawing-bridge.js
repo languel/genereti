@@ -11,7 +11,7 @@ export class DrawingBridge {
    if(data.type==='error'){onError(data.message);return;}
    if(data.type==='ready'){this.initialized=true;if(this.pendingScene){this.send('load',{scene:this.pendingScene});this.pendingScene=null;}else this.send('refresh');return;}
    if(data.type==='frame'){
-    this.scene=data.scene;this.image=data.image;this.revision=data.revision;this.ready=true;
+    this.artboard=data.artboard;this.layer=data.layer;this.scene=data.scene;this.image=data.image;this.revision=data.revision;this.ready=true;
     onFrame(data);
    }
   });
@@ -19,9 +19,9 @@ export class DrawingBridge {
  send(type,values={}){(this.host?window:this.iframe.contentWindow)?.postMessage({channel:'genereti-drawing-v1',type,...values},location.origin);}
  activate(){
   if(!this.loading){this.loading=true;if(!this.host)this.iframe.src='/drawing.html';else this.send('refresh');}
-  else{if(this.ready)this.onFrame({image:this.image,scene:structuredClone(this.scene),revision:this.revision});this.send('fit');this.send('refresh');}
+  else{if(this.ready)this.onFrame({image:this.image,scene:structuredClone(this.scene),revision:this.revision,artboard:this.artboard,layer:this.layer});this.send('fit');this.send('refresh');}
  }
  load(scene){if(this.initialized)this.send('load',{scene});else this.pendingScene=scene;}
  setOutput(output){this.output=output;if(this.initialized)this.send('output',output);}
- getSnapshot(){return this.ready?{scene:this.scene,revision:this.revision,artboard:{x:0,y:0,width:512,height:512}}:null;}
+ getSnapshot(){return this.ready?{scene:this.scene,revision:this.revision,artboard:this.artboard||{x:0,y:0,width:512,height:512}}:null;}
 }

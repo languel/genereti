@@ -11,3 +11,57 @@ body.genereti-host[data-theme=dark]{background:#121212;--text:#e4e4ed;--muted:#a
 .excalidraw-hyperlinkContainer:has(a[href="https://genereti.local/live-source"]){display:none}
 @media(max-width:700px){.genereti-host .host-header #status{display:none}.genereti-host .excalidraw{--right-sidebar-width:320px}.genereti-host #toolbar{max-width:85vw}.genereti-host .host-topbar{gap:3px}}
 .genereti-host .host-panel textarea{white-space:pre-wrap;overflow-wrap:anywhere;box-sizing:border-box;width:100%;resize:vertical}.genereti-host .host-header a{display:inline;color:var(--color-primary);font-size:18px;text-decoration:none}.genereti-host #hostNotice{color:#d85c55;font-weight:bold;cursor:help}.genereti-host .host-topbar button{white-space:nowrap;line-height:1.2;font-size:12px}.genereti-host .host-header #run{padding:8px 12px}.excalidraw-hyperlinkContainer:has(a[href="https://genereti.local/live-guide"]){display:none}
+/* Match the native tool strip: icon controls with labels only on hover/focus. */
+.genereti-host .host-topbar{gap:4px}.genereti-host .host-header .header-actions{gap:4px}
+.genereti-host .host-topbar button,.genereti-host .host-header a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;padding:0!important;border:0;border-radius:5px;background:var(--island-bg-color,var(--panel));color:var(--text);box-sizing:border-box}
+.genereti-host .host-topbar button:hover:not(:disabled),.genereti-host .host-header a:hover{background:var(--button-hover-bg,var(--edge))}
+.genereti-host .host-header #run{color:var(--color-primary,var(--accent));background:var(--color-primary-light,var(--panel))}.genereti-host .host-header #run.live{background:var(--color-primary,var(--accent));color:var(--color-on-primary,#fff)}
+.genereti-host .host-topbar svg{display:block;width:20px;height:20px;flex-shrink:0}
+.genereti-host .host-header #status{display:inline-flex;align-items:center;justify-content:center;margin:0;width:18px;height:34px;overflow:visible}
+.genereti-host .host-header #status::before{content:'';display:block;width:6px;height:6px;margin:0;border-radius:50%;background:var(--muted)}
+.genereti-host .host-header #status.ready::before{background:var(--color-primary,var(--accent))}
+.genereti-host #hostNotice{display:inline-flex;align-items:center;justify-content:center;width:24px;height:34px}
+.genereti-host #hostNotice[hidden]{display:none}
+/* Low-chroma theme tokens apply to native Excalidraw and Genereti together. */
+body.genereti-host{color-scheme:light;--gen-primary:#626775;--gen-primary-hover:#4c5260;--gen-container:#e8e9ee;--gen-on-container:#333842;--gen-surface:#f2f3f5;--gen-border:#d5d7dd;--gen-island:#fff;--text:#25272d;--muted:#737782;--panel:#fff;--edge:var(--gen-border);--accent:var(--gen-primary)}
+body.genereti-host[data-theme=dark]{color-scheme:dark;--gen-primary:#adb1bd;--gen-primary-hover:#c4c7d0;--gen-container:#41444d;--gen-on-container:#e4e6eb;--gen-surface:#2e3037;--gen-border:#454851;--gen-island:#232329;--text:#e3e3e8;--muted:#a2a5ae;--panel:var(--gen-island);--edge:var(--gen-border);--accent:var(--gen-primary)}
+.genereti-host .excalidraw,.genereti-host .excalidraw.theme--dark{--color-primary:var(--gen-primary);--color-primary-darker:var(--gen-primary-hover);--color-primary-darkest:var(--gen-on-container);--color-primary-hover:var(--gen-primary-hover);--color-primary-light:var(--gen-container);--color-primary-light-darker:var(--gen-border);--color-surface-primary-container:var(--gen-container);--color-on-primary-container:var(--gen-on-container);--color-surface-high:var(--gen-surface);--color-surface-low:var(--gen-surface);--color-surface-mid:var(--gen-surface);--color-border-outline-variant:var(--gen-border);--focus-highlight-color:var(--gen-primary);--island-bg-color:var(--gen-island)}
+.genereti-host .host-panel button,.genereti-host .host-panel input,.genereti-host .host-panel select,.genereti-host .host-panel textarea{background:var(--input-bg-color);border-color:var(--input-border-color);color:var(--color-on-surface)}
+.genereti-host .host-panel button:hover:not(:disabled){background:var(--button-hover-bg)}
+.genereti-host .host-panel input[type=range]{accent-color:var(--color-primary)}
+.genereti-host .host-panel input[type=range]::-webkit-slider-thumb{background:var(--color-primary)}
+.genereti-host .host-panel input[type=range]::-moz-range-thumb{background:var(--color-primary)}
+.genereti-host .host-panel a{color:var(--color-primary)}
+.genereti-host .host-tools{display:flex;align-items:center;gap:3px;padding:4px;border-radius:var(--border-radius-lg,8px);background:var(--island-bg-color);box-shadow:var(--shadow-island);max-width:calc(100vw - 280px);flex-wrap:wrap}
+.genereti-host .host-tools #toolbar{padding:0;min-height:0;border:0;background:transparent;gap:3px;flex-wrap:nowrap}
+.genereti-host .host-tools button,.genereti-host .host-tools .host-header a,.genereti-host .host-live-toggle{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;padding:0!important;flex-shrink:0;border:0;border-radius:var(--border-radius-md,5px);background:transparent;color:var(--color-on-surface);cursor:pointer}
+.genereti-host .host-tools button:hover:not(:disabled),.genereti-host .host-tools .host-header a:hover,.genereti-host .host-live-toggle:hover{background:var(--button-hover-bg)}
+.genereti-host .host-tools svg{display:block;width:18px;height:18px;flex-shrink:0}
+.genereti-host .host-tools .header-actions{gap:3px}.genereti-host .host-tools #status{height:32px}.genereti-host .host-tools #help{width:32px;height:32px;border-radius:var(--border-radius-md,5px)}
+.genereti-host .host-live-toggle{position:relative;margin:0}.genereti-host .host-live-toggle input{position:absolute;width:1px;height:1px;opacity:0}
+.genereti-host .host-live-toggle:has(input:checked){background:var(--color-surface-primary-container);color:var(--color-on-primary-container)}
+.genereti-host .host-live-toggle:has(input:focus-visible){outline:2px solid var(--focus-highlight-color);outline-offset:2px}
+.genereti-host .host-tools #run{background:var(--color-surface-primary-container);color:var(--color-on-primary-container)}.genereti-host .host-tools #run.live{background:var(--color-primary);color:var(--island-bg-color)}
+.genereti-host #helpDialog{background:var(--panel);color:var(--text);border-color:var(--edge)}
+@media(max-width:700px){.genereti-host .host-tools{max-width:calc(100vw - 70px)}.genereti-host .host-tools #toolbar{max-width:none}}
+.genereti-host .host-tools svg{width:16px;height:16px}
+.genereti-host .host-output-view{border-top:1px solid var(--edge);margin-top:8px}.genereti-host .host-output-view label{display:flex;align-items:center;gap:7px;margin:10px 0;font-size:12px}
+/* The opaque native drawing canvas blends over the locked live underlay.
+   White paper is neutral in light mode; inverted black paper is neutral in dark.
+   Guide rasterization stays independent of this display-only compositing. */
+.genereti-host.host-overlay .excalidraw canvas.static{z-index:3;mix-blend-mode:multiply}
+.genereti-host.host-overlay[data-theme=dark] .excalidraw canvas.static{mix-blend-mode:screen}
+.genereti-host.host-overlay .excalidraw canvas.interactive{z-index:3}
+.genereti-host.host-overlay .excalidraw__embeddable-container{pointer-events:none!important}
+.genereti-host .host-tools #overlayOutputButton[aria-pressed=true]{background:var(--color-surface-primary-container);color:var(--color-on-primary-container)}
+.genereti-host.host-frame-input .excalidraw canvas.static{z-index:3;mix-blend-mode:multiply}
+.genereti-host.host-frame-input[data-theme=dark] .excalidraw canvas.static{mix-blend-mode:screen}
+.genereti-host.host-frame-input .excalidraw canvas.interactive{z-index:3}
+.genereti-host.host-overlay[data-input-order=below] .excalidraw canvas.static{z-index:1;mix-blend-mode:normal}
+.genereti-host.host-overlay[data-input-order=below] .excalidraw canvas.interactive{opacity:0}
+.genereti-host .host-output-view select{width:100%;margin:5px 0}
+.genereti-host .performance-panel{border-top:1px solid var(--edge);margin-top:8px;font-size:11px}
+.genereti-host .performance-panel table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;margin:8px 0}
+.genereti-host .performance-panel th,.genereti-host .performance-panel td{text-align:right;padding:3px}
+.genereti-host .performance-panel th:first-child,.genereti-host .performance-panel td:first-child{text-align:left}
+.genereti-host .performance-overview{margin-top:8px;color:var(--muted)}

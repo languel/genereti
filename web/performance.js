@@ -1,0 +1,14 @@
+// Shared by the engine and bundled editor; bounded samples, no frame media retained.
+const state=window.__generetiPerformance??={samples:{},counts:{},started:performance.now(),longMs:0,longCount:0};
+export function timing(name,ms){if(!Number.isFinite(ms))return;const values=state.samples[name]??=[];values.push(ms);if(values.length>120)values.shift();}
+export function count(name){state.counts[name]=(state.counts[name]||0)+1;}
+export function snapshot(){const elapsed=(performance.now()-state.started)/1000;return {elapsed,counts:{...state.counts},rates:Object.fromEntries(Object.entries(state.counts).map(([k,v])=>[k,v/Math.max(elapsed,.001)])),timings:Object.fromEntries(Object.entries(state.samples).map(([k,a])=>{const sorted=[...a].sort((x,y)=>x-y);return [k,{last:a.at(-1),mean:a.reduce((x,y)=>x+y,0)/a.length,p95:sorted[Math.floor((sorted.length-1)*.95)],samples:a.length}]})),longTasks:{count:state.longCount,ms:state.longMs}};}
+export function reset(){state.samples={};state.counts={};state.started=performance.now();state.longMs=state.longCount=0;}
+export function installMonitor(parent){
+ const details=document.createElement('details');details.className='performance-panel';details.innerHTML='<summary>Performance</summary><div class="performance-overview"></div><table><thead><tr><th>Stage</th><th>Mean ms</th><th>P95 ms</th></tr></thead><tbody></tbody></table><button type="button">Reset samples</button>';
+ parent.append(details);details.querySelector('button').onclick=reset;
+ const labels={roundtrip:'End to end',server:'Server total',inference:'Model inference',postprocess:'Post-processing',preprocess:'Guide preparation',unet:'UNet',control:'ControlNet',upscalerLoad:'Upscaler loading',inputEncode:'Input encoding',composite:'Frame composite',display:'Result decode + display',raster:'Drawing export',cadence:'Browser frame interval'};
+ const draw=()=>{if(!details.open)return;const s=snapshot();details.querySelector('.performance-overview').textContent=`${(s.rates.generated||0).toFixed(1)} output/s · ${(s.rates.raster||0).toFixed(1)} drawing exports/s · ${s.longTasks.count} long tasks (${Math.round(s.longTasks.ms)} ms) · ${s.counts.serverBusy||0} busy retries · ${s.counts.errors||0} errors`;const rows=Object.entries(labels).filter(([key])=>s.timings[key]).map(([key,label])=>{const row=document.createElement('tr');for(const value of [label,s.timings[key].mean.toFixed(1),s.timings[key].p95.toFixed(1)]){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}return row;});details.querySelector('tbody').replaceChildren(...rows);};details.ontoggle=draw;setInterval(draw,500);
+ if(!state.observer&&typeof PerformanceObserver!=='undefined'&&PerformanceObserver.supportedEntryTypes?.includes('longtask')){state.observer=new PerformanceObserver(list=>{for(const entry of list.getEntries()){state.longCount++;state.longMs+=entry.duration;}});state.observer.observe({type:'longtask'});}
+ return details;
+}
