@@ -1,0 +1,6 @@
+html,body{margin:0;height:100%;overflow:hidden;font:12px -apple-system,BlinkMacSystemFont,sans-serif;background:#eceeee}#editor{position:absolute;inset:0 0 32px}#artboard{position:absolute;pointer-events:none;border:1px dashed #aeb7b3;box-sizing:border-box;z-index:1}#toolbar{position:absolute;bottom:0;height:32px;left:0;right:0;display:flex;align-items:center;gap:6px;padding:0 8px;background:#202326;color:#a4aaa8}#toolbar button{font:inherit;background:#282c2f;color:#eceeeb;border:1px solid #363a3e;border-radius:4px;padding:3px 6px;cursor:pointer}#status{margin-left:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.excalidraw .App-menu_top .buttonList{gap:2px}.excalidraw .App-menu_top{left:8px;right:8px}.excalidraw .layer-ui__wrapper .zen-mode-transition.App-menu_bottom{bottom:4px}
+
+#toolbar{height:auto;min-height:32px;flex-wrap:wrap;box-sizing:border-box}#toolbar label{display:flex;align-items:center;gap:3px;white-space:nowrap}#toolbar input{margin:0;accent-color:#c8df96}#status{max-width:240px}
+
+/* The live canvas element is internal output, not a user-editable web link. */
+.excalidraw-hyperlinkContainer:has(a[href="https://genereti.local/live-output"]){display:none}

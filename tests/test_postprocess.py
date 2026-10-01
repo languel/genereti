@@ -11,6 +11,42 @@ class PostprocessingTests(unittest.TestCase):
         self.red = Image.new('RGB', (8, 8), (255, 0, 0))
         self.blue = Image.new('RGB', (8, 8), (0, 0, 255))
 
+    def test_neutral_input_does_not_desaturate_generated_color(self):
+        from postprocess import follow_input_colors
+        source=Image.new('RGB',(32,32),'white')
+        source.paste((0,0,0),(0,0,5,32))
+        original=Image.new('RGB',(32,32),(60,120,210))
+        result=follow_input_colors(original,source,1,16)
+        np.testing.assert_array_equal(np.asarray(result),np.asarray(original))
+
+    def test_value_guide_changes_broad_values_and_keeps_texture(self):
+        from postprocess import follow_input_values
+        import cv2
+        checker=np.indices((32,32)).sum(axis=0)%2
+        generated=Image.fromarray((120+checker*12).astype(np.uint8)).convert('RGB')
+        source=Image.new('RGB',(32,32),(80,80,80));source.paste((180,180,180),(16,0,32,32))
+        result=follow_input_values(generated,source,.8,16)
+        values=cv2.cvtColor(np.asarray(result),cv2.COLOR_RGB2LAB)[...,0].astype(float)
+        self.assertGreater(values[:,24:].mean()-values[:,:8].mean(),50)
+        self.assertGreater(abs(values[16,3]-values[16,4]),5)
+
+    def test_source_colors_follow_positions_and_retain_generated_shading(self):
+        import cv2
+        source=np.zeros((32,32,3),dtype=np.uint8)
+        source[:,:16]=(90,130,180);source[:,16:]=(190,155,80)
+        ramp=np.tile(np.linspace(100,175,32,dtype=np.uint8)[:,None],(1,32))
+        generated=Image.fromarray(ramp).convert('RGB')
+        output=apply_postprocessing(generated,color_source=Image.fromarray(source),source_color_strength=1,source_color_spread=0)
+        pixels=np.asarray(output)
+        self.assertGreater(int(pixels[16,5,2]),int(pixels[16,5,0]))
+        self.assertGreater(int(pixels[16,26,0]),int(pixels[16,26,2]))
+        luminance=cv2.cvtColor(pixels,cv2.COLOR_RGB2LAB)[...,0].astype(float)
+        original=cv2.cvtColor(np.asarray(generated),cv2.COLOR_RGB2LAB)[...,0].astype(float)
+        self.assertLess(float(np.abs(luminance-original).mean()),3)
+        self.assertGreater(float(luminance[-1].mean()-luminance[0].mean()),50)
+        untouched=apply_postprocessing(generated,color_source=Image.fromarray(source),source_color_strength=0)
+        np.testing.assert_array_equal(np.asarray(untouched),np.asarray(generated))
+
     def test_composite_mix_endpoints_select_each_branch(self):
         self.assertEqual(composite_layers(self.red, self.blue, mix=0).getpixel((0, 0)), (255, 0, 0))
         self.assertEqual(composite_layers(self.red, self.blue, mix=1).getpixel((0, 0)), (0, 0, 255))

@@ -1,7 +1,30 @@
+import {DrawingBridge} from './drawing-bridge.js';
 const $ = id => document.getElementById(id);
 const input = $('input'), output = $('output');
 const ctx = input.getContext('2d'), out = output.getContext('2d');
 const video = $('video');
+let drawingExpanded=false,drawingInputSnapshot=null;
+const drawingEditor=new DrawingBridge({iframe:$('drawingEditor'),onFrame:async frame=>{
+ if($('source').value!=='editor')return;
+ try{const image=new Image();image.src=frame.image;await image.decode();
+  if($('source').value==='editor'&&frame.revision===drawingEditor.revision){ctx.clearRect(0,0,512,512);ctx.drawImage(image,0,0,512,512);drawingInputSnapshot={scene:frame.scene,revision:frame.revision,artboard:{x:0,y:0,width:512,height:512}};recoverFrame();}}
+ catch(error){message('Drawing preview failed: '+error.message,true);}
+},onOutputMode:enabled=>document.body.classList.toggle('drawing-canvas-output',enabled),onError:error=>message('Drawing editor: '+error,true)});
+function expandDrawing(value){
+ drawingExpanded=value;document.body.classList.toggle('drawing-expanded',value);
+ $('drawingBackdrop').hidden=$('drawingExpandedHeader').hidden=!value;
+ // Resizing the existing iframe retains its document and editable scene.
+ requestAnimationFrame(()=>drawingEditor.send('fit'));
+}
+$('expandDrawing').onclick=()=>expandDrawing(true);
+$('closeDrawing').onclick=()=>expandDrawing(false);
+window.addEventListener('keydown',event=>{
+ if($('source').value!=='editor'||$('helpDialog').open||document.activeElement?.matches('input,textarea,select,[contenteditable="true"]'))return;
+ if((!event.ctrlKey&&!event.metaKey&&!event.altKey&&!event.shiftKey&&['s','g'].includes(event.key.toLowerCase()))||(event.code==='KeyD'&&event.altKey&&event.shiftKey)){
+  event.preventDefault();drawingEditor.send('shortcut',{event:{key:event.key,code:event.code,altKey:event.altKey,shiftKey:event.shiftKey,ctrlKey:event.ctrlKey,metaKey:event.metaKey}});
+ }
+});
+
 const capture = document.createElement('canvas'); capture.width=capture.height=512;
 const capctx=capture.getContext('2d');
 let ready=false, running=false, busy=false, socket, retryTimer, sentAt=0, frameId=0;
@@ -50,7 +73,7 @@ function connection(){
    if(result.guide){const gi=new Image();gi.src=result.guide;await gi.decode();$('guide').getContext('2d').drawImage(gi,0,0,512,512);}
    const img=new Image(); img.src=result.image; await img.decode();
    if(output.width!==img.naturalWidth) output.width=output.height=img.naturalWidth;
-   out.drawImage(img,0,0);lastFrame=result.frame;lastStats=result;
+   out.drawImage(img,0,0);drawingEditor.setOutput({image:result.image,model:result.model,frame:result.frame});lastFrame=result.frame;lastStats=result;
    if(pendingGeneration){lastGeneration={...pendingGeneration,completedAt:new Date().toISOString()};pendingGeneration=null;}
    $('empty').hidden=true;
    for(const id of ['save','copyImage','saveScene','copyScene','record'])$(id).disabled=false;
@@ -93,6 +116,7 @@ function updateMode(){
  if(availableModels.size){$('style').querySelector('[value=anime]').disabled=!animeAvailable;if(!animeAvailable)$('style').value='base';}
  if(['text','image'].includes(mode)){showingGuide=false;$('guide').hidden=true;$('guideToggle').textContent='View guide';}
  $('guideToggle').disabled=['text','image'].includes(mode);
+ $('drawingHost').hidden=$('source').value!=='editor'||showingGuide;
  $('controlWrap').hidden=!['sketch','canny','depth','pose','composite','sdxs_mixer'].includes(mode);
  const guideNames={sketch:'Sketch influence',canny:'Canny influence',depth:'Depth influence',pose:'Pose influence',composite:'Sketch influence',sdxs_mixer:'Overall guide influence'};
  $('controlLabel').textContent=guideNames[mode]||'Guide influence';
@@ -167,13 +191,19 @@ function updateReferenceControls(){
 function clear(){ctx.fillStyle='white';ctx.fillRect(0,0,512,512);}
 function sourceChanged(){
  releaseMedia();clear();notice('');
+ if(drawingExpanded)expandDrawing(false);
+ drawingInputSnapshot=null;
  const source=$('source').value;
+ $('drawingHost').hidden=source!=='editor'||showingGuide;
+ $('input').style.visibility=source==='editor'?'hidden':'';
+ $('expandDrawing').hidden=source!=='editor';
+ if(source==='editor')drawingEditor.activate();
  $('clear').hidden=$('brushLabel').hidden=source!=='draw';
  $('connectCamera').hidden=$('camera').hidden=source!=='camera';
  $('captureScreen').hidden=source!=='screen';$('chooseFile').hidden=source!=='file';
- if($('mode').value!=='sdxs_mixer'||source==='text')$('mode').value=['demo','draw'].includes(source)?'sketch':source==='text'?'text':'image';
+ if($('mode').value!=='sdxs_mixer'||source==='text')$('mode').value=['demo','draw','editor'].includes(source)?'sketch':source==='text'?'text':'image';
  updateMode();
- const labels={demo:'Animated sketch · no camera needed',draw:'Draw black lines on white · right click to erase',camera:'Camera stays on this Mac',screen:'Share a window to transform it',file:'Local image or looping video',text:'Text + fixed seed · no image input'};
+ const labels={demo:'Animated sketch · no camera needed',draw:'Draw black lines on white · right click to erase',editor:'Editable shapes · fixed artboard · drag, rotate, recolor',camera:'Camera stays on this Mac',screen:'Share a window to transform it',file:'Local image or looping video',text:'Text + fixed seed · no image input'};
  $('inputLabel').textContent=labels[source];
  if(source==='camera')notice('Enable camera, then choose SketchCam or another device.');
  if(source==='screen')notice('Choose a window or screen to transform.');
@@ -272,7 +302,7 @@ function frame(now){
  }
  if(running&&ready&&!busy&&!frameBlocked&&socket?.readyState===WebSocket.OPEN&&now-lastSent>1000/parameterValue('maxfps')){
   const source=$('source').value,mode=$('mode').value;
-  const hasInput=mode==='text'||['demo','draw'].includes(source)||uploadedImage||video.readyState>=2;
+  const hasInput=mode==='text'||['demo','draw'].includes(source)||(source==='editor'&&drawingInputSnapshot)||uploadedImage||video.readyState>=2;
   if(hasInput && !(source==='camera'&&$('pose').checked&&!poseLandmarks.length)){
    busy=true;sentAt=lastSent=now;
    // Orbit the two seed noises in every pipeline, including the SDXS mixer.
@@ -286,6 +316,7 @@ function frame(now){
     sdxs_sketch_weight:parameterValue('sdxsSketch'),sdxs_canny_weight:parameterValue('sdxsCanny'),
     sdxs_depth_weight:parameterValue('sdxsDepth'),sdxs_pose_weight:parameterValue('sdxsPose'),
     sdxs_sketch_kind:$('sdxsSketchKind').value,canny_low:Number($('cannyLow').value),canny_high:Number($('cannyHigh').value),guide_line_width:Number($('guideLineWidth').value),pose_image:mode==='sdxs_mixer'?mixerPoseDataUrl:null,
+    source_value_strength:parameterValue('sourceValue'),source_color_strength:parameterValue('sourceColor'),source_color_spread:parameterValue('colorSpread'),
     feedback:parameterValue('feedback'),noise_phase:phase,palette_strength:parameterValue('paletteStrength'),
     black_point:Math.round(parameterValue('blackPoint')),white_point:Math.round(parameterValue('whitePoint')),gamma:parameterValue('gamma'),
     brightness:parameterValue('brightness'),contrast:parameterValue('contrast'),saturation:parameterValue('saturation'),
@@ -294,7 +325,7 @@ function frame(now){
     upscale:Number($('upscale').value),upscale_filter:$('upscaleFilter').value,
     image:capturedInput,control_image:shapeGuideDataUrl,reference_image:referenceDataUrl};
    const {image:ignoredImage,control_image:ignoredControlImage,reference_image:ignoredReference,pose_image:ignoredPose,...requestMetadata}=request;
-   pendingGeneration={startedAt:new Date().toISOString(),settings:{...readSettings(),referenceIncluded:Boolean(referenceDataUrl),referenceName,shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName},request:requestMetadata,inputDataUrl:capturedInput,mixerPoseDataUrl,mixerPoseName,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName};
+   pendingGeneration={startedAt:new Date().toISOString(),settings:{...readSettings(),referenceIncluded:Boolean(referenceDataUrl),referenceName,shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName},request:requestMetadata,inputDataUrl:capturedInput,drawing:source==='editor'?drawingInputSnapshot:null,mixerPoseDataUrl,mixerPoseName,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName};
    socket.send(JSON.stringify(request));
    timeout=setTimeout(()=>{message('Generation timed out; reconnecting.',true);socket.close();},120000);
   }
@@ -311,7 +342,7 @@ $('clearMixerPose').onclick=()=>{mixerPoseDataUrl=null;mixerPoseName='';$('mixer
 $('source').onchange=sourceChanged;
 $('mode').onchange=updateMode;
 $('clear').onclick=clear;
-$('guideToggle').onclick=()=>{showingGuide=!showingGuide;$('guide').hidden=!showingGuide;$('guideToggle').textContent=showingGuide?'View input':'View guide';};
+$('guideToggle').onclick=()=>{showingGuide=!showingGuide;$('guide').hidden=!showingGuide;$('guideToggle').textContent=showingGuide?'View input':'View guide';$('drawingHost').hidden=$('source').value!=='editor'||showingGuide;};
 $('random').onclick=()=>{$('seed').value=Math.floor(Math.random()*2**31);phase=0;};
 $('connectCamera').onclick=cameraStart;$('camera').onchange=cameraStart;$('captureScreen').onclick=screenStart;
 $('chooseFile').onclick=()=>$('file').click();
@@ -358,7 +389,7 @@ $('shapeGuideFile').onchange=async()=>{
  }catch(error){message('Canny guide image could not be loaded: '+error.message,true);}
 };
 $('pose').onchange=()=>{if($('pose').checked){startPose();if($('mode').value!=='pose')$('mode').value='sketch';}else{$('mode').value='image';}updateMode();};
-const parameterLimits={sdxsSketch:[0,4],sdxsCanny:[0,4],sdxsDepth:[0,4],sdxsPose:[0,4],control:[0,65504],cannyControl:[0,65504],compositeMix:[0,1],strength:[.05,1],motion:[0,100],mix:[0,1],feedback:[0,1],maxfps:[1,120],paletteStrength:[0,1],blackPoint:[0,254],whitePoint:[1,255],gamma:[.1,5],brightness:[0,4],contrast:[0,4],saturation:[0,4],sharpen:[0,4],emboss:[0,1],upscaleFeedback:[0,1]};
+const parameterLimits={sourceValue:[0,1],sourceColor:[0,1],colorSpread:[0,128],sdxsSketch:[0,4],sdxsCanny:[0,4],sdxsDepth:[0,4],sdxsPose:[0,4],control:[0,65504],cannyControl:[0,65504],compositeMix:[0,1],strength:[.05,1],motion:[0,100],mix:[0,1],feedback:[0,1],maxfps:[1,120],paletteStrength:[0,1],blackPoint:[0,254],whitePoint:[1,255],gamma:[.1,5],brightness:[0,4],contrast:[0,4],saturation:[0,4],sharpen:[0,4],emboss:[0,1],upscaleFeedback:[0,1]};
 function parameterValue(id){
  const value=Number($(`${id}Value`).value);
  return Number.isFinite(value)?value:parameterLimits[id][0];
@@ -439,11 +470,12 @@ async function embedPNGMetadata(blob,metadata){
 }
 function metadataForLastGeneration(){
  if(!lastGeneration)throw new Error('Wait for a generated frame before exporting.');
- const {settings,request,inputDataUrl,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName,mixerPoseDataUrl,mixerPoseName,startedAt,completedAt}=lastGeneration;
+ const {settings,request,inputDataUrl,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName,mixerPoseDataUrl,mixerPoseName,drawing,startedAt,completedAt}=lastGeneration;
  const result=Object.fromEntries(Object.entries(lastStats||{}).filter(([key,value])=>key!=='image'&&key!=='guide'&&value!==undefined&&typeof value!=='function'));
  return {
   format:'genereti-scene-v1',app:'Genereti',createdAt:completedAt||startedAt,
-  source:{kind:settings.source,mode:request.mode,imageIncluded:Boolean(inputDataUrl),mimeType:inputDataUrl?.match(/^data:([^;]+)/)?.[1]||null,
+  drawing:drawing||null,
+  source:{editableDrawingIncluded:Boolean(drawing),kind:settings.source,mode:request.mode,imageIncluded:Boolean(inputDataUrl),mimeType:inputDataUrl?.match(/^data:([^;]+)/)?.[1]||null,
    referenceIncluded:Boolean(referenceDataUrl),referenceName:referenceName||null,
    shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName:shapeGuideName||null,poseGuideIncluded:Boolean(mixerPoseDataUrl),poseGuideName:mixerPoseName||null},
   settings,request,result,
@@ -504,8 +536,9 @@ $('saveScene').onclick=async()=>{try{
  const metadata=metadataForLastGeneration(),sourceDataUrl=lastGeneration?.inputDataUrl,shapeGuideDataUrl=lastGeneration?.shapeGuideDataUrl,referenceDataUrl=lastGeneration?.referenceDataUrl,guideDataUrl=lastStats?.guide,outcome=await outcomeWithMetadata(metadata),entries=[
   {name:'outcome.png',bytes:new Uint8Array(await outcome.arrayBuffer())},
   {name:'metadata.json',bytes:new TextEncoder().encode(JSON.stringify(metadata,null,2))},
-  {name:'README.txt',bytes:new TextEncoder().encode('Genereti scene export\n\nsource.jpg (or source.png) is the exact input image sent to the SDXS branch. shape-guide.jpg is an optional independent Canny structure guide. reference.jpg is an optional palette reference. outcome.png is the generated result and embeds metadata. pose-guide.png is included when an explicit mixer pose guide was loaded. guide.jpg (or guide.png) is included when the pipeline returned a preprocessed guide. metadata.json records the prompt, controls, post-processing, and result metrics. Text-only scenes omit the source image.\n')},
+  {name:'README.txt',bytes:new TextEncoder().encode('Genereti scene export\n\ndrawing.excalidraw is included for editable vector input and preserves element IDs, coordinates, rotation, colors and embedded files. Open it in the Shapes editor to continue editing. source.jpg (or source.png) is the exact input image sent to the SDXS branch. shape-guide.jpg is an optional independent Canny structure guide. reference.jpg is an optional palette reference. outcome.png is the generated result and embeds metadata. pose-guide.png is included when an explicit mixer pose guide was loaded. guide.jpg (or guide.png) is included when the pipeline returned a preprocessed guide. metadata.json records the prompt, controls, post-processing, and result metrics. Text-only scenes omit the source image.\n')},
  ];
+ if(lastGeneration.drawing)entries.push({name:'drawing.excalidraw',bytes:new TextEncoder().encode(JSON.stringify(lastGeneration.drawing.scene,null,2))});
  if(sourceDataUrl){const source=dataURLToBlob(sourceDataUrl),extension=source.type==='image/png'?'png':'jpg';entries.push({name:`source.${extension}`,bytes:new Uint8Array(await source.arrayBuffer())});}
  if(shapeGuideDataUrl){const shape=dataURLToBlob(shapeGuideDataUrl),extension=shape.type==='image/png'?'png':'jpg';entries.push({name:`shape-guide.${extension}`,bytes:new Uint8Array(await shape.arrayBuffer())});}
  if(referenceDataUrl){const reference=dataURLToBlob(referenceDataUrl),extension=reference.type==='image/png'?'png':'jpg';entries.push({name:`reference.${extension}`,bytes:new Uint8Array(await reference.arrayBuffer())});}
@@ -526,9 +559,9 @@ $('record').onclick=()=>{
 };
 window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)&&!$('helpDialog').open){e.preventDefault();if(ready)setRunning(!running);}});
 window.addEventListener('beforeunload',()=>{releaseMedia();poseWorker?.terminate();socket?.close();});
-window.genereti={get state(){return{ready,running,busy,frame:lastFrame,metrics:lastStats};},setPrompt(prompt){$('prompt').value=prompt;},pause(){setRunning(false);},start(){if(ready)setRunning(true);}};
+window.genereti={drawing:{getScene(){return drawingInputSnapshot?structuredClone(drawingInputSnapshot.scene):null;},loadScene(scene){if($('source').value!=='editor'){$('source').value='editor';sourceChanged();}drawingEditor.load(scene);},fit(){drawingEditor.send('fit');}},get state(){return{ready,running,busy,frame:lastFrame,metrics:lastStats};},setPrompt(prompt){$('prompt').value=prompt;},pause(){setRunning(false);},start(){if(ready)setRunning(true);}};
 const savedFields=['sdxsSketchKind','cannyLow','cannyHigh','guideLineWidth','prompt','promptB','source','mode','style','seed','rawGuide','invertSketch','invertCanny','invertDepth','invertPose','mirror','compositeMode','aiUpscaler','upscaleIterations','upscaleOutput','upscale','upscaleFilter'];
-const parameterFields=['sdxsSketch','sdxsCanny','sdxsDepth','sdxsPose','control','cannyControl','compositeMix','strength','motion','mix','feedback','maxfps','paletteStrength','blackPoint','whitePoint','gamma','brightness','contrast','saturation','sharpen','emboss','upscaleFeedback'];
+const parameterFields=['sourceValue','sourceColor','colorSpread','sdxsSketch','sdxsCanny','sdxsDepth','sdxsPose','control','cannyControl','compositeMix','strength','motion','mix','feedback','maxfps','paletteStrength','blackPoint','whitePoint','gamma','brightness','contrast','saturation','sharpen','emboss','upscaleFeedback'];
 function readSettings(){
  return Object.fromEntries([
   ...savedFields.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]),

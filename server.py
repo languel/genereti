@@ -52,6 +52,9 @@ class GenerateRequest(BaseModel):
     image: str | None = Field(default=None, max_length=2_800_000)
     control_image: str | None = Field(default=None, max_length=2_800_000)
     reference_image: str | None = Field(default=None, max_length=2_800_000)
+    source_value_strength: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
+    source_color_strength: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
+    source_color_spread: float = Field(default=8, ge=0, le=128, allow_inf_nan=False)
     palette_strength: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
     black_point: int = Field(default=0, ge=0, le=254)
     white_point: int = Field(default=255, ge=1, le=255)
@@ -133,6 +136,7 @@ class Runtime:
                 image=Image.open(io.BytesIO(raw)); image.load()
             except (ValueError,UnidentifiedImageError,OSError,Image.DecompressionBombError) as exc:
                 raise ValueError('Invalid or oversized input image.') from exc
+        color_source=image.copy() if image is not None else None
         control_image=None
         if data.control_image:
             payload=data.control_image.split(',',1)[-1]
@@ -200,6 +204,7 @@ class Runtime:
                 guide='data:image/jpeg;base64,'+base64.b64encode(g.getvalue()).decode()
         preprocess_ms=(time.perf_counter()-preprocess_start)*1000
         postprocess_values={
+            'source_value_strength':data.source_value_strength,'source_color_strength':data.source_color_strength,'source_color_spread':data.source_color_spread,
             'palette_strength':data.palette_strength,'black_point':data.black_point,
             'white_point':data.white_point,'gamma':data.gamma,'brightness':data.brightness,
             'contrast':data.contrast,'saturation':data.saturation,'sharpen':data.sharpen,
@@ -218,7 +223,7 @@ class Runtime:
             learned_upscale=self.upscalers[data.ai_upscaler].upscale
         args=data.model_dump(exclude={'image','control_image','reference_image','pose_image','sdxs_sketch_weight','sdxs_canny_weight','sdxs_depth_weight','sdxs_pose_weight','sdxs_sketch_kind','canny_low','canny_high','guide_line_width','id','preprocess','return_guide',
             'invert_sketch_guide','invert_canny_guide','invert_depth_guide','invert_pose_guide',
-            'palette_strength','black_point','white_point','gamma','brightness','contrast','saturation','sharpen','emboss',
+            'source_value_strength','source_color_strength','source_color_spread','palette_strength','black_point','white_point','gamma','brightness','contrast','saturation','sharpen','emboss',
             'ai_upscaler','upscale_iterations','upscale_feedback','upscale_output','upscale','upscale_filter'})
         if data.mode=='composite':args['control_image']=guide_image
         if sdxs_guides is not None:args['sdxs_guides']=sdxs_guides
@@ -229,7 +234,7 @@ class Runtime:
                 'denoiser_passes':1}
 
         postprocess_start=time.perf_counter()
-        output=apply_postprocessing(output,reference=reference,learned_upscale=learned_upscale,**{
+        output=apply_postprocessing(output,reference=reference,color_source=color_source,learned_upscale=learned_upscale,**{
             key:value for key,value in postprocess_values.items() if key!='ai_upscaler'})
         metrics['postprocess_ms']=round((time.perf_counter()-postprocess_start)*1000,2)
         metrics['upscaler_load_ms']=upscaler_load_ms
