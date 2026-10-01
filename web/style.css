@@ -88,3 +88,9 @@ summary{font-size:11px}
 @media(max-width:900px){.drawing-expanded #drawingHost{inset:60px 12px 16px}.drawing-expanded .output-surface{display:none}}
 
 .drawing-expanded.drawing-canvas-output #drawingHost{inset:60px 20px 20px}.drawing-expanded.drawing-canvas-output .output-surface{display:none}
+
+.prompt-submit-controls{display:flex;align-items:center;gap:10px;margin:6px 0 12px;font-size:12px;color:var(--muted)}
+.prompt-submit-controls label{display:flex;align-items:center;gap:6px;margin:0}
+.prompt-submit-controls button{display:inline-flex;align-items:center;justify-content:center;padding:5px}
+.prompt-submit-controls svg{width:16px;height:16px}
+.prompt-submit-controls button.pending{border-color:var(--accent)}

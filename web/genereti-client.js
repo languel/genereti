@@ -1,6 +1,13 @@
 /** Minimal one-frame-at-a-time client. Import from http://127.0.0.1:8765/genereti-client.js. */
 export class GeneretiClient {
   constructor(base='http://127.0.0.1:8765') { this.base=base.replace(/\/$/,''); this.busy=false; }
+  async request(path,{method='GET',body}={}) {
+    const response=await fetch(this.base+path,{method,headers:body!==undefined?{'Content-Type':'application/json'}:undefined,body:body!==undefined?JSON.stringify(body):undefined,signal:AbortSignal.timeout(120000)});
+    if(!response.ok){let detail;try{detail=(await response.json()).detail;}catch{detail=response.statusText;}const error=new Error(`Genereti ${response.status}: ${typeof detail==='string'?detail:JSON.stringify(detail)}`);error.status=response.status;throw error;}return response;
+  }
+  async status(){return (await this.request('/api/status')).json();}
+  async configureSize(size=512){return (await this.request('/api/config/size',{method:'POST',body:{size}})).json();}
+  async receive(){const response=await this.request('/api/frame.jpg');return {bitmap:await createImageBitmap(await response.blob()),frame:Number(response.headers.get('X-Frame'))};}
   async generate({canvas, image, ...options}={}) {
     if(this.busy) return null; // Drop inputs while a frame is in flight; never build a queue.
     this.busy=true;
@@ -10,9 +17,9 @@ export class GeneretiClient {
         body:JSON.stringify({...options,image:canvas?canvas.toDataURL('image/jpeg',.9):image}),
         signal:AbortSignal.timeout(120000),
       });
-      if(!response.ok) throw new Error(await response.text());
+      if(!response.ok){const error=new Error(await response.text());error.status=response.status;throw error;}
       const bitmap=await createImageBitmap(await response.blob());
-      return {bitmap, inferenceMs:Number(response.headers.get('X-Inference-Ms')),frame:Number(response.headers.get('X-Frame'))};
+      return {bitmap, inferenceMs:Number(response.headers.get('X-Inference-Ms')),serverMs:Number(response.headers.get('X-Server-Ms')),frame:Number(response.headers.get('X-Frame'))};
     } finally { this.busy=false; }
   }
 }
