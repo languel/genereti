@@ -1,0 +1,43 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "input.png"
+    }
+  },
+  "2": {
+    "class_type": "GeneretiSendFrame",
+    "inputs": {
+      "image": [
+        "1",
+        0
+      ],
+      "server_url": "http://127.0.0.1:8765",
+      "prompt": "ink wash 水墨画",
+      "mode": "sketch",
+      "resolution": "512",
+      "seed": 42,
+      "control_scale": 1.0,
+      "options_json": "{}"
+    }
+  },
+  "3": {
+    "class_type": "GeneretiReceiveFrame",
+    "inputs": {
+      "server_url": "http://127.0.0.1:8765",
+      "after_frame": [
+        "2",
+        0
+      ]
+    }
+  },
+  "4": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "3",
+        0
+      ]
+    }
+  }
+}

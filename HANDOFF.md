@@ -3,7 +3,7 @@
 ## Project and current checkout
 
 - Repository: `/Users/liuboto/dev/genereti`; remote: `https://github.com/languel/genereti.git`.
-- Current branch: `excalidraw-host`, created from main checkpoint `25173b9` (editable canvas, live output and input color/value controls). The sections below retain the renderer history; see the latest workspace milestone first.
+- Current branch: `main`. The Excalidraw host and external interfaces were developed on `excalidraw-host`, starting from checkpoint `25173b9` (editable canvas, live output and input color/value controls). The sections below retain the renderer history; see the latest workspace milestone first.
 - Genereti is a local real-time image-generation tool for teaching, performance, and creative coding. The complete generator targets macOS 14+ on Apple silicon and runs Core ML models locally. The ComfyUI source nodes documented in `docs/platform-support.md` are the PC-compatible portion.
 - The local web app is served at `http://127.0.0.1:8765/` when `./Start-Genereti.command` or `./run.sh` is running. The server binds to loopback; browser camera and screen capture remain user-started.
 
@@ -112,3 +112,7 @@ Performance sidebar details and window.genereti.performance snapshot/reset expos
 Prompt A/B edits remain drafts until Cmd+Enter, Ctrl+Enter or the apply icon. Live prompt is an opt-in toggle, remembered locally and off by default. Presets and window.genereti.setPrompt apply immediately. Generated metadata records applied text rather than drafts. Browser checks intercepted outgoing requests: typing retained the previous prompt, Cmd+Enter applied the draft, and Live prompt applied Prompt B edits. No real generation was needed for this check.
 
 The user's later 10 FPS report was traced to post-processing settings, not an additional confirmed Excalidraw regression. Use the Performance post-processing row and compare identical model size, upscaler/pass count and request limit before interpreting frame rates.
+
+### External app interface milestone
+
+Standalone /p5-lab.html sends editable input PNGs to SDXS sketch 512 and draws/filters returned output with independent overlay marks. Default prompt ink wash 水墨画. window.generetiP5 exposes canvas snapshots/load and commands. The server itself stores only current output; scene editing is frontend-local. MCP stdio shim scripts/run_mcp.sh uses an isolated SDK 1.x and exposes generation/status/resolution/receive/publish plus generation schema. Comfy V3 genereti_comfy_stream adds separate Send Frame/Receive Frame nodes and p5 workflow. Installed links/workflows in both Documents/ComfyUI and current ComfyUI-Installs/ComfyUI/ComfyUI roots. Actual V3 class execution returned matching nonzero frame IDs and 512 IMAGE tensor; GUI catalog requires restart. Real p5 output and MCP receive verified. Server changed to 512 during demo testing; no server source changes or model restart were required. docs/external-interfaces.md records limits and contracts.

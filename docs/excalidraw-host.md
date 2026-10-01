@@ -1,6 +1,6 @@
 # Genereti inside Excalidraw
 
-Branch `excalidraw-host` starts from main checkpoint `25173b9`. Launch with the existing `./run.sh` or Start-Genereti.command and open `http://localhost:8765/`. Models and downloads use the same Apple silicon setup as before. The editor and fonts remain bundled locally.
+The Excalidraw workspace is available on `main`; it was developed on `excalidraw-host` from checkpoint `25173b9`. Launch with the existing `./run.sh` or Start-Genereti.command and open `http://localhost:8765/`. Models and downloads use the same Apple silicon setup as before. The editor and fonts remain bundled locally.
 
 ## Try the workspace
 

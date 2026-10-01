@@ -6,9 +6,13 @@
 
 Start with the [student quickstart](docs/student-quickstart.md). It covers setup, model downloads, launch, and the first live workflow. The [platform guide](docs/platform-support.md) explains exactly what runs on Apple silicon and what can also be used on PC.
 
-## Excalidraw workspace branch
+## Other app interfaces
 
-On `excalidraw-host`, the local app opens directly into a full-screen Excalidraw workspace. **Genereti** opens the native dockable sidebar containing input sources, model controls, presets, post-processing and exports. Generated output renders on the drawing canvas. The classic interface remains at `/lab.html`. See [the workspace guide](docs/excalidraw-host.md). The icon toolbar supports drawing over generated output, with input above or below the result. Optional **Frame input** combines editable shapes/images with live media. The sidebar stays open while drawing and includes a **Performance** monitor. Prompt edits apply with **Cmd+Enter** (or Ctrl+Enter); enable **Live prompt** for updates as you type. Keyframe animation is not implemented yet.
+Open [the standalone p5 canvas lab](http://localhost:8765/p5-lab.html) for side-by-side drawing input and processed AI output, independent of Excalidraw. Defaults: SDXS sketch at 512px, `ink wash 水墨画`. Separate Comfy Send/Receive nodes and a headless MCP bridge use the same server. See [external interface setup and API contracts](docs/external-interfaces.md).
+
+## Excalidraw workspace
+
+The local app opens directly into a full-screen Excalidraw workspace. **Genereti** opens the native dockable sidebar containing input sources, model controls, presets, post-processing and exports. Generated output renders on the drawing canvas. The classic interface remains at `/lab.html`. See [the workspace guide](docs/excalidraw-host.md). The icon toolbar supports drawing over generated output, with input above or below the result. Optional **Frame input** combines editable shapes/images with live media. The sidebar stays open while drawing and includes a **Performance** monitor. Prompt edits apply with **Cmd+Enter** (or Ctrl+Enter); enable **Live prompt** for updates as you type. Keyframe animation is not implemented yet.
 
 ## What you can do
 

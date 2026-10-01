@@ -1,0 +1,394 @@
+{
+  "properties": {
+    "prompt": {
+      "default": "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
+      "maxLength": 2000,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "prompt_b": {
+      "default": "",
+      "maxLength": 2000,
+      "title": "Prompt B",
+      "type": "string"
+    },
+    "prompt_mix": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Prompt Mix",
+      "type": "number"
+    },
+    "mode": {
+      "default": "text",
+      "enum": [
+        "text",
+        "image",
+        "sketch",
+        "canny",
+        "depth",
+        "pose",
+        "composite",
+        "sdxs_mixer"
+      ],
+      "title": "Mode",
+      "type": "string"
+    },
+    "style": {
+      "default": "base",
+      "enum": [
+        "base",
+        "anime"
+      ],
+      "title": "Style",
+      "type": "string"
+    },
+    "seed": {
+      "default": 42,
+      "maximum": 4294967295,
+      "minimum": 0,
+      "title": "Seed",
+      "type": "integer"
+    },
+    "strength": {
+      "default": 0.65,
+      "maximum": 1,
+      "minimum": 0.05,
+      "title": "Strength",
+      "type": "number"
+    },
+    "control_scale": {
+      "default": 0.8,
+      "maximum": 65504,
+      "minimum": 0,
+      "title": "Control Scale",
+      "type": "number"
+    },
+    "canny_control_scale": {
+      "default": 0.44,
+      "maximum": 65504,
+      "minimum": 0,
+      "title": "Canny Control Scale",
+      "type": "number"
+    },
+    "composite_mix": {
+      "default": 0.5,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Composite Mix",
+      "type": "number"
+    },
+    "composite_mode": {
+      "default": "normal",
+      "enum": [
+        "normal",
+        "screen",
+        "multiply",
+        "difference"
+      ],
+      "title": "Composite Mode",
+      "type": "string"
+    },
+    "invert_sketch_guide": {
+      "default": false,
+      "title": "Invert Sketch Guide",
+      "type": "boolean"
+    },
+    "invert_canny_guide": {
+      "default": false,
+      "title": "Invert Canny Guide",
+      "type": "boolean"
+    },
+    "invert_depth_guide": {
+      "default": false,
+      "title": "Invert Depth Guide",
+      "type": "boolean"
+    },
+    "invert_pose_guide": {
+      "default": false,
+      "title": "Invert Pose Guide",
+      "type": "boolean"
+    },
+    "sdxs_sketch_weight": {
+      "default": 1,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Sdxs Sketch Weight",
+      "type": "number"
+    },
+    "sdxs_canny_weight": {
+      "default": 0.35,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Sdxs Canny Weight",
+      "type": "number"
+    },
+    "sdxs_depth_weight": {
+      "default": 0,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Sdxs Depth Weight",
+      "type": "number"
+    },
+    "sdxs_pose_weight": {
+      "default": 0,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Sdxs Pose Weight",
+      "type": "number"
+    },
+    "sdxs_sketch_kind": {
+      "default": "image",
+      "enum": [
+        "image",
+        "gray",
+        "edges"
+      ],
+      "title": "Sdxs Sketch Kind",
+      "type": "string"
+    },
+    "canny_low": {
+      "default": 50,
+      "maximum": 255,
+      "minimum": 0,
+      "title": "Canny Low",
+      "type": "integer"
+    },
+    "canny_high": {
+      "default": 150,
+      "maximum": 255,
+      "minimum": 0,
+      "title": "Canny High",
+      "type": "integer"
+    },
+    "guide_line_width": {
+      "default": 1,
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Guide Line Width",
+      "type": "integer"
+    },
+    "pose_image": {
+      "anyOf": [
+        {
+          "maxLength": 2800000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Pose Image"
+    },
+    "feedback": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Feedback",
+      "type": "number"
+    },
+    "noise_phase": {
+      "default": 0,
+      "maximum": 1000000.0,
+      "minimum": -1000000.0,
+      "title": "Noise Phase",
+      "type": "number"
+    },
+    "image": {
+      "anyOf": [
+        {
+          "maxLength": 2800000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Image"
+    },
+    "control_image": {
+      "anyOf": [
+        {
+          "maxLength": 2800000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Control Image"
+    },
+    "reference_image": {
+      "anyOf": [
+        {
+          "maxLength": 2800000,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reference Image"
+    },
+    "source_value_strength": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Source Value Strength",
+      "type": "number"
+    },
+    "source_color_strength": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Source Color Strength",
+      "type": "number"
+    },
+    "source_color_spread": {
+      "default": 8,
+      "maximum": 128,
+      "minimum": 0,
+      "title": "Source Color Spread",
+      "type": "number"
+    },
+    "palette_strength": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Palette Strength",
+      "type": "number"
+    },
+    "black_point": {
+      "default": 0,
+      "maximum": 254,
+      "minimum": 0,
+      "title": "Black Point",
+      "type": "integer"
+    },
+    "white_point": {
+      "default": 255,
+      "maximum": 255,
+      "minimum": 1,
+      "title": "White Point",
+      "type": "integer"
+    },
+    "gamma": {
+      "default": 1,
+      "maximum": 5,
+      "minimum": 0.1,
+      "title": "Gamma",
+      "type": "number"
+    },
+    "brightness": {
+      "default": 1,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Brightness",
+      "type": "number"
+    },
+    "contrast": {
+      "default": 1,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Contrast",
+      "type": "number"
+    },
+    "saturation": {
+      "default": 1,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Saturation",
+      "type": "number"
+    },
+    "sharpen": {
+      "default": 0.35,
+      "maximum": 4,
+      "minimum": 0,
+      "title": "Sharpen",
+      "type": "number"
+    },
+    "emboss": {
+      "default": 0,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Emboss",
+      "type": "number"
+    },
+    "ai_upscaler": {
+      "default": "off",
+      "enum": [
+        "off",
+        "animevideo",
+        "general"
+      ],
+      "title": "Ai Upscaler",
+      "type": "string"
+    },
+    "upscale_iterations": {
+      "default": 1,
+      "maximum": 4,
+      "minimum": 1,
+      "title": "Upscale Iterations",
+      "type": "integer"
+    },
+    "upscale_feedback": {
+      "default": 0.75,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Upscale Feedback",
+      "type": "number"
+    },
+    "upscale_output": {
+      "default": "4x",
+      "enum": [
+        "4x",
+        "2x",
+        "source"
+      ],
+      "title": "Upscale Output",
+      "type": "string"
+    },
+    "upscale": {
+      "default": 1,
+      "enum": [
+        1,
+        2,
+        4
+      ],
+      "title": "Upscale",
+      "type": "integer"
+    },
+    "upscale_filter": {
+      "default": "lanczos",
+      "enum": [
+        "nearest",
+        "bilinear",
+        "bicubic",
+        "lanczos"
+      ],
+      "title": "Upscale Filter",
+      "type": "string"
+    },
+    "preprocess": {
+      "default": true,
+      "title": "Preprocess",
+      "type": "boolean"
+    },
+    "return_guide": {
+      "default": false,
+      "title": "Return Guide",
+      "type": "boolean"
+    },
+    "id": {
+      "default": 0,
+      "title": "Id",
+      "type": "integer"
+    }
+  },
+  "title": "GenerateRequest",
+  "type": "object"
+}
