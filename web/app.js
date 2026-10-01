@@ -12,7 +12,8 @@ let pendingGeneration=null,lastGeneration=null;
 let poseWorker, poseReady=false, poseBusy=false, poseLandmarks=[], lastPose=0;
 let drawing=false, lastPoint, pointer={x:.5,y:.5};
 let availableModels=new Set(),availableUpscalers=new Set();
-let changingSize=false;
+let changingSize=false,frameBlocked=false;
+let mixerPoseDataUrl=null,mixerPoseName='';
 const presets={
  robot:'a friendly colorful toy robot, full body, rounded metal body, waving arms, beautiful studio lighting, 3d render',
  stage:'A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition',
@@ -24,7 +25,7 @@ const presets={
 function message(text,error=false){$('message').textContent=text;$('message').classList.toggle('error',error);}
 function notice(text){$('inputNotice').textContent=text;$('inputNotice').hidden=!text;}
 function setRunning(value){
- running=value; $('run').textContent=running?'Pause':'Start live';$('run').classList.toggle('live',running);
+ running=value;if(value)frameBlocked=false; $('run').textContent=running?'Pause':'Start live';$('run').classList.toggle('live',running);
  fpsTimes=[];
  if(!running) $('fps').textContent='—';
  if(running) message('Live · each result is a newly generated frame.');
@@ -41,7 +42,9 @@ function connection(){
    busy=false;
    pendingGeneration=null;
    if(result.status===429){message(result.error,true);lastSent=performance.now()+500;return;}
-   message(result.error,true);setRunning(false);message(result.error,true);return;
+   if(result.status===503){message(result.error+' · retrying shortly.',true);lastSent=performance.now()+2000;return;}
+   frameBlocked=true;$('fps').textContent='—';
+   message(result.error+' · Last image kept. Change a control to resume.',true);return;
   }
   try{
    if(result.guide){const gi=new Image();gi.src=result.guide;await gi.decode();$('guide').getContext('2d').drawImage(gi,0,0,512,512);}
@@ -86,21 +89,24 @@ function releaseMedia(){
 }
 function updateMode(){
  const mode=$('mode').value, source=$('source').value;
+ const animeAvailable=mode==='sdxs_mixer'?availableModels.has('anime_sdxs_residual_unet'):availableModels.has('anime_unet')&&availableModels.has('anime_controlled_unet');
+ if(availableModels.size){$('style').querySelector('[value=anime]').disabled=!animeAvailable;if(!animeAvailable)$('style').value='base';}
  if(['text','image'].includes(mode)){showingGuide=false;$('guide').hidden=true;$('guideToggle').textContent='View guide';}
  $('guideToggle').disabled=['text','image'].includes(mode);
- $('controlWrap').hidden=!['sketch','canny','depth','pose','composite'].includes(mode);
- const guideNames={sketch:'Sketch influence',canny:'Canny influence',depth:'Depth influence',pose:'Pose influence',composite:'Sketch influence'};
+ $('controlWrap').hidden=!['sketch','canny','depth','pose','composite','sdxs_mixer'].includes(mode);
+ const guideNames={sketch:'Sketch influence',canny:'Canny influence',depth:'Depth influence',pose:'Pose influence',composite:'Sketch influence',sdxs_mixer:'Overall guide influence'};
  $('controlLabel').textContent=guideNames[mode]||'Guide influence';
  $('controlValue').setAttribute('aria-label',`${guideNames[mode]||'Guide'} value`);
- $('styleWrap').hidden=!['text','sketch','composite'].includes(mode);
+ $('styleWrap').hidden=!['text','sketch','composite','sdxs_mixer'].includes(mode);
  $('cannyControlWrap').hidden=mode!=='composite';
  $('compositeMixWrap').hidden=mode!=='composite';
  $('compositeModeWrap').hidden=mode!=='composite';
- $('compositeGuideWrap').hidden=mode!=='composite';
- $('invertSketchWrap').hidden=!['sketch','composite'].includes(mode);
- $('invertCannyWrap').hidden=!['canny','composite'].includes(mode);
- $('invertDepthWrap').hidden=mode!=='depth';
- $('invertPoseWrap').hidden=mode!=='pose';
+ $('compositeGuideWrap').hidden=!['composite','sdxs_mixer'].includes(mode);
+ $('sdxsMixer').hidden=mode!=='sdxs_mixer';
+ $('invertSketchWrap').hidden=!['sketch','composite','sdxs_mixer'].includes(mode);
+ $('invertCannyWrap').hidden=!['canny','composite','sdxs_mixer'].includes(mode);
+ $('invertDepthWrap').hidden=!['depth','sdxs_mixer'].includes(mode);
+ $('invertPoseWrap').hidden=!['pose','sdxs_mixer'].includes(mode);
  $('strengthWrap').hidden=mode!=='image';
  $('motionWrap').hidden=false;
  $('rawGuideWrap').hidden=!['canny','depth'].includes(mode);
@@ -116,10 +122,11 @@ function updateAvailability(data){
  updateSizeOptions(data);
  $('mode').querySelector('[value=text]').disabled=!has('unet');
  $('mode').querySelector('[value=image]').disabled=!(has('turbo_unet')&&has('encoder'));
+ $('mode').querySelector('[value=sdxs_mixer]').disabled=!(has('sdxs_sketch_control')&&has('sdxs_residual_unet'));
  $('mode').querySelector('[value=sketch]').disabled=!has('controlled_unet');
  for(const name of ['canny','depth','pose'])$('mode').querySelector(`[value=${name}]`).disabled=!(has(`control_${name}`)&&has('turbo_residual_unet'));
  $('mode').querySelector('[value=composite]').disabled=!(has('controlled_unet')&&has('control_canny')&&has('turbo_residual_unet'));
- $('style').querySelector('[value=anime]').disabled=!(has('anime_unet')&&has('anime_controlled_unet'));
+ $('style').querySelector('[value=anime]').disabled=$('mode').value==='sdxs_mixer'?!has('anime_sdxs_residual_unet'):!(has('anime_unet')&&has('anime_controlled_unet'));
  for(const option of $('aiUpscaler').options)if(option.value!=='off')option.disabled=!availableUpscalers.has(option.value);
  if($('aiUpscaler').selectedOptions[0]?.disabled)$('aiUpscaler').value='off';
  if($('style').selectedOptions[0]?.disabled)$('style').value='base';
@@ -164,7 +171,7 @@ function sourceChanged(){
  $('clear').hidden=$('brushLabel').hidden=source!=='draw';
  $('connectCamera').hidden=$('camera').hidden=source!=='camera';
  $('captureScreen').hidden=source!=='screen';$('chooseFile').hidden=source!=='file';
- $('mode').value=['demo','draw'].includes(source)?'sketch':source==='text'?'text':'image';
+ if($('mode').value!=='sdxs_mixer'||source==='text')$('mode').value=['demo','draw'].includes(source)?'sketch':source==='text'?'text':'image';
  updateMode();
  const labels={demo:'Animated sketch · no camera needed',draw:'Draw black lines on white · right click to erase',camera:'Camera stays on this Mac',screen:'Share a window to transform it',file:'Local image or looping video',text:'Text + fixed seed · no image input'};
  $('inputLabel').textContent=labels[source];
@@ -263,19 +270,22 @@ function frame(now){
    }else ctx.drawImage(capture,0,0);
   }
  }
- if(running&&ready&&!busy&&socket?.readyState===WebSocket.OPEN&&now-lastSent>1000/parameterValue('maxfps')){
+ if(running&&ready&&!busy&&!frameBlocked&&socket?.readyState===WebSocket.OPEN&&now-lastSent>1000/parameterValue('maxfps')){
   const source=$('source').value,mode=$('mode').value;
   const hasInput=mode==='text'||['demo','draw'].includes(source)||uploadedImage||video.readyState>=2;
   if(hasInput && !(source==='camera'&&$('pose').checked&&!poseLandmarks.length)){
    busy=true;sentAt=lastSent=now;
-   // Keep sketches anchored; noise morph only in text and image modes.
+   // Orbit the two seed noises in every pipeline, including the SDXS mixer.
    phase+=motion*.035;
-   const capturedInput=mode==='text'?null:input.toDataURL('image/jpeg',.9);
+   const capturedInput=mode==='text'?null:input.toDataURL(mode==='sdxs_mixer'?'image/png':'image/jpeg',.9);
    const request={id:++frameId,style:$('style').value,preprocess:!$('rawGuide').checked,return_guide:true,prompt:$('prompt').value,prompt_b:$('promptB').value,prompt_mix:parameterValue('mix'),mode,
     seed:Number($('seed').value)||0,strength:parameterValue('strength'),control_scale:parameterValue('control'),
     canny_control_scale:parameterValue('cannyControl'),composite_mix:parameterValue('compositeMix'),composite_mode:$('compositeMode').value,
     invert_sketch_guide:$('invertSketch').checked,invert_canny_guide:$('invertCanny').checked,
     invert_depth_guide:$('invertDepth').checked,invert_pose_guide:$('invertPose').checked,
+    sdxs_sketch_weight:parameterValue('sdxsSketch'),sdxs_canny_weight:parameterValue('sdxsCanny'),
+    sdxs_depth_weight:parameterValue('sdxsDepth'),sdxs_pose_weight:parameterValue('sdxsPose'),
+    sdxs_sketch_kind:$('sdxsSketchKind').value,canny_low:Number($('cannyLow').value),canny_high:Number($('cannyHigh').value),guide_line_width:Number($('guideLineWidth').value),pose_image:mode==='sdxs_mixer'?mixerPoseDataUrl:null,
     feedback:parameterValue('feedback'),noise_phase:phase,palette_strength:parameterValue('paletteStrength'),
     black_point:Math.round(parameterValue('blackPoint')),white_point:Math.round(parameterValue('whitePoint')),gamma:parameterValue('gamma'),
     brightness:parameterValue('brightness'),contrast:parameterValue('contrast'),saturation:parameterValue('saturation'),
@@ -283,8 +293,8 @@ function frame(now){
     upscale_iterations:Number($('upscaleIterations').value),upscale_feedback:parameterValue('upscaleFeedback'),upscale_output:$('upscaleOutput').value,
     upscale:Number($('upscale').value),upscale_filter:$('upscaleFilter').value,
     image:capturedInput,control_image:shapeGuideDataUrl,reference_image:referenceDataUrl};
-   const {image:ignoredImage,control_image:ignoredControlImage,reference_image:ignoredReference,...requestMetadata}=request;
-   pendingGeneration={startedAt:new Date().toISOString(),settings:{...readSettings(),referenceIncluded:Boolean(referenceDataUrl),referenceName,shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName},request:requestMetadata,inputDataUrl:capturedInput,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName};
+   const {image:ignoredImage,control_image:ignoredControlImage,reference_image:ignoredReference,pose_image:ignoredPose,...requestMetadata}=request;
+   pendingGeneration={startedAt:new Date().toISOString(),settings:{...readSettings(),referenceIncluded:Boolean(referenceDataUrl),referenceName,shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName},request:requestMetadata,inputDataUrl:capturedInput,mixerPoseDataUrl,mixerPoseName,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName};
    socket.send(JSON.stringify(request));
    timeout=setTimeout(()=>{message('Generation timed out; reconnecting.',true);socket.close();},120000);
   }
@@ -292,6 +302,12 @@ function frame(now){
  requestAnimationFrame(frame);
 }
 $('run').onclick=()=>setRunning(!running);
+$('mixerPoseFile').onchange=async()=>{
+ const file=$('mixerPoseFile').files[0];if(!file)return;
+ try{const bitmap=await createImageBitmap(file);const canvas=document.createElement('canvas');canvas.width=canvas.height=512;canvas.getContext('2d').drawImage(bitmap,0,0,512,512);bitmap.close();mixerPoseDataUrl=canvas.toDataURL('image/png');mixerPoseName=file.name;$('mixerPoseName').textContent=file.name;}
+ catch(error){message('Could not load pose guide: '+error.message,true);}
+};
+$('clearMixerPose').onclick=()=>{mixerPoseDataUrl=null;mixerPoseName='';$('mixerPoseFile').value='';$('mixerPoseName').textContent='No pose guide loaded';};
 $('source').onchange=sourceChanged;
 $('mode').onchange=updateMode;
 $('clear').onclick=clear;
@@ -342,7 +358,7 @@ $('shapeGuideFile').onchange=async()=>{
  }catch(error){message('Canny guide image could not be loaded: '+error.message,true);}
 };
 $('pose').onchange=()=>{if($('pose').checked){startPose();if($('mode').value!=='pose')$('mode').value='sketch';}else{$('mode').value='image';}updateMode();};
-const parameterLimits={control:[0,65504],cannyControl:[0,65504],compositeMix:[0,1],strength:[.05,1],motion:[0,100],mix:[0,1],feedback:[0,1],maxfps:[1,120],paletteStrength:[0,1],blackPoint:[0,254],whitePoint:[1,255],gamma:[.1,5],brightness:[0,4],contrast:[0,4],saturation:[0,4],sharpen:[0,4],emboss:[0,1],upscaleFeedback:[0,1]};
+const parameterLimits={sdxsSketch:[0,4],sdxsCanny:[0,4],sdxsDepth:[0,4],sdxsPose:[0,4],control:[0,65504],cannyControl:[0,65504],compositeMix:[0,1],strength:[.05,1],motion:[0,100],mix:[0,1],feedback:[0,1],maxfps:[1,120],paletteStrength:[0,1],blackPoint:[0,254],whitePoint:[1,255],gamma:[.1,5],brightness:[0,4],contrast:[0,4],saturation:[0,4],sharpen:[0,4],emboss:[0,1],upscaleFeedback:[0,1]};
 function parameterValue(id){
  const value=Number($(`${id}Value`).value);
  return Number.isFinite(value)?value:parameterLimits[id][0];
@@ -377,7 +393,7 @@ $('aiUpscaler').onchange=updateUpscalerControls;
 updateUpscalerControls();
 $('upscale').onchange=()=>{};
 function point(e){const box=input.getBoundingClientRect();return[(e.clientX-box.left)*512/box.width,(e.clientY-box.top)*512/box.height];}
-input.onpointerdown=e=>{if($('source').value!=='draw')return;e.preventDefault();drawing=true;lastPoint=point(e);input.setPointerCapture(e.pointerId);};
+input.onpointerdown=e=>{if($('source').value!=='draw')return;recoverFrame();e.preventDefault();drawing=true;lastPoint=point(e);input.setPointerCapture(e.pointerId);};
 input.onpointermove=e=>{if(!drawing)return;const next=point(e);ctx.strokeStyle=e.buttons===2?'white':'#111';stroke([lastPoint,next],Number($('brush').value)*(e.buttons===2?3:1));lastPoint=next;};
 input.onpointerup=input.onpointercancel=()=>drawing=false;
 input.oncontextmenu=e=>e.preventDefault();
@@ -423,13 +439,13 @@ async function embedPNGMetadata(blob,metadata){
 }
 function metadataForLastGeneration(){
  if(!lastGeneration)throw new Error('Wait for a generated frame before exporting.');
- const {settings,request,inputDataUrl,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName,startedAt,completedAt}=lastGeneration;
+ const {settings,request,inputDataUrl,referenceDataUrl,referenceName,shapeGuideDataUrl,shapeGuideName,mixerPoseDataUrl,mixerPoseName,startedAt,completedAt}=lastGeneration;
  const result=Object.fromEntries(Object.entries(lastStats||{}).filter(([key,value])=>key!=='image'&&key!=='guide'&&value!==undefined&&typeof value!=='function'));
  return {
   format:'genereti-scene-v1',app:'Genereti',createdAt:completedAt||startedAt,
   source:{kind:settings.source,mode:request.mode,imageIncluded:Boolean(inputDataUrl),mimeType:inputDataUrl?.match(/^data:([^;]+)/)?.[1]||null,
    referenceIncluded:Boolean(referenceDataUrl),referenceName:referenceName||null,
-   shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName:shapeGuideName||null},
+   shapeGuideIncluded:Boolean(shapeGuideDataUrl),shapeGuideName:shapeGuideName||null,poseGuideIncluded:Boolean(mixerPoseDataUrl),poseGuideName:mixerPoseName||null},
   settings,request,result,
  };
 }
@@ -441,12 +457,12 @@ function wrapCanvasText(context,text,x,y,maxWidth,lineHeight,maxLines=3){
  for(const word of words){const next=line?`${line} ${word}`:word;if(context.measureText(next).width>maxWidth&&line){context.fillText(line,x,y);y+=lineHeight;line=word;if(++lines>=maxLines)return;}else line=next;}
  if(line&&lines<maxLines)context.fillText(line,x,y);
 }
-async function sceneBoard(metadata,sourceDataUrl,outcomeDataUrl,referenceDataUrl,shapeGuideDataUrl){
- const hasReference=Boolean(referenceDataUrl),hasShapeGuide=Boolean(shapeGuideDataUrl),columns=2+Number(hasReference)+Number(hasShapeGuide);
- const canvas=document.createElement('canvas');canvas.width=columns===2?1400:columns===3?1660:1695;canvas.height=columns===2?900:920;
- const context=canvas.getContext('2d'),top=105,side=columns===2?580:columns===3?460:380;
- const positions=columns===2?[70,750]:columns===3?[55,600,1145]:[35,450,865,1280];
- const panels=[{label:'SHAPE SOURCE',url:sourceDataUrl},{label:'CANNY SHAPE GUIDE',url:shapeGuideDataUrl},{label:'PALETTE REFERENCE',url:referenceDataUrl},{label:'GENERATED OUTCOME',url:outcomeDataUrl}]
+async function sceneBoard(metadata,sourceDataUrl,outcomeDataUrl,referenceDataUrl,shapeGuideDataUrl,poseDataUrl){
+ const hasReference=Boolean(referenceDataUrl),hasShapeGuide=Boolean(shapeGuideDataUrl),columns=2+Number(hasReference)+Number(hasShapeGuide)+Number(Boolean(poseDataUrl));
+ const canvas=document.createElement('canvas');canvas.width=columns===2?1400:columns*500;canvas.height=columns===2?900:920;
+ const context=canvas.getContext('2d'),top=105,side=columns===2?580:420;
+ const positions=columns===2?[70,750]:Array.from({length:columns},(_,i)=>40+i*500);
+ const panels=[{label:'SHAPE SOURCE',url:sourceDataUrl},{label:'CANNY SHAPE GUIDE',url:shapeGuideDataUrl},{label:'POSE GUIDE',url:poseDataUrl},{label:'PALETTE REFERENCE',url:referenceDataUrl},{label:'GENERATED OUTCOME',url:outcomeDataUrl}]
   .filter(panel=>panel.label==='SHAPE SOURCE'||panel.label==='GENERATED OUTCOME'||Boolean(panel.url));
  context.fillStyle='#17191b';context.fillRect(0,0,canvas.width,canvas.height);
  context.fillStyle='#eceeeb';context.font='600 30px Inter, -apple-system, sans-serif';context.fillText('Genereti · Live image scene',70,52);
@@ -457,7 +473,7 @@ async function sceneBoard(metadata,sourceDataUrl,outcomeDataUrl,referenceDataUrl
   if(panel.url){const image=await loadImage(panel.url);context.drawImage(image,x,top,side,side);}
   else{context.fillStyle='#a4aaa8';context.font='20px Inter, -apple-system, sans-serif';context.textAlign='center';context.fillText('Text prompt only',x+side/2,top+side/2);context.textAlign='left';}
  }
- const dividerY=columns===2?720:columns===3?620:520,left=positions[0],contentWidth=canvas.width-left-50;
+ const dividerY=columns===2?720:580,left=positions[0],contentWidth=canvas.width-left-50;
  context.strokeStyle='#363a3e';context.beginPath();context.moveTo(left,dividerY);context.lineTo(left+contentWidth,dividerY);context.stroke();
  context.fillStyle='#d1ec9c';context.font='600 14px Inter, -apple-system, sans-serif';context.fillText(`${metadata.result.model||'Local model'} · ${metadata.source.mode} · seed ${metadata.settings.seed}`,left,dividerY+32);
  context.fillStyle='#eceeeb';context.font='17px Inter, -apple-system, sans-serif';wrapCanvasText(context,metadata.settings.prompt,left,dividerY+64,contentWidth,24,3);
@@ -488,15 +504,16 @@ $('saveScene').onclick=async()=>{try{
  const metadata=metadataForLastGeneration(),sourceDataUrl=lastGeneration?.inputDataUrl,shapeGuideDataUrl=lastGeneration?.shapeGuideDataUrl,referenceDataUrl=lastGeneration?.referenceDataUrl,guideDataUrl=lastStats?.guide,outcome=await outcomeWithMetadata(metadata),entries=[
   {name:'outcome.png',bytes:new Uint8Array(await outcome.arrayBuffer())},
   {name:'metadata.json',bytes:new TextEncoder().encode(JSON.stringify(metadata,null,2))},
-  {name:'README.txt',bytes:new TextEncoder().encode('Genereti scene export\n\nsource.jpg (or source.png) is the exact input image sent to the SDXS branch. shape-guide.jpg is an optional independent Canny structure guide. reference.jpg is an optional palette reference. outcome.png is the generated result and embeds metadata. guide.jpg is included when the pipeline returned a preprocessed guide. metadata.json records the prompt, controls, post-processing, and result metrics. Text-only scenes omit the source image.\n')},
+  {name:'README.txt',bytes:new TextEncoder().encode('Genereti scene export\n\nsource.jpg (or source.png) is the exact input image sent to the SDXS branch. shape-guide.jpg is an optional independent Canny structure guide. reference.jpg is an optional palette reference. outcome.png is the generated result and embeds metadata. pose-guide.png is included when an explicit mixer pose guide was loaded. guide.jpg (or guide.png) is included when the pipeline returned a preprocessed guide. metadata.json records the prompt, controls, post-processing, and result metrics. Text-only scenes omit the source image.\n')},
  ];
  if(sourceDataUrl){const source=dataURLToBlob(sourceDataUrl),extension=source.type==='image/png'?'png':'jpg';entries.push({name:`source.${extension}`,bytes:new Uint8Array(await source.arrayBuffer())});}
  if(shapeGuideDataUrl){const shape=dataURLToBlob(shapeGuideDataUrl),extension=shape.type==='image/png'?'png':'jpg';entries.push({name:`shape-guide.${extension}`,bytes:new Uint8Array(await shape.arrayBuffer())});}
  if(referenceDataUrl){const reference=dataURLToBlob(referenceDataUrl),extension=reference.type==='image/png'?'png':'jpg';entries.push({name:`reference.${extension}`,bytes:new Uint8Array(await reference.arrayBuffer())});}
+ if(lastGeneration.mixerPoseDataUrl){const pose=dataURLToBlob(lastGeneration.mixerPoseDataUrl);entries.push({name:'pose-guide.png',bytes:new Uint8Array(await pose.arrayBuffer())});}
  if(guideDataUrl){const guide=dataURLToBlob(guideDataUrl),extension=guide.type==='image/png'?'png':'jpg';entries.push({name:`guide.${extension}`,bytes:new Uint8Array(await guide.arrayBuffer())});}
  const zip=zipStored(entries),stamp=safeStamp(metadata.createdAt);download(zip,`genereti-scene-${stamp}.zip`);message('Saved scene ZIP with source, outcome, and metadata.');
  }catch(error){message(error.message,true);}};
- $('copyScene').onclick=async()=>{try{const metadata=metadataForLastGeneration(),sourceDataUrl=lastGeneration?.inputDataUrl,referenceDataUrl=lastGeneration?.referenceDataUrl,shapeGuideDataUrl=lastGeneration?.shapeGuideDataUrl,outcomeDataUrl=output.toDataURL('image/png'),board=await embedPNGMetadata(await sceneBoard(metadata,sourceDataUrl,outcomeDataUrl,referenceDataUrl,shapeGuideDataUrl),metadata);await copyToClipboard(board,metadata);message('Copied the source + guides + outcome scene board with metadata.');}catch(error){message(error.message,true);}};
+ $('copyScene').onclick=async()=>{try{const metadata=metadataForLastGeneration(),sourceDataUrl=lastGeneration?.inputDataUrl,referenceDataUrl=lastGeneration?.referenceDataUrl,shapeGuideDataUrl=lastGeneration?.shapeGuideDataUrl,outcomeDataUrl=output.toDataURL('image/png'),board=await embedPNGMetadata(await sceneBoard(metadata,sourceDataUrl,outcomeDataUrl,referenceDataUrl,shapeGuideDataUrl,lastGeneration?.mixerPoseDataUrl),metadata);await copyToClipboard(board,metadata);message('Copied the source + guides + outcome scene board with metadata.');}catch(error){message(error.message,true);}};
 $('record').onclick=()=>{
  if(recording?.state==='recording'){recording.stop();$('record').textContent='Record';return;}
  if(!window.MediaRecorder){message('This browser does not support recording.',true);return;}
@@ -510,8 +527,8 @@ $('record').onclick=()=>{
 window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)&&!$('helpDialog').open){e.preventDefault();if(ready)setRunning(!running);}});
 window.addEventListener('beforeunload',()=>{releaseMedia();poseWorker?.terminate();socket?.close();});
 window.genereti={get state(){return{ready,running,busy,frame:lastFrame,metrics:lastStats};},setPrompt(prompt){$('prompt').value=prompt;},pause(){setRunning(false);},start(){if(ready)setRunning(true);}};
-const savedFields=['prompt','promptB','source','mode','style','seed','rawGuide','invertSketch','invertCanny','invertDepth','invertPose','mirror','compositeMode','aiUpscaler','upscaleIterations','upscaleOutput','upscale','upscaleFilter'];
-const parameterFields=['control','cannyControl','compositeMix','strength','motion','mix','feedback','maxfps','paletteStrength','blackPoint','whitePoint','gamma','brightness','contrast','saturation','sharpen','emboss','upscaleFeedback'];
+const savedFields=['sdxsSketchKind','cannyLow','cannyHigh','guideLineWidth','prompt','promptB','source','mode','style','seed','rawGuide','invertSketch','invertCanny','invertDepth','invertPose','mirror','compositeMode','aiUpscaler','upscaleIterations','upscaleOutput','upscale','upscaleFilter'];
+const parameterFields=['sdxsSketch','sdxsCanny','sdxsDepth','sdxsPose','control','cannyControl','compositeMix','strength','motion','mix','feedback','maxfps','paletteStrength','blackPoint','whitePoint','gamma','brightness','contrast','saturation','sharpen','emboss','upscaleFeedback'];
 function readSettings(){
  return Object.fromEntries([
   ...savedFields.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]),
@@ -597,5 +614,12 @@ try{
  const saved=JSON.parse(localStorage.getItem('genereti-controls')||'{}');
  restoreSettings(saved);
 }catch{clear();updateMode();}
+function recoverFrame(){
+ if(frameBlocked){frameBlocked=false;lastSent=0;if(running)message('Controls updated · resuming live generation.');}
+}
+document.addEventListener('input',recoverFrame);
+document.addEventListener('change',recoverFrame);
+$('clearMixerPose').addEventListener('click',recoverFrame);
+$('random').addEventListener('click',recoverFrame);
 document.addEventListener('change',()=>{try{localStorage.setItem('genereti-controls',JSON.stringify(readSettings()));}catch{}});
 connection();pollStatus();setInterval(pollStatus,3000);requestAnimationFrame(frame);

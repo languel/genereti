@@ -92,7 +92,7 @@ class Engine:
     def generate(self, prompt, image=None, *, mode='text', seed=42, strength=.65,
                  control_scale=.8, canny_control_scale=None, composite_mix=.5,
                  composite_mode='normal', control_image=None, feedback=0., noise_phase=0.,
-                 prompt_b='', prompt_mix=0., style='base'):
+                 prompt_b='', prompt_mix=0., style='base', sdxs_guides=None):
         if mode == 'composite':
             required = ('controlled_unet', 'control_canny', 'turbo_residual_unet')
             missing = [name for name in required if not (self.directory / f'{name}.mlpackage').exists()]
@@ -119,6 +119,7 @@ class Engine:
                 'model': 'SDXS DreamShaper + SD-Turbo Canny',
                 'style': style, 'mode': mode, 'size': self.size, 'seed': seed, 'timestep': 999,
                 'composite_mode': composite_mode, 'composite_mix': float(composite_mix),
+                'noise_phase':float(noise_phase),'noise_target_seed':(seed+1)%2**32,
                 'branches': {'sdxs': sketch_metrics, 'canny': canny_metrics},
             }
         start = perf_counter()
@@ -131,7 +132,7 @@ class Engine:
         if noise_phase:
             # Continuous, variance-preserving orbit through two fixed latent noises.
             noise = np.cos(noise_phase)*noise + np.sin(noise_phase)*self.noise((seed+1)%2**32)
-        if mode not in ('text','image','sketch','canny','depth','pose'): raise ValueError('Unknown mode')
+        if mode not in ('text','image','sketch','canny','depth','pose','sdxs_mixer'): raise ValueError('Unknown mode')
         rgb = None
         if mode != 'text':
             if image is None: raise ValueError(f'{mode} mode requires an image')
@@ -152,12 +153,26 @@ class Engine:
         else:
             sample=b*noise
         inputs={'sample':sample.astype(np.float16),'timestep':np.array([t],dtype=np.float16),'encoder_hidden_states':embeds}
-        denoiser=self.model('turbo_unet' if turbo else 'anime_unet' if style=='anime' else 'unet')
+        denoiser=self.model(('anime_sdxs_residual_unet' if style=='anime' else 'sdxs_residual_unet') if mode=='sdxs_mixer' else 'turbo_unet' if turbo else 'anime_unet' if style=='anime' else 'unet')
         if mode == 'sketch':
             denoiser=self.model('anime_controlled_unet' if style=='anime' else 'controlled_unet')
             inputs.update(control_image=rgb.transpose(2,0,1)[None].astype(np.float16), control_scale=np.array([control_scale],dtype=np.float16))
         tick=perf_counter()
         control_ms=0.
+        if mode == 'sdxs_mixer':
+            if not sdxs_guides:raise ValueError('SDXS mixer needs prepared guides.')
+            residuals={}
+            for name,guide,weight in sdxs_guides:
+                if control_scale*weight>65504:raise ValueError('Overall influence times guide weight exceeds the FP16 range.')
+                rgb_guide=np.asarray(guide.convert('RGB'),dtype=np.float32)/255
+                values=self.model('sdxs_sketch_control').predict({**inputs,
+                    'control_image':rgb_guide.transpose(2,0,1)[None].astype(np.float16),
+                    'control_scale':np.array([control_scale*weight],dtype=np.float16)})
+                for key,value in values.items():
+                    residuals[key]=residuals.get(key,0)+value.astype(np.float32)
+            control_ms=(perf_counter()-tick)*1000
+            inputs.update({key:value.astype(np.float16) for key,value in residuals.items()})
+            denoiser=self.model('anime_sdxs_residual_unet' if style=='anime' else 'sdxs_residual_unet')
         if mode in ('canny','depth','pose'):
             control_inputs={**inputs,'control_image':rgb.transpose(2,0,1)[None].astype(np.float16),
                 'control_scale':np.array([control_scale],dtype=np.float16)}
@@ -179,4 +194,5 @@ class Engine:
         return result, {'inference_ms':round((perf_counter()-start)*1000,2), 'prompt_ms':round(prompt_ms,2),
             'encode_ms':round(encode_ms,2),'unet_ms':round(unet_ms,2),'decode_ms':round(decode_ms,2),
             'control_ms':round(control_ms,2),'model':'SD-Turbo' if turbo else 'SDXS DreamShaper',
-            'style':style if not turbo else 'base','mode':mode,'size':self.size,'seed':seed,'timestep':t}
+            'style':style if not turbo else 'base','mode':mode,'size':self.size,'seed':seed,'timestep':t,
+            'noise_phase':float(noise_phase),'noise_target_seed':(seed+1)%2**32}

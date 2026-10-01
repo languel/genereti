@@ -46,3 +46,5 @@ Model weights, Core ML packages, compiled models, and generated outputs are not 
 ## Contributing and licensing
 
 Issues and improvements are welcome. The repository does not yet declare a project-wide code license; model licenses are separate and apply to their respective downloads. Contact the maintainer before redistributing code or bundling any model files.
+
+The experimental **SDXS guide mixer** combines weighted guide residuals before one SDXS denoiser pass. It reuses the released sketch controller for image, edges, depth and explicit pose maps; it does not claim dedicated SDXS Canny/depth/pose weights. See [art experiments](docs/experiments.md#mix-guides-inside-sdxs) and the [model-size catalog](docs/models.md#resolution-and-model-size-catalog) for setup, supported resolutions and measured timings.

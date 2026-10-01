@@ -52,3 +52,13 @@ The measurements in `docs/experiments.md` are from this development Mac and shou
 ## Setup and data boundaries
 
 Follow `docs/student-quickstart.md`, `docs/models.md`, `scripts/setup_macos.sh`, and `scripts/download_models.sh` for local setup. `AGENTS.md` contains repository constraints. Keep model weights, Core ML packages, compiled model caches, generated captures, and private training data out of Git.
+
+## October 1: SDXS residual guide mixer
+
+Implemented `sdxs_mixer` with independently weighted sketch/RGB, high-resolution Canny edges, cached CPU Depth Anything, and optional uploaded pose guides. All controller evaluations use the released SDXS sketch weights, sum residuals, then run one SDXS denoiser. This is experimental guide transfer, not the paper's separately trained Canny/depth controllers. UI supports both 256/512, base/Anime, independent inversion, thresholds, thickness, presets and scene metadata. New `scripts/convert_sdxs_mixer.py` and `download_models.sh --with-sdxs-mixer`; generated models stay ignored. Exported and tested base/Anime mixers at 256/512, added original Anime packages at 512. 384 is script-supported but uninstalled/unbenchmarked. Docs/model-size catalog in `docs/models.md`, usage in `docs/experiments.md`. Tests: 16 pass; real browser generated 512 mixer frames and verified saved preset plus ZIP/PNG metadata. Synthetic benchmark artifacts live in ignored `artifacts/sdxs-mixer/`; not evidence of exact face/identity preservation on user images. Included in the SDXS mixer and frame-recovery milestone; see Git history. Server restarted at usual 256 default.
+
+## October 1: recoverable frames and Motion explanation
+
+Frame errors now keep last image and the live intent, suspend repeat invalid requests, and resume when controls change. Busy/loading errors back off; internal Runtime.generate exceptions become HTTP/WebSocket frame errors without setting fatal runtime state. Added same-socket validation recovery and failed-worker/last-frame preservation tests (18 total pass). Documented teal/gold/black relief study, exact Motion equation, frame-driven periodicity and proposed latent keyframes in docs/experiments.md. Result metrics expose noise_phase and noise_target_seed. No latent-keyframe transport or separate target seed UI implemented.
+
+Final recovery check: real browser held its frame at missing-pose validation, kept running=true, and resumed frame advancement after setting pose weight to zero. Server running with the user's current 512px resolution. Repository milestone includes mixer, size catalog, setup scripts, Motion explanation and frame recovery; generated weights/captures excluded.

@@ -13,7 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from pydantic import BaseModel, Field, ValidationError
 from PIL import Image, UnidentifiedImageError
-from guides import invert_guide
+from guides import invert_guide, prepare_sdxs_guides
 from postprocess import apply_postprocessing
 from coreml_upscaler import MODELS as UPSCALER_MODELS
 
@@ -26,7 +26,7 @@ class GenerateRequest(BaseModel):
     prompt: str = Field(default='A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition', max_length=2000)
     prompt_b: str = Field(default='', max_length=2000)
     prompt_mix: float = Field(default=0, ge=0, le=1)
-    mode: Literal['text','image','sketch','canny','depth','pose','composite'] = 'text'
+    mode: Literal['text','image','sketch','canny','depth','pose','composite','sdxs_mixer'] = 'text'
     style: Literal['base','anime'] = 'base'
     seed: int = Field(default=42, ge=0, le=4294967295)
     strength: float = Field(default=.65, ge=.05, le=1)
@@ -38,6 +38,15 @@ class GenerateRequest(BaseModel):
     invert_canny_guide: bool = False
     invert_depth_guide: bool = False
     invert_pose_guide: bool = False
+    sdxs_sketch_weight: float = Field(default=1, ge=0, le=4, allow_inf_nan=False)
+    sdxs_canny_weight: float = Field(default=.35, ge=0, le=4, allow_inf_nan=False)
+    sdxs_depth_weight: float = Field(default=0, ge=0, le=4, allow_inf_nan=False)
+    sdxs_pose_weight: float = Field(default=0, ge=0, le=4, allow_inf_nan=False)
+    sdxs_sketch_kind: Literal['image','gray','edges'] = 'image'
+    canny_low: int = Field(default=50, ge=0, le=255)
+    canny_high: int = Field(default=150, ge=0, le=255)
+    guide_line_width: int = Field(default=1, ge=1, le=4)
+    pose_image: str | None = Field(default=None, max_length=2_800_000)
     feedback: float = Field(default=0, ge=0, le=1, allow_inf_nan=False)
     noise_phase: float = Field(default=0, ge=-1e6, le=1e6)
     image: str | None = Field(default=None, max_length=2_800_000)
@@ -132,6 +141,12 @@ class Runtime:
                 control_image=Image.open(io.BytesIO(raw));control_image.load();control_image=control_image.convert('RGB')
             except (ValueError,UnidentifiedImageError,OSError,Image.DecompressionBombError) as exc:
                 raise ValueError('Invalid or oversized Canny guide image.') from exc
+        pose_image=None
+        if data.pose_image:
+            try:
+                pose_image=Image.open(io.BytesIO(base64.b64decode(data.pose_image.split(',',1)[-1],validate=True)));pose_image.load()
+            except (ValueError,UnidentifiedImageError,OSError,Image.DecompressionBombError) as exc:
+                raise ValueError('Invalid pose guide image.') from exc
         reference=None
         if data.reference_image:
             payload=data.reference_image.split(',',1)[-1]
@@ -141,7 +156,21 @@ class Runtime:
             except (ValueError,UnidentifiedImageError,OSError,Image.DecompressionBombError) as exc:
                 raise ValueError('Invalid or oversized palette reference image.') from exc
         preprocess_start=time.perf_counter()
-        guide_image=None;guide=None
+        guide_image=None;guide=None;sdxs_guides=None
+        if data.mode=='sdxs_mixer':
+            sdxs_guides=prepare_sdxs_guides(self.guides,image,self.engine.size,
+                weights={name:getattr(data,f'sdxs_{name}_weight') for name in ('sketch','canny','depth','pose')},
+                inversions={name:getattr(data,f'invert_{name}_guide') for name in ('sketch','canny','depth','pose')},
+                canny_source=control_image,pose_source=pose_image,low=data.canny_low,high=data.canny_high,
+                sketch_kind=data.sdxs_sketch_kind,line_width=data.guide_line_width)
+            # Preview is a normalized pixel blend; inference sums learned residuals.
+            import numpy as np
+            total=sum(weight for _,_,weight in sdxs_guides)
+            guide_image=Image.fromarray(np.clip(sum(np.asarray(g,dtype=np.float32)*w for _,g,w in sdxs_guides)/total,0,255).astype(np.uint8))
+            if data.return_guide:
+                g=io.BytesIO();guide_image.save(g,format='PNG')
+                guide='data:image/png;base64,'+base64.b64encode(g.getvalue()).decode()
+
         if image is not None and data.mode in ('canny','depth','pose','sketch','composite'):
             if data.mode=='composite':
                 guide_source=control_image if control_image is not None else image
@@ -187,12 +216,18 @@ class Runtime:
                 self.upscalers[data.ai_upscaler]=CoreMLRealESRGAN(data.ai_upscaler,ROOT)
                 upscaler_load_ms=round((time.perf_counter()-load_start)*1000,2)
             learned_upscale=self.upscalers[data.ai_upscaler].upscale
-        args=data.model_dump(exclude={'image','control_image','reference_image','id','preprocess','return_guide',
+        args=data.model_dump(exclude={'image','control_image','reference_image','pose_image','sdxs_sketch_weight','sdxs_canny_weight','sdxs_depth_weight','sdxs_pose_weight','sdxs_sketch_kind','canny_low','canny_high','guide_line_width','id','preprocess','return_guide',
             'invert_sketch_guide','invert_canny_guide','invert_depth_guide','invert_pose_guide',
             'palette_strength','black_point','white_point','gamma','brightness','contrast','saturation','sharpen','emboss',
             'ai_upscaler','upscale_iterations','upscale_feedback','upscale_output','upscale','upscale_filter'})
         if data.mode=='composite':args['control_image']=guide_image
+        if sdxs_guides is not None:args['sdxs_guides']=sdxs_guides
         output, metrics=self.engine.generate(image=image,**args)
+        if sdxs_guides is not None:
+            metrics['conditioning']={'method':'sum_sketch_control_residuals','weights':{n:w for n,_,w in sdxs_guides},
+                'trained_control':'IDKiro/sdxs-512-dreamshaper-sketch','experimental_transfer':['canny','depth','pose'],
+                'denoiser_passes':1}
+
         postprocess_start=time.perf_counter()
         output=apply_postprocessing(output,reference=reference,learned_upscale=learned_upscale,**{
             key:value for key,value in postprocess_values.items() if key!='ai_upscaler'})
@@ -214,11 +249,21 @@ class Runtime:
         async with self.lock:
             try: jpeg, metrics=await asyncio.get_running_loop().run_in_executor(self.executor,self.render,data)
             except ValueError as exc: raise HTTPException(400,str(exc)) from exc
+            except Exception as exc:
+                # A failed frame must not poison the runtime or kill the worker.
+                traceback.print_exc()
+                detail=str(exc).strip()[:300] or type(exc).__name__
+                raise HTTPException(500,f'Could not generate this frame: {detail}') from exc
             self.jpeg=jpeg; self.frame+=1; self.updated=time.time()
             self.durations.append(metrics['server_ms'])
             metrics.update(frame=self.frame,id=data.id,backend='Core ML')
             self.metadata={k:v for k,v in metrics.items() if k!='guide'}
             return jpeg,metrics
+
+def validation_message(exc):
+    # Avoid echoing image/base64 payloads into UI errors or logs.
+    return '; '.join(f'{".".join(map(str,error["loc"])) or "request"}: {error["msg"]}'
+        for error in exc.errors(include_input=False)[:4])[:500]
 
 runtime=Runtime()
 @asynccontextmanager
@@ -263,7 +308,7 @@ async def generate(request:Request):
         body.extend(chunk)
         if len(body)>MAX_BODY: raise HTTPException(413,'Frame request is too large')
     try: data=GenerateRequest.model_validate_json(body)
-    except ValidationError as exc: raise HTTPException(422,str(exc)) from exc
+    except ValidationError as exc: raise HTTPException(422,validation_message(exc)) from exc
     jpeg,metrics=await runtime.generate(data)
     return Response(jpeg,media_type='image/jpeg',headers={'X-Inference-Ms':str(metrics['inference_ms']),
         'X-Server-Ms':str(metrics['server_ms']),'X-Frame':str(metrics['frame'])})
@@ -295,7 +340,7 @@ async def websocket(ws:WebSocket):
                 jpeg,metrics=await runtime.generate(data)
                 await ws.send_json({'type':'frame','image':'data:image/jpeg;base64,'+base64.b64encode(jpeg).decode(),**metrics})
             except (ValidationError,HTTPException,ValueError) as exc:
-                await ws.send_json({'type':'error','error':getattr(exc,'detail',str(exc)), 'status':getattr(exc,'status_code',400)})
+                await ws.send_json({'type':'error','error':validation_message(exc) if isinstance(exc,ValidationError) else getattr(exc,'detail',str(exc)), 'status':getattr(exc,'status_code',422 if isinstance(exc,ValidationError) else 400)})
             except Exception:
                 traceback.print_exc()
                 await ws.send_json({'type':'error','error':'Generation failed; see server log.','status':500})
