@@ -11,6 +11,7 @@ const drawingEditor=new DrawingBridge({iframe:$('drawingEditor'),onFrame:async f
  catch(error){message('Drawing preview failed: '+error.message,true);}
 },onOutputMode:enabled=>document.body.classList.toggle('drawing-canvas-output',enabled),onError:error=>message('Drawing editor: '+error,true)});
 function expandDrawing(value){
+ if(document.body.dataset.host==='excalidraw'){window.generetiDrawing?.fit();return;}
  drawingExpanded=value;document.body.classList.toggle('drawing-expanded',value);
  $('drawingBackdrop').hidden=$('drawingExpandedHeader').hidden=!value;
  // Resizing the existing iframe retains its document and editable scene.
@@ -19,6 +20,8 @@ function expandDrawing(value){
 $('expandDrawing').onclick=()=>expandDrawing(true);
 $('closeDrawing').onclick=()=>expandDrawing(false);
 window.addEventListener('keydown',event=>{
+ // The host handles shortcuts directly; forwarding would dispatch them twice.
+ if(document.body.dataset.host==='excalidraw')return;
  if($('source').value!=='editor'||$('helpDialog').open||document.activeElement?.matches('input,textarea,select,[contenteditable="true"]'))return;
  if((!event.ctrlKey&&!event.metaKey&&!event.altKey&&!event.shiftKey&&['s','g'].includes(event.key.toLowerCase()))||(event.code==='KeyD'&&event.altKey&&event.shiftKey)){
   event.preventDefault();drawingEditor.send('shortcut',{event:{key:event.key,code:event.code,altKey:event.altKey,shiftKey:event.shiftKey,ctrlKey:event.ctrlKey,metaKey:event.metaKey}});
@@ -29,7 +32,7 @@ const capture = document.createElement('canvas'); capture.width=capture.height=5
 const capctx=capture.getContext('2d');
 let ready=false, running=false, busy=false, socket, retryTimer, sentAt=0, frameId=0;
 let stream, uploadedImage, fileURL, referenceDataUrl=null, referenceName='', referenceFileURL=null, shapeGuideDataUrl=null, shapeGuideName='', shapeGuideFileURL=null, recording, chunks=[], lastFrame=0, phase=0, demoTime=0;
-let showingGuide=false;
+let showingGuide=false,lastHostSourcePreview=0;
 let previousRAF=performance.now(), fpsTimes=[], lastSent=0, timeout, lastStats;
 let pendingGeneration=null,lastGeneration=null;
 let poseWorker, poseReady=false, poseBusy=false, poseLandmarks=[], lastPose=0;
@@ -45,7 +48,7 @@ const presets={
  tree:'an ancient twisting bonsai tree, Japanese ink and watercolor painting, expressive branches, white background',
  portrait:'a clay sculpture portrait, colorful ceramic, expressive face, studio lighting',
 };
-function message(text,error=false){$('message').textContent=text;$('message').classList.toggle('error',error);}
+function message(text,error=false){const badge=$('hostNotice');if(badge){badge.hidden=!error;badge.title=text;badge.textContent=error?'!':'';}$('message').textContent=text;$('message').classList.toggle('error',error);}
 function notice(text){$('inputNotice').textContent=text;$('inputNotice').hidden=!text;}
 function setRunning(value){
  running=value;if(value)frameBlocked=false; $('run').textContent=running?'Pause':'Start live';$('run').classList.toggle('live',running);
@@ -70,7 +73,7 @@ function connection(){
    message(result.error+' · Last image kept. Change a control to resume.',true);return;
   }
   try{
-   if(result.guide){const gi=new Image();gi.src=result.guide;await gi.decode();$('guide').getContext('2d').drawImage(gi,0,0,512,512);}
+   if(result.guide){if(document.body.dataset.host==='excalidraw')drawingEditor.send('guide',{image:result.guide});const gi=new Image();gi.src=result.guide;await gi.decode();$('guide').getContext('2d').drawImage(gi,0,0,512,512);}
    const img=new Image(); img.src=result.image; await img.decode();
    if(output.width!==img.naturalWidth) output.width=output.height=img.naturalWidth;
    out.drawImage(img,0,0);drawingEditor.setOutput({image:result.image,model:result.model,frame:result.frame});lastFrame=result.frame;lastStats=result;
@@ -114,7 +117,7 @@ function updateMode(){
  const mode=$('mode').value, source=$('source').value;
  const animeAvailable=mode==='sdxs_mixer'?availableModels.has('anime_sdxs_residual_unet'):availableModels.has('anime_unet')&&availableModels.has('anime_controlled_unet');
  if(availableModels.size){$('style').querySelector('[value=anime]').disabled=!animeAvailable;if(!animeAvailable)$('style').value='base';}
- if(['text','image'].includes(mode)){showingGuide=false;$('guide').hidden=true;$('guideToggle').textContent='View guide';}
+ if(['text','image'].includes(mode)){if(document.body.dataset.host==='excalidraw')drawingEditor.send('guide-mode',{enabled:false});showingGuide=false;$('guide').hidden=true;$('guideToggle').textContent='View guide';}
  $('guideToggle').disabled=['text','image'].includes(mode);
  $('drawingHost').hidden=$('source').value!=='editor'||showingGuide;
  $('controlWrap').hidden=!['sketch','canny','depth','pose','composite','sdxs_mixer'].includes(mode);
@@ -190,6 +193,8 @@ function updateReferenceControls(){
 }
 function clear(){ctx.fillStyle='white';ctx.fillRect(0,0,512,512);}
 function sourceChanged(){
+ document.body.dataset.source=$('source').value;
+ if(document.body.dataset.host==='excalidraw')drawingEditor.send('source',{kind:$('source').value});
  releaseMedia();clear();notice('');
  if(drawingExpanded)expandDrawing(false);
  drawingInputSnapshot=null;
@@ -300,6 +305,7 @@ function frame(now){
    }else ctx.drawImage(capture,0,0);
   }
  }
+ if(document.body.dataset.host==='excalidraw'&&!['editor','text'].includes($('source').value)&&now-lastHostSourcePreview>125){lastHostSourcePreview=now;drawingEditor.send('source',{kind:$('source').value,image:input.toDataURL('image/jpeg',.8)});}
  if(running&&ready&&!busy&&!frameBlocked&&socket?.readyState===WebSocket.OPEN&&now-lastSent>1000/parameterValue('maxfps')){
   const source=$('source').value,mode=$('mode').value;
   const hasInput=mode==='text'||['demo','draw'].includes(source)||(source==='editor'&&drawingInputSnapshot)||uploadedImage||video.readyState>=2;
@@ -308,6 +314,7 @@ function frame(now){
    // Orbit the two seed noises in every pipeline, including the SDXS mixer.
    phase+=motion*.035;
    const capturedInput=mode==='text'?null:input.toDataURL(mode==='sdxs_mixer'?'image/png':'image/jpeg',.9);
+   if(document.body.dataset.host==='excalidraw'&&source!=='editor')drawingEditor.send('source',{kind:source,image:capturedInput});
    const request={id:++frameId,style:$('style').value,preprocess:!$('rawGuide').checked,return_guide:true,prompt:$('prompt').value,prompt_b:$('promptB').value,prompt_mix:parameterValue('mix'),mode,
     seed:Number($('seed').value)||0,strength:parameterValue('strength'),control_scale:parameterValue('control'),
     canny_control_scale:parameterValue('cannyControl'),composite_mix:parameterValue('compositeMix'),composite_mode:$('compositeMode').value,
@@ -342,7 +349,7 @@ $('clearMixerPose').onclick=()=>{mixerPoseDataUrl=null;mixerPoseName='';$('mixer
 $('source').onchange=sourceChanged;
 $('mode').onchange=updateMode;
 $('clear').onclick=clear;
-$('guideToggle').onclick=()=>{showingGuide=!showingGuide;$('guide').hidden=!showingGuide;$('guideToggle').textContent=showingGuide?'View input':'View guide';$('drawingHost').hidden=$('source').value!=='editor'||showingGuide;};
+$('guideToggle').onclick=()=>{showingGuide=!showingGuide;if(document.body.dataset.host==='excalidraw')drawingEditor.send('guide-mode',{enabled:showingGuide});$('guide').hidden=!showingGuide;$('guideToggle').textContent=showingGuide?'View input':'View guide';$('drawingHost').hidden=$('source').value!=='editor'||showingGuide;};
 $('random').onclick=()=>{$('seed').value=Math.floor(Math.random()*2**31);phase=0;};
 $('connectCamera').onclick=cameraStart;$('camera').onchange=cameraStart;$('captureScreen').onclick=screenStart;
 $('chooseFile').onclick=()=>$('file').click();
@@ -429,7 +436,7 @@ input.onpointermove=e=>{if(!drawing)return;const next=point(e);ctx.strokeStyle=e
 input.onpointerup=input.onpointercancel=()=>drawing=false;
 input.oncontextmenu=e=>e.preventDefault();
 $('help').onclick=()=>$('helpDialog').showModal();
-$('full').onclick=()=>output.requestFullscreen().catch(error=>message(error.message,true));
+$('full').onclick=()=>(document.body.dataset.host==='excalidraw'?document.documentElement:output).requestFullscreen().catch(error=>message(error.message,true));
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
 function dataURLToBlob(dataURL){
  const [header,encoded]=dataURL.split(',',2),mime=header.match(/^data:([^;]+)/)?.[1]||'application/octet-stream';
@@ -557,7 +564,7 @@ $('record').onclick=()=>{
  recording.onstop=()=>{download(new Blob(chunks,{type:recording.mimeType}),`genereti-${Date.now()}.${recording.mimeType.includes('mp4')?'mp4':'webm'}`);captureStream.getTracks().forEach(t=>t.stop());};
  recording.start(1000);$('record').textContent='Stop recording';
 };
-window.addEventListener('keydown',e=>{if(e.code==='Space'&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)&&!$('helpDialog').open){e.preventDefault();if(ready)setRunning(!running);}});
+window.addEventListener('keydown',e=>{if(document.body.dataset.host==='excalidraw'&&!e.altKey)return;if(e.code==='Space'&&!['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)&&!$('helpDialog').open){e.preventDefault();if(ready)setRunning(!running);}});
 window.addEventListener('beforeunload',()=>{releaseMedia();poseWorker?.terminate();socket?.close();});
 window.genereti={drawing:{getScene(){return drawingInputSnapshot?structuredClone(drawingInputSnapshot.scene):null;},loadScene(scene){if($('source').value!=='editor'){$('source').value='editor';sourceChanged();}drawingEditor.load(scene);},fit(){drawingEditor.send('fit');}},get state(){return{ready,running,busy,frame:lastFrame,metrics:lastStats};},setPrompt(prompt){$('prompt').value=prompt;},pause(){setRunning(false);},start(){if(ready)setRunning(true);}};
 const savedFields=['sdxsSketchKind','cannyLow','cannyHigh','guideLineWidth','prompt','promptB','source','mode','style','seed','rawGuide','invertSketch','invertCanny','invertDepth','invertPose','mirror','compositeMode','aiUpscaler','upscaleIterations','upscaleOutput','upscale','upscaleFilter'];

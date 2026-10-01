@@ -1,5 +1,7 @@
 # Editable drawing input
 
+On the `excalidraw-host` branch, Excalidraw fills the app and **Genereti** opens the model sidebar. Output is always on the canvas; use **Fit workspace**. The expand/toggle instructions below describe the classic `/lab.html` page. See [the host guide](excalidraw-host.md).
+
 Choose **Input → Shapes · Excalidraw**. The drawing becomes the input to any image-guided Genereti pipeline. The editor is bundled locally; it does not depend on excalidraw.com or a CDN at runtime.
 
 Use the native tools for rectangles, ellipses, diamonds, lines/arrows, freehand paths, text, and image insertion. Select a shape to translate, resize, rotate, change stroke/fill colors and line styles, or reorder it. Native undo/redo and grouping remain available. **S** opens the stroke palette, **G** the fill palette, and **Shift + Alt + D** toggles the editor theme. With an empty selection, palette buttons/shortcuts activate the freehand tool and change colors for the next stroke. With selected elements, they edit those elements. Shortcuts are also forwarded after focus moves to a Genereti button; typing in prompt/text fields retains normal keyboard behavior. The footer also has Stroke, Fill and theme buttons. Editor theme is remembered locally and changes the editing appearance; exported guide colors remain the original scene colors. **Expand editor** gives more room with the generated output beside it; **Close editor** returns to the compact view without rebuilding the editor.

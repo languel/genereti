@@ -3,9 +3,19 @@
 ## Project and current checkout
 
 - Repository: `/Users/liuboto/dev/genereti`; remote: `https://github.com/languel/genereti.git`.
-- Main branch. At the start of this milestone it was based on `c353f9d` (`Add Comfy teaching workflows and projector node`); the real-time renderer experiments in this handoff are the current follow-up changes.
+- Current branch: `excalidraw-host`, created from main checkpoint `25173b9` (editable canvas, live output and input color/value controls). The sections below retain the renderer history; see the latest workspace milestone first.
 - Genereti is a local real-time image-generation tool for teaching, performance, and creative coding. The complete generator targets macOS 14+ on Apple silicon and runs Core ML models locally. The ComfyUI source nodes documented in `docs/platform-support.md` are the PC-compatible portion.
 - The local web app is served at `http://127.0.0.1:8765/` when `./Start-Genereti.command` or `./run.sh` is running. The server binds to loopback; browser camera and screen capture remain user-started.
+
+## Latest milestone: Excalidraw is the host
+
+The default `/` page is a single Excalidraw document, not an editor iframe within the old layout. Native Sidebar, Footer, top-right UI and custom embeddable renderers host Genereti. All existing control IDs and event handlers remain active, including model-aware settings, numeric overrides, presets, independent guides, post-processing, captures and scene exports. `/lab.html` preserves the checkpoint's classic page, with its embedded drawing editor. External p5/TouchDesigner/Comfy bridges and generator contracts are unchanged.
+
+Read `docs/excalidraw-host.md` for controls and implementation details. Source selection starts with Shapes. The input crop remains world coordinates 0,0–512,512. Live output, external source previews and optional guide previews are runtime embeddables excluded from editable guide export and autosave. Output geometry lasts for the current session; animation/keyframes and persistent workspace layout remain future work.
+
+Verification: rebuilt the local editor bundle; 21 Python tests passed; browser exercised live generation with the sidebar hidden, sidebar reopen, demo/file/vector source switching, preset save/delete, drawing download/reopen, PNG download and scene ZIP download. PNG metadata was read with Pillow after loading pixels; the ZIP contained source, outcome, guide, metadata and an editable drawing with no runtime preview elements. Both default host and classic iframe page loaded without page errors in the final check. Camera/screen permission prompts were not exercised.
+
+Files: `web/index.html`, `web/host-bootstrap.js`, `web/host.css`, `editor/index.jsx`, `web/drawing-bridge.js`, `web/app.js`, locally rebuilt `web/vendor/excalidraw/editor.js`, and `web/lab.html`. Rebuild after editor changes with `npm ci && npm run build:editor`. The server serves these files directly, so frontend changes do not require a model restart.
 
 ## Current renderer experiments
 

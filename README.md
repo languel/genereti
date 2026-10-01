@@ -6,6 +6,10 @@
 
 Start with the [student quickstart](docs/student-quickstart.md). It covers setup, model downloads, launch, and the first live workflow. The [platform guide](docs/platform-support.md) explains exactly what runs on Apple silicon and what can also be used on PC.
 
+## Excalidraw workspace branch
+
+On `excalidraw-host`, the local app opens directly into a full-screen Excalidraw workspace. **Genereti** opens the native dockable sidebar containing input sources, model controls, presets, post-processing and exports. Generated output renders on the drawing canvas. The classic interface remains at `/lab.html`. See [the workspace guide](docs/excalidraw-host.md). This is the first canvas-host milestone; keyframe animation is not implemented yet.
+
 ## What you can do
 
 - Generate live text-to-image and image-to-image frames in the local web app.

@@ -1,10 +1,10 @@
 // Same-origin bridge: editable scene and its raster always travel together.
 export class DrawingBridge {
  constructor({iframe,onFrame,onError,onOutputMode}){
-  this.iframe=iframe;this.onFrame=onFrame;this.onError=onError;
+  this.host=document.body.dataset.host==='excalidraw';this.iframe=iframe;this.onFrame=onFrame;this.onError=onError;
   this.scene=null;this.image=null;this.ready=false;this.revision=0;this.loading=false;this.initialized=false;
   window.addEventListener('message',event=>{
-   if(event.origin!==location.origin||event.source!==iframe.contentWindow||event.data?.channel!=='genereti-drawing-v1')return;
+   if(event.origin!==location.origin||event.source!==(this.host?window:iframe.contentWindow)||event.data?.channel!=='genereti-drawing-v1')return;
    const data=event.data;
    if(data.type==='output-mode'){onOutputMode?.(data.enabled);return;}
    if(data.type==='ready'&&this.output)this.send('output',this.output);
@@ -16,9 +16,9 @@ export class DrawingBridge {
    }
   });
  }
- send(type,values={}){this.iframe.contentWindow?.postMessage({channel:'genereti-drawing-v1',type,...values},location.origin);}
+ send(type,values={}){(this.host?window:this.iframe.contentWindow)?.postMessage({channel:'genereti-drawing-v1',type,...values},location.origin);}
  activate(){
-  if(!this.loading){this.loading=true;this.iframe.src='/drawing.html';}
+  if(!this.loading){this.loading=true;if(!this.host)this.iframe.src='/drawing.html';else this.send('refresh');}
   else{if(this.ready)this.onFrame({image:this.image,scene:structuredClone(this.scene),revision:this.revision});this.send('fit');this.send('refresh');}
  }
  load(scene){if(this.initialized)this.send('load',{scene});else this.pendingScene=scene;}

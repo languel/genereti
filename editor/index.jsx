@@ -1,33 +1,38 @@
 import React,{useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Excalidraw,exportToCanvas,serializeAsJSON,restore,convertToExcalidrawElements,getCommonBounds,CaptureUpdateAction} from '@excalidraw/excalidraw';
+import {Excalidraw,exportToCanvas,serializeAsJSON,restore,convertToExcalidrawElements,getCommonBounds,CaptureUpdateAction,Sidebar,Footer} from '@excalidraw/excalidraw';
 import '@excalidraw/excalidraw/index.css';
 import './style.css';
 
+const host=document.body.dataset.host==='excalidraw';
+const drawingFile=()=>document.getElementById(host?'drawingFile':'file');
+const runtimeElement=e=>e.customData?.generetiOutput||e.customData?.generetiSource||e.customData?.generetiGuide;
 const outputMode=document.getElementById('outputMode');
-let outputFrame=null,outputElement=null,setLiveOutput,lastOutput='';
-try{outputMode.checked=localStorage.getItem('genereti-editor-output')==='true';}catch{}
+let guideElement=null,guideEnabled=false,guideImage='',setGuideImage;
+let outputFrame=null,outputElement=null,setLiveOutput,lastOutput='',sourceElement=null,sourceKind='editor',sourceImage='',setSourceImage;
+try{outputMode.checked=host||localStorage.getItem('genereti-editor-output')==='true';}catch{}
 const SIZE=512,channel='genereti-drawing-v1';
 let api,revision=0,rendering=false,dirty=false,timer,lastSignature='',saveTimer,pointerActive=false;
 let editorTheme='light';
 try{editorTheme=localStorage.getItem('genereti-editor-theme')||'light';}catch{}
 const liveEdits=document.getElementById('liveEdits');
 try{liveEdits.checked=localStorage.getItem('genereti-editor-live')!=='false';}catch{}
-const status=document.getElementById('status');
+const status=document.getElementById(host?'drawingStatus':'status');
 const say=text=>status.textContent=text;
 const send=payload=>window.parent.postMessage({channel,...payload},location.origin);
 // An export-only invisible boundary establishes a fixed world-space crop.
 const boundary=convertToExcalidrawElements([{type:'rectangle',x:0,y:0,width:SIZE,height:SIZE,opacity:0,strokeColor:'transparent',backgroundColor:'transparent',roughness:0}])[0];
-function scene(){return JSON.parse(serializeAsJSON(api.getSceneElements().filter(e=>!e.customData?.generetiOutput),api.getAppState(),api.getFiles(),'local'));}
+function scene(){return JSON.parse(serializeAsJSON(api.getSceneElements().filter(e=>!runtimeElement(e)),api.getAppState(),api.getFiles(),'local'));}
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open('genereti-drawing',1);r.onupgradeneeded=()=>r.result.createObjectStore('scenes');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
 async function persist(value){const db=await openDB();try{await new Promise((resolve,reject)=>{const tx=db.transaction('scenes','readwrite');tx.objectStore('scenes').put(value,'current');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});}finally{db.close();}}
 async function stored(){const db=await openDB();try{return await new Promise((resolve,reject)=>{const r=db.transaction('scenes').objectStore('scenes').get('current');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}finally{db.close();}}
 function fit(){
  if(!api)return;
- const {width,height}=document.getElementById('editor').getBoundingClientRect();
- const worldWidth=outputMode.checked?1072:SIZE;
- const zoom=Math.max(.1,Math.min((width-50)/worldWidth,(height-150)/SIZE,1.4));
- api.updateScene({appState:{zoom:{value:zoom},scrollX:(width/zoom-worldWidth)/2,scrollY:(height/zoom-SIZE)/2+15/zoom}});
+ const rect=document.getElementById('editor').getBoundingClientRect();
+ const width=rect.width-(host&&api.getAppState().openSidebar?.name==='genereti'?360:0),height=rect.height;
+ const worldWidth=outputMode.checked?1072:SIZE,worldHeight=guideEnabled?1072:SIZE;
+ const zoom=Math.max(.1,Math.min((width-50)/worldWidth,(height-150)/worldHeight,1.4));
+ api.updateScene({appState:{zoom:{value:zoom},scrollX:(width/zoom-worldWidth)/2,scrollY:(height/zoom-worldHeight)/2+15/zoom}});
 }
 function outline(state){
  const zoom=state.zoom.value;
@@ -66,8 +71,9 @@ function onChange(elements,state,files){
  const live=elements.filter(e=>e.customData?.generetiOutput);
  outputFrame=live.find(e=>e.type==='frame')||outputFrame;outputElement=live.find(e=>e.type==='embeddable')||outputElement;
  if(state.theme!==editorTheme){editorTheme=state.theme;try{localStorage.setItem('genereti-editor-theme',editorTheme);}catch{}}
+ if(host)document.body.dataset.theme=state.theme;
  document.getElementById('theme').textContent=state.theme==='dark'?'Light mode':'Dark mode';
- const signature=JSON.stringify([elements.filter(e=>!e.customData?.generetiOutput).map(e=>[e.id,e.version,e.versionNonce,e.isDeleted]),state.viewBackgroundColor,Object.keys(files)]);
+ const signature=JSON.stringify([elements.filter(e=>!runtimeElement(e)).map(e=>[e.id,e.version,e.versionNonce,e.isDeleted]),state.viewBackgroundColor,Object.keys(files)]);
  if(signature===lastSignature)return;
  lastSignature=signature;revision++;schedule();
  clearTimeout(saveTimer);saveTimer=setTimeout(()=>persist(scene()).catch(()=>say('Drawing is in memory; local autosave unavailable. Save a drawing file to keep it.')),400);
@@ -96,7 +102,7 @@ outputMode.onchange=()=>{try{localStorage.setItem('genereti-editor-output',Strin
 function showOutput(data){lastOutput=data.image;setLiveOutput?.(lastOutput);}
 window.addEventListener('message',async({data,origin,source})=>{
  if(origin!==location.origin||source!==window.parent||data?.channel!==channel)return;
- try{if(data.type==='output')await showOutput(data);if(data.type==='shortcut')shortcut(data.event,true);if(data.type==='fit')fit();if(data.type==='load')await load(data.scene);if(data.type==='save')download(scene());if(data.type==='refresh')schedule();}
+ try{if(data.type==='guide-mode')showGuide(data);if(data.type==='guide'){guideImage=data.image;setGuideImage?.(guideImage);}if(data.type==='source')showSource(data);if(data.type==='output')await showOutput(data);if(data.type==='shortcut')shortcut(data.event,true);if(data.type==='fit')fit();if(data.type==='load')await load(data.scene);if(data.type==='save')download(scene());if(data.type==='refresh')schedule();}
  catch(error){say(error.message);send({type:'error',message:error.message});}
 });
 document.getElementById('fit').onclick=fit;
@@ -118,19 +124,44 @@ function shortcut(event,forwarded=false){
  if(!event.altKey&&!event.shiftKey&&['s','g'].includes(key)&&!api.getAppState().openPopup){event.preventDefault?.();event.stopImmediatePropagation?.();palette(key==='s'?'elementStroke':'elementBackground');}
 }
 document.addEventListener('keydown',event=>shortcut(event),true);
-document.getElementById('save').onclick=()=>download(scene());
-document.getElementById('open').onclick=()=>document.getElementById('file').click();
-document.getElementById('file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>20_000_000)throw new Error('Drawing files must be under 20MB.');await load(JSON.parse(await f.text()));}catch(error){say(error.message);}e.target.value='';};
+document.getElementById(host?'drawingSave':'save').onclick=()=>download(scene());
+document.getElementById('open').onclick=()=>drawingFile().click();
+drawingFile().onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f.size>20_000_000)throw new Error('Drawing files must be under 20MB.');await load(JSON.parse(await f.text()));}catch(error){say(error.message);}e.target.value='';};
 async function initializeEditor(value){
  api=value;window.generetiDrawing={getScene:scene,getCanvasElements:()=>structuredClone(api.getSceneElements()),load,fit};
  try{const previous=await stored();if(previous)await load(previous);}catch{say('Local autosave unavailable.');}
- requestAnimationFrame(()=>{ensureOutputFrame();fit();schedule();send({type:'ready'});send({type:'output-mode',enabled:outputMode.checked});});
+ requestAnimationFrame(()=>{if(host)api.updateScene({appState:{openSidebar:{name:'genereti'}}});ensureOutputFrame();fit();schedule();send({type:'ready'});send({type:'output-mode',enabled:outputMode.checked});});
 }
+function showSource(data){
+ if(!host)return;sourceKind=data.kind;sourceImage=data.image||sourceImage;
+ const elements=api?.getSceneElements().filter(e=>!e.customData?.generetiSource)||[];
+ if(!api)return;
+ if(sourceKind!=='editor'&&sourceKind!=='text'){
+  if(!sourceElement){[sourceElement]=convertToExcalidrawElements([{type:'rectangle',x:0,y:0,width:SIZE,height:SIZE,locked:true,link:'https://genereti.local/live-source',customData:{generetiSource:true}}]);sourceElement={...sourceElement,type:'embeddable'};}
+  // Reuse the live source element; it is excluded from editable guide exports.
+  if(!api.getSceneElements().some(e=>e.id===sourceElement.id))api.updateScene({elements:[sourceElement,...elements],captureUpdate:CaptureUpdateAction.NEVER});
+ }else if(api.getSceneElements().some(e=>e.customData?.generetiSource))api.updateScene({elements,captureUpdate:CaptureUpdateAction.NEVER});
+ setSourceImage?.({kind:sourceKind,image:sourceImage});
+}
+function showGuide(data){
+ if(!host||!api)return;guideEnabled=data.enabled;
+ const elements=api.getSceneElements().filter(e=>!e.customData?.generetiGuide);
+ if(guideEnabled){
+  if(!guideElement){[guideElement]=convertToExcalidrawElements([{type:'rectangle',x:0,y:560,width:SIZE,height:SIZE,locked:true,link:'https://genereti.local/live-guide',customData:{generetiGuide:true}}]);guideElement={...guideElement,type:'embeddable'};}
+  api.updateScene({elements:[...elements,guideElement],captureUpdate:CaptureUpdateAction.NEVER});
+ }else api.updateScene({elements,captureUpdate:CaptureUpdateAction.NEVER});
+ fit();
+}
+function mountNode(name,node){const nodes=window.generetiHostNodes;if(!nodes)return;if(node)node.append(nodes[name]);else nodes.parking.append(nodes[name]);}
+const mountPanel=node=>mountNode('panel',node),mountHeader=node=>mountNode('header',node),mountToolbar=node=>mountNode('toolbar',node);
 function DrawingEditor(){
  const [output,setOutput]=useState(lastOutput);setLiveOutput=setOutput;
- return <Excalidraw renderEmbeddable={(element)=>element.customData?.generetiOutput?<div style={{width:'100%',height:'100%',background:'#202326',display:'flex',alignItems:'center',justifyContent:'center',pointerEvents:'none'}}>{output?<img src={output} alt="Live generated output" style={{width:'100%',height:'100%',objectFit:'contain'}}/>:<span style={{color:'#eceeeb'}}>Waiting for generation…</span>}</div>:null} validateEmbeddable={link=>link==='https://genereti.local/live-output'} excalidrawAPI={initializeEditor} onChange={onChange} initialData={{appState:{viewBackgroundColor:'#ffffff',currentItemStrokeColor:'#111111',currentItemStrokeWidth:2,currentItemRoughness:1,theme:editorTheme}}} UIOptions={{canvasActions:{loadScene:false,saveToActiveFile:false,export:false,toggleTheme:true}}} detectScroll={false} handleKeyboardGlobally={true} />;
+ const [source,setSource]=useState({kind:sourceKind,image:sourceImage});setSourceImage=setSource;
+ const [docked,setDocked]=useState(true);
+ const [guide,setGuide]=useState(guideImage);setGuideImage=setGuide;
+ return <Excalidraw renderTopRightUI={host?()=> <div className="host-topbar"><div ref={mountHeader}/><button className="sidebar-trigger" onClick={()=>api?.toggleSidebar({name:'genereti'})} title="Show or hide Genereti controls">Genereti</button></div>:undefined} renderEmbeddable={(element)=>element.customData?.generetiGuide?<div className="host-source">{guide?<img src={guide} alt="Prepared model guide"/>:<span>Guide · run generation to preview</span>}</div>:element.customData?.generetiSource?<div className="host-source">{source.image?<img src={source.image} alt="Live input source"/>:<span>Enable or choose your source in Genereti</span>}</div>:element.customData?.generetiOutput?<div style={{width:'100%',height:'100%',background:'#202326',display:'flex',alignItems:'center',justifyContent:'center',pointerEvents:'none'}}>{output?<img src={output} alt="Live generated output" style={{width:'100%',height:'100%',objectFit:'contain'}}/>:<span style={{color:'#eceeeb'}}>Waiting for generation…</span>}</div>:null} validateEmbeddable={link=>['https://genereti.local/live-output','https://genereti.local/live-source','https://genereti.local/live-guide'].includes(link)} excalidrawAPI={initializeEditor} onChange={onChange} initialData={{appState:{viewBackgroundColor:'#ffffff',currentItemStrokeColor:'#111111',currentItemStrokeWidth:2,currentItemRoughness:1,theme:editorTheme}}} UIOptions={{canvasActions:{loadScene:false,saveToActiveFile:false,export:false,toggleTheme:true}}} detectScroll={false} handleKeyboardGlobally={true}>{host&&<Sidebar name="genereti" docked={docked} onDock={setDocked}><Sidebar.Header>Genereti · live image lab</Sidebar.Header><div ref={mountPanel}/></Sidebar>}{host&&<Footer><div ref={mountToolbar}/></Footer>}</Excalidraw>;
 }
 createRoot(document.getElementById('editor')).render(<DrawingEditor/>);
 new ResizeObserver(()=>{if(api)fit();}).observe(document.getElementById('editor'));
 
-new ResizeObserver(entries=>{document.getElementById('editor').style.bottom=`${entries[0].contentRect.height}px`;}).observe(document.getElementById('toolbar'));
+if(!host)new ResizeObserver(entries=>{document.getElementById('editor').style.bottom=`${entries[0].contentRect.height}px`;}).observe(document.getElementById('toolbar'));
