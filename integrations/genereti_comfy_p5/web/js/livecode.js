@@ -125,6 +125,8 @@ function editorWidget(node,name){
  }
  run.onclick=()=>evaluate();
  stop.onclick=()=>{run.setAttribute('aria-pressed','false');stop.setAttribute('aria-pressed','true');clearTimeout(timer);++epoch;removeCandidate();post(active,{type:'stop'});if(active)active.dataset.stopped='true';run.setAttribute('aria-pressed','false');stop.setAttribute('aria-pressed','true');status.textContent='Stopped · last frame retained';};
+ node._generetiEditorContext=()=>({source:draft,language:value(node,'language'),selection:view.state.selection.ranges.map(r=>({from:r.from,to:r.to,text:view.state.sliceDoc(r.from,r.to)})),status:status.textContent});
+ node._generetiRun=()=>evaluate();node._generetiStop=()=>stop.onclick();
  container.addEventListener('keydown',event=>{if(event.isComposing)return;if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();event.stopImmediatePropagation();evaluate();}else if((event.ctrlKey||event.metaKey)&&(event.key==='.'||event.code==='Period')){event.preventDefault();event.stopImmediatePropagation();stop.onclick();}},true);
  function onMessage(event){
   const isCandidate=event.source===candidate?.contentWindow,isActive=event.source===active?.contentWindow;if(!isCandidate&&!isActive)return;

@@ -21,6 +21,7 @@ training/
 experiments/
 vendor/
 .playwright-cli/
+output/playwright/
 *.mp4
 *.mov
 *.webm
