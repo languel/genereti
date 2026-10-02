@@ -67,11 +67,11 @@
         "ver": "0.1.0"
       },
       "widgets_values": [
-        "// Draw with the mouse. Press C to clear and change the palette with keys 1\u20135.\nlet hueShift = 0;\n\nfunction setup() {\n  createCanvas(512, 512);\n  colorMode(HSB, 360, 100, 100, 100);\n  background(225, 28, 12);\n}\n\nfunction draw() {\n  noStroke();\n  if (mouseIsPressed) {\n    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);\n    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));\n  }\n  if (keyIsPressed) {\n    fill((hueShift + 180) % 360, 70, 100, 55);\n    circle(mouseX, mouseY, 14);\n  }\n}\n\nfunction keyPressed() {\n  if (key === 'c' || key === 'C') background(225, 28, 12);\n  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;\n  return false;\n}\n",
+        "// Draw with the mouse. Press C to clear and change the palette with keys 1–5.\nlet hueShift = 0;\n\nfunction setup() {\n  createCanvas(512, 512);\n  colorMode(HSB, 360, 100, 100, 100);\n  background(225, 28, 12);\n}\n\nfunction draw() {\n  noStroke();\n  if (mouseIsPressed) {\n    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);\n    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));\n  }\n  if (keyIsPressed) {\n    fill((hueShift + 180) % 360, 70, 100, 55);\n    circle(mouseX, mouseY, 14);\n  }\n}\n\nfunction keyPressed() {\n  if (key === 'c' || key === 'C') background(225, 28, 12);\n  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;\n  return false;\n}\n",
         0
       ],
       "widgets_values_named": {
-        "sketch": "// Draw with the mouse. Press C to clear and change the palette with keys 1\u20135.\nlet hueShift = 0;\n\nfunction setup() {\n  createCanvas(512, 512);\n  colorMode(HSB, 360, 100, 100, 100);\n  background(225, 28, 12);\n}\n\nfunction draw() {\n  noStroke();\n  if (mouseIsPressed) {\n    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);\n    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));\n  }\n  if (keyIsPressed) {\n    fill((hueShift + 180) % 360, 70, 100, 55);\n    circle(mouseX, mouseY, 14);\n  }\n}\n\nfunction keyPressed() {\n  if (key === 'c' || key === 'C') background(225, 28, 12);\n  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;\n  return false;\n}\n",
+        "sketch": "// Draw with the mouse. Press C to clear and change the palette with keys 1–5.\nlet hueShift = 0;\n\nfunction setup() {\n  createCanvas(512, 512);\n  colorMode(HSB, 360, 100, 100, 100);\n  background(225, 28, 12);\n}\n\nfunction draw() {\n  noStroke();\n  if (mouseIsPressed) {\n    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);\n    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));\n  }\n  if (keyIsPressed) {\n    fill((hueShift + 180) % 360, 70, 100, 55);\n    circle(mouseX, mouseY, 14);\n  }\n}\n\nfunction keyPressed() {\n  if (key === 'c' || key === 'C') background(225, 28, 12);\n  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;\n  return false;\n}\n",
         "canvas_revision": 0
       }
     },
@@ -221,8 +221,10 @@
         "base",
         true,
         4862,
+        "fixed",
         0.65,
-        0.8
+        0.8,
+        "auto"
       ],
       "widgets_values_named": {
         "prompt": "Transform this interactive p5 drawing into a luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
@@ -342,10 +344,10 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "Interactive source: click Run sketch, then draw in the preview with mouse and keyboard. Queue to send its current frame to Genereti in image mode. The raw canvas is also available on the direct p5 \u2192 Preview Image wire."
+        "Interactive source: click Run sketch, then draw in the preview with mouse and keyboard. Queue to send its current frame to Genereti in image mode. The raw canvas is also available on the direct p5 → Preview Image wire."
       ],
       "widgets_values_named": {
-        "text": "Interactive source: click Run sketch, then draw in the preview with mouse and keyboard. Queue to send its current frame to Genereti in image mode. The raw canvas is also available on the direct p5 \u2192 Preview Image wire."
+        "text": "Interactive source: click Run sketch, then draw in the preview with mouse and keyboard. Queue to send its current frame to Genereti in image mode. The raw canvas is also available on the direct p5 → Preview Image wire."
       },
       "color": "#243",
       "bgcolor": "#365"

@@ -7,8 +7,8 @@ from PIL import Image
 from comfy_api.latest import ComfyExtension, io, ui
 
 
-def _load_capture(capture: str, source: str) -> torch.Tensor:
-    if capture.startswith("GENERETI_OFF:"):
+def _load_capture(capture: str | None, source: str) -> torch.Tensor:
+    if not capture or capture.startswith("GENERETI_OFF:"):
         raise ValueError(f"Select and start the {source} source before queueing this workflow.")
     path = folder_paths.get_annotated_filepath(capture)
     with Image.open(path) as image:
@@ -87,12 +87,12 @@ class _GeneretiBrowserCapture(io.ComfyNode):
         )
 
     @classmethod
-    def fingerprint_inputs(cls, capture):
+    def fingerprint_inputs(cls, capture=None):
         # The browser widget uploads a fresh [temp] filename on every queue.
-        return capture
+        return capture or f"GENERETI_OFF:{cls.capture_name}"
 
     @classmethod
-    def execute(cls, capture):
+    def execute(cls, capture=None):
         image = _load_capture(capture, cls.capture_name)
         return io.NodeOutput(image, ui=ui.PreviewImage(image, cls=cls))
 

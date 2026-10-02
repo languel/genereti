@@ -43,6 +43,16 @@
       "title": "Style",
       "type": "string"
     },
+    "resolution": {
+      "default": "auto",
+      "enum": [
+        "auto",
+        256,
+        384,
+        512
+      ],
+      "title": "Resolution"
+    },
     "seed": {
       "default": 42,
       "maximum": 4294967295,

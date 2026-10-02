@@ -41,3 +41,8 @@ async def comfy_entrypoint():
 
 
 WEB_DIRECTORY = "./web"
+
+# Local transport works across browser profiles; frames are never saved.
+from server import PromptServer
+from .relay import register
+register(PromptServer.instance.routes)

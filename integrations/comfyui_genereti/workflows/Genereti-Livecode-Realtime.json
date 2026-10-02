@@ -1,0 +1,102 @@
+{
+  "version": 0.4,
+  "config": {},
+  "groups": [],
+  "extra": {
+    "ds": {
+      "scale": 0.78,
+      "offset": [
+        50,
+        100
+      ]
+    },
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti Livecode Realtime"
+  },
+  "last_node_id": 2,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "pos": [
+        0,
+        80
+      ],
+      "size": [
+        510,
+        780
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode"
+      },
+      "widgets_values": [
+        "p5",
+        true,
+        "function setup(){createCanvas(512,512);background(245);}\nfunction draw(){if(mouseIsPressed){noStroke();fill(20,40,60,90);circle(mouseX,mouseY,24);}}",
+        ""
+      ]
+    },
+    {
+      "id": 2,
+      "type": "GeneretiLiveImagePreview",
+      "pos": [
+        520,
+        60
+      ],
+      "size": [
+        510,
+        670
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview"
+      },
+      "widgets_values": [
+        512,
+        85
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ]
+  ]
+}

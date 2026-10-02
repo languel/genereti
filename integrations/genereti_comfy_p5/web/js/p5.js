@@ -1,5 +1,6 @@
 import { api } from "../../../scripts/api.js";
 import { app } from "../../../scripts/app.js";
+import { publishLive } from "./live-runtime.js";
 
 const NODE_NAME = "GeneretiP5Sketch";
 // The sketch runs in an opaque-origin srcdoc iframe, so resolve the bundled
@@ -84,7 +85,26 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
         parent.postMessage({type:'ready'}, '*');
       })), 100);
     } catch (error) { parent.postMessage({type:'error', message:String(error)}, '*'); }
+    let live=false, livePending=false, liveRaf=0, liveLast=0, liveEpoch=0;
+    const liveTick=async now=>{
+      if(!live)return;
+      liveRaf=requestAnimationFrame(liveTick);
+      const canvas=stage.querySelector('canvas');
+      if(!canvas||livePending||now-liveLast<1000/60)return;
+      livePending=true;liveLast=now;const session=liveEpoch;
+      try{
+        const bitmap=await createImageBitmap(canvas);
+        if(live&&session===liveEpoch)parent.postMessage({type:'live-frame',bitmap},'*',[bitmap]);
+        else{bitmap.close();livePending=false;}
+      }catch(error){livePending=false;parent.postMessage({type:'error',message:String(error)},'*');}
+    };
+    window.addEventListener('keydown',event=>{if(event.isComposing)return;if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();event.stopImmediatePropagation();parent.postMessage({type:'request-run'},'*');}else if((event.ctrlKey||event.metaKey)&&(event.key==='.'||event.code==='Period')){event.preventDefault();event.stopImmediatePropagation();parent.postMessage({type:'request-stop'},'*');}},true);
     window.addEventListener('message', (event) => {
+      if(event.source!==parent)return;
+      if(event.data?.type==='pause'){window.noLoop?.();live=false;liveEpoch++;livePending=false;cancelAnimationFrame(liveRaf);return;}
+      if(event.data?.type==='live-start'){if(!live){live=true;liveRaf=requestAnimationFrame(liveTick);}return;}
+      if(event.data?.type==='live-stop'){live=false;liveEpoch++;livePending=false;cancelAnimationFrame(liveRaf);return;}
+      if(event.data?.type==='live-ack'){livePending=false;return;}
       if (event.data?.type === 'capture') {
         try {
           const canvas = stage.querySelector('canvas');
@@ -100,8 +120,8 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
 }
 
 function makeP5Editor(node, inputName) {
-  const state = { frame: null, pendingCapture: null, timer: null };
-  const container = document.createElement("div");
+  const state = { frame: null, pendingCapture: null, timer: null, liveUsers: 0 };
+  const container = document.createElement("div");container.classList.add('genereti-live-surface');
   Object.assign(container.style, { display: "flex", flexDirection: "column", gap: "6px", width: "100%" });
 
   const instructions = document.createElement("div");
@@ -135,7 +155,7 @@ function makeP5Editor(node, inputName) {
   container.append(instructions, textarea, controls, frameSlot);
 
   const runSketch = async () => {
-    clearTimeout(state.timer);
+    clearTimeout(state.timer);state.paused=false;
     status.textContent = "Loading p5.js…";
     try {
       const librarySource = await loadP5Source();
@@ -144,12 +164,17 @@ function makeP5Editor(node, inputName) {
       status.textContent = `Sketch error: ${error.message || error}`;
     }
   };
+  run.title='Run (Ctrl+Enter / Cmd+Enter)';
+  const stop=document.createElement('button');stop.textContent='■';stop.title='Pause (Ctrl+.)';controls.insertBefore(stop,status);
+  const pauseSketch=()=>{clearTimeout(state.timer);state.paused=true;state.frame?.contentWindow?.postMessage({type:'pause'},'*');status.textContent='Paused · last frame retained';};stop.onclick=pauseSketch;state.pauseSketch=pauseSketch;
+  container.addEventListener('keydown',event=>{if(event.isComposing)return;if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();event.stopImmediatePropagation();runSketch();}else if((event.ctrlKey||event.metaKey)&&(event.key==='.'||event.code==='Period')){event.preventDefault();event.stopImmediatePropagation();pauseSketch();}},true);
   run.addEventListener("click", (event) => { event.preventDefault(); runSketch(); });
   textarea.addEventListener("input", () => {
     const widget = node.widgets?.find((item) => item.name === inputName);
     if (widget) widget.value = textarea.value;
     clearTimeout(state.timer);
     state.timer = setTimeout(() => {
+      if(state.paused)return;
       runSketch();
       signalWorkflowChanged(node, widget);
     }, 900);
@@ -165,21 +190,30 @@ function makeP5Editor(node, inputName) {
     },
   });
   widget.value = textarea.value;
-  widget.getValue = () => textarea.value;
-  widget.setValue = (value) => {
-    textarea.value = value || DEFAULT_SKETCH;
-    widget.value = textarea.value;
-    runSketch();
-  };
   state.runSketch = runSketch;
   state.status = status;
   state.frameSlot = frameSlot;
   state.textarea = textarea;
   node._generetiP5 = state;
+  state.captureDataUrl = () => captureSketchDataUrl(node);
+  node._generetiLiveSource = {
+    retain(){if(++state.liveUsers===1)state.frame?.contentWindow?.postMessage({type:'live-start'},'*');},
+    release(){state.liveUsers=Math.max(0,state.liveUsers-1);if(!state.liveUsers)state.frame?.contentWindow?.postMessage({type:'live-stop'},'*');},
+  };
 
   window.addEventListener("message", (event) => {
     if (!state.frame || event.source !== state.frame.contentWindow) return;
-    if (event.data?.type === "ready") status.textContent = "Running · click the preview to draw or use keys";
+    if(event.data?.type==='request-run')runSketch();
+    if(event.data?.type==='request-stop')pauseSketch();
+    if (event.data?.type === "ready") {
+      if(state.paused){pauseSketch();return;}
+      status.textContent = "Running · click the preview to draw or use keys";
+      if(state.liveUsers)state.frame.contentWindow.postMessage({type:'live-start'},'*');
+    }
+    if (event.data?.type === 'live-frame') {
+      try {if(state.liveUsers)publishLive(node,event.data.bitmap);}
+      finally {event.data.bitmap.close();state.frame.contentWindow.postMessage({type:'live-ack'},'*');}
+    }
     if (event.data?.type === "error") status.textContent = `Sketch error: ${event.data.message}`;
     if (event.data?.type === "capture" && state.pendingCapture) {
       state.pendingCapture.resolve(event.data.data);
@@ -194,12 +228,13 @@ function makeP5Editor(node, inputName) {
 }
 
 function makeRevisionWidget(node, inputName) {
+  let revisionValue = 0;
   const element = document.createElement("div");
   element.style.display = "none";
   const widget = node.addDOMWidget(inputName, "GENERETI_P5_REVISION", element, {
     serialize: true,
-    getValue() { return Number(widget.value) || 0; },
-    setValue(value) { widget.value = Number(value) || 0; },
+    getValue() { return revisionValue; },
+    setValue(value) { revisionValue = Number(value) || 0; },
   });
   widget.value = 0;
   widget.computeSize = () => [0, 0];
@@ -222,6 +257,7 @@ function signalWorkflowChanged(node, widget) {
 
 function captureSketchDataUrl(node) {
   const state = node._generetiP5;
+  if (state?.pendingCapture) throw new Error("p5 capture is already in progress. Pause live preview before queueing.");
   if (!state?.frame?.contentWindow) throw new Error("Run the p5 sketch before queueing it.");
   state.status.textContent = "Capturing sketch…";
   return new Promise((resolve, reject) => {

@@ -91,7 +91,8 @@ class GeneretiP5Sketch(io.ComfyNode):
 
 class GeneretiP5Extension(ComfyExtension):
     async def get_node_list(self):
-        return [GeneretiP5Sketch]
+        from .livecode_node import GeneretiLivecode
+        return [GeneretiP5Sketch, GeneretiLivecode]
 
 
 async def comfy_entrypoint():

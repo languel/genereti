@@ -1,0 +1,42 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Genereti live projector</title><style>
+html,body{margin:0;width:100%;height:100%;background:black;color:#aaa;font:14px system-ui}body{display:grid;place-items:center}img,canvas{width:100vw;height:100vh;object-fit:contain} [hidden]{display:none!important}#controls{position:fixed;right:0;bottom:0;padding:16px;width:80px;height:80px;display:flex;align-items:flex-end;justify-content:flex-end;z-index:2}#fullscreen{width:36px;height:36px;padding:9px;border:1px solid #ffffff30;border-radius:6px;background:#202020cc;color:#ddd;cursor:pointer;opacity:0;transition:opacity .18s;display:grid;place-items:center}#fullscreen svg{width:16px;height:16px}#controls:hover #fullscreen,#controls:focus-within #fullscreen{opacity:1}#fullscreen:focus-visible{outline:2px solid #aaa;outline-offset:2px}@media(hover:none){#fullscreen{opacity:.6}}
+</style></head><body><span id="message">Waiting for a preview frame from ComfyUI…</span><img id="image" hidden alt=""><canvas id="canvas" hidden></canvas><div id="controls"><button id="fullscreen" type="button" aria-label="Toggle fullscreen" title="Fullscreen (F) · Esc to exit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div><script>
+const image=document.getElementById('image'),message=document.getElementById('message');
+let objectUrl=null,revision=0,channel=null;
+let fit='contain';
+function setFit(value){fit=['contain','cover','fill','native'].includes(value)?value:'contain';for(const surface of [image,canvas])surface.style.cssText=fit==='native'?'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:none;max-height:none':'position:fixed;inset:0;width:100vw;height:100vh;object-fit:'+fit;document.getElementById('fit').value=fit;}
+const canvas=document.getElementById('canvas');
+const token=new URLSearchParams(location.search).get('channel');
+function show(data){
+ if(data.bitmap){
+  revision++;if(canvas.width!==data.bitmap.width||canvas.height!==data.bitmap.height){canvas.width=data.bitmap.width;canvas.height=data.bitmap.height;}
+  canvas.getContext('2d').drawImage(data.bitmap,0,0);data.bitmap.close();
+  canvas.hidden=false;image.hidden=true;message.hidden=true;channel?.postMessage({type:'ack'});return;
+ }
+ const current=++revision;const candidate=new Image();
+ const next=data.blob?URL.createObjectURL(data.blob):data.src;
+ if(!next)return;
+ candidate.onload=()=>{if(current!==revision){if(data.blob)URL.revokeObjectURL(next);return;}if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl=data.blob?next:null;image.src=next;image.hidden=false;canvas.hidden=true;message.hidden=true;channel?.postMessage({type:'ack'});};
+ candidate.onerror=()=>{if(data.blob)URL.revokeObjectURL(next);message.textContent='Could not load preview frame';channel?.postMessage({type:'ack'});};candidate.src=next;
+}
+let lastDirect=0,relaySeq='0',closed=false;
+async function pollRelay(){
+ if(closed||!token)return;
+ try {
+  if(performance.now()-lastDirect>1000){
+   const response=await fetch(`/genereti/projector/${token}/frame?after=${relaySeq}`,{cache:'no-store'});
+   if(response.status===200){relaySeq=response.headers.get('X-Frame')||relaySeq;show({blob:await response.blob()});}
+   else if(response.status===404)message.textContent='Relay unavailable · restart Comfy to load the projector update';
+  }
+ } catch {message.textContent='Waiting for Comfy projector connection…';}
+ if(!closed)setTimeout(pollRelay,33);
+}
+window.addEventListener('pagehide',()=>{closed=true;});
+setTimeout(pollRelay,1200);
+if(token){channel=new BroadcastChannel(`genereti-projector-${token}`);channel.onmessage=e=>{if(e.data?.type==='fit')setFit(e.data.fit);if(e.data?.type==='frame'){lastDirect=performance.now();show(e.data);}};channel.postMessage({type:'ready'});window.addEventListener('pagehide',()=>{channel.close();if(objectUrl)URL.revokeObjectURL(objectUrl);});}
+else message.textContent='Open the projector link from its Comfy node.';
+const fits=document.createElement('select');fits.id='fit';fits.title='Output fit';fits.setAttribute('aria-label','Output fit');fits.style.cssText='position:fixed;bottom:12px;left:12px;z-index:2;background:#222b;color:#ddd;opacity:0';for(const [label,value] of [['Contain','contain'],['Cover','cover'],['Stretch','fill'],['Native pixels','native']])fits.append(new Option(label,value));document.body.append(fits);fits.onchange=()=>{setFit(fits.value);try{localStorage.setItem('genereti-projector-fit',fit);}catch{}};document.addEventListener('pointermove',event=>fits.style.opacity=event.clientY>innerHeight-70?'1':'0');fits.onfocus=()=>fits.style.opacity='1';try{setFit(localStorage.getItem('genereti-projector-fit')||'contain');}catch{setFit('contain');}
+document.getElementById('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch(error){message.textContent=error.message;message.hidden=false;}};
+document.addEventListener('keydown',event=>{if(event.key.toLowerCase()==='f'&&!event.repeat&&!event.metaKey&&!event.ctrlKey&&!event.altKey){event.preventDefault();document.getElementById('fullscreen').click();}});
+image.ondblclick=canvas.ondblclick=()=>document.getElementById('fullscreen').click();
+</script></body></html>

@@ -16,6 +16,7 @@ from PIL import Image, UnidentifiedImageError
 from guides import invert_guide, prepare_sdxs_guides
 from postprocess import apply_postprocessing
 from coreml_upscaler import MODELS as UPSCALER_MODELS
+from model_resolution import resolve_resolution
 
 ROOT = Path(__file__).resolve().parent
 MAX_BODY = 9_000_000
@@ -28,6 +29,7 @@ class GenerateRequest(BaseModel):
     prompt_mix: float = Field(default=0, ge=0, le=1)
     mode: Literal['text','image','sketch','canny','depth','pose','composite','sdxs_mixer'] = 'text'
     style: Literal['base','anime'] = 'base'
+    resolution: Literal['auto',256,384,512] = 'auto'
     seed: int = Field(default=42, ge=0, le=4294967295)
     strength: float = Field(default=.65, ge=.05, le=1)
     control_scale: float = Field(default=.8, ge=0, le=65504, allow_inf_nan=False)
@@ -106,25 +108,30 @@ class Runtime:
             print('GENERETI READY',flush=True)
         except Exception as exc:
             self.error=str(exc); self.loading=None; traceback.print_exc()
+    @staticmethod
+    def model_catalog():
+        return {str(size):sorted(p.stem for p in (ROOT/'models'/str(size)).glob('*.mlpackage'))
+            for size in Runtime.available_sizes()}
     async def switch_size(self,size):
+        async with self.lock:
+            await self._switch_size_locked(size)
+    async def _switch_size_locked(self,size):
         if size not in self.available_sizes():
             raise ValueError(f'{size}px model packages are not installed.')
         if self.size==size and self.engine is not None:
             return
-        async with self.lock:
-            self.loading=f'Loading {size}px Core ML models…'
-            self.error=None
-            old_engine=self.engine
-            self.engine=None
-            del old_engine
-            gc.collect()
-            try:
-                engine=await asyncio.get_running_loop().run_in_executor(self.executor,self.build_engine,size)
-            except Exception as exc:
-                self.error=str(exc);self.loading=None;traceback.print_exc()
-                raise ValueError(f'Could not load {size}px models: {exc}') from exc
-            self.engine=engine;self.size=size;self.loading=None
-            print(f'GENERETI READY {size}px',flush=True)
+        self.loading=f'Loading {size}px Core ML models…'
+        try:
+            # Keep the previous engine usable if loading the requested size fails.
+            engine=await asyncio.get_running_loop().run_in_executor(self.executor,self.build_engine,size)
+        except Exception as exc:
+            traceback.print_exc()
+            raise ValueError(f'Could not load {size}px models: {exc}') from exc
+        finally:
+            self.loading=None
+        self.engine=engine;self.size=size;self.error=None
+        gc.collect()
+        print(f'GENERETI READY {size}px',flush=True)
     def render(self, data):
         start=time.perf_counter()
         image=None
@@ -252,7 +259,12 @@ class Runtime:
         if self.loading or not self.engine: raise HTTPException(503,self.loading or 'Engine unavailable')
         if self.lock.locked(): raise HTTPException(429,'Generator is in use. Pause the other producer or retry.')
         async with self.lock:
-            try: jpeg, metrics=await asyncio.get_running_loop().run_in_executor(self.executor,self.render,data)
+            try:
+                size=resolve_resolution(self.model_catalog(),self.size,data.mode,data.style,data.resolution)
+                await self._switch_size_locked(size)
+                jpeg, metrics=await asyncio.get_running_loop().run_in_executor(self.executor,self.render,data)
+                metrics['requested_resolution']=data.resolution
+                metrics['resolved_resolution']=size
             except ValueError as exc: raise HTTPException(400,str(exc)) from exc
             except Exception as exc:
                 # A failed frame must not poison the runtime or kill the worker.
@@ -281,7 +293,7 @@ async def lifespan(app):
 app=FastAPI(title='Genereti local bridge',version='0.1.0',lifespan=lifespan)
 app.add_middleware(TrustedHostMiddleware,allowed_hosts=['localhost','127.0.0.1','[::1]','testserver'])
 app.add_middleware(CORSMiddleware,allow_origin_regex=ORIGIN.pattern,allow_methods=['GET','POST'],
-    allow_headers=['Content-Type'],expose_headers=['X-Inference-Ms','X-Server-Ms','X-Frame'])
+    allow_headers=['Content-Type'],expose_headers=['X-Inference-Ms','X-Server-Ms','X-Frame','X-Model-Size'])
 
 @app.middleware('http')
 async def local_requests(request,call_next):
@@ -299,6 +311,8 @@ async def status():
         'backend':runtime.metadata.get('backend','Core ML CPU + GPU'),
         'model':'SDXS DreamShaper','size':runtime.size,
         'available_sizes':runtime.available_sizes(),
+        'models_by_size':runtime.model_catalog(),
+        'resolution_handler':True,
         'available_upscalers':[name for name,(filename,_) in UPSCALER_MODELS.items()
             if (ROOT/'models'/'upscalers'/filename).exists()],
         'controlnet':bool(runtime.engine and 'controlled_unet' in runtime.engine.models),
@@ -316,7 +330,8 @@ async def generate(request:Request):
     except ValidationError as exc: raise HTTPException(422,validation_message(exc)) from exc
     jpeg,metrics=await runtime.generate(data)
     return Response(jpeg,media_type='image/jpeg',headers={'X-Inference-Ms':str(metrics['inference_ms']),
-        'X-Server-Ms':str(metrics['server_ms']),'X-Frame':str(metrics['frame'])})
+        'X-Server-Ms':str(metrics['server_ms']),'X-Frame':str(metrics['frame']),
+        'X-Model-Size':str(metrics['resolved_resolution'])})
 
 class SizeRequest(BaseModel):
     size: Literal[256,384,512]

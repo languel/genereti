@@ -1,9 +1,7 @@
 import { app } from "../../../scripts/app.js";
+import { projectorLink } from "./projector-link.js";
 
 const NODE_NAME = "GeneretiProjector";
-const PAGE_URL = new URL("/extensions/genereti_comfy_projector/projector.html", window.location.origin).href;
-const projectors = new Set();
-
 function imageUrl(image) {
   const query = new URLSearchParams({
     filename: image.filename,
@@ -14,21 +12,14 @@ function imageUrl(image) {
 }
 
 function sendLatest(state) {
-  if (!state.popup || state.popup.closed || !state.latestImage) return;
-  state.popup.postMessage({ type: "genereti-projector-image", src: imageUrl(state.latestImage) }, window.location.origin);
+  if (!state.latestImage || (state.lastLive && performance.now()-state.lastLive<500)) return;
+  state.link?.publish({src: imageUrl(state.latestImage)});
 }
-
-window.addEventListener("message", (event) => {
-  if (event.origin !== window.location.origin || event.data?.type !== "genereti-projector-ready") return;
-  for (const state of projectors) {
-    if (event.source === state.popup) sendLatest(state);
-  }
-});
 
 function makeProjectorWidget(node, inputName) {
   const state = { popup: null, latestImage: null, status: null };
   node._generetiProjector = state;
-  const container = document.createElement("div");
+  const container = document.createElement("div");container.classList.add('genereti-live-surface');
   Object.assign(container.style, { display: "flex", flexDirection: "column", gap: "6px", width: "100%" });
 
   const button = document.createElement("button");
@@ -44,24 +35,29 @@ function makeProjectorWidget(node, inputName) {
   state.status = status;
   container.append(button, status);
 
-  button.addEventListener("click", () => {
-    if (state.popup && !state.popup.closed) {
-      state.popup.focus();
-      sendLatest(state);
-      return;
-    }
-    const popupName = `genereti-projector-${node.id}`;
-    state.popup = window.open(PAGE_URL, popupName, "popup,width=1280,height=800");
-    if (!state.popup) {
-      status.textContent = "Popup blocked. Allow popups for this ComfyUI page, then try again.";
-      return;
-    }
-    projectors.add(state);
-    status.textContent = state.latestImage ? "Projector window open." : "Projector open. Queue the workflow to send an image.";
-  });
+  state.link = projectorLink(container, '/extensions/genereti_comfy_projector/live-projector.html', status);
+  button.addEventListener('click', () => {state.link.open();sendLatest(state);});
+  const removed = node.onRemoved;
+  node.onRemoved = function() {state.link.close();return removed?.apply(this,arguments);};
+  const realtime = document.createElement('button');
+  realtime.type='button';realtime.textContent='Start realtime';container.insertBefore(realtime,button);
+  let unsubscribe=null, loading=false;
+  realtime.onclick=async()=>{
+    if(unsubscribe){unsubscribe();unsubscribe=null;realtime.textContent='Start realtime';return;}
+    if(loading)return;loading=true;
+    try {
+      const {subscribeLive}=await import('/extensions/genereti_comfy_p5/js/live-runtime.js');
+      realtime.textContent='Pause realtime';
+      unsubscribe=subscribeLive(node,({bitmap})=>{state.lastLive=performance.now();state.link.publish({bitmap});},text=>{status.textContent=text;});
+    } catch(error){status.textContent=error.message;}finally{loading=false;}
+  };
+  const cleanup=node.onRemoved;
+  node.onRemoved=function(){unsubscribe?.();return cleanup?.apply(this,arguments);};
+  window.addEventListener('pagehide',()=>unsubscribe?.(),{once:true});
+  window.addEventListener('pagehide' , () => state.link.close(), {once:true});
 
   const widget = node.addDOMWidget(inputName, "GENERETI_PROJECTOR", container, { serialize: false, hideOnZoom: false });
-  widget.computeSize = (width) => [width, 62];
+  widget.computeSize = (width) => [width, 188];
   return { widget };
 }
 

@@ -128,7 +128,7 @@ function makeCaptureWidget(node, inputName, kind) {
     }
   });
 
-  const widget = node.addDOMWidget(inputName, spec.widget, container, { serialize: false, hideOnZoom: false });
+  const widget = node.addDOMWidget(inputName, spec.widget, container, { serialize: true, hideOnZoom: false });
   widget.computeSize = (width) => [width, kind === "GeneretiCameraCapture" ? 150 : 132];
   state.stopCapture = stopCapture;
   return { widget };
@@ -178,6 +178,8 @@ app.registerExtension({
     if (!SOURCES[kind]) return;
     const capture = node.widgets?.find((widget) => widget.name === "capture");
     if (!capture) return;
+    // graphToPrompt skips widgets with serialize:false, including serializeValue.
+    capture.options = { ...capture.options, serialize: true };
     capture.serializeValue = () => captureToComfy(node, kind);
 
     const originalRemoved = node.onRemoved;

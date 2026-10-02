@@ -10,6 +10,12 @@ Start with the [student quickstart](docs/student-quickstart.md). It covers setup
 
 Open [the standalone p5 canvas lab](http://localhost:8765/p5-lab.html) for side-by-side drawing input and processed AI output, independent of Excalidraw. Defaults: SDXS sketch at 512px, `ink wash 水墨画`. Separate Comfy Send/Receive nodes and a headless MCP bridge use the same server. See [external interface setup and API contracts](docs/external-interfaces.md).
 
+## Comfy livecoding
+
+**ꘇ livecode** retains the internal `GeneretiLivecode` ID and search aliases. It keeps the last working sketch running when a new draft fails. Its borderless toolbar includes Run, Stop, Auto-update, Settings, Split/Overlay/Code/Output views, and an Export menu for PNG, standalone HTML, a JSON node object, or source script. Editor settings include themes, custom themes, alpha colors, fonts, completion and rendering dimensions/fit.
+
+Use **Cmd/Ctrl+Enter** to run, **Ctrl+.** to pause, **Cmd/Ctrl+Shift +/-** to resize the focused editor font, and **Shift + two-finger scrolling** to scroll code without zooming the graph. Settings → Genereti → Workflow → Default workflow selects Blank canvas or Comfy default for the next default load; restored tabs stay intact. See the [Livecode guide](integrations/genereti_comfy_p5/README.md) and [workflow examples](docs/workflows.md#general-livecode-source).
+
 ## Excalidraw workspace
 
 The local app opens directly into a full-screen Excalidraw workspace. **Genereti** opens the native dockable sidebar containing input sources, model controls, presets, post-processing and exports. Generated output renders on the drawing canvas. The classic interface remains at `/lab.html`. See [the workspace guide](docs/excalidraw-host.md). The icon toolbar supports drawing over generated output, with input above or below the result. Optional **Frame input** combines editable shapes/images with live media. The sidebar stays open while drawing and includes a **Performance** monitor. Prompt edits apply with **Cmd+Enter** (or Ctrl+Enter); enable **Live prompt** for updates as you type. Keyframe animation is not implemented yet.
@@ -20,8 +26,8 @@ The local app opens directly into a full-screen Excalidraw workspace. **Genereti
 - Guide generation with sketches, camera or shared-window captures, and optional Canny, depth, and pose controls. The experimental composite runs SDXS sketch and SD-Turbo Canny as separate image branches, then blends them.
 - Experiment with a separate Canny shape source, palette-reference transfer, emboss-first color/tone controls, recursive learned-upscaler feedback, sharpening, and output sizing.
 - Use the output as a live image stream in p5.js or TouchDesigner.
-- Build ComfyUI graphs with Genereti generation, live input capture, or an interactive p5.js sketch node.
-- Send a queued ComfyUI image to a fullscreen projector window.
+- Build ComfyUI graphs with Genereti generation, live input capture, the existing p5.js sketch node, or **ꘇ livecode** with p5, GLSL, Three.js, Strudel, HTML and Markdown.
+- Preview browser sources independently of Comfy’s queue and open a direct canvas output window; queued IMAGE results can also feed the projector.
 - Teach standard diffusion with an SD 1.5 bottle graph, then compare a fast direct-prompt Qwen Image 2.1 graph.
 - Run the optional SD-Turbo, anime, and control model downloads when you want those modes.
 
@@ -44,7 +50,7 @@ Genereti is designed for responsive visuals, not full-resolution batch art. The 
 - `web/`: live web app, output stream, p5 stage, and local pose worker.
 - `integrations/comfyui_genereti/`: Genereti generate and output nodes, with example workflows.
 - `integrations/genereti_comfy_inputs/`: doodle, webcam, and window/screen capture nodes.
-- `integrations/genereti_comfy_p5/`: separate interactive p5.js sketch source node.
+- `integrations/genereti_comfy_p5/`: p5.js and CodeMirror Livecode sources, local runtimes and editor libraries.
 - `integrations/genereti_comfy_projector/`: click-to-open, screen-filling Comfy image output window.
 - `integrations/touchdesigner/`: TouchDesigner component builder and instructions.
 - `scripts/`: environment setup, model conversion/download, and Comfy install helpers.

@@ -2,3 +2,5 @@
 from .nodes import GeneretiStreams
 async def comfy_entrypoint():
     return GeneretiStreams()
+
+WEB_DIRECTORY = "./web"

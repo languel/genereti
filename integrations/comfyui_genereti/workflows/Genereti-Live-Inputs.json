@@ -379,8 +379,10 @@
         "base",
         true,
         4862,
+        "fixed",
         0.65,
-        0.8
+        0.8,
+        "auto"
       ],
       "widgets_values_named": {
         "prompt": "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
@@ -500,10 +502,10 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "Choose a source and connect it to Genereti Input Source.\n\nDoodle \u2192 leave mode on sketch. Webcam or Window / Screen \u2192 set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
+        "Choose a source and connect it to Genereti Input Source.\n\nDoodle → leave mode on sketch. Webcam or Window / Screen → set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
       ],
       "widgets_values_named": {
-        "text": "Choose a source and connect it to Genereti Input Source.\n\nDoodle \u2192 leave mode on sketch. Webcam or Window / Screen \u2192 set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
+        "text": "Choose a source and connect it to Genereti Input Source.\n\nDoodle → leave mode on sketch. Webcam or Window / Screen → set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
       },
       "color": "#432",
       "bgcolor": "#653"
