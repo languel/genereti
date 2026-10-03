@@ -4,3 +4,34 @@ html,body{margin:0;height:100%;overflow:hidden;font:12px -apple-system,BlinkMacS
 
 /* The live canvas element is internal output, not a user-editable web link. */
 .excalidraw-hyperlinkContainer:has(a[href="https://genereti.local/live-output"]){display:none}
+
+/* Drawing-only Comfy host uses native canvas footer and theme colors. */
+body[data-host="comfy"] #editor{inset:0}
+html:has(body[data-host="comfy"]),body[data-host="comfy"]{background:transparent;color-scheme:normal}
+/* A standalone editor has no node behind it; use a quiet preview backing.
+   Embedded editors retain actual alpha all the way through the iframe. */
+html[data-drawing-standalone="true"]{background:#1b1b1b}
+body[data-host="comfy"] #toolbar{position:static;min-height:32px;max-width:calc(100vw - 280px);border-radius:8px;padding:4px 8px;background:var(--island-bg-color);color:var(--text-primary-color);box-shadow:var(--shadow-island);gap:4px}
+body[data-host="comfy"] #toolbar button{display:flex;align-items:center;justify-content:center;width:32px;height:32px;background:transparent;color:var(--text-primary-color);border:0}
+body[data-host="comfy"] #toolbar button:hover{background:var(--button-hover-bg)}
+body[data-host="comfy"] #toolbar button svg{width:1rem;height:1rem;stroke-width:1.25}
+body[data-host="comfy"] #status{display:none}
+body[data-host="comfy"] #toolbar select{max-width:100px;background:var(--island-bg-color);color:var(--text-primary-color);border:0;font:inherit}
+body[data-host="comfy"] #toolbar label{font-size:11px}
+body[data-host="comfy"] #toolbar [hidden]{display:none!important}
+body[data-host="comfy"] #toolbar button[aria-pressed=true]{background:color-mix(in srgb,currentColor 12%,transparent)}
+body[data-host="comfy"] #toolbar button:focus-visible{outline:2px solid currentColor;outline-offset:1px}
+body[data-host="comfy"] .excalidraw,body[data-host="comfy"] .excalidraw.theme--dark{
+ --color-primary:var(--text-primary-color);--color-primary-darker:var(--text-primary-color);--color-primary-darkest:var(--text-primary-color);
+ --color-primary-hover:var(--text-primary-color);--color-primary-light:color-mix(in srgb,var(--text-primary-color) 12%,var(--island-bg-color));
+ --color-primary-light-darker:color-mix(in srgb,var(--text-primary-color) 18%,var(--island-bg-color));
+ --color-selection:#818986;--color-brand-hover:var(--text-primary-color);--color-brand-active:var(--text-primary-color);
+ --color-on-primary-container:var(--text-primary-color);--color-surface-primary-container:color-mix(in srgb,var(--text-primary-color) 12%,var(--island-bg-color));
+}
+body[data-host="comfy"] .default-sidebar-trigger .sidebar-trigger__label{display:none}
+body[data-host="comfy"] .default-sidebar-trigger{padding:0;width:36px;justify-content:center}
+#satoriExit{display:none;position:fixed;bottom:8px;right:8px;z-index:100;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#858b88;font:28px/1 sans-serif;cursor:pointer}
+body.satori #satoriExit{display:block}
+body.satori #satoriExit:focus-visible{outline:2px solid currentColor}
+body.satori .excalidraw .layer-ui__wrapper,body.satori #toolbar,body.satori #artboard{display:none!important}
+@media(max-width:800px){body[data-host="comfy"] #toolbar{max-width:calc(100vw - 80px)}body[data-host="comfy"] .excalidraw .App-menu_bottom{gap:4px;flex-wrap:wrap}}

@@ -1,5 +1,11 @@
 // Static, local toolbar glyphs. Labels belong in title/aria-label attributes.
 const paths={
+ autoMask:'<rect x="2" y="5" width="7" height="14" rx="1"/><path d="M11 12h5m-2-2 2 2-2 2"/><rect x="18" y="5" width="4" height="14" rx="1" fill="currentColor"/>',
+ image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/>',
+ mask:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="m7 16 3-8 4 2 3 6Z" fill="currentColor"/>',
+ paper:'<path d="M5 3h10l4 4v14H5ZM14 3v5h5M3 21 21 3"/>',
+ grid:'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/>',
+ satori:'<circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>',
  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>',
  moon:'<path d="M20 15.2A9 9 0 0 1 8.8 4 9 9 0 1 0 20 15.2Z"/>',
  stroke:'<path d="m4 17 1 3 3-1L20 7l-4-4Z M13 6l4 4"/>',

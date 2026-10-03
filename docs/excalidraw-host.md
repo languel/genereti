@@ -59,3 +59,24 @@ A local Chromium check with SDXS sketch at 256 px and no AI upscaler measured ab
 ## Prompt submission
 
 Prompts A and B are drafts until **Cmd+Enter** (Mac) / **Ctrl+Enter** or the apply icon is pressed. Live generation continues with the applied prompts while you type. **Live prompt** applies each edit immediately; it defaults off and remembers the preference locally. Preset selection and the public setPrompt API apply explicitly. Generated-image metadata records the applied prompts, not unsent draft text.
+
+## Comfy drawing host
+
+**ꘇ drawing** embeds this same locally bundled Excalidraw editor in ComfyUI,
+without generator controls. Separate Image and Mask frames feed IMAGE and MASK;
+SVG and JSON STRING sockets expose vector content and the editable scene for
+external controls. See [the node guide](../integrations/genereti_comfy_drawing/README.md).
+
+The standalone Comfy drawing source defaults to **Live**, with **Comfy Queue**
+available in the dropdown above the editor. Connected ports determine which
+outputs are exported. Connect it to **ꘇ live image preview** for direct browser
+frames. `Genereti-Drawing-Source.json` contains this
+source-only path and needs no Genereti model server. The same delivery controls
+are shared by drawing, p5/livecode, camera/screen, preview and projector nodes;
+Python effects still execute on Queue.
+
+Image and Mask frames remain locked when selecting and deleting artwork. Output
+size, optional theme matching and delivery live above the editor; its glyph footer
+provides transparent paper, grid, auto Image → Mask and Satori controls. Transparent
+paper preserves alpha in IMAGE/SVG and shows the node background through the
+embedded canvas. MASK remains grayscale and independent of theme.

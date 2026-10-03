@@ -47,6 +47,7 @@ export function outputWindow(status) {
   function draw(bitmap) {
     if(!win || win.closed || !context) return;
     if(canvas.width !== bitmap.width || canvas.height !== bitmap.height){canvas.width=bitmap.width;canvas.height=bitmap.height;}
+    context.clearRect(0,0,canvas.width,canvas.height);
     context.drawImage(bitmap, 0, 0);
     frames++;
     const now=performance.now();

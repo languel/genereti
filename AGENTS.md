@@ -8,3 +8,4 @@
 - Keep Comfy workflows in `integrations/comfyui_genereti/workflows/` and validate that each is valid JSON after edits.
 - Before renaming APIs, check the browser modules, workflow node IDs, `scripts/install_comfy.sh`, TouchDesigner builder, and documentation together.
 - Use the sample stage prompt from `docs/prompts.md` when creating teaching examples.
+- Follow `docs/node-ui-design.md` for custom ComfyUI controls: livecode is the template, buttons/dropdowns are borderless, and toggles use glyphs with hover tips and accessible state.

@@ -13,12 +13,12 @@ app.registerExtension({
     button.type = 'button'; button.textContent = 'Open projector';
     const status = document.createElement('span');
     status.style.cssText = 'font-size:11px;font-variant-numeric:tabular-nums';
-    status.textContent = 'Start realtime for browser sources · Queue for other IMAGE sources';
+    status.textContent = 'Live browser source · Comfy Queue for Python IMAGE results';
     const canvas = document.createElement('canvas');
     canvas.width = canvas.height = 512;
-    canvas.style.cssText = 'width:100%;aspect-ratio:1;object-fit:contain;background:#111';
+    canvas.style.cssText = 'width:100%;aspect-ratio:1;object-fit:contain;background:transparent';
     const realtime=document.createElement('button');
-    realtime.type='button';realtime.textContent='Start realtime';
+    realtime.type='button';realtime.textContent='Start realtime';realtime.hidden=true;
     container.append(realtime,button, status, canvas);
     const widget = node.addDOMWidget('live_image_preview', 'GENERETI_IMAGE_PREVIEW', container, {serialize:false});
     widget.computeSize = width => [width, width + 181];
@@ -30,6 +30,7 @@ app.registerExtension({
       unsubscribe=subscribeLive(node,({bitmap,producedAt})=>{
         lastBrowserFrame=performance.now();
         if(canvas.width!==bitmap.width||canvas.height!==bitmap.height){canvas.width=bitmap.width;canvas.height=bitmap.height;}
+        canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
         canvas.getContext('2d').drawImage(bitmap,0,0);
         projector.publish({bitmap});
         const now=performance.now();
@@ -39,6 +40,8 @@ app.registerExtension({
         last=now;
       },text=>{status.textContent=text;});
     };
+    node._generetiSetExecutionMode=mode=>{if((mode==='Live')!==Boolean(unsubscribe))realtime.onclick();};
+    node._generetiSetExecutionMode(node._generetiExecutionMode||'Live');
     const executed = node.onExecuted;
     node.onExecuted = function(message) {
       executed?.apply(this, arguments);

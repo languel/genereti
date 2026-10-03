@@ -60,7 +60,7 @@ class GeneretiLivePreview(io.ComfyNode):
 class GeneretiLiveImagePreview(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return io.Schema(node_id='GeneretiLiveImagePreview', display_name='Genereti Live Image Preview',
+        return io.Schema(node_id='GeneretiLiveImagePreview', display_name='ꘇ live image preview',
             category='Genereti / Streams', is_output_node=True, not_idempotent=True,
             description='Preview any IMAGE without writing preview files. Updates when upstream executes; passthrough preserves the entire original batch.',
             inputs=[io.Image.Input('image'),
@@ -71,11 +71,15 @@ class GeneretiLiveImagePreview(io.ComfyNode):
     def execute(cls, image, preview_size=512, jpeg_quality=85):
         start=time.perf_counter()
         pixels=(image[0].detach().cpu().numpy().clip(0,1)*255).astype(np.uint8)
-        preview=Image.fromarray(pixels[..., :3])
+        transparent=pixels.shape[-1] == 4 and pixels[..., 3].min() < 255
+        preview=Image.fromarray(pixels if transparent else pixels[..., :3])
         preview.thumbnail((preview_size,preview_size),Image.Resampling.BILINEAR)
         buffer=bytes_io.BytesIO()
-        preview.save(buffer,format='JPEG',quality=jpeg_quality)
-        data='data:image/jpeg;base64,'+base64.b64encode(buffer.getvalue()).decode()
+        if transparent:
+            preview.save(buffer,format='PNG')
+        else:
+            preview.save(buffer,format='JPEG',quality=jpeg_quality)
+        data=f'data:image/{"png" if transparent else "jpeg"};base64,'+base64.b64encode(buffer.getvalue()).decode()
         return io.NodeOutput(image,ui={'genereti_preview':[data],
             'genereti_preview_ms':[round((time.perf_counter()-start)*1000,2)]})
 

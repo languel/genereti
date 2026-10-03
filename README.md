@@ -20,6 +20,17 @@ Open [the standalone p5 canvas lab](http://localhost:8765/p5-lab.html) for side-
 
 Use **Cmd/Ctrl+Enter** to run, **Ctrl+.** to pause, **Cmd/Ctrl+Shift +/-** to resize the focused editor font, and **Shift + two-finger scrolling** to scroll code without zooming the graph. Settings → Genereti → Workflow → Default workflow selects Blank canvas or Comfy default for the next default load; restored tabs stay intact. See the [Livecode guide](integrations/genereti_comfy_p5/README.md) and [workflow examples](docs/workflows.md#general-livecode-source).
 
+## Comfy drawing
+
+**ꘇ drawing** is an always-interactive Excalidraw source with protected Image and
+Mask frames and connection-driven IMAGE, MASK, SVG and JSON outputs. Choose Live
+or Comfy Queue above the editor. Transparent paper, output sizing, auto masks and
+Satori shortcuts are covered in the [drawing guide](integrations/genereti_comfy_drawing/README.md).
+Install with `scripts/install_comfy.sh`, restart ComfyUI and refresh the browser.
+Open [Genereti-Drawing-Source.json](integrations/comfyui_genereti/workflows/Genereti-Drawing-Source.json)
+for a drawing → **ꘇ live image preview** example without a model server. Custom
+node controls follow the [node UI design rules](docs/node-ui-design.md).
+
 ## Excalidraw workspace
 
 The local app opens directly into a full-screen Excalidraw workspace. **Genereti** opens the native dockable sidebar containing input sources, model controls, presets, post-processing and exports. Generated output renders on the drawing canvas. The classic interface remains at `/lab.html`. See [the workspace guide](docs/excalidraw-host.md). The icon toolbar supports drawing over generated output, with input above or below the result. Optional **Frame input** combines editable shapes/images with live media. The sidebar stays open while drawing and includes a **Performance** monitor. Prompt edits apply with **Cmd+Enter** (or Ctrl+Enter); enable **Live prompt** for updates as you type. Keyframe animation is not implemented yet.

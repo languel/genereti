@@ -6,7 +6,7 @@ const BASE = 'http://127.0.0.1:8765';
 const value = (node, name) => node.widgets?.find(w => w.name === name)?.value;
 
 function sourceNode(node, seen = new Set()) {
-  if (!node || seen.has(node.id)) throw new Error('Connect a browser capture or p5 source.');
+  if (!node || seen.has(node.id)) throw new Error('Connect a drawing, browser capture or livecode source.');
   seen.add(node.id);
   if (!['GeneretiGenerate','GeneretiLivePreview'].includes(node.comfyClass) && node.comfyClass !== 'GeneretiInputSelect') return node;
   const name = ['GeneretiGenerate','GeneretiLivePreview'].includes(node.comfyClass) ? 'image' :
@@ -19,11 +19,12 @@ function sourceNode(node, seen = new Set()) {
 export async function captureInput(node, size, canvas) {
   if (value(node, 'mode') === 'text') return undefined;
   const source = sourceNode(node);
+  if (source._generetiDrawing?.captureDataUrl) return source._generetiDrawing.captureDataUrl();
   if (source._generetiLivecode?.captureDataUrl) return source._generetiLivecode.captureDataUrl();
   if (source._generetiP5?.captureDataUrl) return source._generetiP5.captureDataUrl();
   const video = source._generetiCapture?.video;
   if (!source._generetiCapture?.stream || !video || video.readyState < 2) {
-    throw new Error('Live preview supports started webcam/screen and running p5 sources. Use Queue for other IMAGE sources.');
+    throw new Error('Live preview supports drawing, started webcam/screen and running livecode sources. Use Queue for other IMAGE sources.');
   }
   canvas.width = canvas.height = size;
   canvas.getContext('2d').drawImage(video, 0, 0, size, size);
@@ -112,7 +113,7 @@ export function attachLivePreview(node) {
       if (!state.ready) throw new Error(state.error || 'Generator not ready.');
       size = state.size;
       running = true; previous = 0; button.textContent = 'Pause live preview'; void tick();
-    } catch (error) { status.textContent = error.message; }
+    } catch (error) { status.textContent = error instanceof TypeError ? 'Start Genereti (./run.sh) · local generator at 127.0.0.1:8765 is unavailable' : error.message; }
     finally { button.disabled = false; }
   };
   const widget = node.addDOMWidget('genereti_live_preview', 'GENERETI_LIVE_PREVIEW', container, {serialize:false});

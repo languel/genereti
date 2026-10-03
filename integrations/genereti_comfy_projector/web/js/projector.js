@@ -40,17 +40,19 @@ function makeProjectorWidget(node, inputName) {
   const removed = node.onRemoved;
   node.onRemoved = function() {state.link.close();return removed?.apply(this,arguments);};
   const realtime = document.createElement('button');
-  realtime.type='button';realtime.textContent='Start realtime';container.insertBefore(realtime,button);
+  realtime.type='button';realtime.textContent='Start realtime';realtime.hidden=true;container.insertBefore(realtime,button);
   let unsubscribe=null, loading=false;
   realtime.onclick=async()=>{
     if(unsubscribe){unsubscribe();unsubscribe=null;realtime.textContent='Start realtime';return;}
     if(loading)return;loading=true;
     try {
       const {subscribeLive}=await import('/extensions/genereti_comfy_p5/js/live-runtime.js');
+      if(node._generetiExecutionMode==='Comfy Queue')return;
       realtime.textContent='Pause realtime';
       unsubscribe=subscribeLive(node,({bitmap})=>{state.lastLive=performance.now();state.link.publish({bitmap});},text=>{status.textContent=text;});
     } catch(error){status.textContent=error.message;}finally{loading=false;}
   };
+  node._generetiSetExecutionMode=mode=>{if((mode==='Live')!==Boolean(unsubscribe))void realtime.onclick();};
   const cleanup=node.onRemoved;
   node.onRemoved=function(){unsubscribe?.();return cleanup?.apply(this,arguments);};
   window.addEventListener('pagehide',()=>unsubscribe?.(),{once:true});
