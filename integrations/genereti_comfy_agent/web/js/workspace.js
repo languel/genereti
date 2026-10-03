@@ -1,6 +1,7 @@
 // One registry shared by the sidebar, browser callers and the local MCP bridge.
 // Inspired by Artist–Model Studio's visible, replayable tool seam.
-export function createWorkspace(app, {review=async()=>false}={}) {
+import {createResources} from './resources.js';
+export function createWorkspace(app, {review=async()=>false,resources=createResources()}={}) {
  const tools=new Map();let lastUndo=null;
  const graph=()=>app.graph;
  const nodes=()=>graph()._nodes||[];
@@ -53,5 +54,36 @@ export function createWorkspace(app, {review=async()=>false}={}) {
  definition('workflow_run','Queue the currently visible Comfy graph. May use models or paid API nodes; review the graph first.',{},[],async()=>{if(!await review({tool:'workflow_run',nodes:snapshot().nodes.map(n=>({id:n.id,type:n.type}))}))return {cancelled:true};await app.queuePrompt(0,1);return {queued:true};},true);
  definition('catalog_search','Search installed node types and input schemas.',{query:{type:'string'}},['query'],async a=>{const response=await fetch('/object_info');if(!response.ok)throw Error('Node catalog unavailable');const all=await response.json(),q=a.query.toLowerCase();return Object.entries(all).filter(([name,d])=>[name,d.display_name,d.category,...(d.search_aliases||[])].join(' ').toLowerCase().includes(q)).slice(0,12).map(([name,d])=>({name,display_name:d.display_name,description:d.description,input:d.input,output:d.output}));});
  definition('workspace_undo','Undo the last assistant edit if its target has not been edited since.',{},[],()=>{if(!lastUndo)throw Error('No assistant edit to undo');lastUndo();lastUndo=null;return {undone:true};});
- return {snapshot,nodeInfo,tools:()=>[...tools.values()].map(({handler,...t})=>t),call:async(name,args={})=>{const tool=tools.get(name);if(!tool)throw Error(`Unknown tool ${name}`);for(const key of tool.inputSchema.required)if(args[key]===undefined)throw Error(`Missing ${key}`);return tool.handler(args);}};
+ const kind={type:'string',enum:['asset','workflow','template']};
+ definition('library_search','Search local assets, saved workflows and installed templates. Returns exact @reference tokens. Refine or page results; warnings describe unavailable sources.',{kind:{type:'string',enum:['all','asset','workflow','template']},query:{type:'string'},offset:{type:'integer'},limit:{type:'integer'},refresh:{type:'boolean'}},[],a=>resources.list(a));
+ definition('library_read','Read a referenced asset metadata or sanitized workflow/template JSON. Media pixels are not sent to the model.',{kind,id:{type:'string'}},['kind','id'],a=>resources.read(a));
+ definition('workflow_open','Open a copy of a saved workflow/template in a new temporary Comfy tab after review. Does not save over the original or run it.',{kind:{type:'string',enum:['workflow','template']},id:{type:'string'}},['kind','id'],async a=>{
+  const {item,data}=await resources.document(a.kind,a.id),before=JSON.stringify(graph().serialize());
+  if(!await review({tool:'workflow_open',reference:`@${a.kind}:${JSON.stringify(a.id)}`,title:item.name,nodes:data.nodes.map(n=>({id:n.id,type:n.type})),newTab:true}))return {cancelled:true};
+  if(JSON.stringify(graph().serialize())!==before)throw Error('Workspace changed while awaiting review');
+  const copy=structuredClone(data);delete copy.id;
+  const loaded=await app.loadGraphData(copy,true,true,`Assistant copy ${Date.now()} ${item.name.split('/').pop()}`,{openSource:'template'});
+  if(loaded===false)throw Error('Comfy could not open the workflow');lastUndo=null;
+  return {opened:true,copy:true,source:{kind:a.kind,id:a.id},workspace:snapshot(),note:'Missing models/nodes may require setup; nothing was queued.'};
+ },true);
+ definition('asset_bind','Assign a referenced local media asset to an existing image/audio/video loader widget after review. Output/temp files are copied to input first; does not run the workflow.',{asset:{type:'string'},id,widget:{type:'string'}},['asset','id','widget'],async a=>{
+  const node=get(a.id),widget=node.widgets?.find(w=>w.name===a.widget);if(!widget||typeof widget.value!=='string')throw Error('Choose a file loader widget');
+  const response=await fetch(`/object_info/${encodeURIComponent(node.comfyClass||node.type)}`);if(!response.ok)throw Error('Loader schema unavailable');
+  const schemas=await response.json(),schema=schemas[node.comfyClass||node.type],def=schema?.input?.required?.[a.widget]||schema?.input?.optional?.[a.widget];
+  if(!Array.isArray(def?.[0])||!(/image|audio|video|file/i.test(a.widget)||def?.[1]?.image_upload))throw Error('This is not a supported media file loader');
+  const item=await resources.resolve('asset',a.asset),before=widget.value;
+  const expected=/audio/i.test(a.widget)?'audio':/video/i.test(a.widget)?'video':/image/i.test(a.widget)?'image':null;
+  if(expected&&item.mediaType!==expected)throw Error(`This loader expects ${expected}, not ${item.mediaType}`);
+  if(!await review({tool:'asset_bind',node:nodeInfo(node),widget:a.widget,before,after:item.name,copyToInput:item.type!=='input'}))return {cancelled:true};
+  if(get(a.id)!==node||widget.value!==before)throw Error('Node changed while awaiting review');
+  const filename=await resources.inputFile(a.asset);
+  if(get(a.id)!==node||widget.value!==before)throw Error('Node changed while copying the asset');
+  graph().beforeChange?.();widget.value=filename;widget.callback?.(filename);graph().afterChange?.();graph().setDirtyCanvas(true,true);
+  lastUndo=()=>{if(get(a.id)!==node||widget.value!==filename)throw Error('Node has newer edits; use Comfy undo instead');graph().beforeChange?.();widget.value=before;widget.callback?.(before);graph().afterChange?.();graph().setDirtyCanvas(true,true);};
+  // Refresh after assignment: refreshing first can replace a template's missing
+  // placeholder with a default value and falsely look like a concurrent edit.
+  await app.refreshComboInNodes?.();
+  return {id:node.id,widget:a.widget,value:filename,asset:a.asset};
+ },true);
+ return {snapshot,nodeInfo,resources,tools:()=>[...tools.values()].map(({handler,...t})=>t),call:async(name,args={})=>{const tool=tools.get(name);if(!tool)throw Error(`Unknown tool ${name}`);for(const key of tool.inputSchema.required)if(args[key]===undefined)throw Error(`Missing ${key}`);return tool.handler(args);}};
 }

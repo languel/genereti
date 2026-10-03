@@ -2,14 +2,15 @@ import {icon} from '../web/icons.js';
 import {timing,count} from '../web/performance.js';
 import React,{useState,useMemo} from 'react';
 import {createRoot} from 'react-dom/client';
-import {Excalidraw,exportToCanvas,exportToSvg,serializeAsJSON,restore,convertToExcalidrawElements,getCommonBounds,CaptureUpdateAction,Sidebar,Footer} from '@excalidraw/excalidraw';
+import {Excalidraw,exportToCanvas,exportToSvg,serializeAsJSON,restore,convertToExcalidrawElements,getCommonBounds,CaptureUpdateAction,Sidebar,Footer,MainMenu} from '@excalidraw/excalidraw';
 import '@excalidraw/excalidraw/index.css';
 import './style.css';
 
 const host=document.body.dataset.host==='excalidraw';
 const comfy=document.body.dataset.host==='comfy';
 if(comfy)document.documentElement.dataset.drawingStandalone=String(window.parent===window);
-let setSatoriState,satori=false;
+let setSatoriState,satori=comfy;
+if(comfy)document.body.classList.add('satori');
 function toggleSatori(enabled=!satori){satori=enabled;document.body.classList.toggle('satori',enabled);setSatoriState?.(enabled);if(comfy)send({type:'satori',enabled});}
 // Keep imperative controls alive when Excalidraw replaces its responsive Footer.
 const drawingToolbar=comfy?document.getElementById('toolbar'):null;
@@ -47,13 +48,14 @@ if(comfy){
  const button=document.createElement('button');button.id='liveEditsToggle';button.innerHTML=icon('live');button.title='Update while drawing · Shift + Alt + U. Off: update on release';button.setAttribute('aria-label','Update while drawing');
  liveEdits.parentElement.hidden=true;liveEdits.parentElement.after(button);
  button.setAttribute('aria-pressed',String(liveEdits.checked));button.onclick=()=>{liveEdits.checked=!liveEdits.checked;liveEdits.dispatchEvent(new Event('change'));};
- for(const [id,glyph,label] of [['paintImage','image','Fit Image frame · Alt + 1'],['paintMask','mask','Fit Mask frame · Alt + 2'],['autoMask','autoMask','Auto Image → Mask'],['satori','satori','Satori · Shift + Alt + Z'],['paper','paper','Transparent paper'],['grid','grid','Show grid']]){const b=document.getElementById(id);b.innerHTML=icon(glyph);b.title=label;b.setAttribute('aria-label',label);}
+ for(const [id,glyph,label] of [['paintImage','image','Fit Image frame · Alt + 1'],['paintMask','mask','Fit Mask frame · Alt + 2'],['autoMask','autoMask','Auto Image → Mask'],['satori','satori','Satori · Alt + Z'],['paper','paper','Transparent paper'],['grid','grid','Show grid']]){const b=document.getElementById(id);b.innerHTML=icon(glyph);b.title=label;b.setAttribute('aria-label',label);}
+ const help=document.createElement('button');help.id='drawingHelp';help.textContent='?';help.title='Drawing shortcuts and help';help.setAttribute('aria-label',help.title);help.onclick=()=>api?.updateScene({appState:{openDialog:{name:'help'}}});drawingToolbar.insertBefore(help,document.getElementById('satori'));
  document.getElementById('satori').onclick=()=>toggleSatori();
  document.getElementById('autoMask').onclick=()=>{autoImageMask=!autoImageMask;document.getElementById('autoMask').setAttribute('aria-pressed',String(autoImageMask));syncAutoMask();revision++;send({type:'scene',scene:scene(),frameId:inputFrameId,maskFrameId,exportMatchTheme});schedule();};
  document.getElementById('autoMask').setAttribute('aria-pressed','false');
  document.getElementById('grid').onclick=()=>api.updateScene({appState:{gridModeEnabled:!api.getAppState().gridModeEnabled}});
  document.getElementById('paper').onclick=()=>{const transparent=api.getAppState().viewBackgroundColor==='transparent';api.updateScene({appState:{viewBackgroundColor:transparent?'#ffffff':'transparent'}});};
- const exit=document.createElement('button');exit.id='satoriExit';exit.textContent='·';exit.title='Exit Satori · Shift + Alt + Z';exit.setAttribute('aria-label','Exit Satori');exit.onclick=()=>toggleSatori(false);document.body.append(exit);
+ const exit=document.createElement('button');exit.id='satoriExit';exit.textContent='·';exit.title='Exit Satori · Alt + Z';exit.setAttribute('aria-label','Exit Satori');exit.onclick=()=>toggleSatori(false);document.body.append(exit);
 }
 
 const status=document.getElementById(host?'drawingStatus':'status');
@@ -90,7 +92,7 @@ function ensureInputFrame(){
  if(comfy){
   if(!api.getSceneElements().some(e=>e.id===maskFrameId&&e.type==='frame'&&!e.isDeleted)){
    const existing=api.getSceneElements().find(e=>e.type==='frame'&&e.id!==inputFrameId&&e.name==='Mask');
-   if(existing)maskFrameId=existing.id;else{let [frame]=convertToExcalidrawElements([{type:'frame',children:[],name:'Mask'}]);frame={...frame,x:560,y:0,width:SIZE,height:SIZE};maskFrameId=frame.id;api.updateScene({elements:[...api.getSceneElements(),frame],captureUpdate:CaptureUpdateAction.NEVER});}
+   if(existing)maskFrameId=existing.id;else{let [frame]=convertToExcalidrawElements([{type:'frame',children:[],name:'Mask'}]);frame={...frame,x:0,y:1024,width:SIZE,height:SIZE};maskFrameId=frame.id;api.updateScene({elements:[...api.getSceneElements(),frame],captureUpdate:CaptureUpdateAction.NEVER});}
   }
   protectDrawingFrames(api.getSceneElements(),api.getAppState());
   syncMaskPaper();syncAutoMask();
@@ -103,7 +105,7 @@ function protectDrawingFrames(elements,state){
  if(!comfy||!api)return false;
  let changed=false;
  const imageFrame=elements.find(e=>e.id===inputFrameId),maskFrame=elements.find(e=>e.id===maskFrameId);
- const maskX=(imageFrame?.x||0)+outputSize.width+48,maskY=imageFrame?.y||0;
+ const maskX=imageFrame?.x||0,maskY=(imageFrame?.y||0)+outputSize.height+Math.max(512,outputSize.height);
  const dx=maskX-(maskFrame?.x||0),dy=maskY-(maskFrame?.y||0);
  const protectedIds=new Set([inputFrameId,maskFrameId].filter(Boolean));
  const next=elements.map(element=>{
@@ -262,7 +264,7 @@ outputMode.onchange=()=>{try{localStorage.setItem('genereti-editor-output',Strin
 function showOutput(data){lastOutput=data.image;setLiveOutput?.(lastOutput);}
 window.addEventListener('message',async({data,origin,source})=>{
  if(origin!==location.origin||source!==window.parent||data?.channel!==channel)return;
- try{if(comfy&&data.type==='output-size'){outputSize=normalizeSize(data.size);ensureInputFrame();revision++;send({type:'scene',scene:scene(),frameId:inputFrameId,maskFrameId,exportMatchTheme});fit();schedule();return;}if(comfy&&data.type==='scene-request'){send({type:'scene',scene:scene(),frameId:inputFrameId,maskFrameId,exportMatchTheme});return;}if(comfy&&data.type==='output-demand'){drawingDemand=new Set(data.outputs||[]);schedule();return;}if(comfy&&data.type==='export-appearance'){exportMatchTheme=Boolean(data.enabled);revision++;send({type:'scene',scene:scene(),frameId:inputFrameId,maskFrameId,exportMatchTheme});schedule();return;}if(comfy&&data.type==='edit-frame'){document.getElementById(data.kind==='mask'?'paintMask':'paintImage').click();return;}if(comfy&&data.type==='capture'){await rasterize(data.requestId,data.kind||'image',data.vectors!==false);return;}if(comfy&&data.type==='load'){inputFrameId=data.frameId||'';maskFrameId=data.maskFrameId||'';exportMatchTheme=Boolean(data.exportMatchTheme);maskPaper=null;await load(data.scene);send({type:'loaded'});schedule();return;}if(data.type==='guide-mode')showGuide(data);if(data.type==='guide'){guideImage=data.image;setGuideImage?.(guideImage);}if(data.type==='source')showSource(data);if(data.type==='output')await showOutput(data);if(data.type==='shortcut')shortcut(data.event,true);if(data.type==='fit')fit();if(data.type==='load')await load(data.scene);if(data.type==='save')download(scene());if(data.type==='refresh')schedule();}
+ try{if(comfy&&data.type==='output-size'){outputSize=normalizeSize(data.size);ensureInputFrame();revision++;send({type:'scene',scene:scene(),frameId:inputFrameId,maskFrameId,exportMatchTheme});fit();schedule();return;}if(comfy&&data.type==='scene-request'){send({type:'scene',scene:scene(),frameId:inputFrameId,maskFrameId,exportMatchTheme});return;}if(comfy&&data.type==='output-demand'){drawingDemand=new Set(data.outputs||[]);schedule();return;}if(comfy&&data.type==='export-appearance'){exportMatchTheme=Boolean(data.enabled);revision++;send({type:'scene',scene:scene(),frameId:inputFrameId,maskFrameId,exportMatchTheme});schedule();return;}if(comfy&&data.type==='edit-frame'){document.getElementById(data.kind==='mask'?'paintMask':'paintImage').click();if(data.freehand)api?.setActiveTool({type:'freedraw'});return;}if(comfy&&data.type==='capture'){await rasterize(data.requestId,data.kind||'image',data.vectors!==false);return;}if(comfy&&data.type==='load'){inputFrameId=data.frameId||'';maskFrameId=data.maskFrameId||'';exportMatchTheme=Boolean(data.exportMatchTheme);maskPaper=null;await load(data.scene);send({type:'loaded'});schedule();return;}if(data.type==='guide-mode')showGuide(data);if(data.type==='guide'){guideImage=data.image;setGuideImage?.(guideImage);}if(data.type==='source')showSource(data);if(data.type==='output')await showOutput(data);if(data.type==='shortcut')shortcut(data.event,true);if(data.type==='fit')fit();if(data.type==='load')await load(data.scene);if(data.type==='save')download(scene());if(data.type==='refresh')schedule();}
  catch(error){say(error.message);send({type:'error',message:error.message});}
 });
 document.getElementById('fit').onclick=fit;
@@ -275,8 +277,18 @@ function palette(popup){
  requestAnimationFrame(()=>api.updateScene({appState:{openMenu:'shape',openPopup:popup}}));
 }
 for(const [id,popup] of [['stroke','elementStroke'],['fill','elementBackground']])document.getElementById(id).onclick=()=>palette(popup);
+function clearDrawing(){
+ if(!api||!comfy)return;
+ const keep=new Set([inputFrameId,maskFrameId]);
+ api.updateScene({elements:api.getSceneElements().map(e=>keep.has(e.id)||runtimeElement(e)?e:{...e,isDeleted:true}),appState:{selectedElementIds:{}},captureUpdate:CaptureUpdateAction.IMMEDIATELY});
+ revision++;schedule();
+}
 function shortcut(event,forwarded=false){
- if(!api||event.ctrlKey||event.metaKey)return;
+ if(!api)return;
+ const editing=document.activeElement?.closest('input:not([type=radio]):not([type=checkbox]),textarea,select,[contenteditable="true"]');
+ if(comfy&&!editing&&(event.metaKey||event.ctrlKey)&&event.shiftKey&&event.code==='Backspace'){event.preventDefault?.();event.stopImmediatePropagation?.();clearDrawing();return;}
+ if(event.ctrlKey||event.metaKey)return;
+ if(comfy&&!editing&&event.altKey&&!event.shiftKey&&event.code==='KeyZ'){event.preventDefault?.();event.stopImmediatePropagation?.();toggleSatori();return;}
  const target=document.activeElement;
  if(!event.altKey&&['BracketLeft','BracketRight'].includes(event.code)&&!target?.closest('input:not([type=radio]):not([type=checkbox]),textarea,select,[contenteditable="true"]')){
   event.preventDefault?.();event.stopImmediatePropagation?.();
@@ -285,7 +297,7 @@ function shortcut(event,forwarded=false){
   api.updateScene({appState:{currentItemStrokeWidth:width}});return;
  }
  if(!forwarded&&target?.matches('input,textarea,select,[contenteditable="true"]'))return;
- if(comfy&&event.shiftKey&&event.altKey&&['KeyZ','KeyU'].includes(event.code)){event.preventDefault?.();event.stopImmediatePropagation?.();if(event.code==='KeyZ')toggleSatori();else document.getElementById('liveEditsToggle').click();return;}
+ if(comfy&&event.shiftKey&&event.altKey&&event.code==='KeyU'){event.preventDefault?.();event.stopImmediatePropagation?.();document.getElementById('liveEditsToggle').click();return;}
  if(comfy&&event.altKey&&!event.shiftKey&&['Digit1','Digit2'].includes(event.code)){event.preventDefault?.();event.stopImmediatePropagation?.();document.getElementById(event.code==='Digit1'?'paintImage':'paintMask').click();return;}
  if(event.code==='KeyD'&&event.shiftKey&&event.altKey){event.preventDefault?.();event.stopImmediatePropagation?.();document.getElementById('theme').click();return;}
  const key=event.key?.toLowerCase();
@@ -298,7 +310,7 @@ drawingFile().onchange=async e=>{const f=e.target.files[0];if(!f)return;try{if(f
 async function initializeEditor(value){
  api=value;window.generetiDrawing={getScene:scene,getCanvasElements:()=>structuredClone(api.getSceneElements()),load,fit};
  try{const previous=comfy?null:await stored();if(previous)await load(previous);}catch{say('Local autosave unavailable.');}
- requestAnimationFrame(()=>{if(host)api.updateScene({appState:{openSidebar:{name:'genereti'},frameRendering:{...api.getAppState().frameRendering,name:frameLabels}}});ensureInputFrame();ensureOutputFrame();fit();schedule();send({type:'ready'});send({type:'frame-input-mode',enabled:frameInputMode});send({type:'output-mode',enabled:outputMode.checked});});
+ requestAnimationFrame(()=>{if(host)api.updateScene({appState:{openSidebar:{name:'genereti'},frameRendering:{...api.getAppState().frameRendering,name:frameLabels}}});ensureInputFrame();ensureOutputFrame();if(comfy){api.setActiveTool({type:'freedraw'});toggleSatori(true);}fit();schedule();send({type:'ready'});send({type:'frame-input-mode',enabled:frameInputMode});send({type:'output-mode',enabled:outputMode.checked});});
 }
 if(comfy)document.addEventListener('keydown',event=>{if(event.key==='Escape')send({type:'collapse'});});
 if(comfy){
@@ -350,9 +362,9 @@ const renderLiveEmbeddable=element=>element.customData?.generetiAutoMask?<LivePr
 function DrawingEditor(){
  count('hostRenders');
  const [docked,setDocked]=useState(true);
- const [satoriMode,setSatoriMode]=useState(false);setSatoriState=setSatoriMode;
+ const [satoriMode,setSatoriMode]=useState(comfy);setSatoriState=setSatoriMode;
  const footer=useMemo(()=>comfy?<Footer><div className="drawing-tools" ref={mountDrawingToolbar}/></Footer>:host&&<Footer><div className="host-tools"><div ref={mountToolbar}/><div ref={mountHeader}/><button className="sidebar-trigger" onClick={togglePanel} title="Genereti controls" aria-label="Show or hide Genereti controls" dangerouslySetInnerHTML={{__html:icon('panel')}}/></div></Footer>,[]);
- return <Excalidraw zenModeEnabled={comfy?satoriMode:undefined} renderEmbeddable={renderLiveEmbeddable} validateEmbeddable={link=>['https://genereti.local/live-output','https://genereti.local/live-source','https://genereti.local/live-guide','https://genereti.local/auto-mask'].includes(link)} excalidrawAPI={initializeEditor} onChange={onChange} initialData={{appState:{viewBackgroundColor:comfy?'transparent':'#ffffff',currentItemStrokeColor:'#111111',currentItemStrokeWidth:2,currentItemRoughness:1,theme:editorTheme,...(comfy?{gridSize:20}: {})}}} UIOptions={{canvasActions:{loadScene:false,saveToActiveFile:false,export:false,toggleTheme:true}}} detectScroll={false} handleKeyboardGlobally={true}>{host&&<Sidebar name="genereti" docked={docked} onDock={setDocked}><Sidebar.Header>Genereti · live image lab</Sidebar.Header><div ref={mountPanel}/></Sidebar>}{footer}</Excalidraw>;
+ return <Excalidraw zenModeEnabled={comfy?satoriMode:undefined} renderEmbeddable={renderLiveEmbeddable} validateEmbeddable={link=>['https://genereti.local/live-output','https://genereti.local/live-source','https://genereti.local/live-guide','https://genereti.local/auto-mask'].includes(link)} excalidrawAPI={initializeEditor} onChange={onChange} initialData={{appState:{viewBackgroundColor:comfy?'transparent':'#ffffff',currentItemStrokeColor:'#111111',currentItemStrokeWidth:2,currentItemRoughness:1,theme:editorTheme,...(comfy?{gridSize:20,activeTool:{type:'freedraw',customType:null,locked:false}}: {})}}} UIOptions={{canvasActions:{loadScene:false,saveToActiveFile:false,export:false,toggleTheme:true}}} detectScroll={false} handleKeyboardGlobally={true}>{comfy&&<MainMenu><MainMenu.Item onSelect={clearDrawing}>Clear drawing · Cmd/Ctrl+Shift+Backspace</MainMenu.Item><MainMenu.DefaultItems.ChangeCanvasBackground/><MainMenu.DefaultItems.ToggleTheme/><MainMenu.DefaultItems.Help/></MainMenu>}{host&&<Sidebar name="genereti" docked={docked} onDock={setDocked}><Sidebar.Header>Genereti · live image lab</Sidebar.Header><div ref={mountPanel}/></Sidebar>}{footer}</Excalidraw>;
 }
 createRoot(document.getElementById('editor')).render(<DrawingEditor/>);
 new ResizeObserver(()=>{if(api)fit();}).observe(document.getElementById('editor'));

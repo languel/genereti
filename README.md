@@ -12,7 +12,7 @@ Open [the standalone p5 canvas lab](http://localhost:8765/p5-lab.html) for side-
 
 ## Comfy assistant
 
-**ꘇ assistant** is a docked sidebar for local or hosted models, selected-node references, reviewed graph/code edits and an external workspace MCP bridge. Optional typed decision-model connections support future performance automation. See the [assistant setup guide](docs/comfy-assistant.md) and [Comfy themes / transparent overlay](docs/comfy-themes.md).
+**ꘇ assistant** is a docked sidebar for local or hosted models, node/asset/workflow/template references, reviewed graph/code edits and an external workspace MCP bridge. Optional typed decision-model connections support future performance automation. See the [assistant setup guide](docs/comfy-assistant.md) and [Comfy themes / transparent overlay](docs/comfy-themes.md).
 
 ## Comfy livecoding
 

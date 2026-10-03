@@ -47,6 +47,12 @@ class ServerGuideInversionTests(unittest.TestCase):
         self.runtime.render(request)
         return self.runtime.engine
 
+    def test_resolution_is_consumed_by_runtime_not_forwarded_to_engine(self):
+        for resolution in ('auto', 256, 384, 512):
+            with self.subTest(resolution=resolution):
+                engine = self.render('sketch', resolution=resolution)
+                self.assertNotIn('resolution', engine.kwargs)
+
     def test_each_standalone_guide_uses_its_own_inversion_setting(self):
         settings = {
             'sketch': 'invert_sketch_guide',

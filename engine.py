@@ -19,12 +19,12 @@ MODEL = 'IDKiro/sdxs-512-dreamshaper'
 REVISION = '76f720262bb051da75666b22c902a78c8e16c763'
 
 class Engine:
-    def __init__(self, size=512, control=True):
+    def __init__(self, size=512, control=True, model_root=None, threads=4):
         self.size = size
-        self.directory = ROOT / "models" / str(size)
+        self.directory = (Path(model_root) if model_root is not None else ROOT / "models") / str(size)
         self.turbo_tokenizer = None
         self.turbo_text_encoder = None
-        directory = ROOT / 'models' / str(size)
+        directory = self.directory
         self.models = {}
         for name in ['unet', 'encoder', 'decoder'] + (['controlled_unet'] if control else []):
             path = directory / (name + '.mlpackage')
@@ -35,7 +35,8 @@ class Engine:
             self.models[name] = self.load_compiled(path)
         path = snapshot_download(MODEL, revision=REVISION, local_files_only=True)
         self.tokenizer = CLIPTokenizer.from_pretrained(path, subfolder='tokenizer', local_files_only=True)
-        torch.set_num_threads(4)
+        if threads is not None:
+            torch.set_num_threads(threads)
         self.text_encoder = CLIPTextModel.from_pretrained(path, subfolder='text_encoder', local_files_only=True).eval()
         self.embeddings = OrderedDict()
         self.noises = OrderedDict()

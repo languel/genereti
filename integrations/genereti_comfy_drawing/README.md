@@ -53,8 +53,11 @@ use `genereti-live-value` events with `nodeId`, `outputSlot` and `value` fields.
 Python consumers of these sockets receive their values on Queue execution.
 
 Use **Genereti-Drawing-Source.json** for the drawing-only live/queued example.
-**Genereti Live Preview** is the separate model-generation bridge and still needs
-its model backend; it is not the raw drawing viewer.
+For inference, use **drawing → ꘇ generator → ꘇ live image preview** and start the
+generator with ▶. **Genereti-Drawing-Generator-Preview.json** demonstrates this
+split. The generator requires the macOS Apple silicon model backend; the raw
+viewer does not. The older combined **Genereti Live Preview** remains available
+for existing workflows.
 
 ## Appearance and narrow nodes
 
@@ -96,7 +99,7 @@ wait for pointer release. The Library control uses its native book glyph.
 
 **Satori** hides editor controls and leaves a small exit dot. The node toolbar
 above the drawing stays visible.
-Use **Shift+Alt+Z** to enter/exit, **Alt+1 / Alt+2** to fit Image/Mask, and
+Use **Alt+Z** to enter/exit, **Alt+1 / Alt+2** to fit Image/Mask, and
 **Shift+Alt+U** to toggle updates during strokes. Native Excalidraw tool shortcuts
 remain available; **S / G** open stroke/fill palettes. Click the dot to exit.
 
@@ -117,3 +120,24 @@ Image: alpha coverage on transparent paper, inverted luminance on solid paper.
 White means coverage and black means empty. The Mask frame shows a locked runtime
 preview; manual mask artwork is retained and becomes the output again when auto
 mask is disabled. The setting persists as `genereti.autoImageMask`.
+
+### Drawing entry and clearing
+
+New editors start in Satori, with freehand selected and Image fitted. Alt+Z or the
+zen dot expands/collapses editor chrome; node transport/settings stay visible.
+Help and the dot share the compact bottom toolbar with zoom, undo and drawing
+controls. Mask sits below Image, with at least one frame height of separation.
+Cmd/Ctrl+Shift+Backspace clears drawing content immediately, preserving Image,
+Mask and runtime paper/preview infrastructure. The same action is in the editor
+menu; it is undoable and does not ask for confirmation. It does not intercept
+Backspace while typing in text/input fields.
+
+
+The drawing node's overlay glyph after delivery moves the **active Excalidraw
+editor** into a viewport overlay; drawing and live outputs continue there. Toggle
+it again, or close the overlay, to return the editor to its node. It shares image
+output's edge-revealed controls, opacity, lock, click-through and remembered
+placement. Use transparent paper to annotate over the graph; solid paper stays
+solid. Alt+Z exposes drawing tools, and Alt+Shift+O switches between drawing and
+interacting underneath. Modern Chromium hosts preserve the iframe runtime and
+undo history when moving; older hosts reload it and restore the saved scene.

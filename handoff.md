@@ -69,3 +69,11 @@ node --test tests/test_comfy_workspace.mjs
 4. Decision models are optional experimentation for future cues, game-like performance systems and sequencers. The user does not yet have a concrete decision-driven workflow; prioritize local/free/cheap providers and do not build a large automation layer speculatively.
 
 Current realtime sources, output windows, editor themes/opacity, completion and render dimensions were committed in the preceding milestone. Do not replace the preserved p5 node or reimplement those features when starting transport work.
+
+## Follow-up: library references (2026-10-02)
+
+Added `web/js/resources.js` to the assistant pack. It discovers saved workflows, installed core/custom templates, and Comfy media assets (with loader/history fallback when the native asset API is disabled). The Attach picker now supports all four resource kinds; typed references use `#node`, `@asset:"ID"`, `@workflow:"folder/file.json"`, `@template:"module/name"`.
+
+New shared browser/MCP tools: `library_search`, `library_read`, `workflow_open`, `asset_bind`. Opening is reviewed and creates a temporary workflow copy through native Comfy loading. Binding is reviewed and undoable; output/temp media is copied into input without overwrite. No automatic queue, model download, or vision payload was added. See the assistant guide for bounded asset discovery and supported loader details.
+
+Verification: 11 registry/resource tests pass, including quoted references, library fallback, local-only copy, redaction, stale approvals, binding and undo. Real-browser QA discovered 13 media assets and 24 workflows; reference picker insertion, reviewed copy opening, image binding and undo passed. Native workflow store confirmed two temporary tabs and the original tab preserved. These frontend changes require a Comfy page reload; no Python route change/restart is required. A deterministic mocked chat response also verified attached library context and the two-round library-read tool loop; no real model inference was used for that check. Other concurrent drawing/editor changes in the checkout belong to separate work and must be preserved.

@@ -44,3 +44,91 @@ Embedded drawing iframes explicitly use `color-scheme: normal` to match their
 document. In a dark Comfy host, inheriting its scheme can otherwise make Chromium
 add an opaque white backing despite transparent CSS and canvas pixels. Editor
 tool colors still follow Excalidraw's own theme.
+
+Keep inference and display separate: **ꘇ generator** owns model parameters and
+start/pause, while **ꘇ image preview** owns its canvas and local window controls. Projector links
+and relay transport belong to the separate projector node. Place independent window and overlay glyphs beside play/pause. Put the fit
+dropdown on its own below preview size, above the image; collapse performance details
+under a triangle below it.
+Both participate in the shared Live / Comfy Queue delivery contract. Preserve the
+legacy combined node's identity for saved workflows.
+
+### Transport and prompt submission
+
+Place Live / Comfy Queue at the top of each browser node, beside its transport
+button. On sources and viewers, pause holds browser frame delivery while editing
+continues; it never starts a camera or screen capture. Generator transport starts
+or pauses inference. Queue still runs through Comfy's Run action.
+
+Generator prompt submission has a glyph toggle with hover text: live typing or a
+held draft. The send glyph and Cmd/Ctrl+Enter commit a held draft. Save drafts and
+the applied prompt separately, so reopening a workflow preserves that choice.
+
+### Comfy shell Satori
+
+The agent pack adds **Alt+Shift+Z** (or the `ꘇ Satori mode` command in Keyboard
+Shortcuts) to hide Comfy's side toolbar, workflow tabs, top action bars, canvas
+navigation/minimap and open panels. Nodes, their editors/previews and Genereti
+output overlays stay visible. A quiet dot at the bottom right restores the shell.
+This outer shortcut is separate from **Alt+Z** inside the drawing editor.
+
+While Satori is active, **N / M / W / A** open Comfy's node/model/workflow/asset
+panels; **Cmd/Ctrl+,** opens Settings, **Cmd/Ctrl+Shift+K** opens Keyboard
+Shortcuts, and **Cmd/Ctrl+`** opens the logs/terminal panel. **Escape** hides the
+revealed panels again. Existing execution shortcuts continue to work. The
+presentation is session-only and doesn't overwrite saved layout preferences or
+workflow data. Refresh the frontend to load the extension; no backend restart is
+required when the agent pack is already installed.
+
+CSS selectors target the Comfy frontend shell, not arbitrary buttons, canvases,
+dialogs or iframe contents. After a frontend update, verify the shell selectors
+and panel shortcuts. Native Desktop window chrome is outside the frontend and
+isn't hidden by this mode.
+
+### Local previews versus workflow delivery
+
+Camera, screen capture, image preview and livecode surfaces have **freeze** and
+**minimize** glyphs directly above the preview. These affect only the node's local
+preview. Capture/rendering and downstream frames continue; external output windows
+also continue updating. Freeze retains the visible frame, while minimize hides or
+collapses that surface. Camera/image preview skip local canvas paints in either
+state. Livecode retains its iframe runtime behind the frozen snapshot or clipped
+preview: it still needs to render for downstream output. These controls don't
+promise to stop inference or eliminate producer GPU work.
+
+Camera/screen capture have one top start/stop control. Stop releases the capture
+stream; it is distinct from freezing its local view. Capture settings include a
+horizontal flip glyph, input longest-side size (256/512/1024/native; aspect ratio
+preserved and no upscaling), and sampling rate (0.2/0.5/1/5/15/30 fps). **Hold
+input** samples once and holds the workflow input; this is intentionally separate
+from **Freeze node preview**, which leaves workflow input running. Device/size/
+rate/flip preferences are saved in workflow properties; capture always requires
+an explicit start gesture after loading.
+
+WebGL performs camera/screen resize and flip before ImageBitmap delivery or queued
+PNG encoding. The node preview reads that processed frame. Sampling at a lower
+rate reduces processing and delivery, but does not guarantee the physical camera
+runs at that rate. Interactive crop and four-point/projective transforms are
+reserved for a separate GPU transform node.
+
+Preview controls live in a compact row directly above the image, aligned left: a disclosure triangle to minimize or restore, followed by the freeze glyph. Keep these out of the delivery/play toolbar. Status and performance details belong below the preview.
+
+Local output overlays default to content-only: no resting border, shadow or title bar. An outside edge hit target reveals the compact title bar; hovering the image does not. Its close and keep-controls-visible glyphs have transparent resting backgrounds, hover tips and keyboard focus. Drag the revealed title bar; resize from the outside edges. The keep-visible toggle is session-only.
+
+Overlay opacity changes only its displayed content; source frames remain unchanged. The position-lock glyph prevents dragging/resizing. Click-through passes content-area pointer events to Comfy underneath while outside edges and the revealed toolbar remain interactive. Alt+Shift+O toggles click-through for open overlays as a recovery shortcut. These controls are session-only and apply inside Comfy, not across other macOS applications.
+
+Output canvases preserve source alpha, and fit/letterbox space is transparent. Overlay iframe documents explicitly use a normal color scheme so a dark host cannot introduce an opaque backing. The macOS companion also clears its native window and WebKit backing. Opacity multiplies the source alpha rather than replacing it.
+
+The output-window and overlay glyphs are independent toggles: their pressed state indicates an open surface, and a second click closes it. Closing from the output itself clears the node toggle too. Reopening keeps the node’s selected fit.
+
+Output toolbar glyphs share 18px SVG bounds, 1.5px strokes and centered 30px hit targets. Overlay geometry is stored per node in workflow properties and reused on reopen. The backdrop toggle beside the overlay draws output in Comfy’s background pass, fixed to the viewport, behind nodes and links; it does not capture pointer input. Only one Genereti backdrop is active at a time. Closing restores the previous background renderer.
+
+
+The drawing node's overlay glyph after delivery moves the **active Excalidraw
+editor** into a viewport overlay; drawing and live outputs continue there. Toggle
+it again, or close the overlay, to return the editor to its node. It shares image
+output's edge-revealed controls, opacity, lock, click-through and remembered
+placement. Use transparent paper to annotate over the graph; solid paper stays
+solid. Alt+Z exposes drawing tools, and Alt+Shift+O switches between drawing and
+interacting underneath. Modern Chromium hosts preserve the iframe runtime and
+undo history when moving; older hosts reload it and restore the saved scene.

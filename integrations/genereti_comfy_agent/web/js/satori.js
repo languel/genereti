@@ -1,0 +1,72 @@
+import { app } from '../../../../scripts/app.js';
+
+// Presentation only: never change workflow, execution or stored Comfy layout settings.
+const MODE = 'genereti-satori';
+const PEEK = 'genereti-satori-panels';
+let dot;
+function toggle() {
+  const enabled = document.documentElement.classList.toggle(MODE);
+  document.documentElement.classList.remove(PEEK);
+  if (dot) dot.hidden = !enabled;
+  window.dispatchEvent(new Event('resize'));
+}
+function editable(target) {
+  return target instanceof Element && Boolean(target.closest('input,textarea,select,[contenteditable=true],.cm-editor,.monaco-editor'));
+}
+function markChrome() {
+  // TopMenuSection has no public class; anchor to its stable actionbars test ID.
+  const actions = document.querySelector('[data-testid="top-menu-actionbars"]');
+  actions?.parentElement?.parentElement?.parentElement?.setAttribute('data-genereti-shell-top', '');
+}
+app.registerExtension({
+  name: 'Genereti.Satori',
+  commands: [{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', icon:'pi pi-circle', function:toggle}],
+  keybindings: [{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}}],
+  setup() {
+    const style = document.createElement('style');
+    style.textContent = `
+html.${MODE} .comfy-menu,
+html.${MODE} #comfyui-body-top,
+html.${MODE} #comfyui-body-bottom,
+html.${MODE} .workflow-tabs-container,
+html.${MODE} .side-toolbar-container,
+html.${MODE} [data-genereti-shell-top],
+html.${MODE} [role=toolbar][aria-label="Canvas Toolbar"],
+html.${MODE} .minimap-main-container,
+html.${MODE} .selection-toolbox {display:none!important}
+html.${MODE}:not(.${PEEK}) #graph-canvas-container .p-splitter-gutter,
+html.${MODE}:not(.${PEEK}) #graph-canvas-container .side-bar-panel,
+html.${MODE}:not(.${PEEK}) #graph-canvas-container .bottom-panel,
+html.${MODE}:not(.${PEEK}) #graph-canvas-container .p-splitter-panel:not(:has(.graph-canvas-panel)):not(.graph-canvas-panel) {display:none!important}
+html.${MODE} .comfyui-body {grid-template-rows:0 1fr 0!important;grid-template-columns:0 1fr 0!important}
+#genereti-satori-dot {position:fixed;bottom:10px;right:12px;z-index:10001;width:24px;height:24px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--fg-color,#aaa);font:20px system-ui;cursor:pointer;opacity:.45}
+#genereti-satori-dot:hover,#genereti-satori-dot:focus-visible {opacity:1;background:var(--comfy-menu-bg,#222)}
+#genereti-satori-dot[hidden] {display:none}
+`;
+    document.head.append(style);
+    dot = document.createElement('button');
+    dot.id = 'genereti-satori-dot';
+    dot.textContent = '·';
+    dot.title = 'Exit Satori · Alt+Shift+Z';
+    dot.setAttribute('aria-label', dot.title);
+    dot.hidden = true;
+    dot.addEventListener('click', toggle);
+    document.body.append(dot);
+    markChrome();
+    // Comfy mounts/replaces shell regions when tabs and panels change.
+    new MutationObserver(markChrome).observe(document.getElementById('vue-app') || document.body, {childList:true,subtree:true});
+    window.addEventListener('keydown', event => {
+      // Physical key works with macOS Option's alternate character mapping too.
+      if (event.code === 'KeyZ' && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && !event.repeat && !editable(event.target)) {
+        event.preventDefault(); event.stopImmediatePropagation(); toggle(); return;
+      }
+      if (!document.documentElement.classList.contains(MODE)) return;
+      if (event.code === 'Escape') document.documentElement.classList.remove(PEEK);
+      if (editable(event.target)) return;
+      const panelKey = (!event.altKey && !event.ctrlKey && !event.metaKey && ['KeyA','KeyN','KeyM','KeyW'].includes(event.code)) ||
+        ((event.ctrlKey || event.metaKey) && (event.code === 'Comma' || event.code === 'Backquote' || (event.shiftKey && event.code === 'KeyK')));
+      // Reveal panel containers before Comfy's own shortcut opens the requested panel.
+      if (panelKey) document.documentElement.classList.add(PEEK);
+    }, true);
+  }
+});

@@ -38,7 +38,10 @@ def comfy_workspace_tool(tool: str, arguments: dict | None = None, workspace: st
     """Act on the visible workspace. Tools: workspace_context, node_read(id), node_focus(id),
     catalog_search(query), node_set(id,widget,value), node_create(type,title?,x?,y?),
     nodes_connect(from,output,to,input), livecode_run(id), livecode_stop(id), workflow_run(),
-    workspace_undo(). Edits and runs wait for Apply in the sidebar; no arbitrary eval or shell.
+    workspace_undo(), library_search(kind?,query?,offset?,limit?,refresh?),
+    library_read(kind,id), workflow_open(kind,id), asset_bind(asset,id,widget).
+    Library IDs match @asset:"ID", @workflow:"path.json", @template:"module/name" references.
+    Edits and runs wait for Apply in the sidebar; no arbitrary eval or shell.
     Choose workspace from comfy_workspaces if more than one tab is connected.
     """
     if not workspace:

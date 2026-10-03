@@ -36,3 +36,19 @@ Copy-Item .\integrations\comfyui_genereti\workflows\Genereti-Input-Sources.json 
 ```
 
 You can also drag a workflow JSON onto the ComfyUI page. The source-only workflows preview and save their current image directly; they do not call the unsupported Core ML generator. Newer ComfyUI versions are required for the included nodes’ current extension API.
+
+## Optional native Comfy Core ML experiment
+
+`integrations/genereti_comfy_coreml` runs the existing Genereti engine directly in
+Comfy's Python process on macOS 14+ Apple silicon. It has no HTTP model-server
+dependency and does not make the generator Windows/Linux compatible. See the
+[native experiment guide](../integrations/genereti_comfy_coreml/README.md) for
+SDXS / SD Turbo model paths, live and queued workflows, and feature limits.
+
+### Optional native output companion
+
+`ꘇ image preview` uses a macOS 14+ AppKit companion for separate Comfy Desktop
+output windows. Its first build requires Xcode Command Line Tools. This optional
+window helper does not change the platform support of browser preview, overlays,
+or the Core ML generator. Browser output windows and overlays remain usable
+without it. See the stream pack README for setup and local transport details.

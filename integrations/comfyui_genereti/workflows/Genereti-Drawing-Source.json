@@ -59,7 +59,7 @@
         "capture": "",
         "genereti_delivery": "Live"
       },
-      "title": "\ua607 drawing"
+      "title": "ꘇ drawing"
     },
     {
       "id": 2,
@@ -95,14 +95,13 @@
       },
       "widgets_values": [
         512,
-        85,
         "Live"
       ],
       "widgets_values_named": {
         "preview_size": 512,
-        "jpeg_quality": 85,
         "genereti_delivery": "Live"
-      }
+      },
+      "title": "ꘇ image preview"
     }
   ],
   "links": [

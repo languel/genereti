@@ -67,3 +67,24 @@ def receive(base, after_frame=0):
     image = Image.open(io.BytesIO(data)).convert('RGB')
     tensor = torch.from_numpy(np.asarray(image, dtype=np.float32).copy() / 255)[None]
     return tensor, frame
+
+
+def generate(base, image, prompt, mode, style, preprocess, seed, strength, control_scale, resolution='auto'):
+    """Return this request's output directly, without sampling the shared frame."""
+    payload = dict(prompt=prompt, mode=mode, style=style, preprocess=preprocess,
+        seed=seed, strength=strength, control_scale=control_scale, ai_upscaler='off',
+        resolution='auto' if resolution=='auto' else int(resolution))
+    if mode != 'text':
+        if image is None:
+            raise ValueError('This generation mode needs an IMAGE input.')
+        pixels = (image[0].detach().cpu().numpy().clip(0, 1) * 255).astype(np.uint8)
+        picture = Image.fromarray(pixels)
+        if picture.mode == 'RGBA':
+            paper = Image.new('RGBA', picture.size, 'white')
+            picture = Image.alpha_composite(paper, picture).convert('RGB')
+        buffer = io.BytesIO()
+        picture.save(buffer, 'PNG')
+        payload['image'] = 'data:image/png;base64,' + base64.b64encode(buffer.getvalue()).decode()
+    data, _ = request(base, '/api/generate', payload)
+    picture = Image.open(io.BytesIO(data)).convert('RGB')
+    return torch.from_numpy(np.asarray(picture, dtype=np.float32).copy() / 255)[None]

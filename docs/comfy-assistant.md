@@ -19,11 +19,26 @@ Install with `scripts/install_comfy.sh /path/to/ComfyUI`, then restart Comfy onc
 
 These are editable defaults, not discovery of an installed service. Unsloth, MLX and llama.cpp must expose an OpenAI-compatible chat API. The cloud choices require their own API access; subscription sign-in is separate. Keys entered in the panel stay in memory for that tab. Provider/model preferences are saved locally. Server environment variables `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `ANTHROPIC_API_KEY` and `GOOGLE_API_KEY` are also accepted. No existing login files or credentials from other projects are imported.
 
-Select nodes and use **Attach nodes**, type `#12` in a message, or choose a node in the reference field. When nothing is selected, Attach nodes opens a chooser for the current graph. Hover the footer buttons for their labels. The composer and buttons remain fixed while the conversation/settings scroll; the status below them shows only the latest activity. The assistant can inspect widget values, connections, validation/execution errors, livecode source and selected text. Camera frames, embedded image data and secret widgets are omitted. Referenced images are URLs for context; this milestone does not send vision attachments to the model. **Cmd/Ctrl+Enter** sends; the Send button becomes Stop while working.
+Select nodes and use **Attach**, type `#12` in a message, or choose a node in the reference field. When nothing is selected, Attach nodes opens a chooser for the current graph. Hover the footer buttons for their labels. The composer and buttons remain fixed while the conversation/settings scroll; the status below them shows only the latest activity. The assistant can inspect widget values, connections, validation/execution errors, livecode source and selected text. Camera frames, embedded image data and secret widgets are omitted. Referenced images are URLs for context; this milestone does not send vision attachments to the model. **Cmd/Ctrl+Enter** sends; the Send button becomes Stop while working.
 
 Edits and runs show an **Apply / Dismiss** card. Code edits pause auto-update; running uses the existing Livecode sandbox and last-good-sketch buffer. **Undo assistant edit** reverses the latest assistant edit when its target has not changed. Read/focus/stop tools do not require a review. The agent cannot delete nodes, run shell commands or evaluate arbitrary scripts through the workspace registry. Hosted models receive the attached context you send them.
 
 Chat currently uses complete responses and a bounded JSON action loop, rather than token streaming. Models need to follow structured instructions reliably. No model-inference speed or hosted-provider availability is claimed by the transport tests.
+
+## Assets, workflows and template references
+
+The Attach button opens a searchable picker for **Nodes**, **Assets**, **Workflows** and **Templates**. It can also attach your selected nodes. Choose a resource to add a removable reference chip and insert its exact token into the message. Typing `@` opens the picker; `#12` continues to refer to node 12. Quotes allow spaces and Unicode names:
+
+```text
+Use @asset:"input/my portrait.png" with @template:"default/image_qwen_image_2_1_image_edit".
+Use @workflow:"Genereti/Genereti-p5-Source.json" as the starting point.
+```
+
+Use the picker or `library_search` to get real IDs; example tokens are illustrative and may not exist on every installation. Saved workflow references retain their folder paths. Installed custom-node templates use `@template:"module/name"`. Asset IDs come from Comfy's asset API when enabled, or `input/`, `output/` and `temp/` file references in the fallback catalog.
+
+The assistant receives attached asset metadata and referenced workflow/template JSON as untrusted context. It can inspect them, open a reviewed **temporary copy in a new Comfy tab**, inspect that graph's current node IDs, then assign each asset to an existing loader via `asset_bind`. Image, audio and video file-loader widgets are supported when their server schema exposes a file-choice list. Output/temp assets are copied into inputs with overwrite disabled. Undo restores the previous widget selection; an uploaded copy remains available on disk. Source workflow files are not overwritten. Runs remain separate reviewed actions, and opening a template does not download models automatically.
+
+The library uses same-origin Comfy APIs and requires no official MCP catalog connection. If the native asset API is unavailable, it lists media offered by installed loader schemas and outputs from the most recent 50 history entries. Arbitrary files elsewhere on disk and older unindexed outputs are not included. The native asset path currently reads the first 100 media entries and reports a warning if more exist; the picker/tool paginates its discovered catalog. Refresh updates the catalog after an upload or newly saved workflow. Media references allow using files in workflows; they do not add vision/image analysis to the chat model. Named secret fields and embedded data URLs are omitted from library reads; review authored content before sending it to a hosted model.
 
 ## Workspace tools and MCP
 
@@ -38,6 +53,9 @@ The sidebar and external MCP bridge share these tools:
 | `livecode_run`, `livecode_stop` | Compile/run or pause an existing Livecode node |
 | `workflow_run` | Reviewed queue of the visible workflow |
 | `workspace_undo` | Undo the latest assistant edit |
+| `library_search`, `library_read` | Discover/read local assets, saved workflows and installed templates |
+| `workflow_open` | Open a reviewed temporary copy of a saved workflow/template |
+| `asset_bind` | Assign a referenced media file to a reviewed loader widget |
 
 Open the assistant once in each target tab. It registers a session with the local server, even when its sidebar is subsequently hidden. External clients list sessions and address the appropriate one, so two tabs cannot accidentally target each other's graph. Browser callers can use `window.generetiWorkspace.call(tool, args)`.
 

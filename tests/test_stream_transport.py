@@ -36,6 +36,27 @@ class TransportTests(unittest.TestCase):
     def test_remote_server_rejected(self):
         with self.assertRaises(ValueError):transport.request('https://example.org','/api/status')
 
+class GeneratorTests(unittest.TestCase):
+    def test_returns_request_output_without_shared_frame_read(self):
+        buffer=io.BytesIO();Image.new('RGB',(3,4),'red').save(buffer,'PNG')
+        with patch.object(transport,'request',return_value=(buffer.getvalue(),{})) as request:
+            image=transport.generate('http://localhost:8765',torch.zeros((1,2,2,4)),
+                'ink','sketch','base',False,42,.65,1.)
+        self.assertEqual(list(image.shape),[1,4,3,3])
+        self.assertEqual(request.call_count,1)
+        base,path,payload=request.call_args.args
+        self.assertEqual(path,'/api/generate')
+        decoded=Image.open(io.BytesIO(__import__('base64').b64decode(payload['image'].split(',')[1])))
+        self.assertEqual(decoded.getpixel((0,0)),(255,255,255))
+
+    def test_text_needs_no_input_and_image_mode_requires_one(self):
+        buffer=io.BytesIO();Image.new('RGB',(2,2)).save(buffer,'PNG')
+        with patch.object(transport,'request',return_value=(buffer.getvalue(),{})) as request:
+            transport.generate('http://localhost:8765',None,'ink','text','base',True,42,.65,1.)
+            self.assertNotIn('image',request.call_args.args[2])
+            with self.assertRaisesRegex(ValueError,'IMAGE input'):
+                transport.generate('http://localhost:8765',None,'ink','sketch','base',True,42,.65,1.)
+
 class BusyHandlingTests(unittest.TestCase):
     def modules(self):
         spec = importlib.util.spec_from_file_location('legacy_bridge', Path(__file__).resolve().parents[1] / 'integrations/comfyui_genereti/__init__.py')

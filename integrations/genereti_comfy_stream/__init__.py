@@ -4,3 +4,7 @@ async def comfy_entrypoint():
     return GeneretiStreams()
 
 WEB_DIRECTORY = "./web"
+
+from server import PromptServer
+from .native_output import register
+register(PromptServer.instance.routes)

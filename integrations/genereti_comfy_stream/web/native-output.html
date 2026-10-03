@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>ꘇ output</title>
+<style>html,body{margin:0;width:100%;height:100%;background:transparent;color-scheme:normal;color:#aaa;font:14px system-ui;overflow:hidden}img{display:block;width:100%;height:100%;object-fit:contain}#status{position:fixed;bottom:12px;left:12px}</style>
+<img id="image"><span id="status">Waiting for frames… · F fullscreen</span>
+<script type="module">
+const image=document.getElementById('image'),status=document.getElementById('status');
+const base=location.pathname.replace(/\/view$/,'');let seq='0',url,closed=false,frames=0,since=performance.now();
+window.addEventListener('pagehide',()=>{closed=true;if(url)URL.revokeObjectURL(url);});
+async function poll(){
+ try{
+  const response=await fetch(`${base}/frame?after=${seq}`,{cache:'no-store'});
+  const fit=response.headers.get('X-Fit')||'contain';
+  image.style.objectFit=fit==='native'?'none':fit;
+  if(response.status===200){
+   seq=response.headers.get('X-Frame');const next=URL.createObjectURL(await response.blob());
+   await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=next;});
+   if(url)URL.revokeObjectURL(url);url=next;status.hidden=true;frames++;
+   const now=performance.now();if(now-since>1000){document.title=`ꘇ output · ${(frames*1000/(now-since)).toFixed(1)} fps · ${image.naturalWidth} × ${image.naturalHeight}`;frames=0;since=now;}
+  }else if(response.status===404){status.textContent='Source disconnected';status.hidden=false;closed=true;}
+ }catch{status.textContent='Waiting for Comfy…';status.hidden=false;}
+ if(!closed)setTimeout(poll,16);
+}poll();
+</script>

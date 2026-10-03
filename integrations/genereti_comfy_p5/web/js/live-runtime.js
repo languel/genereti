@@ -4,14 +4,14 @@ import { ensureControlStyle } from './control-style.js';
 // Frames are borrowed for this synchronous dispatch; consumers draw/copy them
 // immediately. The source closes its ImageBitmap after all listeners return.
 export function publishLive(node, bitmap, outputSlot=0) {
-  if(node._generetiExecutionMode==='Comfy Queue')return;
+  if(node._generetiExecutionMode==='Comfy Queue'||node._generetiLivePaused)return;
   window.dispatchEvent(new CustomEvent('genereti-live-frame', {
     detail: { nodeId: node.id, outputSlot, bitmap, producedAt: performance.now() },
   }));
 }
 
 export function resolveLiveSource(node, seen = new Set()) {
-  if (!node || seen.has(node.id)||node._generetiExecutionMode==='Comfy Queue') return null;
+  if (!node || seen.has(node.id)||node._generetiExecutionMode==='Comfy Queue'||node._generetiLivePaused) return null;
   seen.add(node.id);
   if (node._generetiLiveSource || node._generetiCapture) return node;
   const name = node.comfyClass === 'GeneretiInputSelect' ?
@@ -79,7 +79,7 @@ export function subscribeLive(node, onFrame, onStatus=()=>{}) {
 
 // Shared browser transport choice. This is workflow UI state, never a model
 // parameter and never an instruction to queue the Python graph automatically.
-const browserNodes=new Set(['GeneretiDrawing','GeneretiP5Sketch','GeneretiLivecode','GeneretiCameraCapture','GeneretiScreenCapture','GeneretiLiveImagePreview','GeneretiProjector']);
+const browserNodes=new Set(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator','GeneretiDrawing','GeneretiP5Sketch','GeneretiLivecode','GeneretiCameraCapture','GeneretiScreenCapture','GeneretiLiveImagePreview','GeneretiProjector']);
 export function attachExecutionMode(node){
   if(node._generetiExecutionModeWidget)return;
   ensureControlStyle();
@@ -91,17 +91,43 @@ export function attachExecutionMode(node){
   select.title='Output delivery';
   for(const choice of ['Live','Comfy Queue'])select.add(new Option(choice,choice));
   element.append(select);
+  if(!['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator'].includes(node.comfyClass)){
+    const transport=document.createElement('button');transport.type='button';
+    const paint=()=>{const custom=node._generetiTransportState?.();if(custom){transport.textContent=custom.text;transport.title=custom.title;transport.setAttribute('aria-label',custom.title);transport.disabled=Boolean(custom.disabled);return;}transport.textContent=node._generetiLivePaused?'▶':'Ⅱ';transport.title=node._generetiLivePaused?'Resume live delivery':'Pause live delivery · editor keeps running';transport.setAttribute('aria-label',transport.title);transport.disabled=select.value==='Comfy Queue';};
+    transport.onclick=()=>{if(node._generetiToggleTransport){void node._generetiToggleTransport();paint();return;}node._generetiLivePaused=!node._generetiLivePaused;paint();};
+    node._generetiTransportRefresh=paint;select.addEventListener('change',paint);element.append(transport);paint();
+  }
   const apply=next=>{
     mode=next==='Comfy Queue'?'Comfy Queue':'Live';node._generetiExecutionMode=mode;select.value=mode;
-    node._generetiSetExecutionMode?.(mode);node.graph?.change?.(node);
+    node._generetiSetExecutionMode?.(mode);node._generetiTransportRefresh?.();node.graph?.change?.(node);
   };
   select.onchange=()=>apply(select.value);
   element.addEventListener('pointerdown',event=>event.stopPropagation());
   const widget=node.addDOMWidget('genereti_delivery','GENERETI_DELIVERY',element,{serialize:true,hideOnZoom:false,getValue:()=>mode,setValue:apply});
   // Keep the workflow choice, but exclude browser delivery state from Python inputs.
-  widget.serializeValue=()=>undefined;widget.computeSize=width=>[width,node.comfyClass==='GeneretiDrawing'?0:32];
+  widget.serializeValue=()=>undefined;widget.computeSize=width=>[width,node.comfyClass==='GeneretiDrawing'?0:Math.max(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator'].includes(node.comfyClass)?64:32,element.scrollHeight??0)];
   node._generetiExecutionModeWidget=widget;node._generetiExecutionModeElement=element;
-  node._generetiMountExecutionMode?.(element);apply(mode);
+  node._generetiMountExecutionMode?.(element);node._generetiMountPreviewControls?.();node._generetiMountTransport?.();apply(mode);
+  if(node.comfyClass!=='GeneretiDrawing'){
+    // Canonical serialization follows the original widget order, even though
+    // the browser-only transport row is displayed first.
+    const original=node.widgets.filter(w=>w!==widget);
+    const defaults=new Map(original.map(w=>[w.name,w.value]));
+    const valid=(w,v)=>{const d=defaults.get(w.name);return typeof d==='boolean'?typeof v==='boolean':typeof d==='number'?typeof v==='number'&&Number.isFinite(v):true;};
+    node.widgets=[widget,...original];
+    const configured=node.onConfigure;
+    node.onConfigure=function(info){
+      const result=configured?.apply(this,arguments);
+      // LiteGraph has already assigned old positional values to the new visual
+      // order. Restore schema defaults first, including newly added controls.
+      for(const w of original)if(defaults.has(w.name))w.value=defaults.get(w.name);
+      if(info?.widgets_values){const values=[...info.widgets_values];const delivery=values.findLastIndex(v=>v==='Live'||v==='Comfy Queue');if(delivery>=0)apply(values.splice(delivery,1)[0]);original.filter(w=>w.options?.serialize!==false).forEach((w,i)=>{if(i<values.length&&valid(w,values[i]))w.value=values[i];});}
+      const saved=info?.properties?.genereti_widget_values;if(saved)for(const w of node.widgets??[])if(Object.hasOwn(saved,w.name)&&valid(w,saved[w.name]))w.value=saved[w.name];
+      node._generetiRestorePrompt?.();node._generetiMountTransport?.();return result;
+    };
+    const serialized=node.onSerialize;
+    node.onSerialize=function(info){const result=serialized?.apply(this,arguments);info.properties??={};info.properties.genereti_widget_values=Object.fromEntries(node.widgets.filter(w=>w!==widget&&w.options?.serialize!==false).map(w=>[w.name,w.value]));const ordered=[...original,widget,...node.widgets.filter(w=>w!==widget&&!original.includes(w))];info.widgets_values=ordered.filter(w=>w.options?.serialize!==false).map(w=>w===widget?mode:w.value);return result;};
+  }
 }
 app.registerExtension({name:'Genereti.BrowserDelivery',nodeCreated(node){
   if(browserNodes.has(node.comfyClass))attachExecutionMode(node);

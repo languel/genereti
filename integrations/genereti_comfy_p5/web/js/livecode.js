@@ -1,3 +1,4 @@
+import { previewState } from './preview-state.js';
 import {app} from '../../../scripts/app.js';
 import {api} from '../../../scripts/api.js';
 import {colorPicker} from './color-picker.js';
@@ -29,6 +30,7 @@ async function loadLibraries(){return libraries ||= Promise.all(['p5.min.js','li
 const value=(node,name)=>node.widgets.find(w=>w.name===name)?.value;
 function editorWidget(node,name){
  const container=document.createElement('div');container.className='genereti-livecode';container.style.cssText='display:flex;flex-direction:column;gap:6px;width:100%;min-height:220px;overflow:visible;background:var(--comfy-input-bg,#171b22);color:var(--fg-color,#eee)';
+ let localPreview;
  const tools=document.createElement('div'),run=document.createElement('button'),stop=document.createElement('button'),status=document.createElement('div'),code=document.createElement('div'),stage=document.createElement('div');
  stage.className='genereti-livecode-stage';iconButton(run,'Run','<path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/>');run.title='Evaluate (Cmd/Ctrl+Enter)';iconButton(stop,'Stop','<rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" stroke="none"/>');stop.title='Stop · keep last frame (Ctrl+.)';tools.className='genereti-livecode-toolbar';tools.append(run,stop);
  const autoToggle=document.createElement('button');iconButton(autoToggle,'Auto-update','<path d="M20 7h-5V2M4 17h5v5"/><path d="M19 7a8 8 0 0 0-13-2M5 17a8 8 0 0 0 13 2"/>');autoToggle.title='Auto-update code';tools.append(autoToggle);
@@ -90,7 +92,7 @@ function editorWidget(node,name){
  const previewFit=renderChoice('fit','Preview fit',[['Contain','contain'],['Cover','cover'],['Stretch','fill'],['Native pixels','native']]);
  const preset=document.createElement('select');preset.title='Render preset';preset.append(new Option('Presets…',''));for(const [w,h] of [[256,256],[512,512],[768,768],[1280,720],[1920,1080],[720,1280]])preset.append(new Option(`${w} × ${h}`,`${w},${h}`));renderField('Preset',preset);preset.onchange=()=>{if(!preset.value)return;const [w,h]=preset.value.split(',').map(Number);Object.assign(render,{width:w,height:h,mode:'fixed',aspect:'free'});sizeMode.value='fixed';aspect.value='free';[...dimPanel.querySelectorAll('input')].forEach((input,i)=>input.value=i?h:w);saveRender();preset.value='';};
  const fullscreen=document.createElement('button');iconButton(fullscreen,'Fullscreen preview','<path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/>');fullscreen.title='Fullscreen preview · auto sizing follows viewport';tools.append(fullscreen);fullscreen.onclick=async()=>{try{if(document.fullscreenElement===stage)await document.exitFullscreen();else await stage.requestFullscreen();}catch(error){status.textContent=error.message;}};
- function resolvedRender(){let width=render.width,height=render.height;if(render.mode==='auto'){width=stage.clientWidth||512;height=stage.clientHeight||300;}if(render.mode==='screen'){width=screen.width;height=screen.height;}const ratio=Number(render.aspect);if(ratio>0){height=width/ratio;}return {width:Math.max(64,Math.min(4096,Math.round(width))),height:Math.max(64,Math.min(4096,Math.round(height)))};}
+ function resolvedRender(){let width=render.width,height=render.height;if(render.mode==='auto'){width=localPreview?.minimized?Number(active?.dataset.width)||render.width:stage.clientWidth||512;height=localPreview?.minimized?Number(active?.dataset.height)||render.height:stage.clientHeight||300;}if(render.mode==='screen'){width=screen.width;height=screen.height;}const ratio=Number(render.aspect);if(ratio>0){height=width/ratio;}return {width:Math.max(64,Math.min(4096,Math.round(width))),height:Math.max(64,Math.min(4096,Math.round(height)))};}
  function saveRender(){node.properties.generetiLivecodeRender={...render};layoutFrame();if(active && render.fit===previewFit.value && render.mode==='fixed' && active.dataset.render===JSON.stringify(resolvedRender()))return;evaluate();}
  for(const key of ['width','height']){const input=document.createElement('input');input.type='number';input.min=64;input.max=4096;input.step=1;input.setAttribute('aria-label','Render '+key);input.value=render[key];renderField(key==='width'?'Width':'Height',input);input.onchange=()=>{render[key]=Math.max(64,Math.min(4096,Number(input.value)||512));input.value=render[key];saveRender();};}
  let frameWidth=render.width,frameHeight=render.height;
@@ -99,7 +101,7 @@ function editorWidget(node,name){
   const width=stage.clientWidth,height=stage.clientHeight;
   for(const frame of [active,candidate])if(frame){const w=Number(frame.dataset.width)||render.width,h=Number(frame.dataset.height)||render.height;const fit=render.fit;const sx=fit==='native'?1:fit==='fill'?width/w:(fit==='cover'?Math.max:Math.min)(width/w,height/h);const sy=fit==='fill'?height/h:sx;frame.style.width=w+'px';frame.style.height=h+'px';frame.style.left=(width-w*sx)/2+'px';frame.style.top=(height-h*sy)/2+'px';frame.style.transform=`scale(${sx},${sy})`;frame.style.transformOrigin='top left';}
  }
- let resizeTimer;const resizeObserver=new ResizeObserver(()=>{layoutFrame();if(active && render.mode==='auto' && active.dataset.render!==JSON.stringify(resolvedRender())){clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(!disposed)evaluate();},300);}});resizeObserver.observe(stage);
+ let resizeTimer;const resizeObserver=new ResizeObserver(()=>{layoutFrame();if(active && !localPreview?.minimized && render.mode==='auto' && active.dataset.render!==JSON.stringify(resolvedRender())){clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(!disposed)evaluate();},300);}});resizeObserver.observe(stage);
 
  function saveAppearance(){node.properties.generetiLivecodeAppearance={...settings};view?.setAppearance({...settings,overlay:show.value==='overlay',fillHeight:true});post(active,{type:'appearance',appearance:settings});post(candidate,{type:'appearance',appearance:settings});}
  const drafts=new Map();let draftMode='p5';
@@ -174,6 +176,7 @@ function editorWidget(node,name){
  window.addEventListener('pointerdown',onOutsidePointer,true);
  window.addEventListener('message',onMessage);
  function captureDataUrl(){if(!active)throw Error('Evaluate livecode before capturing');return new Promise((resolve,reject)=>{const id=++captureId;const timeout=setTimeout(()=>{pendingCapture.delete(id);reject(Error('Livecode capture timed out'));},5000);pendingCapture.set(id,{resolve,reject,timeout});post(active,{type:'capture',id});});}
+ localPreview=previewState(node,stage,{capture:captureDataUrl});container.append(status);
  node._generetiLivecode={evaluate,captureDataUrl,get editor(){return view},get lastGood(){return lastGood},get active(){return active},settings,exportPng:()=>png.onclick(),exportHtml:()=>html.onclick()};
  node._generetiLiveSource={retain(){if(++users===1)post(active,{type:'live-start'});},release(){users=Math.max(0,users-1);if(!users)post(active,{type:'live-stop'});}};
  const previous=node.onRemoved;node.onRemoved=function(){disposed=true;++epoch;clearTimeout(timer);clearTimeout(resizeTimer);resizeObserver.disconnect();parentResize.disconnect();removeCandidate();retire(active);view.destroy();window.removeEventListener('message',onMessage);window.removeEventListener('keydown',onEditorShortcut,true);window.removeEventListener('wheel',onEditorWheel,true);window.removeEventListener('pointerdown',onOutsidePointer,true);for(const request of pendingCapture.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}return previous?.apply(this,arguments);};

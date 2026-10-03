@@ -1,8 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
-const source=await readFile(new URL('../integrations/genereti_comfy_agent/web/js/workspace.js',import.meta.url),'utf8');
-const {createWorkspace}=await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
+import {createWorkspace} from '../integrations/genereti_comfy_agent/web/js/workspace.js';
 function fixture(review){
  const auto={name:'auto_update',value:true},code={name:'code',value:'original'},secret={name:'api_key',value:'hidden'};
  const node={id:1,type:'GeneretiLivecode',title:'livecode',pos:[0,0],widgets:[code,auto,secret],inputs:[],outputs:[],_generetiEditorContext:()=>({source:code.value,language:'p5',selection:[{text:'original',from:0,to:8}]})};

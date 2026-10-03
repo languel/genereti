@@ -35,3 +35,15 @@ body.satori #satoriExit{display:block}
 body.satori #satoriExit:focus-visible{outline:2px solid currentColor}
 body.satori .excalidraw .layer-ui__wrapper,body.satori #toolbar,body.satori #artboard{display:none!important}
 @media(max-width:800px){body[data-host="comfy"] #toolbar{max-width:calc(100vw - 80px)}body[data-host="comfy"] .excalidraw .App-menu_bottom{gap:4px;flex-wrap:wrap}}
+
+/* A single compact drawing footer; the dot folds only the editor chrome. */
+body[data-host="comfy"] #toolbar{max-width:none;min-height:28px;gap:2px;padding:3px 4px;flex-wrap:nowrap}
+body[data-host="comfy"] #toolbar button{width:28px;height:28px;padding:0;flex:none}
+body[data-host="comfy"] #toolbar label[hidden]{display:none!important}
+body[data-host="comfy"] #toolbar #satori{margin-left:0}
+body[data-host="comfy"] .excalidraw .help-icon{display:none!important}
+body[data-host="comfy"] .excalidraw .App-menu_bottom{align-items:center;gap:2px;flex-wrap:nowrap}
+body[data-host="comfy"] .excalidraw .App-menu_bottom{width:max-content;max-width:calc(100% - 16px);left:8px;right:auto;bottom:8px;padding:3px 4px;border-radius:8px;background:var(--island-bg-color);box-shadow:var(--shadow-island)}
+body[data-host="comfy"] .excalidraw .App-menu_bottom .footer-center{flex:0 0 auto;width:auto}
+body[data-host="comfy"] #toolbar{padding:0;background:transparent;box-shadow:none}
+body[data-host="comfy"] .excalidraw .App-menu_bottom :is(.Island,.zoom-actions,.undo-redo-buttons){background:transparent;box-shadow:none}

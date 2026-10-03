@@ -5,6 +5,7 @@ import { ensureControlStyle } from '/extensions/genereti_comfy_p5/js/control-sty
 
 import { connectedOutputs,sceneJSON } from './output-demand.js';
 import { renderSettings } from './render-settings.js';
+import { overlayShell } from '/extensions/genereti_comfy_stream/js/overlay-shell.js';
 
 const CHANNEL = 'genereti-drawing-v1';
 function makeDrawing(node, name) {
@@ -40,7 +41,18 @@ function makeDrawing(node, name) {
   // canvas backing even when every CSS background and canvas pixel has alpha.
   Object.assign(frame.style, {width:'100%', flex:'1 1 auto', height:'560px', minHeight:'560px', border:'0',pointerEvents:'auto',background:'transparent',colorScheme:'normal'});
   status.textContent = 'Loading drawing tools…';
-  controls.append(deliverySlot,render.element,matchTheme,status); container.append(controls, frame);
+  const overlayButton=document.createElement('button');overlayButton.type='button';
+  overlayButton.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="9" y="9" width="10" height="10" rx="1"/></svg>';
+  let overlay=null;
+  const paintOverlay=()=>{overlayButton.setAttribute('aria-pressed',String(!!overlay));overlayButton.title=overlay?'Return drawing to node':'Open interactive drawing overlay · annotate over the graph';overlayButton.setAttribute('aria-label',overlayButton.title);};
+  paintOverlay();
+  overlayButton.onclick=()=>{
+    if(overlay){overlay.close();return;}
+    node.properties ||= {};node.properties.genereti_drawing_overlay_layout ||= {};
+    overlay=overlayShell(frame,node.properties.genereti_drawing_overlay_layout,()=>{overlay=null;paintOverlay();node.graph?.change?.(node);send({type:'edit-frame',kind:'image'});});
+    paintOverlay();send({type:'edit-frame',kind:'image',freehand:true});
+  };
+  controls.append(deliverySlot,overlayButton,render.element,matchTheme,status); container.append(controls, frame);
   controls.addEventListener('pointerdown',event=>event.stopPropagation());
   const send = data => frame.contentWindow?.postMessage({channel:CHANNEL, ...data}, location.origin);
   const restore = () => {
@@ -143,7 +155,7 @@ function makeDrawing(node, name) {
       if(outputs.includes('JSON'))result.json=sceneJSON(snapshot.scene,snapshot.frameId,snapshot.maskFrameId);
       return JSON.stringify(result);
     },
-    dispose(){clearInterval(demandTimer);liveUsers=0;liveEpoch++;window.removeEventListener('message',receive);if(pending){clearTimeout(pending.timer);pending.reject(new Error('Drawing node removed.'));pending=null;}frame.remove();},
+    dispose(){overlay?.close();clearInterval(demandTimer);liveUsers=0;liveEpoch++;window.removeEventListener('message',receive);if(pending){clearTimeout(pending.timer);pending.reject(new Error('Drawing node removed.'));pending=null;}frame.remove();},
   };
   return {widget};
 }

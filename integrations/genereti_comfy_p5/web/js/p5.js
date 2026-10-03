@@ -1,3 +1,4 @@
+import { previewState } from './preview-state.js';
 import { api } from "../../../scripts/api.js";
 import { app } from "../../../scripts/app.js";
 import { publishLive } from "./live-runtime.js";
@@ -49,7 +50,7 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
   Object.assign(frame.style, {
     display: "block", width: "100%", height: "300px", border: "0", borderRadius: "4px", background: "#111",
   });
-  frameSlot.replaceChildren(frame);
+  frameSlot.querySelectorAll('iframe').forEach(old=>old.remove());frameSlot.append(frame);
   state.frame = frame;
 
   const safeLibrary = librarySource.replace(/<\/script/gi, "<\\/script");
@@ -196,6 +197,8 @@ function makeP5Editor(node, inputName) {
   state.textarea = textarea;
   node._generetiP5 = state;
   state.captureDataUrl = () => captureSketchDataUrl(node);
+  frameSlot.style.position="relative";
+  const localPreview=previewState(node,frameSlot,{capture:state.captureDataUrl});container.append(status);
   node._generetiLiveSource = {
     retain(){if(++state.liveUsers===1)state.frame?.contentWindow?.postMessage({type:'live-start'},'*');},
     release(){state.liveUsers=Math.max(0,state.liveUsers-1);if(!state.liveUsers)state.frame?.contentWindow?.postMessage({type:'live-stop'},'*');},
@@ -223,7 +226,7 @@ function makeP5Editor(node, inputName) {
   });
 
   runSketch();
-  widget.computeSize = (width) => [width, 590];
+  widget.computeSize = (width) => [width, localPreview.minimized?290:590];
   return { widget };
 }
 

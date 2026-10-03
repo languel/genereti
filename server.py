@@ -228,7 +228,7 @@ class Runtime:
                 self.upscalers[data.ai_upscaler]=CoreMLRealESRGAN(data.ai_upscaler,ROOT)
                 upscaler_load_ms=round((time.perf_counter()-load_start)*1000,2)
             learned_upscale=self.upscalers[data.ai_upscaler].upscale
-        args=data.model_dump(exclude={'image','control_image','reference_image','pose_image','sdxs_sketch_weight','sdxs_canny_weight','sdxs_depth_weight','sdxs_pose_weight','sdxs_sketch_kind','canny_low','canny_high','guide_line_width','id','preprocess','return_guide',
+        args=data.model_dump(exclude={'resolution','image','control_image','reference_image','pose_image','sdxs_sketch_weight','sdxs_canny_weight','sdxs_depth_weight','sdxs_pose_weight','sdxs_sketch_kind','canny_low','canny_high','guide_line_width','id','preprocess','return_guide',
             'invert_sketch_guide','invert_canny_guide','invert_depth_guide','invert_pose_guide',
             'source_value_strength','source_color_strength','source_color_spread','palette_strength','black_point','white_point','gamma','brightness','contrast','saturation','sharpen','emboss',
             'ai_upscaler','upscale_iterations','upscale_feedback','upscale_output','upscale','upscale_filter'})

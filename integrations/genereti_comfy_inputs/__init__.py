@@ -107,7 +107,7 @@ class GeneretiCameraCapture(_GeneretiBrowserCapture):
             node_id="GeneretiCameraCapture",
             display_name="Genereti Webcam Capture",
             category="Genereti / Local Core ML",
-            description="Click Start camera, then queue to capture one frame from the selected webcam.",
+            description="Start the selected camera with the top play control. GPU resize and horizontal flip apply before sampling; Queue uses the latest sampled frame.",
             inputs=[cls.capture_input()],
             outputs=[io.Image.Output(display_name="IMAGE")],
         )
@@ -124,7 +124,7 @@ class GeneretiScreenCapture(_GeneretiBrowserCapture):
             display_name="Genereti Window / Screen Capture",
             category="Genereti / Local Core ML",
             description=(
-                "Click Start sharing to choose a window, browser tab, or display, then queue to capture one frame. "
+                "Start sharing with the top play control. Choose a window, browser tab, or display; Queue uses the latest sampled frame. "
                 "Capture is uploaded only when Window / Screen is the selected Genereti input."
             ),
             inputs=[cls.capture_input()],

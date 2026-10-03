@@ -107,9 +107,9 @@
         "Node name for S&R": "GeneretiLiveImagePreview"
       },
       "widgets_values": [
-        512,
-        85
-      ]
+        512
+      ],
+      "title": "ꘇ image preview"
     }
   ],
   "links": [
