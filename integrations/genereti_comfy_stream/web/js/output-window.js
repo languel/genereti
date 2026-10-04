@@ -2,16 +2,17 @@ import { overlayShell } from './overlay-shell.js';
 import { nativeOutput } from './native-output.js';
 // A local display surface, not a network projector. Borrow live ImageBitmaps
 // synchronously: no JPEG, blob encoding, server, queue, or bitmap clone.
-export function outputWindow(status,onStateChange=()=>{},layout={}) {
+export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
   const desktop=Boolean(/Electron/i.test(navigator.userAgent)||window.electronAPI||window.__comfyDesktop2);
   const native=desktop?nativeOutput(status,onStateChange):null;let nativeMode=false;
   let win = null, canvas = null, context = null, disposed = false, revision = 0;
-  let frames = 0, since = performance.now(), fit = 'contain', localSurface = null, localCleanup = null;
+  let frames = 0, since = performance.now(), fit = 'contain', localSurface = null, localCleanup = null, localShell = null;
   function setFit(next){native?.setFit(next);fit=['contain','cover','fill','native'].includes(next)?next:'contain';if(!canvas)return;canvas.style.cssText=fit==='native'?'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:none;max-height:none':'position:fixed;inset:0;width:100vw;height:100vh;object-fit:'+fit;}
-  function inAppOutput(){
+  function inAppOutput(initialSize,matchAspect){
+    if(initialSize?.width>0&&initialSize?.height>0&&(matchAspect||!layout.rect)){const width=layout.rect?.width||innerWidth*.7;const scale=Math.min(1,innerHeight*.7/(width*initialSize.height/initialSize.width));layout.rect={left:layout.rect?.left??innerWidth*.1,top:layout.rect?.top??innerHeight*.12,width:width*scale,height:width*scale*initialSize.height/initialSize.width};}
     const frame=document.createElement('iframe');frame.title='Local output';
-    const shell=overlayShell(frame,layout,()=>{onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;});
-    localSurface=shell.element;localCleanup=shell.close;
+    const shell=overlayShell(frame,layout,()=>{onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;},config);
+    localShell=shell;localSurface=shell.element;localCleanup=shell.close;
     attach(frame.contentWindow,true);status.textContent='Output overlay · direct';
   }
   function attach(target,overlay=false) {
@@ -59,12 +60,12 @@ export function outputWindow(status,onStateChange=()=>{},layout={}) {
     }
   }
   return {
-    async open({floating = false, overlay = false} = {}) {
+    async open({floating = false, overlay = false, initialSize=null, matchAspect=false} = {}) {
       if(disposed) return false;
       if(win && !win.closed){win.focus();return true;}
       try {
         if(desktop&&!overlay){nativeMode=true;const opened=await native.open();onStateChange(opened);return opened;}
-        if(overlay){inAppOutput();}
+        if(overlay){inAppOutput(initialSize,matchAspect);}
         else if(floating && window.documentPictureInPicture?.requestWindow){
           attach(await window.documentPictureInPicture.requestWindow({width:960,height:720}));
 
@@ -94,7 +95,11 @@ export function outputWindow(status,onStateChange=()=>{},layout={}) {
       })();
     },
     setFit,
-    close(){if(localSurface)layout.rect={left:localSurface.offsetLeft,top:localSurface.offsetTop,width:localSurface.offsetWidth,height:localSurface.offsetHeight};onStateChange(false);localCleanup?.();native?.close();disposed=true;revision++;if(localSurface){localSurface.remove();localSurface=null;}else win?.close();win=null;canvas=null;context=null;},
+    close(){onStateChange(false);localCleanup?.();native?.close();disposed=true;revision++;if(localSurface){localSurface.remove();localSurface=null;}else win?.close();win=null;canvas=null;context=null;},
+    getViewport(){return win&&!win.closed?{width:win.innerWidth,height:win.innerHeight}:null;},
     get window(){return win;},
+    get element(){return localSurface;},
+    toggleFill(){localShell?.toggleFill();},
+    get filled(){return Boolean(localSurface&&localShell?.filled);},
   };
 }

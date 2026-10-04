@@ -1,13 +1,44 @@
+import './shortcut-reference.js';
 import { app } from '../../../../scripts/app.js';
 
 // Presentation only: never change workflow, execution or stored Comfy layout settings.
 const MODE = 'genereti-satori';
 const PEEK = 'genereti-satori-panels';
-let dot;
+const PRESENTATION='genereti-presentation';
+let dot,statsWanted,statsPeek=false;
+const hooked=new WeakSet();
+function presentation(){return document.documentElement.classList.contains(PRESENTATION);}
+function syncCanvas(){
+  const canvas=app.canvas;if(!canvas)return;
+  statsWanted??=canvas.show_info;
+  canvas.show_info=(presentation()||document.documentElement.classList.contains(MODE))?statsPeek:statsWanted;
+  if(!hooked.has(canvas)){
+    hooked.add(canvas);
+    for(const method of ['drawConnections','drawGroups']){const original=canvas[method];if(original)canvas[method]=function(){if(!presentation())return original.apply(this,arguments);};}
+    const front=canvas.drawFrontCanvas;
+    canvas.drawFrontCanvas=function(){
+      if(!presentation())return front.apply(this,arguments);
+      this.dirty_canvas=false;
+      const ctx=this.ctx,ratio=this.canvas.ownerDocument.defaultView.devicePixelRatio||1;
+      ctx.save();ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,this.canvas.width/ratio,this.canvas.height/ratio);
+      if(this.bgcanvas!==this.canvas)ctx.drawImage(this.bgcanvas,0,0,this.bgcanvas.width/ratio,this.bgcanvas.height/ratio);
+      if(this.show_info)this.renderInfo(ctx,0,0);ctx.restore();
+    };
+  }
+  canvas.setDirty?.(true,true);
+}
+function togglePresentation(){document.documentElement.classList.toggle(PRESENTATION);statsPeek=false;syncCanvas();}
+function toggleStats(){
+  if(presentation()||document.documentElement.classList.contains(MODE))statsPeek=!app.canvas?.show_info;
+  else statsWanted=!app.canvas?.show_info;
+  syncCanvas();
+}
+
 function toggle() {
   const enabled = document.documentElement.classList.toggle(MODE);
   document.documentElement.classList.remove(PEEK);
   if (dot) dot.hidden = !enabled;
+  statsPeek=false;syncCanvas();
   window.dispatchEvent(new Event('resize'));
 }
 function editable(target) {
@@ -20,11 +51,14 @@ function markChrome() {
 }
 app.registerExtension({
   name: 'Genereti.Satori',
-  commands: [{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', icon:'pi pi-circle', function:toggle}],
-  keybindings: [{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}}],
+  commands: [{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', icon:'pi pi-circle', function:toggle},{id:'Genereti.TogglePresentation',label:'ꘇ Presentation visibility',icon:'pi pi-eye-slash',function:togglePresentation},{id:'Genereti.ToggleCanvasStats',label:'ꘇ Canvas diagnostics',icon:'pi pi-chart-line',function:toggleStats}],
+  keybindings: [{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}},{commandId:'Genereti.TogglePresentation',combo:{key:'p',alt:true}},{commandId:'Genereti.ToggleCanvasStats',combo:{key:'i',alt:true,shift:true}}],
+  afterConfigureGraph(){syncCanvas();},
   setup() {
     const style = document.createElement('style');
     style.textContent = `
+html.${PRESENTATION} .lg-node,html.${PRESENTATION} .dom-widget {visibility:hidden!important;pointer-events:none!important}
+html.${PRESENTATION} .selection-toolbox {display:none!important}
 html.${MODE} .comfy-menu,
 html.${MODE} #comfyui-body-top,
 html.${MODE} #comfyui-body-bottom,
@@ -52,10 +86,12 @@ html.${MODE} .comfyui-body {grid-template-rows:0 1fr 0!important;grid-template-c
     dot.hidden = true;
     dot.addEventListener('click', toggle);
     document.body.append(dot);
-    markChrome();
+    markChrome();syncCanvas();
     // Comfy mounts/replaces shell regions when tabs and panels change.
     new MutationObserver(markChrome).observe(document.getElementById('vue-app') || document.body, {childList:true,subtree:true});
-    window.addEventListener('keydown', event => {
+    const handleKey=event=>{
+      if(event.defaultPrevented||event.repeat||event.isComposing||editable(event.target)||event.ctrlKey||event.metaKey)return;
+      if(event.altKey&&((!event.shiftKey&&event.code==='KeyP')||(event.shiftKey&&event.code==='KeyI'))){event.preventDefault();event.stopImmediatePropagation?.();event.code==='KeyP'?togglePresentation():toggleStats();return;}
       // Physical key works with macOS Option's alternate character mapping too.
       if (event.code === 'KeyZ' && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && !event.repeat && !editable(event.target)) {
         event.preventDefault(); event.stopImmediatePropagation(); toggle(); return;
@@ -67,6 +103,8 @@ html.${MODE} .comfyui-body {grid-template-rows:0 1fr 0!important;grid-template-c
         ((event.ctrlKey || event.metaKey) && (event.code === 'Comma' || event.code === 'Backquote' || (event.shiftKey && event.code === 'KeyK')));
       // Reveal panel containers before Comfy's own shortcut opens the requested panel.
       if (panelKey) document.documentElement.classList.add(PEEK);
-    }, true);
+    };
+    window.addEventListener('keydown',handleKey,true);
+    window.addEventListener('genereti-workspace-shortcut',event=>handleKey(event.detail));
   }
 });

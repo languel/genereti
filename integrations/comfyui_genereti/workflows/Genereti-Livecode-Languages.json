@@ -1,0 +1,942 @@
+{
+  "version": 0.4,
+  "last_node_id": 12,
+  "last_link_id": 6,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "title": "\ua607 tixy",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        620,
+        820
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "gridSize",
+          "widget": {
+            "name": "controls.value0"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value1",
+          "type": "FLOAT",
+          "label": "speed",
+          "widget": {
+            "name": "controls.value1"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value2",
+          "type": "STRING",
+          "label": "color1",
+          "widget": {
+            "name": "controls.value2"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value3",
+          "type": "STRING",
+          "label": "color0",
+          "widget": {
+            "name": "controls.value3"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "tixy",
+          "source": "// @param gridSize = 16 (1..64, step:1)\n// @param speed = 1 (0..4)\n// @param color1 = \"#e8e8e8\" (color)\n// @param color0 = \"#ff547d\" (color)\nsin(t * speed + x / 4) * cos(t * speed + y / 4)"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "gridSize": 16,
+            "speed": 1,
+            "color1": "#e8e8e8",
+            "color0": "#ff547d"
+          },
+          "slots": {
+            "gridSize": 0,
+            "speed": 1,
+            "color1": 2,
+            "color0": 3
+          }
+        }
+      },
+      "widgets_values": [
+        "tixy",
+        512,
+        384,
+        true,
+        "// @param gridSize = 16 (1..64, step:1)\n// @param speed = 1 (0..4)\n// @param color1 = \"#e8e8e8\" (color)\n// @param color0 = \"#ff547d\" (color)\nsin(t * speed + x / 4) * cos(t * speed + y / 4)",
+        "{\"gridSize\":16,\"speed\":1,\"color1\":\"#e8e8e8\",\"color0\":\"#ff547d\"}",
+        "Live",
+        16,
+        1,
+        "#e8e8e8",
+        "#ff547d"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "PreviewImage",
+      "pos": [
+        0,
+        860
+      ],
+      "size": [
+        620,
+        300
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 3,
+      "type": "GeneretiLivecode",
+      "title": "\ua607 playcore",
+      "pos": [
+        660,
+        0
+      ],
+      "size": [
+        620,
+        820
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "threshold",
+          "widget": {
+            "name": "controls.value0"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "playcore",
+          "source": "// @param threshold = 0.2 (-1..1)\nexport const settings = { fps:30, fontSize:18, color:\"#e8e8e8\", backgroundColor:\"transparent\" };\nexport function main({x,y},context){\n const wave = Math.sin(x*.22+context.time/450)*Math.cos(y*.24);\n return wave > __.params.threshold ? {char:\"\u25cf\",color:\"#89d7d2\"} : \"\u00b7\";\n}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "threshold": 0.2
+          },
+          "slots": {
+            "threshold": 0
+          }
+        }
+      },
+      "widgets_values": [
+        "playcore",
+        512,
+        384,
+        true,
+        "// @param threshold = 0.2 (-1..1)\nexport const settings = { fps:30, fontSize:18, color:\"#e8e8e8\", backgroundColor:\"transparent\" };\nexport function main({x,y},context){\n const wave = Math.sin(x*.22+context.time/450)*Math.cos(y*.24);\n return wave > __.params.threshold ? {char:\"\u25cf\",color:\"#89d7d2\"} : \"\u00b7\";\n}",
+        "{\"threshold\":0.2}",
+        "Live",
+        0.2
+      ]
+    },
+    {
+      "id": 4,
+      "type": "PreviewImage",
+      "pos": [
+        660,
+        860
+      ],
+      "size": [
+        620,
+        300
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 2
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "GeneretiLivecode",
+      "title": "\ua607 html",
+      "pos": [
+        1320,
+        0
+      ],
+      "size": [
+        620,
+        820
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "html",
+          "source": "<style>\nbody{margin:0;background:#101828;color:#f3ddbc;font:28px Georgia}\nmain{padding:40px} .orb{width:180px;height:180px;border-radius:50%;background:linear-gradient(40deg,#faac69,#89d7d2);animation:drift 3s infinite alternate}\n@keyframes drift{to{transform:translate(130px,60px) rotate(45deg)}}\n</style><main><h1>Live canvas</h1><div class=\"orb\"></div></main>"
+        },
+        "generetiLivecodeParameters": {
+          "values": {},
+          "slots": {}
+        }
+      },
+      "widgets_values": [
+        "html",
+        512,
+        384,
+        true,
+        "<style>\nbody{margin:0;background:#101828;color:#f3ddbc;font:28px Georgia}\nmain{padding:40px} .orb{width:180px;height:180px;border-radius:50%;background:linear-gradient(40deg,#faac69,#89d7d2);animation:drift 3s infinite alternate}\n@keyframes drift{to{transform:translate(130px,60px) rotate(45deg)}}\n</style><main><h1>Live canvas</h1><div class=\"orb\"></div></main>",
+        "{}",
+        "Live"
+      ]
+    },
+    {
+      "id": 6,
+      "type": "PreviewImage",
+      "pos": [
+        1320,
+        860
+      ],
+      "size": [
+        620,
+        300
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 7,
+      "type": "GeneretiLivecode",
+      "title": "\ua607 svg",
+      "pos": [
+        0,
+        1200
+      ],
+      "size": [
+        620,
+        820
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "svg",
+          "source": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\">\n <circle cx=\"256\" cy=\"256\" r=\"180\" fill=\"none\" stroke=\"#89d7d2\" stroke-width=\"8\"/>\n <path d=\"M76 256 Q256 20 436 256 T76 256\" fill=\"none\" stroke=\"#ff547d\" stroke-width=\"5\"/>\n</svg>"
+        },
+        "generetiLivecodeParameters": {
+          "values": {},
+          "slots": {}
+        }
+      },
+      "widgets_values": [
+        "svg",
+        512,
+        384,
+        true,
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\">\n <circle cx=\"256\" cy=\"256\" r=\"180\" fill=\"none\" stroke=\"#89d7d2\" stroke-width=\"8\"/>\n <path d=\"M76 256 Q256 20 436 256 T76 256\" fill=\"none\" stroke=\"#ff547d\" stroke-width=\"5\"/>\n</svg>",
+        "{}",
+        "Live"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "PreviewImage",
+      "pos": [
+        0,
+        2060
+      ],
+      "size": [
+        620,
+        300
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 9,
+      "type": "GeneretiLivecode",
+      "title": "\ua607 orca",
+      "pos": [
+        660,
+        1200
+      ],
+      "size": [
+        620,
+        820
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "bpm",
+          "widget": {
+            "name": "controls.value0"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            5
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "orca",
+          "source": "// @param bpm = 120 (20..400)\n.4C.............\n................\n.8D4............\n................\n.1Rz............\n................"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "bpm": 120
+          },
+          "slots": {
+            "bpm": 0
+          }
+        }
+      },
+      "widgets_values": [
+        "orca",
+        512,
+        384,
+        true,
+        "// @param bpm = 120 (20..400)\n.4C.............\n................\n.8D4............\n................\n.1Rz............\n................",
+        "{\"bpm\":120}",
+        "Live",
+        120
+      ]
+    },
+    {
+      "id": 10,
+      "type": "PreviewImage",
+      "pos": [
+        660,
+        2060
+      ],
+      "size": [
+        620,
+        300
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 5
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "GeneretiLivecode",
+      "title": "\ua607 hyperframes",
+      "pos": [
+        1320,
+        1200
+      ],
+      "size": [
+        620,
+        820
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "duration",
+          "widget": {
+            "name": "controls.value0"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value1",
+          "type": "BOOLEAN",
+          "label": "loop",
+          "widget": {
+            "name": "controls.value1"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            6
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "hyperframes",
+          "source": "<!-- @param duration = 8 (1..120) -->\n<!-- @param loop = true -->\n<style>main{height:100%;display:grid;place-items:center;color:#e8e8e8;font:28px system-ui}.orb{width:150px;height:150px;border-radius:50%;background:#89d7d2;transform:translateX(calc(sin(var(--hf-time))*90px))}p{position:absolute;bottom:12px}</style>\n<main data-composition-id=\"demo\"><div class=\"orb\"></div><p>Finite composition \u00b7 $e^{i\\pi}+1=0$</p></main>"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "duration": 8,
+            "loop": true
+          },
+          "slots": {
+            "duration": 0,
+            "loop": 1
+          }
+        }
+      },
+      "widgets_values": [
+        "hyperframes",
+        512,
+        384,
+        true,
+        "<!-- @param duration = 8 (1..120) -->\n<!-- @param loop = true -->\n<style>main{height:100%;display:grid;place-items:center;color:#e8e8e8;font:28px system-ui}.orb{width:150px;height:150px;border-radius:50%;background:#89d7d2;transform:translateX(calc(sin(var(--hf-time))*90px))}p{position:absolute;bottom:12px}</style>\n<main data-composition-id=\"demo\"><div class=\"orb\"></div><p>Finite composition \u00b7 $e^{i\\pi}+1=0$</p></main>",
+        "{\"duration\":8,\"loop\":true}",
+        "Live",
+        8,
+        true
+      ]
+    },
+    {
+      "id": 12,
+      "type": "PreviewImage",
+      "pos": [
+        1320,
+        2060
+      ],
+      "size": [
+        620,
+        300
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 6
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      5,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      7,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      9,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ],
+    [
+      6,
+      11,
+      0,
+      12,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.5,
+      "offset": [
+        120,
+        200
+      ]
+    },
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti Livecode Languages"
+  }
+}

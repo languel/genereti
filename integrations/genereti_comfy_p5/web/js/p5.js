@@ -2,6 +2,7 @@ import { previewState } from './preview-state.js';
 import { api } from "../../../scripts/api.js";
 import { app } from "../../../scripts/app.js";
 import { publishLive } from "./live-runtime.js";
+import { DEFAULT_P5_SKETCH } from "./p5-default.js";
 
 const NODE_NAME = "GeneretiP5Sketch";
 // The sketch runs in an opaque-origin srcdoc iframe, so resolve the bundled
@@ -16,32 +17,7 @@ function loadP5Source() {
   });
   return p5SourcePromise;
 }
-const DEFAULT_SKETCH = `// Draw with the mouse. Press C to clear and change the palette with keys 1–5.
-let hueShift = 0;
-
-function setup() {
-  createCanvas(512, 512);
-  colorMode(HSB, 360, 100, 100, 100);
-  background(225, 28, 12);
-}
-
-function draw() {
-  noStroke();
-  if (mouseIsPressed) {
-    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);
-    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));
-  }
-  if (keyIsPressed) {
-    fill((hueShift + 180) % 360, 70, 100, 55);
-    circle(mouseX, mouseY, 14);
-  }
-}
-
-function keyPressed() {
-  if (key === 'c' || key === 'C') background(225, 28, 12);
-  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;
-  return false;
-}`;
+const DEFAULT_SKETCH = DEFAULT_P5_SKETCH;
 
 function makeFrame(state, frameSlot, status, code, librarySource) {
   const frame = document.createElement("iframe");

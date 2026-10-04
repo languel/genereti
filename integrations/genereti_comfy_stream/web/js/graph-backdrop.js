@@ -33,6 +33,7 @@ export function graphBackdrop(status,onStateChange=()=>{}) {
       if(frame.bitmap){draw(frame.bitmap);return;}
       (async()=>{let bitmap;try{bitmap=await createImageBitmap(frame.blob||await(await fetch(frame.src)).blob());if(opened&&current===revision)draw(bitmap);}catch(error){status.textContent=`Backdrop: ${error.message}`;}finally{bitmap?.close();}})();
     },
+    getViewport(){if(!opened)return null;const rect=graphCanvas.canvas?.getBoundingClientRect();return rect?{width:rect.width,height:rect.height}:null;},
     setFit(value){fit=value;dirty();},
     close(){if(!opened)return;opened=false;revision++;if(graphCanvas.onRenderBackground===hook)graphCanvas.onRenderBackground=previous;if(active===this)active=null;canvas=null;context=null;dirty();onStateChange(false);},
   };

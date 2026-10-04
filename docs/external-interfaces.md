@@ -67,10 +67,26 @@ Real browser generation succeeded at 512px with the initial prompt, using the st
 
 ### Browser realtime clock
 
-Open **Genereti-p5-Realtime.json** for p5 → Live Image Preview. Stop Run (instant), run the p5 sketch, then click **Start realtime** on the preview. Drawing and preview now run independently of Comfy Queue. **Open projector** mirrors the same frames; its link can be opened in another window using the same Comfy server address. No Genereti inference server is needed for this raw image preview.
+Open **Genereti-p5-Realtime.json** for p5 Livecode → Live Image Preview. Evaluate the p5 sketch and click **Start realtime** on the preview. Drawing and preview run independently of Comfy Queue. The Livecode node can also open an output window, an in-Comfy overlay, or a graph backdrop. No Genereti inference server is needed for this raw image preview.
 
 The browser runtime transfers ImageBitmaps directly, with one outstanding source frame and bounded projector delivery. It avoids per-frame PNG uploads, tensor conversion, JPEG encoding and saved preview files. The preview reports delivered FPS and frame delivery time. A local 512px p5 + preview + projector test delivered about 41 fps over five seconds without queuing; this is a measured example, not a guaranteed rate.
 
 Browser p5, started webcam/screen capture and the Genereti Live Preview output can feed this path. Input Source selection and known preview/projector passthrough links are followed, but arbitrary Python processing nodes are never bypassed: their IMAGE outputs still update when Comfy executes them. Queue can sample a p5 snapshot while its browser clock remains live. Pause realtime or remove the viewer to release its source subscription; changing sketch code restarts the sketch and resumes active subscriptions. Refresh the Comfy page to load the frontend update.
 
 Projector windows in separate browsers/profiles fall back to a local in-memory JPEG relay (up to 30 sends/sec, one in flight, latest frame only). Encoding activates only when a relay viewer requests frames; same-profile windows continue using direct ImageBitmaps. Restart Comfy once after installing the relay backend, refresh the Comfy page, and reopen the current node’s projector link. Old links belong to old node instances. No preview files are saved.
+
+
+Livecode’s V3 schema includes optional IMAGE, native width/height, source code,
+parameter defaults and typed dynamic control sockets. Named source parameters
+map to stable `controls.value0` … `controls.value63` ids; their visible socket
+labels retain the authored names. Queue requests use the executing client’s
+`genereti-livecode-render` WebSocket event; the isolated browser renderer replies
+with PNG through `/genereti/livecode/result`. The response is matched to its
+request and client, expires after 30 seconds and becomes a Comfy IMAGE tensor.
+No external generator is involved. Keep the corresponding workflow open.
+Browser live input uses the existing borrowed-frame bus, a persistent local
+canvas/texture and transferable ImageBitmaps with backpressure. It avoids PNG
+serialization in the live path; this is not a claim of shared-memory or zero-copy
+transport. Camera/screen sources remain explicitly user-started.
+
+Livecode supports the [language contracts](livecode-languages.md) for thirteen browser modes, including KaTeX math and JavaScript Manim. All share the same IMAGE/parameter/Queue handshake and output surfaces. KaTeX/fonts are local; the Manim library loads on demand.

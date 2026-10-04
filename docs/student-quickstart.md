@@ -66,7 +66,7 @@ With ComfyUI installed locally, stop it and run:
 ./scripts/install_comfy.sh "$HOME/Documents/ComfyUI"
 ```
 
-Start ComfyUI again and open **Genereti-Live-Inputs.json** from the workflows menu. The doodle source works with Painter; webcam and window capture need the browser UI open and their respective **Start** buttons clicked. The p5.js example is a separate workflow, **Genereti-p5-Sketch.json**: edit the sketch, click Run, draw with the mouse, use the keyboard controls shown in its code, then queue to capture the canvas. In **Run (on change)** mode, each finished drawing gesture or key release can queue a new frame. For a plain diffusion lesson, open **Genereti-Classic-SD15-Bottle.json**; for a smaller Qwen 2.1 speed preset, use **Genereti-Qwen-2.1-Fast.json**.
+Start ComfyUI again and open **Genereti-Live-Inputs.json** from the workflows menu. The doodle source works with Painter; webcam and window capture need the browser UI open and their respective **Start** buttons clicked. The p5.js example is **Genereti-p5-Source.json**: edit the sketch in **ꘇ livecode**, evaluate with Run or Cmd/Ctrl+Enter, then draw with the mouse and use the keyboard controls shown in its code. Queue to capture the canvas. For a plain diffusion lesson, open **Genereti-Classic-SD15-Bottle.json**; for a smaller Qwen 2.1 speed preset, use **Genereti-Qwen-2.1-Fast.json**.
 
 To send a queued image to a projector, add a **Genereti Projector** node after any IMAGE-producing source, click **Open projector window**, move the new window to the projector display, and click **Enter fullscreen** there.
 
@@ -79,3 +79,9 @@ See [workflows.md](workflows.md) for details, including p5, TouchDesigner, and t
 - After installing Comfy nodes, fully restart ComfyUI and refresh the browser page.
 - On macOS, allow camera and screen sharing in the browser’s site permission prompt and System Settings if prompted.
 - Run `./scripts/verify_install.sh` for a quick local check.
+
+## Keyboard shortcuts
+
+See the [shortcut reference](shortcuts.md) or **Comfy Settings → Genereti → Shortcuts**.
+Use Alt+F for Fill window, Alt+P for presentation visibility, Alt+Shift+Z for Satori,
+and Alt+Shift+I for independent canvas diagnostics. Alt is Option on macOS.

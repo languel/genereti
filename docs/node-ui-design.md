@@ -31,6 +31,11 @@ while preserving MASK values. State remains saved in the workflow.
 These rules cover Genereti's custom node chrome. Preserve embedded editors'
 native tools and behavior, and ComfyUI's own node selection outlines and sockets.
 
+In Comfy's Vue node renderer, DOM widgets default to expandable grid rows;
+`computeSize` alone does not keep a toolbar compact. Livecode explicitly gives
+its delivery and parameter rows their content height and lets only the editor
+row fill the remaining node height. Keep this allocation when changing its schema.
+
 The drawing editor follows the same glyph-first approach for its custom footer
 and Library trigger. Footer glyphs match the embedded editor’s native top toolbar
 (12px glyphs with 32px hit targets), rather than the surrounding node controls.
@@ -132,3 +137,38 @@ placement. Use transparent paper to annotate over the graph; solid paper stays
 solid. Alt+Z exposes drawing tools, and Alt+Shift+O switches between drawing and
 interacting underneath. Modern Chromium hosts preserve the iframe runtime and
 undo history when moving; older hosts reload it and restore the saved scene.
+
+Livecode render width/height and code-defined values are regular node controls above the editor. Source parameters expose typed sockets; appearance stays in the settings menu. Native option menus explicitly follow the host surface/text colors to avoid light popup backgrounds with dark-theme text.
+
+Livecode's default dark code surface is `#121212` at 50% opacity with muted syntax
+colors. Keep completion/tooltips opaque enough to read. Appearance settings remain
+independent of native render dimensions and code parameters.
+
+### Preview shortcuts
+
+Select one preview-capable node and press **D** to toggle its graph backdrop or
+**Alt+W** to toggle its in-Comfy overlay. Alt+W prioritizes an overlay under the
+pointer, including its content iframe. Drawing uses Alt+W to move its active
+editor between the node and overlay. These shortcuts leave code editors, text
+fields, composition and modified typing alone. Overlay headers identify their
+source node with a rectangle glyph and the node title.
+
+**Alt+F** or the overlay header’s **Fill window** glyph fills the current Comfy
+viewport. It opens the selected node’s overlay if needed; an existing hovered
+overlay takes priority. Toggle again, or press **Escape**, to restore its position
+and size. The content remains borderless; controls appear at its top edge.
+This uses CSS viewport sizing, not the browser Fullscreen API, a new native
+window, or macOS fullscreen Spaces. Browser/app chrome stays under host control.
+Presentation geometry is temporary and never replaces the saved overlay rectangle.
+**Follow output** livecode adapts its render resolution to this viewport; fixed
+textures retain their resolution and use their selected display fit.
+
+**Alt+P** toggles presentation visibility: graph nodes, their embedded code and
+links disappear while renderers and workflows continue. Combine it with Alt+F
+and Alt+Shift+Z for artwork presentation. It does not alter workflow contents or
+node collapse settings. **Alt+Shift+I** independently toggles LiteGraph’s canvas
+diagnostics, including while Satori or presentation is active. Both modes hide
+these diagnostics by default and restore the normal visibility preference on exit.
+The corner counters mean: T = graph clock in seconds; I = graph iterations;
+N = total nodes [visible nodes]; V = graph revision; FPS = graph redraw frequency.
+This FPS is neither inference speed nor the output’s frame delivery rate.

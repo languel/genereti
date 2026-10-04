@@ -1,9 +1,9 @@
 import { ensureControlStyle } from './control-style.js';
 
 // Local display only. Producers and downstream subscribers keep their clock.
-export function previewState(node, surface, {capture, resize=()=>{}}={}) {
+export function previewState(node, surface, {capture, resize=()=>{},getFit=()=>'contain'}={}) {
   ensureControlStyle();
-  let frozen=false, minimized=false, version=0, snapshot;
+  let frozen=false, minimized=false, version=0, snapshot,snapshotImage;
   const actions=document.createElement('div');actions.className='genereti-node-controls genereti-preview-actions';actions.style.cssText='display:flex;align-items:center;gap:0;flex-shrink:0;align-self:flex-start';
   const button=(glyph,title)=>{const b=document.createElement('button');b.type='button';b.textContent=glyph;b.title=title;b.setAttribute('aria-label',title);actions.append(b);return b;};
   const minimize=button('▾','Minimize node preview only · downstream frames continue');
@@ -20,12 +20,12 @@ export function previewState(node, surface, {capture, resize=()=>{}}={}) {
     frozen=!frozen;const current=++version;
     if(snapshot){snapshot.remove();snapshot=null;}
     if(iframe){surface.querySelectorAll('iframe').forEach(f=>f.style.pointerEvents='');if(frozen){
-      try{const src=await capture();if(!frozen||current!==version)return;snapshot=document.createElement('img');snapshot.src=src;snapshot.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:3;background:var(--comfy-menu-bg,#111)';surface.append(snapshot);surface.querySelectorAll('iframe').forEach(f=>f.style.pointerEvents='none');}
+      try{const src=await capture();if(!frozen||current!==version)return;snapshot=document.createElement('div');snapshot.className='genereti-frozen-preview';snapshot.style.cssText='position:absolute;inset:0;pointer-events:none;z-index:3;background:var(--comfy-menu-bg,#111);overflow:hidden';snapshotImage=document.createElement('img');snapshotImage.src=src;snapshotImage.style.cssText='display:block;width:100%;height:100%';snapshotImage.style.objectFit=getFit()==='native'?'none':getFit();snapshot.append(snapshotImage);surface.append(snapshot);surface.querySelectorAll('iframe').forEach(f=>f.style.pointerEvents='none');}
       catch(error){frozen=false;freeze.title=`Could not freeze preview: ${error.message}`;}
     }}
     paint();
   };
   minimize.onclick=()=>{minimized=!minimized;paint();};
   if(surface.parentNode)surface.parentNode.insertBefore(actions,surface);
-  return {get visible(){return !frozen&&!minimized;},get minimized(){return minimized;},actions};
+  return {get frozen(){return frozen;},setFit(value){if(snapshotImage)snapshotImage.style.objectFit=value==='native'?'none':value;},get visible(){return !frozen&&!minimized;},get minimized(){return minimized;},actions};
 }

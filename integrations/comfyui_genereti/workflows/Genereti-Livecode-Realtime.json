@@ -30,7 +30,13 @@
       "flags": {},
       "order": 0,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
       "outputs": [
         {
           "localized_name": "IMAGE",
@@ -47,9 +53,12 @@
       },
       "widgets_values": [
         "p5",
+        512,
+        512,
         true,
-        "function setup(){createCanvas(512,512);background(245);}\nfunction draw(){if(mouseIsPressed){noStroke();fill(20,40,60,90);circle(mouseX,mouseY,24);}}",
-        ""
+        "function setup(){createCanvas(windowWidth,windowHeight);background(245)}function draw(){stroke(random(255));line(random(width),random(height),random(width),random(height));if(mouseIsPressed){noStroke();fill(random(255));circle(mouseX,mouseY,dist(mouseX,mouseY,pmouseX,pmouseY))}}",
+        "{}",
+        "Live"
       ]
     },
     {
@@ -86,7 +95,7 @@
       "widgets_values": [
         512
       ],
-      "title": "ꘇ image preview"
+      "title": "\ua607 image preview"
     }
   ],
   "links": [

@@ -7,33 +7,7 @@ from PIL import Image
 from comfy_api.latest import ComfyExtension, io, ui
 
 
-DEFAULT_SKETCH = """// Draw with the mouse. Press C to clear and change the palette with keys 1–5.
-let hueShift = 0;
-
-function setup() {
-  createCanvas(512, 512);
-  colorMode(HSB, 360, 100, 100, 100);
-  background(225, 28, 12);
-}
-
-function draw() {
-  noStroke();
-  if (mouseIsPressed) {
-    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);
-    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));
-  }
-  if (keyIsPressed) {
-    fill((hueShift + 180) % 360, 70, 100, 55);
-    circle(mouseX, mouseY, 14);
-  }
-}
-
-function keyPressed() {
-  if (key === 'c' || key === 'C') background(225, 28, 12);
-  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;
-  return false;
-}
-"""
+DEFAULT_SKETCH = """function setup(){createCanvas(windowWidth,windowHeight);background(245)}function draw(){stroke(random(255));line(random(width),random(height),random(width),random(height));if(mouseIsPressed){noStroke();fill(random(255));circle(mouseX,mouseY,dist(mouseX,mouseY,pmouseX,pmouseY))}}"""
 
 
 def _load_canvas(path: str) -> torch.Tensor:
@@ -91,7 +65,8 @@ class GeneretiP5Sketch(io.ComfyNode):
 
 class GeneretiP5Extension(ComfyExtension):
     async def get_node_list(self):
-        from .livecode_node import GeneretiLivecode
+        from .livecode_node import GeneretiLivecode, register_routes
+        register_routes()
         return [GeneretiP5Sketch, GeneretiLivecode]
 
 

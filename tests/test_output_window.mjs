@@ -10,10 +10,10 @@ function fixture(desktop=false){
  const target=()=>({document:doc(),Option:class{},addEventListener(){},focus(){},close(){this.closed=true;}});
  const document=doc();document.body.append=e=>panels.push(e);
  const window={open(){const w=target();popups.push(w);return w;},...(desktop?{__comfyDesktop2:{},documentPictureInPicture:{requestWindow:async()=>{throw new Error('Not allowed by this host');}}}:{})};
- const context=vm.createContext({nativeOutput:()=>({open:async()=>{nativeOpens++;return true;},publish:frame=>nativeFrames.push(frame),setFit(){},close(){}}),document,window,navigator:{userAgent:desktop?'Electron':'Chrome'},crypto:{randomUUID:()=> 'test'},performance});
- vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/overlay-shell.js',import.meta.url),'utf8').replace('export function','function'),context);
+ const context=vm.createContext({nativeOutput:()=>({open:async()=>{nativeOpens++;return true;},publish:frame=>nativeFrames.push(frame),setFit(){},close(){}}),document,window,navigator:{userAgent:desktop?'Electron':'Chrome'},innerWidth:1200,innerHeight:900,crypto:{randomUUID:()=> 'test'},performance});
+ vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/overlay-shell.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/output-window.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export function','function'),context);
- const status={textContent:''};return {shell:(frame,layout,onClose)=>context.overlayShell(frame,layout,onClose),make:(layout)=>context.outputWindow(status,undefined,layout),status,panels,popups,draws,nativeFrames,nativeOpens:()=>nativeOpens};
+ const status={textContent:''};return {shell:(frame,layout,onClose)=>context.overlayShell(frame,layout,onClose),make:(layout,config)=>context.outputWindow(status,undefined,layout,config),status,panels,popups,draws,nativeFrames,nativeOpens:()=>nativeOpens};
 }
 
 test('separate window and explicit overlay coexist and both draw the current frame',async()=>{
@@ -81,3 +81,32 @@ test('Overlay reuses remembered geometry on reopen',async()=>{
  shell.close();shell.close();assert.equal(closed,1);assert.equal(moves.length,1);assert.equal(moves[0][1],next);
  assert.equal(frame.parentNode,originalParent);assert.equal(frame.style.cssText,'height:560px');assert.equal(frame.contentWindow,runtime);
  });
+
+
+test('follow-output overlay opens at source aspect and retains remembered position',async()=>{
+ const f=fixture(),layout={rect:{left:123,top:234,width:700,height:400}},overlay=f.make(layout);
+ assert.equal(await overlay.open({overlay:true,initialSize:{width:1024,height:1024},matchAspect:true}),true);
+ assert.equal(layout.rect.left,123);assert.equal(layout.rect.top,234);
+ assert.equal(layout.rect.width,layout.rect.height);
+ assert.equal(f.panels[0].style.width,layout.rect.width+'px');
+ overlay.close();
+});
+
+
+test('overlay header identifies its source node and refreshes renamed titles',async()=>{
+ const f=fixture(),node={title:'ꘇ livecode'},overlay=f.make({}, {node});await overlay.open({overlay:true});
+ const panel=f.panels[0],header=panel.children.find(e=>e.className==='output-header'),title=header.children[0];
+ assert.match(title.innerHTML,/<rect/);assert.equal(title.children[0].textContent,node.title);
+ node.title='My sketch';panel.onpointerenter();assert.equal(title.children[0].textContent,'My sketch');overlay.close();
+});
+
+test('fill window toggles CSS viewport bounds and restores geometry without native fullscreen',()=>{
+ const f=fixture(),layout={},frame={...f.panels,style:{cssText:''},isConnected:false,addEventListener(){},removeEventListener(){}};
+ const shell=f.shell(frame,layout,()=>{}),panel=shell.element;
+ Object.assign(panel,{offsetLeft:123,offsetTop:80,offsetWidth:640,offsetHeight:480});
+ Object.assign(panel.style,{left:'123px',top:'80px',width:'640px',height:'480px',minWidth:'240px',minHeight:'180px'});
+ shell.toggleFill();assert.equal(shell.filled,true);assert.equal(panel.style.width,'100vw');assert.equal(panel.style.height,'100vh');assert.equal(panel.style.top,'0px');
+ assert.equal(layout.rect.width,640);Object.assign(panel,{offsetLeft:0,offsetTop:0,offsetWidth:1200,offsetHeight:900});
+ shell.toggleFill();assert.equal(shell.filled,false);assert.equal(panel.style.left,'123px');assert.equal(panel.style.width,'640px');
+ Object.assign(panel,{offsetLeft:123,offsetTop:80,offsetWidth:640,offsetHeight:480});shell.toggleFill();Object.assign(panel,{offsetWidth:1200,offsetHeight:900});shell.close();assert.equal(layout.rect.width,640);assert.equal(layout.rect.left,123);
+});

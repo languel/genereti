@@ -21,6 +21,8 @@
     "codemirror": "6.0.2",
     "dompurify": "3.3.3",
     "html-to-image": "1.11.13",
+    "katex": "0.18.1",
+    "manim-web": "0.3.24",
     "marked": "17.0.1",
     "p5": "1.11.11",
     "prettier": "3.9.9",

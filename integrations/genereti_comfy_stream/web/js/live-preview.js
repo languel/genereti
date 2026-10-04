@@ -26,7 +26,7 @@ export async function captureInput(node, size, canvas) {
   if (value(node, 'mode') === 'text') return undefined;
   const source = sourceNode(node);
   if (source._generetiDrawing?.captureDataUrl) return source._generetiDrawing.captureDataUrl();
-  if (source._generetiLivecode?.captureDataUrl) return source._generetiLivecode.captureDataUrl();
+  if (source._generetiLivecode?.captureDataUrl) return source._generetiLivecode.captureDataUrl({live:true});
   if (source._generetiP5?.captureDataUrl) return source._generetiP5.captureDataUrl();
   const capture=source._generetiCapture;
   if(capture?.stream&&capture.canvas){await capture.sample?.();if(capture.hasFrame)return capture.canvas.toDataURL('image/jpeg',.9);}
@@ -121,11 +121,12 @@ export function attachLivePreview(node) {
     try {
       controller = new AbortController();
       const abortTimeout = setTimeout(() => controller.abort(), 60000);
-      let response;
+      let response, captureMs=0;
       try {
         const effectiveMode=value(node,'mode');
         if(effectiveMode!=='text'){const source=sourceNode(node);if(source._generetiLivePaused||source._generetiExecutionMode==='Comfy Queue'){status.textContent='Source live delivery paused';delay=250;return;}}
         const image = await captureInput(node, size, input);
+        captureMs=performance.now()-start;
         if (!running || session !== epoch) return;
         const payload = { image, ai_upscaler: 'off' };
         for (const key of ['prompt', 'mode', 'style', 'preprocess', 'seed', 'strength', 'control_scale']) {
@@ -160,7 +161,7 @@ export function attachLivePreview(node) {
         bitmap.close();
       } finally { clearTimeout(abortTimeout); }
       const now = performance.now();
-      status.textContent = `${previous ? (1000 / (now - previous)).toFixed(1) : '—'} fps · ${Math.round(now-start)} ms round trip · ${Math.round(Number(response.headers.get('X-Inference-Ms')))} ms model`;
+      status.textContent = `${previous ? (1000 / (now - previous)).toFixed(1) : '—'} fps · ${Math.round(now-start)} ms total · ${Math.round(captureMs)} ms input · ${Math.round(Number(response.headers.get('X-Inference-Ms')))} ms model`;
       previous = now;
       delay = Math.max(0, 1000 / 24 - (now - start));
     } catch (error) {
