@@ -20,7 +20,7 @@ class WorkflowInstallTests(unittest.TestCase):
             edited = workflows / 'Genereti' / name; edited.write_text('{"custom":true}')
             installer.install(examples, workflows)
             self.assertFalse((workflows / name).exists())
-            self.assertEqual(json.loads(edited.read_text()), {'custom': True})
+            self.assertEqual(json.loads(edited.with_name('ꘇ Test.json').read_text()), {'custom': True})
             self.assertEqual(len(list((workflows.parent / '.genereti-workflow-backups').rglob(name))), 1)
             installer.install(examples, workflows)
             self.assertEqual(len(list((workflows / 'Genereti').glob('*.json'))), 1)
@@ -34,15 +34,36 @@ class WorkflowInstallTests(unittest.TestCase):
             (workflows / name).write_text('{"edit":"root"}')
             (workflows / 'Genereti' / name).write_text('{"edit":"folder"}')
             installer.install(examples, workflows)
-            self.assertEqual(json.loads((workflows / 'Genereti' / 'Genereti-Test (from root).json').read_text()), {'edit': 'root'})
-            self.assertEqual(json.loads((workflows / 'Genereti' / name).read_text()), {'edit': 'folder'})
+            self.assertEqual(json.loads((workflows / 'Genereti' / 'ꘇ Test (from root).json').read_text()), {'edit': 'root'})
+            self.assertEqual(json.loads((workflows / 'Genereti' / 'ꘇ Test.json').read_text()), {'edit': 'folder'})
 
     def test_managed_updates_but_not_user_changes(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory); examples = root / 'examples'; workflows = root / 'user/workflows'
             examples.mkdir(); name = 'Genereti-Test.json'; source = examples / name
-            source.write_text('{"version":1}'); destination = installer.install(examples, workflows) / name
+            source.write_text('{"version":1}'); destination = installer.install(examples, workflows) / 'ꘇ Test.json'
             source.write_text('{"version":2}'); installer.install(examples, workflows)
             self.assertEqual(json.loads(destination.read_text()), {'version': 2})
             destination.write_text('{"custom":true}'); source.write_text('{"version":3}'); installer.install(examples, workflows)
             self.assertEqual(json.loads(destination.read_text()), {'custom': True})
+
+    def test_rename_keeps_managed_checksum_for_updates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); examples = root / 'examples'; workflows = root / 'user/workflows'
+            examples.mkdir(); (workflows / 'Genereti').mkdir(parents=True)
+            old = workflows / 'Genereti' / 'Genereti-Test.json'; old.write_text('{"version":1}')
+            (workflows.parent / '.genereti-workflows.json').write_text(json.dumps({old.name: installer.digest(old)}))
+            (examples / 'ꘇ Test.json').write_text('{"version":2}')
+            installer.install(examples, workflows)
+            self.assertFalse(old.exists())
+            self.assertEqual(json.loads((old.parent / 'ꘇ Test.json').read_text()), {'version': 2})
+
+    def test_custom_glyph_root_is_not_moved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); examples = root / 'examples'; workflows = root / 'user/workflows'
+            examples.mkdir(); workflows.mkdir(parents=True)
+            (examples / 'ꘇ Test.json').write_text('{"version":1}')
+            custom = workflows / 'ꘇ My Sketch.json'; custom.write_text('{"custom":true}')
+            destination = installer.install(examples, workflows)
+            self.assertEqual(json.loads(custom.read_text()), {'custom': True})
+            self.assertFalse((destination / custom.name).exists())

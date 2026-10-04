@@ -1,0 +1,18 @@
+<!doctype html><meta charset="utf-8"><title>Genereti GPU texture validation</title><style>body{background:#121212;color:#ddd;font:14px monospace}canvas{width:256px;height:256px;border:1px solid #555}pre{white-space:pre-wrap}</style><h1>Genereti · WebGPU texture operators</h1><canvas id="view"></canvas><pre id="results">Testing…</pre><script type="module">
+import {textureGPU,parameters} from '/integrations/genereti_comfy_texture/web/texture-gpu.js';
+const log=document.querySelector('#results');window.testResult={};
+try{
+ const gpu=await textureGPU();const errors=[];gpu.device.addEventListener('uncapturederror',e=>errors.push(e.error.message));
+ const compile=await gpu.module.getCompilationInfo();if(compile.messages.some(m=>m.type==='error'))throw Error(JSON.stringify(compile.messages));
+ const source=document.createElement('canvas');source.width=source.height=512;const ctx=source.getContext('2d');ctx.fillStyle='rgba(255,0,0,.5)';ctx.fillRect(0,0,512,512);const a=gpu.upload(source,'a');
+ ctx.clearRect(0,0,512,512);ctx.fillStyle='rgba(0,0,255,.5)';ctx.fillRect(0,0,512,512);const b=gpu.upload(source,'b');
+ async function pixel(frame){const buf=gpu.device.createBuffer({size:frame.height*frame.width*4,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ});const enc=gpu.device.createCommandEncoder();enc.copyTextureToBuffer({texture:frame.texture},{buffer:buf,bytesPerRow:frame.width*4},[frame.width,frame.height]);gpu.device.queue.submit([enc.finish()]);await buf.mapAsync(GPUMapMode.READ);const out=Array.from(new Uint8Array(buf.getMappedRange()).slice(0,4));buf.unmap();buf.destroy();return out;}
+ const over=gpu.run(a,b,parameters('Composite',{operation:'over',opacity:1}),'over');const rgba=await pixel(over);if(Math.abs(rgba[0]-170)>2||Math.abs(rgba[2]-85)>2||Math.abs(rgba[3]-192)>2)throw Error('Alpha composite mismatch '+rgba);
+ const identity=gpu.run(a,null,parameters('CornerPin',{tl_x:0,tl_y:0,tr_x:1,tr_y:0,br_x:1,br_y:1,bl_x:0,bl_y:1}),'pin');const pin=await pixel(identity);if(pin[0]<254||Math.abs(pin[3]-128)>1)throw Error('Corner pin mismatch '+pin);
+ for(const kind of ['Transform','Crop','Math','Filter','Feedback']){const v={translate_x:0,translate_y:0,scale:1,rotate:0,left:0,top:0,right:1,bottom:1,operation:kind==='Filter'?'blur':'multiply',value:.5,amount:1,decay:.96};const result=gpu.run(a,b,parameters(kind,v),kind);await pixel(result);}
+ gpu.present(over,document.querySelector('#view'));
+ const start=performance.now();for(let i=0;i<240;i++){const x=gpu.run(a,b,parameters('Composite',{operation:'screen',opacity:.75}),'bench1');const y=gpu.run(x,null,parameters('Filter',{operation:'blur',amount:2}),'bench2');gpu.run(y,null,parameters('Transform',{translate_x:.01,translate_y:0,scale:1,rotate:0}),'bench3');}await gpu.device.queue.onSubmittedWorkDone();const elapsed=performance.now()-start;
+ if(errors.length)throw Error(errors.join('\n'));
+ window.testResult={passed:true,rgba,pin,chainFrames:240,passes:720,elapsedMs:elapsed,offscreenFps:240000/elapsed,stats:gpu.stats};log.textContent=JSON.stringify(window.testResult,null,2);
+}catch(error){window.testResult={passed:false,error:error.stack};log.textContent=error.stack;}
+</script>

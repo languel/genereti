@@ -7,6 +7,7 @@ const shortcuts=[
   ['Escape','Restore filled overlay','Returns to its previous position and size'],
   ['Alt+P','Presentation visibility','Hide/show graph nodes, code and links; renderers continue'],
   ['Alt+Shift+Z','Satori','Hide/show Comfy chrome and canvas diagnostics'],
+  ['Alt+Shift+R','Properties sidebar','Toggle right panel independently; reveal/hide it in Satori'],
   ['Alt+Shift+I','Canvas diagnostics','Independent toggle; also works in presentation and Satori'],
   ['Alt+Shift+O','Click through overlay','Toggle interaction with content underneath open overlays'],
   ['Alt+Z','Drawing Satori','Inside the drawing editor'],

@@ -70,7 +70,7 @@ external controls. See [the node guide](../integrations/genereti_comfy_drawing/R
 The standalone Comfy drawing source defaults to **Live**, with **Comfy Queue**
 available in the dropdown above the editor. Connected ports determine which
 outputs are exported. Connect it to **ꘇ live image preview** for direct browser
-frames. `Genereti-Drawing-Source.json` contains this
+frames. `ꘇ Drawing Source.json` contains this
 source-only path and needs no Genereti model server. The same delivery controls
 are shared by drawing, p5/livecode, camera/screen, preview and projector nodes;
 Python effects still execute on Queue.

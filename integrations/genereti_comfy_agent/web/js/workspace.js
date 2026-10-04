@@ -85,5 +85,8 @@ export function createWorkspace(app, {review=async()=>false,resources=createReso
   await app.refreshComboInNodes?.();
   return {id:node.id,widget:a.widget,value:filename,asset:a.asset};
  },true);
+ definition('guide_list','List local OpenTouch interactive lessons.',{},[],async()=>{return (await window.generetiGuides?.list())??[];});
+ definition('guide_start','Start a learner-paced guide. Focuses nodes; never starts devices or queues inference.',{id:{type:'string'}},['id'],async a=>{if(!window.generetiGuides)throw Error('Guides extension unavailable');await window.generetiGuides.start(a.id);return {started:true};});
+ definition('guide_stop','Close the learning guide, keeping learner edits.',{},[],()=>{window.generetiGuides?.stop();return {stopped:true};});
  return {snapshot,nodeInfo,resources,tools:()=>[...tools.values()].map(({handler,...t})=>t),call:async(name,args={})=>{const tool=tools.get(name);if(!tool)throw Error(`Unknown tool ${name}`);for(const key of tool.inputSchema.required)if(args[key]===undefined)throw Error(`Missing ${key}`);return tool.handler(args);}};
 }

@@ -110,6 +110,13 @@ from **Freeze node preview**, which leaves workflow input running. Device/size/
 rate/flip preferences are saved in workflow properties; capture always requires
 an explicit start gesture after loading.
 
+All non-livecode Genereti DOM widget grids use content-sized rows anchored at
+the top. Extra node height must not be divided among the transport and capture
+settings. Capture, image and GPU texture previews follow the last displayed
+frame's aspect ratio; freeze retains that frame's ratio until resumed. Do not
+cap canvas height independently of width or leave a square CSS ratio on a
+rectangular source. Sampling resolution changes pixels, not this display rule.
+
 WebGL performs camera/screen resize and flip before ImageBitmap delivery or queued
 PNG encoding. The node preview reads that processed frame. Sampling at a lower
 rate reduces processing and delivery, but does not guarantee the physical camera
@@ -138,13 +145,21 @@ solid. Alt+Z exposes drawing tools, and Alt+Shift+O switches between drawing and
 interacting underneath. Modern Chromium hosts preserve the iframe runtime and
 undo history when moving; older hosts reload it and restore the saved scene.
 
-Livecode render width/height and code-defined values are regular node controls above the editor. Source parameters expose typed sockets; appearance stays in the settings menu. Native option menus explicitly follow the host surface/text colors to avoid light popup backgrounds with dark-theme text.
+Livecode render width/height and code-defined values are regular node controls above the editor. Source parameters expose typed sockets; appearance stays in the settings menu. Shared dropdowns use customizable native selects where supported: popup text follows the control font and graph zoom, surfaces follow Comfy theme tokens, and selection/hover highlights use a neutral text-color tint. Older hosts retain native option menus with explicit host surface/text colors.
 
 Livecode's default dark code surface is `#121212` at 50% opacity with muted syntax
 colors. Keep completion/tooltips opaque enough to read. Appearance settings remain
 independent of native render dimensions and code parameters.
 
 ### Preview shortcuts
+
+Two-finger scrolling over a livecode editor stays inside that editor, including
+unmodified momentum after releasing Shift and events at its scroll limits.
+Shift-scroll retains vertical code scrolling. Pinching over code does not zoom
+the browser or graph; use the existing font-size shortcut for text sizing.
+Pinching over an embedded livecode preview zooms the workflow at the pointer,
+through Comfy's normal zoom handler. Ordinary preview scrolling remains available
+to interactive HTML/Markdown content. Standalone exports keep browser gestures.
 
 Select one preview-capable node and press **D** to toggle its graph backdrop or
 **Alt+W** to toggle its in-Comfy overlay. Alt+W prioritizes an overlay under the
@@ -172,3 +187,5 @@ these diagnostics by default and restore the normal visibility preference on exi
 The corner counters mean: T = graph clock in seconds; I = graph iterations;
 N = total nodes [visible nodes]; V = graph revision; FPS = graph redraw frequency.
 This FPS is neither inference speed nor the output’s frame delivery rate.
+
+**Alt+Shift+R** toggles the right properties sidebar independently, including a temporary reveal in Satori. Satori hides that sidebar and its resize gutter without changing the saved open/closed preference. Escape hides temporarily revealed panels.

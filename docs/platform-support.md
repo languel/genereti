@@ -7,6 +7,7 @@
 | Genereti ComfyUI Generate / Live Frame nodes | Supported when the local Genereti server is running | Not supported by this Core ML backend |
 | ComfyUI webcam/window/doodle capture nodes | Supported with the included browser widgets | Can run in ComfyUI where its current custom-node API is available |
 | ComfyUI interactive p5.js source node | Supported | Can run on PC independently of Genereti; connect it to any compatible ComfyUI graph |
+| Comfy texture operators | WebGPU Live mode; PyTorch Queue mode | Same, with a WebGPU-capable host for Live; independent of Core ML |
 | TouchDesigner Web Render bridge | Supported as a client of the local stream | Web Render can display a stream served on that PC, but Genereti itself is not the PC server |
 
 The app binds to loopback (`127.0.0.1`) by default, keeping its API and captures on the local machine. The current release does not offer a remote PC-to-Mac generator connection. A PC user who wants to generate on Windows/Linux can use ComfyUI’s own installed models and nodes; the Genereti Core ML generator is not involved.
@@ -17,22 +18,22 @@ Apple’s Core ML runtime can use the CPU, GPU, and Neural Engine on Apple devic
 
 To try interactive p5 or camera/window capture in ComfyUI without Genereti’s Mac server, copy the relevant folder from this repository into your ComfyUI `custom_nodes` folder, then restart ComfyUI:
 
-- For the sketch canvas: copy `integrations/genereti_comfy_p5` and open `Genereti-p5-Source.json`.
-- For doodle, webcam, and window/screen input: also copy `integrations/genereti_comfy_inputs` and open `Genereti-Input-Sources.json`.
+- For the sketch canvas: copy `integrations/genereti_comfy_p5` and open `ꘇ p5 Source.json`.
+- For doodle, webcam, and window/screen input: also copy `integrations/genereti_comfy_inputs` and open `ꘇ Input Sources.json`.
 
 On Windows, first set `$ComfyUI` to the folder that contains `custom_nodes` (often `C:\ComfyUI_windows_portable\ComfyUI`):
 
 ```powershell
 $ComfyUI = "C:\ComfyUI_windows_portable\ComfyUI"
 Copy-Item -Recurse .\integrations\genereti_comfy_p5 "$ComfyUI\custom_nodes\genereti_comfy_p5"
-Copy-Item .\integrations\comfyui_genereti\workflows\Genereti-p5-Source.json "$ComfyUI\user\default\workflows\"
+Copy-Item ".\integrations\comfyui_genereti\workflows\ꘇ p5 Source.json" "$ComfyUI\user\default\workflows\"
 ```
 
 For camera/window capture, copy that second node folder and workflow too:
 
 ```powershell
 Copy-Item -Recurse .\integrations\genereti_comfy_inputs "$ComfyUI\custom_nodes\genereti_comfy_inputs"
-Copy-Item .\integrations\comfyui_genereti\workflows\Genereti-Input-Sources.json "$ComfyUI\user\default\workflows\"
+Copy-Item ".\integrations\comfyui_genereti\workflows\ꘇ Input Sources.json" "$ComfyUI\user\default\workflows\"
 ```
 
 You can also drag a workflow JSON onto the ComfyUI page. The source-only workflows preview and save their current image directly; they do not call the unsupported Core ML generator. Newer ComfyUI versions are required for the included nodes’ current extension API.
@@ -52,3 +53,7 @@ output windows. Its first build requires Xcode Command Line Tools. This optional
 window helper does not change the platform support of browser preview, overlays,
 or the Core ML generator. Browser output windows and overlays remain usable
 without it. See the stream pack README for setup and local transport details.
+
+## OpenTouch packs
+
+TOP/CHOP/DAT and lesson nodes are independent of Core ML. Live TOP requires WebGPU in a secure-context host; queued image operations use PyTorch. Signal/table Queue uses NumPy. Web MIDI and host print/PDF availability vary by browser/desktop harness. OSC uses an explicit-start loopback UDP bridge. Synth/drum endpoints use user-started Web Audio; they pass data through silently in Queue. See the [OpenTouch report](opentouch-report.md) for copy/readback and timing limits. This does not expand Core ML generator support beyond macOS 14+ on Apple silicon.

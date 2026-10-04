@@ -33,7 +33,7 @@ execute scene contents. Painter image-input widgets are not implemented.
 
 Run `scripts/install_comfy.sh`, restart ComfyUI and refresh its browser. Add
 **ꘇ drawing** from Genereti / Interactive Sources, or open
-**Genereti-Drawing-Live-Inputs.json**. The drawing node needs no models or Genereti
+**ꘇ Drawing Live Inputs.json**. The drawing node needs no models or Genereti
 server. The example workflow's Core ML generator still requires the macOS
 Apple silicon app. Rebuild the shared editor after source changes with
 `npm run build:editor`.
@@ -52,9 +52,9 @@ Browser bitmap events identify the IMAGE or MASK output slot. SVG/JSON updates
 use `genereti-live-value` events with `nodeId`, `outputSlot` and `value` fields.
 Python consumers of these sockets receive their values on Queue execution.
 
-Use **Genereti-Drawing-Source.json** for the drawing-only live/queued example.
+Use **ꘇ Drawing Source.json** for the drawing-only live/queued example.
 For inference, use **drawing → ꘇ generator → ꘇ live image preview** and start the
-generator with ▶. **Genereti-Drawing-Generator-Preview.json** demonstrates this
+generator with ▶. **ꘇ Drawing Generator Preview.json** demonstrates this
 split. The generator requires the macOS Apple silicon model backend; the raw
 viewer does not. The older combined **Genereti Live Preview** remains available
 for existing workflows.

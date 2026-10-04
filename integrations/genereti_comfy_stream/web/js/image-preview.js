@@ -17,7 +17,7 @@ app.registerExtension({
     status.textContent = 'Live browser source · Comfy Queue for Python IMAGE results';
     const canvas = document.createElement('canvas');
     canvas.width = canvas.height = 512;
-    canvas.style.cssText = 'width:100%;aspect-ratio:1;object-fit:contain;background:transparent';
+    canvas.style.cssText = 'display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:transparent';
     const localPreview=previewState(node,canvas);
     const realtime=document.createElement('button');
     realtime.type='button';realtime.textContent='Start realtime';realtime.hidden=true;
@@ -30,14 +30,15 @@ app.registerExtension({
     node._generetiMountTransport=()=>node._generetiExecutionModeElement?.append(output.actions);
     node._generetiMountTransport();
     const widget = node.addDOMWidget('live_image_preview', 'GENERETI_IMAGE_PREVIEW', container, {serialize:false});
-    widget.computeSize = width => [width, (localPreview.minimized?0:width) + (performancePanel.open ? 80 : 60)];
+    widget.computeSize = width => [width, (localPreview.minimized?0:Math.max(0,width-24)*canvas.height/canvas.width) + (performancePanel.open ? 80 : 60)];
+    const resizeCanvas=(width,height)=>{if(canvas.width===width&&canvas.height===height)return;canvas.width=width;canvas.height=height;canvas.style.aspectRatio=`${width} / ${height}`;node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);};
     performancePanel.ontoggle=()=>{node.setSize?.([node.size[0],node.computeSize()[1]]);node.graph?.setDirtyCanvas?.(true,true);};
     realtime.onclick=()=>{
       if(unsubscribe){unsubscribe();unsubscribe=null;realtime.textContent='Start realtime';status.textContent='Browser clock paused';return;}
       last=0;frameTimes=[];lastStatus=-Infinity;realtime.textContent='Pause realtime';
       unsubscribe=subscribeLive(node,({bitmap,producedAt})=>{
         lastBrowserFrame=performance.now();
-        if(localPreview.visible){if(canvas.width!==bitmap.width||canvas.height!==bitmap.height){canvas.width=bitmap.width;canvas.height=bitmap.height;}
+        if(localPreview.visible){resizeCanvas(bitmap.width,bitmap.height);
         canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
         canvas.getContext('2d').drawImage(bitmap,0,0);
         }
@@ -69,7 +70,7 @@ app.registerExtension({
       const image = new Image();
       image.onload = () => {
         if (disposed || current !== revision) return;
-        if(localPreview.visible){canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+        if(localPreview.visible){resizeCanvas(image.naturalWidth,image.naturalHeight);
         canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
         canvas.getContext('2d').drawImage(image,0,0);
         }

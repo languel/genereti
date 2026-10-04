@@ -56,7 +56,7 @@ function videoSource(node) {
   return node._generetiLiveSource;
 }
 
-export function subscribeLive(node, onFrame, onStatus=()=>{}) {
+export function subscribeLive(node, onFrame, onStatus=()=>{}, {gpu=false}={}) {
   let source=undefined, sourceSlot=0,driver=null, disposed=false;
   const bind = () => {
     const next=resolveLiveSource(node);
@@ -69,7 +69,14 @@ export function subscribeLive(node, onFrame, onStatus=()=>{}) {
     } else onStatus('No browser live source · queued IMAGE previews still work');
   };
   const listener = event => {
-    if (!disposed && source && (event.detail.outputSlot??0)===sourceSlot && String(event.detail.nodeId)===String(source.id)) onFrame(event.detail);
+    if (!disposed && source && (event.detail.outputSlot??0)===sourceSlot && String(event.detail.nodeId)===String(source.id)) {
+      const detail=event.detail;
+      if(!detail.texture||gpu)onFrame(detail);
+      else if(source._generetiTexturePresent){
+        try{onFrame({...detail,bitmap:source._generetiTexturePresent(detail)});}
+        catch(error){onStatus(`GPU display failed: ${error.message}`);}
+      }
+    }
   };
   window.addEventListener('genereti-live-frame',listener);
   // Rebind after rewiring/selecting a source; this does not submit Comfy jobs.

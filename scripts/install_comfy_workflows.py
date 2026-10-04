@@ -24,6 +24,12 @@ def same(left, right):
         return False
 
 
+def display_name(name):
+    if name.startswith('Genereti-'):
+        return 'ꘇ ' + name[len('Genereti-'):].replace('-', ' ')
+    return name
+
+
 def install(examples, workflows):
     examples, workflows = Path(examples), Path(workflows)
     destination = workflows / 'Genereti'
@@ -42,12 +48,38 @@ def install(examples, workflows):
         shutil.move(str(path), str(archive / path.name))
         print(f'Archived root copy: {path.name}')
 
+    # Rename installed examples, including customized copies, without replacing
+    # their contents. Move the managed checksum with its filename as well.
+    for old in sorted(destination.glob('Genereti-*.json')):
+        target = destination / display_name(old.name)
+        if target.exists():
+            if same(old, target):
+                backup(old)
+            else:
+                sibling = target.with_name(target.stem + f' (previous {digest(old)[:8]}).json')
+                if sibling.exists():
+                    if not same(old, sibling):
+                        raise FileExistsError(sibling)
+                    backup(old)
+                else:
+                    old.rename(sibling)
+        else:
+            old.rename(target)
+            if old.name in manifest:
+                manifest[target.name] = manifest[old.name]
+        manifest.pop(old.name, None)
+
     # Keep the user's existing folder as canonical. Root copies installed by an
     # older installer are redundant even when the folder copy was later edited.
-    for legacy in sorted(workflows.glob('Genereti-*.json')):
+    for legacy in sorted([*workflows.glob('Genereti-*.json'), *workflows.glob('ꘇ *.json')]):
         if not legacy.is_file():
             continue
-        target, example = destination / legacy.name, examples / legacy.name
+        name = display_name(legacy.name)
+        if legacy.name.startswith('ꘇ ') and not (examples / name).is_file():
+            continue  # A user's own glyph-titled workflow is not an example.
+        target, example = destination / name, examples / name
+        if not example.exists():
+            example = examples / legacy.name
         if not target.exists():
             shutil.move(str(legacy), str(target))
             print(f'Moved into Genereti: {legacy.name}')
@@ -55,9 +87,9 @@ def install(examples, workflows):
             backup(legacy)
         else:
             # Two independently edited versions: retain both, with clear names.
-            sibling = destination / (legacy.stem + ' (from root).json')
+            sibling = destination / (Path(name).stem + ' (from root).json')
             if sibling.exists() and not same(legacy, sibling):
-                sibling = destination / (legacy.stem + f' (from root {digest(legacy)[:8]}).json')
+                sibling = destination / (Path(name).stem + f' (from root {digest(legacy)[:8]}).json')
             if sibling.exists() and same(legacy, sibling):
                 backup(legacy)
             elif sibling.exists():
@@ -66,9 +98,10 @@ def install(examples, workflows):
                 shutil.move(str(legacy), str(sibling))
                 print(f'Preserved separate root edit: {sibling.name}')
 
-    for example in sorted(examples.glob('Genereti-*.json')):
-        target = destination / example.name
-        unchanged = target.is_file() and manifest.get(example.name) == digest(target)
+    for example in sorted([*examples.glob('ꘇ *.json'), *examples.glob('Genereti-*.json')]):
+        name = display_name(example.name)
+        target = destination / name
+        unchanged = target.is_file() and manifest.get(name) == digest(target)
         if target.exists() and not same(target, example) and not unchanged:
             print(f'Kept customized workflow: Genereti/{target.name}')
             continue
@@ -79,7 +112,7 @@ def install(examples, workflows):
                 shutil.copy2(target, archive / ('previous-' + target.name))
             shutil.copy2(example, target)
             print(f'Installed: Genereti/{target.name}')
-        manifest[example.name] = digest(target)
+        manifest[name] = digest(target)
     temporary = manifest_path.with_suffix('.tmp')
     temporary.write_text(json.dumps(manifest, indent=2) + '\n')
     temporary.replace(manifest_path)

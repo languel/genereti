@@ -25,6 +25,7 @@ export function nativeParameters(node) {
 export async function captureInput(node, size, canvas) {
   if (value(node, 'mode') === 'text') return undefined;
   const source = sourceNode(node);
+  if (source._generetiTexture?.captureDataUrl) return source._generetiTexture.captureDataUrl();
   if (source._generetiDrawing?.captureDataUrl) return source._generetiDrawing.captureDataUrl();
   if (source._generetiLivecode?.captureDataUrl) return source._generetiLivecode.captureDataUrl({live:true});
   if (source._generetiP5?.captureDataUrl) return source._generetiP5.captureDataUrl();
@@ -34,8 +35,9 @@ export async function captureInput(node, size, canvas) {
   if (!source._generetiCapture?.stream || !video || video.readyState < 2) {
     throw new Error('Live preview supports drawing, started webcam/screen and running livecode sources. Use Queue for other IMAGE sources.');
   }
-  canvas.width = canvas.height = size;
-  canvas.getContext('2d').drawImage(video, 0, 0, size, size);
+  const scale=Math.min(1,size/Math.max(video.videoWidth,video.videoHeight));
+  canvas.width=Math.max(1,Math.round(video.videoWidth*scale));canvas.height=Math.max(1,Math.round(video.videoHeight*scale));
+  canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
   return canvas.toDataURL('image/jpeg', .9);
 }
 
@@ -58,7 +60,7 @@ export function attachLivePreview(node) {
   function showError(error){let message=error.message??String(error);try{message=JSON.parse(message).detail??message;}catch{}status.textContent='Generation error · '+message;status.title=message;console.error('Genereti generation:',message);}
   const output = document.createElement('canvas');
   output.width = output.height = 512;
-  output.style.cssText = 'width:100%;aspect-ratio:1;object-fit:contain;background:#111';
+  output.style.cssText = 'display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:transparent';
   const localPreview=generatorOnly?null:previewState(node,output);
   if (generatorOnly) {
     container.append(status);
@@ -153,7 +155,7 @@ export function attachLivePreview(node) {
         const bitmap = await createImageBitmap(blob);
         if (!running || session !== epoch) { bitmap.close(); return; }
         if (!generatorOnly && localPreview.visible) {
-          output.width = bitmap.width; output.height = bitmap.height;
+          output.width = bitmap.width; output.height = bitmap.height;output.style.aspectRatio=`${bitmap.width} / ${bitmap.height}`;
           output.getContext('2d').drawImage(bitmap, 0, 0);
         }
         projector.publish({blob});
@@ -201,7 +203,7 @@ export function attachLivePreview(node) {
     else {enabled=true;status.textContent='Live · waiting for a viewer';if(users)void start();}
   };
   const widget = node.addDOMWidget('genereti_live_preview', 'GENERETI_LIVE_PREVIEW', container, {serialize:false});
-  widget.computeSize = width => [width, generatorOnly ? (node._generetiExecutionModeElement?0:64) : width + 176];
+  widget.computeSize = width => [width, generatorOnly ? (node._generetiExecutionModeElement?0:64) : (localPreview.minimized?0:Math.max(0,width-24)*output.height/output.width) + 176];
   const recover=setInterval(()=>{bindPrompt();mountToolbar();if(failedSettings && enabled && users && !running){try{if(settingsKey()!==failedSettings)void start();}catch{}}},500);
   const removed = node.onRemoved;
   node.onRemoved = function() { disposed = true; clearInterval(recover);stop(); projector.close(); return removed?.apply(this, arguments); };

@@ -4,6 +4,7 @@ import { app } from '../../../../scripts/app.js';
 // Presentation only: never change workflow, execution or stored Comfy layout settings.
 const MODE = 'genereti-satori';
 const PEEK = 'genereti-satori-panels';
+const PROPERTIES_PEEK='genereti-satori-properties';
 const PRESENTATION='genereti-presentation';
 let dot,statsWanted,statsPeek=false;
 const hooked=new WeakSet();
@@ -36,10 +37,16 @@ function toggleStats(){
 
 function toggle() {
   const enabled = document.documentElement.classList.toggle(MODE);
-  document.documentElement.classList.remove(PEEK);
+  document.documentElement.classList.remove(PEEK,PROPERTIES_PEEK);
   if (dot) dot.hidden = !enabled;
   statsPeek=false;syncCanvas();
   window.dispatchEvent(new Event('resize'));
+}
+async function toggleProperties(){
+ const settings=app.ui.settings,key='Comfy.RightSidePanel.IsOpen';
+ if(document.documentElement.classList.contains(MODE)){const show=document.documentElement.classList.toggle(PROPERTIES_PEEK);if(show&&!settings.getSettingValue(key))await settings.setSettingValue(key,true);}
+ else await settings.setSettingValue(key,!settings.getSettingValue(key));
+ window.dispatchEvent(new Event('resize'));
 }
 function editable(target) {
   return target instanceof Element && Boolean(target.closest('input,textarea,select,[contenteditable=true],.cm-editor,.monaco-editor'));
@@ -48,11 +55,13 @@ function markChrome() {
   // TopMenuSection has no public class; anchor to its stable actionbars test ID.
   const actions = document.querySelector('[data-testid="top-menu-actionbars"]');
   actions?.parentElement?.parentElement?.parentElement?.setAttribute('data-genereti-shell-top', '');
+ const panel=document.querySelector('[data-testid=properties-panel]')?.closest('.p-splitterpanel,.p-splitter-panel');
+ if(panel){panel.setAttribute('data-genereti-properties-panel','');if(panel.previousElementSibling?.classList.contains('p-splitter-gutter'))panel.previousElementSibling.setAttribute('data-genereti-properties-gutter','');}
 }
 app.registerExtension({
   name: 'Genereti.Satori',
-  commands: [{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', icon:'pi pi-circle', function:toggle},{id:'Genereti.TogglePresentation',label:'ꘇ Presentation visibility',icon:'pi pi-eye-slash',function:togglePresentation},{id:'Genereti.ToggleCanvasStats',label:'ꘇ Canvas diagnostics',icon:'pi pi-chart-line',function:toggleStats}],
-  keybindings: [{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}},{commandId:'Genereti.TogglePresentation',combo:{key:'p',alt:true}},{commandId:'Genereti.ToggleCanvasStats',combo:{key:'i',alt:true,shift:true}}],
+  commands: [{id:'Genereti.TogglePropertiesPanel',label:'ꘇ Properties sidebar',icon:'pi pi-sidebar',function:toggleProperties},{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', icon:'pi pi-circle', function:toggle},{id:'Genereti.TogglePresentation',label:'ꘇ Presentation visibility',icon:'pi pi-eye-slash',function:togglePresentation},{id:'Genereti.ToggleCanvasStats',label:'ꘇ Canvas diagnostics',icon:'pi pi-chart-line',function:toggleStats}],
+  keybindings: [{commandId:'Genereti.TogglePropertiesPanel',combo:{key:'r',alt:true,shift:true}},{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}},{commandId:'Genereti.TogglePresentation',combo:{key:'p',alt:true}},{commandId:'Genereti.ToggleCanvasStats',combo:{key:'i',alt:true,shift:true}}],
   afterConfigureGraph(){syncCanvas();},
   setup() {
     const style = document.createElement('style');
@@ -64,11 +73,14 @@ html.${MODE} #comfyui-body-top,
 html.${MODE} #comfyui-body-bottom,
 html.${MODE} .workflow-tabs-container,
 html.${MODE} .side-toolbar-container,
+html.${MODE} .side-tool-bar-container,
 html.${MODE} [data-genereti-shell-top],
 html.${MODE} [role=toolbar][aria-label="Canvas Toolbar"],
 html.${MODE} .minimap-main-container,
 html.${MODE} .selection-toolbox {display:none!important}
-html.${MODE}:not(.${PEEK}) #graph-canvas-container .p-splitter-gutter,
+html.${MODE}:not(.${PEEK}):not(.${PROPERTIES_PEEK}) [data-genereti-properties-panel],
+html.${MODE}:not(.${PEEK}):not(.${PROPERTIES_PEEK}) [data-genereti-properties-gutter] {display:none!important}
+html.${MODE}:not(.${PEEK}):not(.${PROPERTIES_PEEK}) #graph-canvas-container .p-splitter-gutter,
 html.${MODE}:not(.${PEEK}) #graph-canvas-container .side-bar-panel,
 html.${MODE}:not(.${PEEK}) #graph-canvas-container .bottom-panel,
 html.${MODE}:not(.${PEEK}) #graph-canvas-container .p-splitter-panel:not(:has(.graph-canvas-panel)):not(.graph-canvas-panel) {display:none!important}
@@ -91,13 +103,14 @@ html.${MODE} .comfyui-body {grid-template-rows:0 1fr 0!important;grid-template-c
     new MutationObserver(markChrome).observe(document.getElementById('vue-app') || document.body, {childList:true,subtree:true});
     const handleKey=event=>{
       if(event.defaultPrevented||event.repeat||event.isComposing||editable(event.target)||event.ctrlKey||event.metaKey)return;
+      if(event.altKey&&event.shiftKey&&event.code==='KeyR'){event.preventDefault();event.stopImmediatePropagation?.();toggleProperties().catch(console.error);return;}
       if(event.altKey&&((!event.shiftKey&&event.code==='KeyP')||(event.shiftKey&&event.code==='KeyI'))){event.preventDefault();event.stopImmediatePropagation?.();event.code==='KeyP'?togglePresentation():toggleStats();return;}
       // Physical key works with macOS Option's alternate character mapping too.
       if (event.code === 'KeyZ' && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && !event.repeat && !editable(event.target)) {
         event.preventDefault(); event.stopImmediatePropagation(); toggle(); return;
       }
       if (!document.documentElement.classList.contains(MODE)) return;
-      if (event.code === 'Escape') document.documentElement.classList.remove(PEEK);
+      if (event.code === 'Escape') document.documentElement.classList.remove(PEEK,PROPERTIES_PEEK);
       if (editable(event.target)) return;
       const panelKey = (!event.altKey && !event.ctrlKey && !event.metaKey && ['KeyA','KeyN','KeyM','KeyW'].includes(event.code)) ||
         ((event.ctrlKey || event.metaKey) && (event.code === 'Comma' || event.code === 'Backquote' || (event.shiftKey && event.code === 'KeyK')));

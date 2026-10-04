@@ -1,3 +1,4 @@
+import {exportDocument} from './document-export.js';
 import {parseParameters,parameterValues} from './code-parameters.js';
 import {codeParameters} from './livecode-parameters.js';
 import {imageInput} from './livecode-input.js';
@@ -8,9 +9,10 @@ import {colorPicker} from './color-picker.js';
 import {publishLive} from './live-runtime.js';
 import {routePreviewShortcut} from '../../genereti_comfy_stream/js/preview-shortcuts.js';
 import {previewControls} from '../../genereti_comfy_stream/js/preview-controls.js';
-import {SETTINGS_GLYPH} from './control-style.js';
-import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=23ae7afcd56d32b1';
-const LIBRARY_VERSION='23ae7afcd56d32b1';
+import {SETTINGS_GLYPH,ensureControlStyle} from './control-style.js';
+import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=c34c0ad3dbde5a5b';
+const LIBRARY_VERSION='c34c0ad3dbde5a5b';
+ensureControlStyle();
 if(!document.getElementById('genereti-livecode-style')){const style=document.createElement('style');style.id='genereti-livecode-style';style.textContent=`
 .genereti-livecode-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:4px;position:relative;flex-shrink:0}
 .genereti-livecode-toolbar .livecode-action{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;width:30px;height:30px;min-width:30px;margin:0;padding:0;border:0!important;border-radius:6px;background:transparent;color:inherit;font:inherit;cursor:pointer;list-style:none;vertical-align:middle}
@@ -25,7 +27,7 @@ if(!document.getElementById('genereti-livecode-style')){const style=document.cre
 .genereti-livecode-toolbar .livecode-export-menu button{display:block;width:100%;height:30px;padding:0 10px;border:0;border-radius:4px;background:transparent;color:inherit;text-align:left;cursor:pointer}
 .genereti-livecode-toolbar .livecode-export-menu button:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
 .genereti-livecode [role=tab][aria-selected=true]{background:color-mix(in srgb,currentColor 12%,transparent)!important}
-.genereti-livecode select{color-scheme:dark}
+.genereti-livecode select{color-scheme:inherit}
 .genereti-livecode select option,.genereti-livecode select optgroup{background:var(--comfy-input-bg,#222);color:var(--fg-color,#eee)}
 .genereti-livecode summary::-webkit-details-marker{display:none}
 .lg-node:has(.genereti-livecode) .mt-auto .rounded-full.bg-component-node-widget-background{display:none}
@@ -74,6 +76,7 @@ function editorWidget(node,name){
  const exportMenu=document.createElement('details'),exportSummary=document.createElement('summary');exportSummary.className='livecode-action';exportSummary.title='Export';exportSummary.setAttribute('aria-label','Export');exportSummary.innerHTML=glyph('<path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5"/>');const exportChoices=document.createElement('div');exportChoices.className='livecode-export-menu';exportMenu.append(exportSummary,exportChoices);tools.append(exportMenu);
  function exportChoice(label,tip){const button=document.createElement('button');button.type='button';button.textContent=label;button.title=tip;button.addEventListener('click',()=>exportMenu.open=false);exportChoices.append(button);return button;}
  const png=exportChoice('PNG','Rendered output image'),html=exportChoice('HTML','Standalone page with the last working runtime'),json=exportChoice('JSON','Code and node settings as a JSON object'),script=exportChoice('Source script','Current draft in its language format');
+ const documentHTML=exportChoice('Document HTML','Static document with local math fonts · Markdown, HTML or LaTeX'),documentPDF=exportChoice('Print / Save as PDF','Printable document · Markdown, HTML or LaTeX');const exportStatic=format=>{const mode=value(node,'language');if(!['markdown','html','latex'].includes(mode)){status.textContent='Document export supports Markdown, HTML and LaTeX · use HTML or PNG for artwork';return;}exportDocument({title:node.title,source:draft,mode},format).catch(error=>status.textContent=error.message);};documentHTML.onclick=()=>exportStatic('html');documentPDF.onclick=()=>exportStatic('pdf');
  const indent=document.createElement('button');iconButton(indent,'Format document','<path d="M9 4H7v5l-3 3 3 3v5h2M15 4h2v5l3 3-3 3v5h-2"/>');indent.title='Format document (Cmd/Ctrl+Shift+F)';indent.onclick=()=>formatDocument();const minify=document.createElement('button');iconButton(minify,'Minify','<path d="M4 5v14M20 5v14m-9-7H6m3-3-3 3 3 3m4-3h5m-3-3 3 3-3 3"/>');minify.title='Minify JavaScript · undo to restore';minify.onclick=()=>formatDocument(true);tools.append(indent,minify);show.style.cssText='width:88px';
 
  async function formatDocument(compact=false){
@@ -128,7 +131,7 @@ function editorWidget(node,name){
  params=codeParameters(node,parameters=>{post(active,{type:'parameters',parameters});post(candidate,{type:'parameters',parameters});});params.update(draft);
  function sendInputURL(image){return new Promise((resolve,reject)=>{const id=++inputId;const timeout=setTimeout(()=>{inputWaiters.delete(id);reject(Error('Input frame timed out'));},8000);inputWaiters.set(id,{resolve,reject,timeout});post(active,{type:'input-url',image,id});});}
  async function pumpInput(){if(queuedSizing||inputBusy||!inputDirty||!active)return;inputBusy=true;inputDirty=false;try{const frame=active,bitmap=await createImageBitmap(inputCanvas);if(frame!==active){bitmap.close();inputDirty=true;return;}const id=++inputId;frame.contentWindow.postMessage({type:'input-frame',bitmap,id},'*',[bitmap]);const timeout=setTimeout(()=>{inputBusy=false;void pumpInput();},2000);inputWaiters.set(id,{timeout,resolve(){inputBusy=false;void pumpInput();},reject(){inputBusy=false;}});}catch(error){inputBusy=false;status.textContent=error.message;}}
- let lastParameters='';const parameterPoll=setInterval(()=>{if(queuedSizing||disposed)return;const parameters=params.current(),snapshot=JSON.stringify(parameters);if(snapshot!==lastParameters){lastParameters=snapshot;post(active,{type:'parameters',parameters});}},150);
+ let lastParameters='',controlFrame=0;const syncParameters=()=>{controlFrame=0;if(queuedSizing||disposed)return;const parameters=params.current(),snapshot=JSON.stringify(parameters);if(snapshot!==lastParameters){lastParameters=snapshot;post(active,{type:'parameters',parameters});}};const parameterPoll=setInterval(syncParameters,150);const onControlFrame=event=>{if(!controlFrame&&node.inputs?.some(input=>input.name.startsWith('controls.')&&node.graph?.links?.[input.link]?.origin_id===event.detail.nodeId))controlFrame=requestAnimationFrame(syncParameters);};window.addEventListener('genereti-control-frame',onControlFrame);
  const unsubscribeInput=imageInput(node,({bitmap})=>{if(inputCanvas.width!==bitmap.width||inputCanvas.height!==bitmap.height){inputCanvas.width=bitmap.width;inputCanvas.height=bitmap.height;}const ctx=inputCanvas.getContext('2d');ctx.clearRect(0,0,bitmap.width,bitmap.height);ctx.drawImage(bitmap,0,0);inputDirty=true;void pumpInput();});
  async function queuedRender(event){const d=event.detail;if(String(d.node_id)!==String(node.id)||node.graph!==app.graph)return;const payload={request_id:d.request_id,client_id:api.clientId};try{queuedSizing=render.sizing==='output'?resolvedRender():d.render;queuedParameters=params.connected(d.controls);Object.assign(queuedParameters,d.parameters);for(const p of params.definitions){const key=`value${node.properties.generetiLivecodeParameters.slots[p.name]}`;if(Object.hasOwn(d.controls,key))queuedParameters[p.name]=d.controls[key];}await evaluate(d.code,d.language,true);await sendInputURL(d.image);payload.image=await captureDataUrl();}catch(error){payload.error=error.message;status.textContent=error.message;}finally{queuedSizing=queuedParameters=null;}const response=await api.fetchApi('/genereti/livecode/result',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!response.ok)status.textContent=`Queue result rejected (${response.status})`;}
  api.addEventListener('genereti-livecode-render',queuedRender);
@@ -157,6 +160,10 @@ function editorWidget(node,name){
  function onMessage(event){
   const isCandidate=event.source===candidate?.contentWindow,isActive=event.source===active?.contentWindow;if(!isCandidate&&!isActive)return;
   const data=event.data;
+  if(data.type==='preview-wheel'&&isActive){
+   const rect=active.getBoundingClientRect();
+   zoomWorkflow({...data,clientX:rect.left+data.clientX*rect.width/data.viewportWidth,clientY:rect.top+data.clientY*rect.height/data.viewportHeight});
+  }
   if(data.type==='request-run'&&isActive)evaluate();
   if(data.type==='manim-cue'){const frame=isCandidate?candidate:active;frame._manimCue=data;if(isActive){nextCue.hidden=!data.pending;status.textContent=data.pending?`Cue: ${data.label}`:'Running';}}
   if(data.type==='runtime-status'&&isActive)status.textContent=data.message;
@@ -191,11 +198,23 @@ function editorWidget(node,name){
   if(action){event.preventDefault();event.stopImmediatePropagation();action();}
  }
  function onEditorWheel(event){
-  if(!event.shiftKey||!view.dom.contains(event.target))return;
-  event.preventDefault();event.stopImmediatePropagation();
-  const delta=Math.abs(event.deltaY)>=Math.abs(event.deltaX)?event.deltaY:event.deltaX;
-  const multiplier=event.deltaMode===1?Number(settings.fontSize)*Number(settings.lineHeight):event.deltaMode===2?view.scrollDOM.clientHeight:1;
-  view.scrollDOM.scrollTop+=delta*multiplier;
+  if(view.dom.contains(event.target)){
+   // Momentum events can lose Shift at the end of a trackpad gesture. Keep all
+   // editor wheel events here, including at the scroll limits; never zoom Comfy.
+   event.preventDefault();event.stopImmediatePropagation();
+   if(event.ctrlKey||event.metaKey)return; // Pinch must not zoom the browser page.
+   const multiplier=event.deltaMode===1?Number(settings.fontSize)*Number(settings.lineHeight):event.deltaMode===2?view.scrollDOM.clientHeight:1;
+   if(event.shiftKey){const delta=Math.abs(event.deltaY)>=Math.abs(event.deltaX)?event.deltaY:event.deltaX;view.scrollDOM.scrollTop+=delta*multiplier;}
+   else{view.scrollDOM.scrollTop+=event.deltaY*multiplier;view.scrollDOM.scrollLeft+=event.deltaX*multiplier;}
+  }else if(stage.contains(event.target)&&(event.ctrlKey||event.metaKey)){
+   event.preventDefault();event.stopImmediatePropagation();zoomWorkflow(event);
+  }
+ }
+ function zoomWorkflow(event){
+  if(![event.deltaY,event.clientX,event.clientY].every(Number.isFinite))return;
+  // Use Comfy's normal wheel path, including its zoom preferences and pointer
+  // anchor. The iframe otherwise lets Ctrl+wheel zoom the entire browser page.
+  app.canvas?.canvas?.dispatchEvent(new WheelEvent('wheel',{bubbles:true,cancelable:true,ctrlKey:true,deltaX:event.deltaX||0,deltaY:event.deltaY,deltaMode:event.deltaMode||0,clientX:event.clientX,clientY:event.clientY}));
  }
  function dismissMenus(){for(const menu of tools.querySelectorAll('details[open]'))menu.open=false;}
  function onOutsidePointer(event){for(const menu of tools.querySelectorAll(':scope > details[open]'))if(!menu.contains(event.target))menu.open=false;}
@@ -215,7 +234,7 @@ function editorWidget(node,name){
  node._generetiLiveSource={retain(){if(++users===1){post(active,{type:'live-start'});startLiveClock();}},release(){users=Math.max(0,users-1);if(!users){clearInterval(liveClock);post(active,{type:'live-stop'});}}};
  function syncOutputSize(){if(!active||candidate||queuedSizing||active.dataset.stopped)return;const size=resolvedRender();if(JSON.stringify(size)===active.dataset.render)return;if(active.dataset.mode==='p5'){active.dataset.width=size.width;active.dataset.height=size.height;active.dataset.render=JSON.stringify(size);post(active,{type:'resize-render',render:size});layoutFrame();}else{clearTimeout(resizeTimer);resizeTimer=setTimeout(evaluate,150);}}
  const outputSizingPoll=setInterval(syncOutputSize,250);
- const previous=node.onRemoved;node.onRemoved=function(){disposed=true;++epoch;clearTimeout(timer);clearTimeout(resizeTimer);clearInterval(parameterPoll);clearInterval(outputSizingPoll);clearInterval(liveClock);api.removeEventListener('genereti-livecode-render',queuedRender);unsubscribeInput();for(const request of inputWaiters.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}for(const request of readyWaiters.values())request.reject(Error('Node removed'));localOutputs.close();resizeObserver.disconnect();parentResize.disconnect();removeCandidate();retire(active);view.destroy();window.removeEventListener('message',onMessage);window.removeEventListener('keydown',onEditorShortcut,true);window.removeEventListener('wheel',onEditorWheel,true);window.removeEventListener('pointerdown',onOutsidePointer,true);for(const request of pendingCapture.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}return previous?.apply(this,arguments);};
+ const previous=node.onRemoved;node.onRemoved=function(){disposed=true;++epoch;clearTimeout(timer);clearTimeout(resizeTimer);clearInterval(parameterPoll);cancelAnimationFrame(controlFrame);window.removeEventListener('genereti-control-frame',onControlFrame);clearInterval(outputSizingPoll);clearInterval(liveClock);api.removeEventListener('genereti-livecode-render',queuedRender);unsubscribeInput();for(const request of inputWaiters.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}for(const request of readyWaiters.values())request.reject(Error('Node removed'));localOutputs.close();resizeObserver.disconnect();parentResize.disconnect();removeCandidate();retire(active);view.destroy();window.removeEventListener('message',onMessage);window.removeEventListener('keydown',onEditorShortcut,true);window.removeEventListener('wheel',onEditorWheel,true);window.removeEventListener('pointerdown',onOutsidePointer,true);for(const request of pendingCapture.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}return previous?.apply(this,arguments);};
  node._livecodeConfigure=()=>{params.update(draft);for(const key of ['width','height']){const w=node.widgets.find(w=>w.name===key);if(w&&!w._livecodeDimension){const cb=w.callback;w.callback=function(){cb?.apply(this,arguments);clearTimeout(resizeTimer);resizeTimer=setTimeout(evaluate,150);};w._livecodeDimension=true;}}syncAutoUpdate();Object.assign(settings,node.properties.generetiLivecodeAppearance||{});Object.assign(customThemes,node.properties.generetiLivecodeThemes||{});refreshThemes();Object.assign(render,node.properties.generetiLivecodeRender||{});previewFit.value=render.fit;sizingControl.value=render.sizing;localOutputs.setFit(render.fit);for(const [key,input] of inputs){input.value=settings[key]??appearanceValues(settings)[key];if(input.type==='checkbox')input.checked=settings[key]!==false;}split=node.properties.generetiLivecodeSplit??.4;css.value=settings.css||'';wrap.checked=settings.wrap;show.value=node.properties.generetiLivecodeView||'both';applyView();draftMode=value(node,'language')||'p5';createView();const mode=node.widgets.find(w=>w.name==='language');if(mode&&!mode._livecode){const callback=mode.callback;mode.callback=function(next){callback?.apply(this,arguments);drafts.set(draftMode,draft);draftMode=next;setDraft(drafts.get(next)||examples[next]);createView();const auto=node.widgets.find(w=>w.name==='auto_update');if(auto)auto.value=next!=='strudel';syncAutoUpdate();};mode._livecode=true;}};
  return {widget};
 }

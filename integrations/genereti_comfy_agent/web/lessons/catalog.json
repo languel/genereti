@@ -1,0 +1,190 @@
+[
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "opentouch-basics",
+    "title": "Textures, signals and tables",
+    "summary": "Edit an expression, connect a control signal, and use a table as a parameter source.",
+    "steps": [
+      {
+        "title": "One graph, three interfaces",
+        "text": "TOP carries images, CHOP carries sampled channels, and DAT carries documents and tables. The lesson workflow uses real nodes you can keep editing.",
+        "target": {
+          "nodeType": "GeneretiTextureExpression",
+          "part": "node"
+        }
+      },
+      {
+        "title": "Write a texture expression",
+        "text": "Change the expression, for example change x*12 to x*8. CodeMirror applies it while typing. The GPU program recompiles only when its source changes.",
+        "target": {
+          "nodeType": "GeneretiTextureExpression",
+          "part": "code",
+          "widget": "expression"
+        },
+        "check": {
+          "kind": "changed-widget"
+        }
+      },
+      {
+        "title": "Change a signal",
+        "text": "Adjust oscillator frequency. The FLOAT output is the last sample of its first channel; the channel output carries the whole named block.",
+        "target": {
+          "nodeType": "GeneretiChopOscillator",
+          "part": "parameter",
+          "widget": "frequency"
+        },
+        "check": {
+          "kind": "changed-widget"
+        }
+      },
+      {
+        "title": "A FLOAT becomes a texture control",
+        "text": "Follow the wire from chop.lag to top.transform rotate. These are regular Comfy input sockets; signals update the live shader without a Python queue.",
+        "target": {
+          "nodeType": "GeneretiTextureTransform",
+          "part": "node"
+        },
+        "check": {
+          "kind": "connected-input",
+          "input": "rotate"
+        }
+      },
+      {
+        "title": "A table becomes a parameter",
+        "text": "Edit a number in the table. dat.cell selects one cell and exposes it as STRING and FLOAT. The lesson wires its FLOAT into top.math value.",
+        "target": {
+          "nodeType": "GeneretiDatTable",
+          "part": "code",
+          "widget": "text"
+        },
+        "check": {
+          "kind": "changed-widget"
+        }
+      },
+      {
+        "title": "GPU composition and history",
+        "text": "Inspect feedback, corner pin and compositing. Feedback keeps two GPU textures and avoids cyclic graph wires. Its history exists in Live mode; Queue returns the current input.",
+        "target": {
+          "nodeType": "GeneretiTextureFeedback",
+          "part": "preview"
+        }
+      },
+      {
+        "title": "Keep 3D in Three.js",
+        "text": "The Three.js Livecode source uses the same IMAGE path. Its code can read inputTexture and declared CHOP-driven parameters; no separate geometry engine is needed.",
+        "target": {
+          "nodeType": "GeneretiLivecode",
+          "part": "code"
+        }
+      },
+      {
+        "title": "Read and export the report",
+        "text": "The DAT document contains the library report. Use its export controls for Markdown, standalone HTML, or Print / Save as PDF. The report describes performance and device boundaries.",
+        "target": {
+          "nodeType": "GeneretiDatText",
+          "part": "toolbar"
+        }
+      }
+    ]
+  },
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "opentouch-present",
+    "title": "Preview and presentation",
+    "summary": "Freeze only the node view, open an overlay, and present the final image.",
+    "steps": [
+      {
+        "title": "Local preview and workflow output",
+        "text": "Freeze the image preview. Its downstream stream continues; only this view holds the last frame.",
+        "target": {
+          "nodeType": "GeneretiLiveImagePreview",
+          "part": "preview"
+        },
+        "check": {
+          "kind": "preview-frozen"
+        }
+      },
+      {
+        "title": "Use a floating overlay",
+        "text": "Select the preview node and press Alt+W, or use its overlay button. Alt+W also closes the overlay when you hover it. The last position is remembered.",
+        "target": {
+          "nodeType": "GeneretiLiveImagePreview",
+          "part": "toolbar"
+        },
+        "check": {
+          "kind": "overlay-open"
+        }
+      },
+      {
+        "title": "Fill the Comfy window",
+        "text": "Alt+F fills the Comfy viewport and restores it on a second press. It does not invoke macOS fullscreen. Browser fullscreen remains separate. Escape restores a filled overlay.",
+        "target": {
+          "nodeType": "GeneretiLiveImagePreview",
+          "part": "node"
+        }
+      },
+      {
+        "title": "Try a backdrop",
+        "text": "With this node selected and the editor unfocused, press D to toggle the graph backdrop. Alt+P hides node/code visibility while renderers keep running.",
+        "target": {
+          "nodeType": "GeneretiLiveImagePreview",
+          "part": "toolbar"
+        },
+        "check": {
+          "kind": "backdrop-open"
+        }
+      },
+      {
+        "title": "Performance has more than one clock",
+        "text": "Comfy corner FPS measures graph redraw. The preview statistics measure delivered image frames. CHOP Hz describes sample time. These are different metrics.",
+        "target": {
+          "nodeType": "GeneretiLiveImagePreview",
+          "part": "preview"
+        }
+      }
+    ]
+  },
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "opentouch-devices",
+    "title": "MIDI and OSC controls",
+    "summary": "Understand explicit device start and the realtime/queue boundary.",
+    "steps": [
+      {
+        "title": "MIDI stays user-started",
+        "text": "MIDI In/Out uses Web MIDI. Press Connect only when you are ready to grant the browser permission and choose a real device. Empty device text chooses the first port; an exact device name or ID selects one.",
+        "target": {
+          "nodeType": "GeneretiChopMidiIn",
+          "part": "toolbar"
+        }
+      },
+      {
+        "title": "Select the control you need",
+        "text": "CC and note values normalize to 0..1. Use chop.select patterns such as ch1.cc7 before mapping a FLOAT into an image or Livecode parameter.",
+        "target": {
+          "nodeType": "GeneretiChopSelect",
+          "part": "node"
+        }
+      },
+      {
+        "title": "OSC stays on loopback",
+        "text": "OSC In listens on 127.0.0.1 only after Connect. OSC Out sends latest numeric channel values only after Connect. Ports and addresses remain ordinary Comfy controls.",
+        "target": {
+          "nodeType": "GeneretiChopOscIn",
+          "part": "toolbar"
+        }
+      },
+      {
+        "title": "Queue never opens devices",
+        "text": "In Queue, MIDI/OSC In returns a zero placeholder and Out passes channels through without sending. Use Live mode for actual devices. Disconnect when done; abandoned OSC leases expire.",
+        "target": {
+          "nodeType": "GeneretiChopOscOut",
+          "part": "node"
+        }
+      }
+    ]
+  }
+]

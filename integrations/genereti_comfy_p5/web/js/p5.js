@@ -24,7 +24,7 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
   frame.title = "Interactive p5.js sketch";
   frame.setAttribute("sandbox", "allow-scripts");
   Object.assign(frame.style, {
-    display: "block", width: "100%", height: "300px", border: "0", borderRadius: "4px", background: "#111",
+    display: "block", width: "100%", height: "100%", border: "0", borderRadius: "4px", background: "transparent",
   });
   frameSlot.querySelectorAll('iframe').forEach(old=>old.remove());frameSlot.append(frame);
   state.frame = frame;
@@ -59,7 +59,7 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
           parent.postMessage({type:'error', message:'No canvas was created (p5=' + typeof window.p5 + ', setup=' + typeof window.setup + ').'}, '*');
           return;
         }
-        parent.postMessage({type:'ready'}, '*');
+        const canvas=stage.querySelector('canvas');parent.postMessage({type:'ready',width:canvas?.width,height:canvas?.height}, '*');
       })), 100);
     } catch (error) { parent.postMessage({type:'error', message:String(error)}, '*'); }
     let live=false, livePending=false, liveRaf=0, liveLast=0, liveEpoch=0;
@@ -174,7 +174,9 @@ function makeP5Editor(node, inputName) {
   node._generetiP5 = state;
   state.captureDataUrl = () => captureSketchDataUrl(node);
   frameSlot.style.position="relative";
+  frameSlot.style.width='100%';frameSlot.style.aspectRatio='1';
   const localPreview=previewState(node,frameSlot,{capture:state.captureDataUrl});container.append(status);
+  const syncAspect=(width,height)=>{if(!width||!height||localPreview.frozen)return;frameSlot.style.aspectRatio=`${width} / ${height}`;};
   node._generetiLiveSource = {
     retain(){if(++state.liveUsers===1)state.frame?.contentWindow?.postMessage({type:'live-start'},'*');},
     release(){state.liveUsers=Math.max(0,state.liveUsers-1);if(!state.liveUsers)state.frame?.contentWindow?.postMessage({type:'live-stop'},'*');},
@@ -185,11 +187,13 @@ function makeP5Editor(node, inputName) {
     if(event.data?.type==='request-run')runSketch();
     if(event.data?.type==='request-stop')pauseSketch();
     if (event.data?.type === "ready") {
+      syncAspect(event.data.width,event.data.height);
       if(state.paused){pauseSketch();return;}
       status.textContent = "Running · click the preview to draw or use keys";
       if(state.liveUsers)state.frame.contentWindow.postMessage({type:'live-start'},'*');
     }
     if (event.data?.type === 'live-frame') {
+      syncAspect(event.data.bitmap.width,event.data.bitmap.height);
       try {if(state.liveUsers)publishLive(node,event.data.bitmap);}
       finally {event.data.bitmap.close();state.frame.contentWindow.postMessage({type:'live-ack'},'*');}
     }
@@ -202,7 +206,7 @@ function makeP5Editor(node, inputName) {
   });
 
   runSketch();
-  widget.computeSize = (width) => [width, localPreview.minimized?290:590];
+  widget.computeSize = (width) => {const [w,h]=(frameSlot.style.aspectRatio||'1 / 1').split('/').map(Number);return [width,290+(localPreview.minimized?0:Math.max(0,width-24)*(h||1)/(w||1))];};
   return { widget };
 }
 

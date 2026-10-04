@@ -35,7 +35,9 @@ def decode_image(data):
     with Image.open(bytes_io.BytesIO(payload)) as image:
         if image.width > 4096 or image.height > 4096:
             raise ValueError('Livecode output exceeds 4096 pixels per side')
-        pixels = np.asarray(image.convert('RGB'), dtype=np.float32) / 255
+        rgba = image.convert('RGBA')
+        transparent = rgba.getchannel('A').getextrema()[0] < 255
+        pixels = np.asarray(rgba if transparent else image.convert('RGB'), dtype=np.float32) / 255
     return torch.from_numpy(pixels.copy()).unsqueeze(0)
 
 

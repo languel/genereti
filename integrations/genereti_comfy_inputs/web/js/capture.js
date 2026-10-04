@@ -20,6 +20,7 @@ function makeCaptureWidget(node, inputName, kind) {
   const spec = SOURCES[kind];
   const state = {stream:null, starting:false, hasFrame:false, last:-Infinity, users:0, epoch:0, busy:false};
   const container = document.createElement('div');
+  container.className='genereti-capture-surface';
   Object.assign(container.style,{display:'flex',flexDirection:'column',gap:'6px',width:'100%'});
   const controls = document.createElement('div'); controls.className='genereti-node-controls';
   const select = (label, choices) => {
@@ -35,10 +36,17 @@ function makeCaptureWidget(node, inputName, kind) {
   controls.append(device,flip,size,rate);
   const status=document.createElement('span');Object.assign(status.style,{fontSize:'11px',opacity:'.75'});
   const video=document.createElement('video'); video.muted=true;video.playsInline=true;
-  const canvas=document.createElement('canvas');Object.assign(canvas.style,{width:'100%',maxHeight:'220px',minHeight:'80px',objectFit:'contain',background:'#111',borderRadius:'4px'});
+  const canvas=document.createElement('canvas');canvas.width=512;canvas.height=288;
+  Object.assign(canvas.style,{display:'block',width:'100%',height:'auto',aspectRatio:'16 / 9',objectFit:'contain',background:'transparent',borderRadius:'4px'});
   const sampled=document.createElement('canvas');
   container.append(controls,canvas,status);
-  const preview=previewState(node,canvas,{resize:()=>{if(state.hasFrame&&preview.visible){if(canvas.width!==sampled.width||canvas.height!==sampled.height){canvas.width=sampled.width;canvas.height=sampled.height;}canvas.getContext('2d').drawImage(sampled,0,0);}if(node.computeSize)node.setSize?.([node.size[0],node.computeSize()[1]]);}});
+  function paintFrame(){
+    const changed=canvas.width!==sampled.width||canvas.height!==sampled.height;
+    if(changed){canvas.width=sampled.width;canvas.height=sampled.height;canvas.style.aspectRatio=`${sampled.width} / ${sampled.height}`;}
+    canvas.getContext('2d').drawImage(sampled,0,0);
+    if(changed)node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);
+  }
+  const preview=previewState(node,canvas,{resize:()=>{if(state.hasFrame&&preview.visible)paintFrame();node.graph?.setDirtyCanvas?.(true,true);}});
   Object.assign(state,{video,canvas:sampled});node._generetiCapture=state;
   node.properties??={};
   let prefs={size:512,fps:30,flip:false,...node.properties.genereti_capture};
@@ -52,7 +60,7 @@ function makeCaptureWidget(node, inputName, kind) {
     if(state.busy || !state.stream || video.readyState<2 || (!force && !sampleDue(performance.now(),state.last,prefs.fps,false,state.hasFrame)))return;
     state.last=performance.now();state.busy=true;const epoch=state.epoch;
     try{drawSample(sampled,video,prefs.size,prefs.flip);}catch(error){state.busy=false;status.textContent=error.message;return;}
-    state.hasFrame=true;if(preview.visible){if(canvas.width!==sampled.width||canvas.height!==sampled.height){canvas.width=sampled.width;canvas.height=sampled.height;}canvas.getContext('2d').drawImage(sampled,0,0);}paint();
+    state.hasFrame=true;if(preview.visible)paintFrame();paint();
     try{if(state.users){const bitmap=await createImageBitmap(sampled);try{if(epoch===state.epoch&&state.stream)publishLive(node,bitmap);}finally{bitmap.close();}}}
     catch(error){status.textContent=`Capture failed: ${error.message}`;}finally{state.busy=false;}
   };
@@ -90,7 +98,7 @@ function makeCaptureWidget(node, inputName, kind) {
   device.onchange=async()=>{if(state.stream){stopCapture();await beginCapture();}};
   const configured=node.onConfigure;node.onConfigure=function(info){const result=configured?.apply(this,arguments);prefs={...prefs,...info?.properties?.genereti_capture};paint();return result;};
   const widget=node.addDOMWidget(inputName,spec.widget,container,{serialize:true,hideOnZoom:false});
-  widget.computeSize=width=>[width,preview.minimized?64:280];
+  widget.computeSize=width=>[width,(preview.minimized?0:Math.max(0,width-24)*canvas.height/canvas.width)+110];
   container.addEventListener('pointerdown',event=>event.stopPropagation());
   node._generetiLiveSource={retain(){state.users++;if(state.hasFrame)void (async()=>{const bitmap=await createImageBitmap(sampled);try{publishLive(node,bitmap);}finally{bitmap.close();}})();},release(){state.users=Math.max(0,state.users-1);}};
   const cleanup=()=>{stopCapture();disposeSample(sampled);};window.addEventListener('pagehide',cleanup,{once:true});state.stopCapture=()=>{window.removeEventListener('pagehide',cleanup);cleanup();};paint();if(camera)void enumerate();return {widget};

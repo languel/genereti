@@ -2,8 +2,8 @@
 
 Two teaching workflows ship with Genereti:
 
-- **Genereti-Classic-SD15-Bottle.json** is the original diffusion graph: checkpoint, positive and negative CLIP prompts, empty latent, KSampler, VAE decode, preview, and save. It uses the local checkpoint `v1-5-pruned-emaonly-fp16.safetensors`, 512×512, Euler, 20 steps, CFG 7, and the familiar clear-bottle-and-rose prompt. That checkpoint is already installed on the development Mac. If you are using another ComfyUI install, put an SD 1.5 checkpoint in `models/checkpoints` and select that filename in the loader.
-- **Genereti-Qwen-2.1-Fast.json** is a small direct-prompt Qwen graph. It uses the 2.1 INT8-convrot DiT, the Qwen3-VL 8B INT8 text encoder, and the Qwen 2.1 VAE. It starts at 768×768 and 12 Euler steps with CFG 1, and omits the separate 9B prompt-rewriter branch in the stock workflow.
+- **ꘇ Classic SD15 Bottle.json** is the original diffusion graph: checkpoint, positive and negative CLIP prompts, empty latent, KSampler, VAE decode, preview, and save. It uses the local checkpoint `v1-5-pruned-emaonly-fp16.safetensors`, 512×512, Euler, 20 steps, CFG 7, and the familiar clear-bottle-and-rose prompt. That checkpoint is already installed on the development Mac. If you are using another ComfyUI install, put an SD 1.5 checkpoint in `models/checkpoints` and select that filename in the loader.
+- **ꘇ Qwen 2.1 Fast.json** is a small direct-prompt Qwen graph. It uses the 2.1 INT8-convrot DiT, the Qwen3-VL 8B INT8 text encoder, and the Qwen 2.1 VAE. It starts at 768×768 and 12 Euler steps with CFG 1, and omits the separate 9B prompt-rewriter branch in the stock workflow.
 
 The SD 1.5 bottle graph is the classic ComfyUI exercise: change the prompt, seed, sampler, or CFG and watch each stage. On this Mac the 512², 20-step graph completed in about 14 seconds after the checkpoint was available. Other platforms can use the same workflow and checkpoint; speed depends on the GPU/backend.
 

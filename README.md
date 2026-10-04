@@ -27,7 +27,9 @@ Mask frames and connection-driven IMAGE, MASK, SVG and JSON outputs. Choose Live
 or Comfy Queue above the editor. Transparent paper, output sizing, auto masks and
 Satori shortcuts are covered in the [drawing guide](integrations/genereti_comfy_drawing/README.md).
 Install with `scripts/install_comfy.sh`, restart ComfyUI and refresh the browser.
-Open [Genereti-Drawing-Source.json](integrations/comfyui_genereti/workflows/Genereti-Drawing-Source.json)
+
+**OpenTouch operators** add `top.*` WebGPU textures, `chop.*` sampled signals/MIDI/OSC/music, and `dat.*` documents/tables/lessons. All six family conversions are explicit. Open **ꘇ OpenTouch Operators and Lessons** under Workflows → Genereti. The `dat.lesson` toolbar authors/runs/exports lessons; Settings → Genereti → Learning opens mini guides. Browser synth/drum audio is explicitly started. See the [catalog](docs/opentouch-catalog.md), [report](docs/opentouch-report.md) and [lesson/export guide](docs/opentouch-lessons.md).
+Open [ꘇ Drawing Source.json](<integrations/comfyui_genereti/workflows/ꘇ Drawing Source.json>)
 for a drawing → **ꘇ live image preview** example without a model server. Custom
 node controls follow the [node UI design rules](docs/node-ui-design.md).
 
@@ -56,6 +58,8 @@ Genereti is designed for responsive visuals, not full-resolution batch art. The 
 - [Classic SD 1.5 and Qwen Image 2.1 in ComfyUI](docs/comfy-sd15-and-qwen21.md)
 - [Ready-to-use prompts](docs/prompts.md)
 - [Art workflows: composites, 512px, and post-processing](docs/experiments.md)
+- [Live GPU texture operators](docs/texture-operators.md)
+- [Comfy challenge checkpoint](docs/comfy-challenge.md)
 - [Model sources, setup, and licenses](docs/models.md)
 - [Comfy assistant and workspace MCP](docs/comfy-assistant.md)
 - [Comfy themes and transparent overlay](docs/comfy-themes.md)
@@ -83,3 +87,5 @@ Issues and improvements are welcome. The repository does not yet declare a proje
 The experimental **SDXS guide mixer** combines weighted guide residuals before one SDXS denoiser pass. It reuses the released sketch controller for image, edges, depth and explicit pose maps; it does not claim dedicated SDXS Canny/depth/pose weights. See [art experiments](docs/experiments.md#mix-guides-inside-sdxs) and the [model-size catalog](docs/models.md#resolution-and-model-size-catalog) for setup, supported resolutions and measured timings.
 
 **Editable input:** choose **Shapes · Excalidraw** for locally bundled vector drawing, with a fixed guide artboard, an expanded editor, local autosave, `.excalidraw` save/load and editable source in scene exports. See [the drawing editor guide](docs/drawing-editor.md). Shape/model keyframe interpolation is a planned next layer, not yet implemented.
+
+**Alt+Shift+R** toggles the right properties sidebar independently, including a temporary reveal in Satori. Satori hides that sidebar and its resize gutter without changing the saved open/closed preference. Escape hides temporarily revealed panels.

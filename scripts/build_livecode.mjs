@@ -30,6 +30,7 @@ const out='integrations/genereti_comfy_p5/web/lib';await mkdir(out,{recursive:tr
 for(const name of ['runtime.js','runtime.js.LEGAL.txt','editor.js','editor.js.LEGAL.txt'])await rm(`${out}/${name}`,{force:true});
 await build({entryPoints:['integrations/genereti_comfy_p5/livecode/editor.js'],outfile:`${out}/editor.mjs`,alias:aliases,bundle:true,minify:true,format:'esm',legalComments:'linked',target:'es2022'});
 await build({entryPoints:['integrations/genereti_comfy_p5/livecode/runtime.js'],outfile:`${out}/runtime.txt`,alias:aliases,plugins:[mathAssets,captureDecode],bundle:true,minify:true,format:'iife',legalComments:'linked',target:'es2022',define:{'process.env.NODE_ENV':'"production"'}});
+await build({entryPoints:['integrations/genereti_comfy_p5/livecode/document.js'],outfile:`${out}/document.mjs`,plugins:[mathAssets],bundle:true,minify:true,format:'esm',legalComments:'linked',target:'es2022'});
 // Large mathematical animation dependencies are loaded only for Manim nodes.
 await build({entryPoints:['integrations/genereti_comfy_p5/livecode/manim-library.js'],outfile:`${out}/manim.txt`,bundle:true,minify:true,format:'iife',legalComments:'linked',target:'es2022',define:{'process.env.NODE_ENV':'"production"'}});
 await copyFile('node_modules/katex/LICENSE',`${out}/katex-LICENSE`);
@@ -53,3 +54,6 @@ const version=digest.digest('hex').slice(0,16);
 const entry='integrations/genereti_comfy_p5/web/js/livecode.js';
 const entrySource=await readFile(entry,'utf8');
 await writeFile(entry,entrySource.replace(/editor\.mjs\?v=[^']+/,`editor.mjs?v=${version}`).replace(/const LIBRARY_VERSION='[^']+';/,`const LIBRARY_VERSION='${version}';`));
+
+const operatorEditor="integrations/genereti_comfy_p5/web/js/operator-editor.js";
+await writeFile(operatorEditor,(await readFile(operatorEditor,"utf8")).replace(/editor\.mjs\?v=[^']+/,`editor.mjs?v=${version}`));

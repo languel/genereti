@@ -31,7 +31,7 @@ The Attach button opens a searchable picker for **Nodes**, **Assets**, **Workflo
 
 ```text
 Use @asset:"input/my portrait.png" with @template:"default/image_qwen_image_2_1_image_edit".
-Use @workflow:"Genereti/Genereti-p5-Source.json" as the starting point.
+Use @workflow:"Genereti/ꘇ p5 Source.json" as the starting point.
 ```
 
 Use the picker or `library_search` to get real IDs; example tokens are illustrative and may not exist on every installation. Saved workflow references retain their folder paths. Installed custom-node templates use `@template:"module/name"`. Asset IDs come from Comfy's asset API when enabled, or `input/`, `output/` and `temp/` file references in the fallback catalog.
@@ -111,3 +111,5 @@ Transport and clip scheduling are a later milestone. This registry provides node
 ## Verification
 
 Backend tests use mocked provider contracts, typed decision endpoints, origin checks, cancellation and isolated workspace sessions. Registry tests cover reviewed edits, stale approvals, secret omission and undo. Browser QA used a deterministic local test provider against a real Comfy frontend and verified read → review → apply → undo, a decision request, and an external MCP read of the visible node/editor. Actual local/cloud inference remains to be exercised with the chosen running model.
+
+**Alt+Shift+R** toggles the right properties sidebar independently, including a temporary reveal in Satori. Satori hides that sidebar and its resize gutter without changing the saved open/closed preference. Escape hides temporarily revealed panels.

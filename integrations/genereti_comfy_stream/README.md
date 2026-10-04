@@ -7,7 +7,7 @@ Install using `scripts/install_comfy.sh /path/to/ComfyUI` and restart Comfy. No 
 
 ### Browser realtime clock
 
-Open **Genereti-p5-Realtime.json** for p5 → ꘇ image preview. Stop Run (instant), run the p5 sketch, then choose **Live** on the preview. Drawing and preview now run independently of Comfy Queue. Connect a separate **projector** node for projector links and cross-browser displays. No Genereti inference server is needed for this raw image preview.
+Open **ꘇ p5 Realtime.json** for p5 → ꘇ image preview. Stop Run (instant), run the p5 sketch, then choose **Live** on the preview. Drawing and preview now run independently of Comfy Queue. Connect a separate **projector** node for projector links and cross-browser displays. No Genereti inference server is needed for this raw image preview.
 
 The browser runtime transfers ImageBitmaps directly, with one outstanding source frame and bounded projector delivery. It avoids per-frame PNG uploads, tensor conversion, JPEG encoding and saved preview files. The preview reports delivered FPS and frame delivery time. A local 512px p5 + preview + projector test delivered about 41 fps over five seconds without queuing; this is a measured example, not a guaranteed rate.
 
@@ -41,7 +41,7 @@ macOS 14+ Apple silicon model server at `127.0.0.1:8765`.
 
 The older **Genereti Live Preview** combined generator/viewer keeps its node ID
 and behavior for saved workflows. New graphs should use **ꘇ generator** and the
-separate viewer. `Genereti-Drawing-Generator-Preview.json` demonstrates the split.
+separate viewer. `ꘇ Drawing Generator Preview.json` demonstrates the split.
 Restart ComfyUI to register the new node, then refresh its browser page. Restart
 `./run.sh` after server Python changes; a browser refresh alone cannot reload them.
 
