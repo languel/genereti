@@ -150,7 +150,7 @@ sketch instance and clock. A declared `windowResized()` callback handles the res
 otherwise Genereti resizes the canvas and fits its existing pixels uniformly to preserve
 accumulated drawing without stretching. Newly uncovered regions are transparent.
 Opening an overlay in Follow output starts at the current render aspect ratio,
-while keeping its remembered position. Subsequent resizing sets the render size. Other languages currently rebuild on a resolution change.
+while keeping its remembered size. Alt+W places it at the cursor; the node glyph retains its saved position. Subsequent resizing sets the render size. Other languages currently rebuild on a resolution change.
 Standalone HTML exports default to Follow output and use the browser viewport.
 
 The macOS native output companion currently does not report its viewport dimensions;
