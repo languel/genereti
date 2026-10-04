@@ -197,3 +197,20 @@ All Genereti node labels start with `ꘇ`. Operator labels attach it directly to
 ### Interactive output overlays
 
 Livecode Alt+W moves the existing output surface into the overlay, rather than displaying a raster copy. The same iframe keeps its sketch state, selectable document text, links, scrolling and pointer interaction. Closing returns it to the node; code and parameter controls stay in the node. Interaction is enabled by default; the click-through glyph (Alt+Shift+O) explicitly passes input to the graph underneath. Node preview freeze/minimize affects only the embedded view, while the interactive overlay and downstream frames continue. External output windows and graph backdrops remain image displays.
+
+**Alt+O** toggles an output-only node view for Livecode, drawing and nodes using
+the shared output-view controls. The existing interactive surface fills the node;
+title, sockets, parameters, editor, status and resize controls are hidden. Hover
+just outside any edge to reveal the restore-controls glyph above the top edge,
+or press Alt+O again. Text editing is excluded. The mode is saved in workflow
+properties, preserves node placement, and keeps the same iframe/renderer alive.
+Opening an overlay restores normal node chrome; returning to output-only mode
+closes the overlay and brings its live surface back into the node.
+
+HTML, Markdown, math and SVG overlays/output-only views use the actual viewport
+for document layout, without a CSS scale transform. Text stays selectable and
+sharp; overflowing documents scroll inside their view. Raster IMAGE capture
+still uses configured render width/height (or Follow output sizing), independently
+of the displayed document dimensions. P5 retains texture sizing and its authored
+mouse, touch and keyboard callbacks. Reload the Comfy frontend after updating
+these browser modules; existing iframe runtimes keep their old code until reload.

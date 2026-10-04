@@ -20,6 +20,7 @@ const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
 const send=(type,extra={})=>parent.postMessage({type,...extra},'*',extra.bitmap?[extra.bitmap]:[]);
 let appearance={},strudelEditor=null,strudelRoot=null,strudelDrawer=null,strudelCanvas=null,strudelRepl=null,strudelMeta=null,strudelDrawerRunning=false;
 let strudelInit=null,newestRevision=0,compileQueue=Promise.resolve();
+let responsiveDisplay=false;
 let render={width:512,height:512},lastSize='';
 let active=null,candidate=null,users=false,pending=false,raf=0,startTime=performance.now();
 // One persistent texture surface; input frames never recompile the sketch.
@@ -137,6 +138,7 @@ async function renderFrame(now,clock='raf'){try{active?.sample?.();active?.paint
 // Transfer ownership rather than cloning every frame.
 window.addEventListener('message',async e=>{if(e.source!==parent)return;const d=e.data;
  if(d.type==='compile'){render={width:512,height:512,...d.render};newestRevision=d.revision;compileQueue=compileQueue.then(()=>{if(d.revision===newestRevision)return compile(d.mode,d.source,d.revision,d.parameters);});}
+ if(d.type==='display-viewport'){responsiveDisplay=!!d.responsive;fitDom();}
  if(d.type==='resize-render'){resizeRender(d.render);}
  if(d.type==='parameters')setParameters(d.parameters);
  // Live input is copied synchronously; acknowledge ownership immediately. Only
@@ -153,7 +155,7 @@ window.addEventListener('message',async e=>{if(e.source!==parent)return;const d=
 });
 const audioButton=document.createElement('button');audioButton.textContent='Enable audio';audioButton.onclick=async()=>{try{await getAudioContext().resume();audioButton.remove();send('audio-state',{state:getAudioContext().state});}catch(error){diagnostic(error);}};
 function stopRuntime(){users=false;cancelAnimationFrame(raf);const frozen=document.createElement('canvas');if(active?.canvas){frozen.width=active.canvas.width;frozen.height=active.canvas.height;frozen.getContext('2d').drawImage(active.canvas,0,0);}dispose(active);active={canvas:frozen};strudelInit=null;strudelEditor=null;strudelRoot=null;document.body.replaceChildren(frozen);send('stopped');}
-window.addEventListener('keydown',event=>{if(event.isComposing)return;if(parent!==window&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&!event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')&&event.altKey&&((!event.shiftKey&&event.code==='KeyP')||(event.shiftKey&&['KeyZ','KeyI','KeyO'].includes(event.code)))){send('preview-shortcut',{code:event.code,key:event.key,altKey:event.altKey,shiftKey:event.shiftKey});return;}if(parent!==window&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')&&((!event.altKey&&event.code==='KeyD')||(event.altKey&&(event.code==='KeyW'||event.code==='KeyF'))||(!event.altKey&&event.key==='Escape'))){send('preview-shortcut',{code:event.code,key:event.key,altKey:event.altKey});return;}if(event.altKey&&event.shiftKey&&event.key==='ArrowRight'){event.preventDefault();active?.next?.();return;}if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();event.stopImmediatePropagation();if(parent!==window)send('request-run');else{const d=window.__GENERETI_STANDALONE__;newestRevision++;raf=requestAnimationFrame(tick);compile(d.mode,d.source,newestRevision);}}else if((event.ctrlKey||event.metaKey)&&(event.key==='.'||event.code==='Period')){event.preventDefault();event.stopImmediatePropagation();stopRuntime();}},true);
+window.addEventListener('keydown',event=>{if(event.isComposing)return;if(parent!==window&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&!event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')&&event.altKey&&((!event.shiftKey&&event.code==='KeyP')||(event.shiftKey&&['KeyZ','KeyI','KeyO'].includes(event.code)))){send('preview-shortcut',{code:event.code,key:event.key,altKey:event.altKey,shiftKey:event.shiftKey});return;}if(parent!==window&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')&&((!event.altKey&&event.code==='KeyD')||(event.altKey&&(event.code==='KeyW'||event.code==='KeyF'||event.code==='KeyO'))||(!event.altKey&&event.key==='Escape'))){send('preview-shortcut',{code:event.code,key:event.key,altKey:event.altKey});return;}if(event.altKey&&event.shiftKey&&event.key==='ArrowRight'){event.preventDefault();active?.next?.();return;}if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();event.stopImmediatePropagation();if(parent!==window)send('request-run');else{const d=window.__GENERETI_STANDALONE__;newestRevision++;raf=requestAnimationFrame(tick);compile(d.mode,d.source,newestRevision);}}else if((event.ctrlKey||event.metaKey)&&(event.key==='.'||event.code==='Period')){event.preventDefault();event.stopImmediatePropagation();stopRuntime();}},true);
 // Embedded preview pinches belong to Comfy's graph. Ordinary wheel scrolling
 // remains available to HTML/Markdown/interactive renderers and standalone exports.
 window.addEventListener('wheel',event=>{
@@ -161,7 +163,7 @@ window.addEventListener('wheel',event=>{
  event.preventDefault();event.stopImmediatePropagation();
  send('preview-wheel',{deltaX:event.deltaX,deltaY:event.deltaY,deltaMode:event.deltaMode,clientX:event.clientX,clientY:event.clientY,viewportWidth:innerWidth,viewportHeight:innerHeight});
 },{capture:true,passive:false});
-function fitDom(){if(active?.root)active.root.style.transform=`scale(${Math.min(1,innerWidth/render.width,innerHeight/render.height)})`;}
+function fitDom(){if(active?.root){const root=active.root;root.style.transform=responsiveDisplay?'none':`scale(${Math.min(1,innerWidth/render.width,innerHeight/render.height)})`;root.style.width=(responsiveDisplay?innerWidth:render.width)+'px';root.style.height=(responsiveDisplay?innerHeight:render.height)+'px';root.style.overscrollBehavior='contain';}}
 function resizeRender(size){render={...render,...size};bridge.render=render;window.windowWidth=render.width;window.windowHeight=render.height;try{active?.resize?.(render);}catch(error){diagnostic(error);}fitDom();}
 let standaloneResize;
 window.addEventListener('resize',()=>{const d=window.__GENERETI_STANDALONE__;if(d?.render?.sizing==='output'){const size={width:innerWidth,height:innerHeight};if(active?.resize)resizeRender(size);else{clearTimeout(standaloneResize);standaloneResize=setTimeout(()=>{render={...render,...size};compile(d.mode,d.source,++newestRevision,bridge.params);},150);}}else fitDom();});

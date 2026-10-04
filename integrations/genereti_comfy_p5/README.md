@@ -53,3 +53,10 @@ Use Alt+F for Fill window, Alt+P for presentation visibility, Alt+Shift+Z for Sa
 and Alt+Shift+I for independent canvas diagnostics. Alt is Option on macOS.
 
 Alt+W hosts the existing interactive output iframe in a content-only overlay. Sketch mouse/touch handlers, document selection, links and scrolling work there; closing returns the same renderer to the node without resetting its state. Alt+F fills the Comfy viewport. Click-through remains opt-in through the overlay toolbar or Alt+Shift+O. The interactive overlay itself needs no bitmap capture or second renderer; external image windows and backdrops still use the shared image stream.
+
+Alt+O shows only the live output inside the node, hiding its chrome and editor.
+Hover just outside an edge to reveal the restore control, or toggle Alt+O again.
+The same runtime remains interactive. Alt+W moves it to the overlay instead.
+Document overlays and output-only views reflow at native viewport size; IMAGE
+capture still respects render width/height. Reload the browser after frontend
+updates to replace older runtimes; no Comfy backend restart is needed.

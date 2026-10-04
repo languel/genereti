@@ -1,3 +1,4 @@
+import { nodeOutputView } from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import { app } from '../../../scripts/app.js';
 import { api } from '../../../scripts/api.js';
 import { publishLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
@@ -49,11 +50,13 @@ function makeDrawing(node, name) {
   paintOverlay();
   overlayButton.onclick=()=>{
     if(overlay){overlay.close();return;}
+    nodeView.close();
     node.properties ||= {};node.properties.genereti_drawing_overlay_layout ||= {};
     overlay=overlayShell(frame,node.properties.genereti_drawing_overlay_layout,()=>{overlay=null;paintOverlay();node.graph?.change?.(node);send({type:'edit-frame',kind:'image'});},{node});
     paintOverlay();send({type:'edit-frame',kind:'image',freehand:true});
   };
-  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
+  const nodeView=nodeOutputView(node,frame,{beforeOpen:()=>overlay?.close()});
+  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
   controls.append(deliverySlot,overlayButton,render.element,matchTheme,status); container.append(controls, frame);
   controls.addEventListener('pointerdown',event=>event.stopPropagation());
   const send = data => frame.contentWindow?.postMessage({channel:CHANNEL, ...data}, location.origin);
@@ -157,7 +160,7 @@ function makeDrawing(node, name) {
       if(outputs.includes('JSON'))result.json=sceneJSON(snapshot.scene,snapshot.frameId,snapshot.maskFrameId);
       return JSON.stringify(result);
     },
-    dispose(){unregisterShortcuts();overlay?.close();clearInterval(demandTimer);liveUsers=0;liveEpoch++;window.removeEventListener('message',receive);if(pending){clearTimeout(pending.timer);pending.reject(new Error('Drawing node removed.'));pending=null;}frame.remove();},
+    dispose(){nodeView.dispose();unregisterShortcuts();overlay?.close();clearInterval(demandTimer);liveUsers=0;liveEpoch++;window.removeEventListener('message',receive);if(pending){clearTimeout(pending.timer);pending.reject(new Error('Drawing node removed.'));pending=null;}frame.remove();},
   };
   return {widget};
 }

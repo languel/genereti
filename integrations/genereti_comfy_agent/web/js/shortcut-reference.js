@@ -2,6 +2,7 @@ import { app } from '../../../../scripts/app.js';
 
 const shortcuts=[
   ['D','Toggle backdrop','One selected preview-capable node'],
+  ['Alt+O','Toggle output-only node','Selected node, or output-only node under the pointer; reveal restore control just outside an edge'],
   ['Alt+W','Toggle overlay','Hovered overlay first, otherwise selected node'],
   ['Alt+F','Fill window / restore','Hovered overlay first, otherwise selected node; opens overlay if needed'],
   ['Escape','Restore filled overlay','Returns to its previous position and size'],

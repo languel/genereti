@@ -1,3 +1,4 @@
+import { nodeOutputView } from './node-output-view.js';
 import { graphBackdrop } from './graph-backdrop.js';
 import { registerPreviewShortcuts } from './preview-shortcuts.js';
 import { outputWindow } from './output-window.js';
@@ -21,6 +22,7 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
     const make=()=>options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:{},{node,interactiveSurface:options.overlay?config.interactiveSurface:null,onSurfaceChange:config.onSurfaceChange});
     const b=button('Open '+label,paths,async()=>{
       if(opened){viewer.close();viewer=make();assign(viewer);viewer.setFit(config.getFit?.()||node.properties?.[config.fitKey||'genereti_preview_fit']||'contain');paint(false);return;}
+      if(options.overlay)nodeView.close();
       b.disabled=true;
       try{const success=await viewer.open({...options,initialSize:config.getRenderSize?.(),matchAspect:config.matchOutputAspect?.()});paint(success);if(success&&config.publishOnOpen!==false)viewer.publish(config.initialFrame?.()||{bitmap:canvas});else if(!success)onError();}
       finally{b.disabled=false;}
@@ -38,9 +40,10 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   fit.value=currentFit();fit.onchange=()=>apply(true);apply();
   const setFit=value=>{fit.value=value;apply(false);};
   const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);fit.value=currentFit();apply();return result;};
-  const unregister=registerPreviewShortcuts(node,{toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.click(),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
+  const nodeView=nodeOutputView(node,canvas,{beforeOpen:()=>{if(overlay.element)overlayButton.click();},onChange:config.onNodeViewChange});
+  const unregister=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.click(),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
   overlayButton.title+=' (Alt+W)';backdropButton.title+=' (D)';
   actions.append(windowButton,overlayButton,backdropButton);if(config.fitControl!==false)toolbar.append(fit);
   for(const row of [toolbar,actions])row.addEventListener('pointerdown',event=>event.stopPropagation());
-  return {toolbar,actions,getViewport(){return viewers.filter(v=>v.opened).sort((a,b)=>b.order-a.order).map(v=>v.viewport()).find(Boolean)||null;},publish(frame){output.publish(frame);overlay.publish(frame);backdrop.publish(frame);},setFit,close(){unregister();output.close();overlay.close();backdrop.close();}};
+  return {toolbar,actions,getViewport(){return viewers.filter(v=>v.opened).sort((a,b)=>b.order-a.order).map(v=>v.viewport()).find(Boolean)||null;},publish(frame){output.publish(frame);overlay.publish(frame);backdrop.publish(frame);},setFit,close(){nodeView.dispose();unregister();output.close();overlay.close();backdrop.close();}};
 }

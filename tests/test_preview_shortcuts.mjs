@@ -32,3 +32,11 @@ test('Alt-F fills selected output, prioritizes hover and Escape restores filled 
  let otherFilled=false;f.context.registerPreviewShortcuts(f.other,{isHovered:()=>true,toggleFill:()=>{otherFilled=!otherFilled;f.calls.push('hover fill');},isFilled:()=>otherFilled});
  f.key('KeyF',{altKey:true});assert.equal(otherFilled,true);f.key('Escape',{key:'Escape'});assert.equal(otherFilled,false);assert.deepEqual(f.calls,['fill','fill','hover fill','hover fill']);
 });
+
+test('Alt-O selects output-only nodes and leaves text editing and click-through distinct',()=>{
+ const f=fixture();f.controls.toggleOutputOnly=()=>f.calls.push('output');f.controls.toggleClickThrough=()=>f.calls.push('through');
+ f.key('KeyO',{altKey:true});f.key('KeyO',{altKey:true,shiftKey:true});
+ f.key('KeyO',{altKey:true,target:{isContentEditable:true}});
+ f.context.registerPreviewShortcuts(f.other,{isOutputHovered:()=>true,toggleOutputOnly:()=>f.calls.push('hover output')});
+ f.key('KeyO',{altKey:true});assert.deepEqual(f.calls,['output','through','hover output']);
+});

@@ -10,8 +10,8 @@ import {publishLive} from './live-runtime.js';
 import {routePreviewShortcut} from '../../genereti_comfy_stream/js/preview-shortcuts.js';
 import {previewControls} from '../../genereti_comfy_stream/js/preview-controls.js';
 import {SETTINGS_GLYPH,ensureControlStyle} from './control-style.js';
-import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=c3242bf47c0d6db0';
-const LIBRARY_VERSION='c3242bf47c0d6db0';
+import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=fedc1ed5112f4d35';
+const LIBRARY_VERSION='fedc1ed5112f4d35';
 ensureControlStyle();
 if(!document.getElementById('genereti-livecode-style')){const style=document.createElement('style');style.id='genereti-livecode-style';style.textContent=`
 .genereti-livecode-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:4px;position:relative;flex-shrink:0}
@@ -109,7 +109,19 @@ function editorWidget(node,name){
  function layoutFrame(){
   if(!active && !candidate)return;
   const width=outputHost.clientWidth,height=outputHost.clientHeight;
-  for(const frame of [active,candidate])if(frame){const w=Number(frame.dataset.width)||render.width,h=Number(frame.dataset.height)||render.height;const fit=render.fit;const sx=fit==='native'?1:fit==='fill'?width/w:(fit==='cover'?Math.max:Math.min)(width/w,height/h);const sy=fit==='fill'?height/h:sx;frame.style.width=w+'px';frame.style.height=h+'px';frame.style.left=(width-w*sx)/2+'px';frame.style.top=(height-h*sy)/2+'px';frame.style.transform=`scale(${sx},${sy})`;frame.style.transformOrigin='top left';if(frame===active)frame.style.pointerEvents=localPreview?.frozen&&outputHost.parentNode===stage?'none':'auto';}
+  for(const frame of [active,candidate])if(frame){
+   const documentView=['html','markdown','latex','svg','hyperframes'].includes(frame.dataset.mode)&&(outputHost.parentNode!==stage||node.properties.genereti_output_only);
+   const viewportKey=documentView?'document':'texture';
+   if(frame.dataset.displayViewport!==viewportKey){frame.dataset.displayViewport=viewportKey;post(frame,{type:'display-viewport',responsive:documentView});}
+   if(documentView){
+    frame.style.width=width+'px';frame.style.height=height+'px';frame.style.left=frame.style.top='0px';frame.style.transform='none';
+   }else{
+    const w=Number(frame.dataset.width)||render.width,h=Number(frame.dataset.height)||render.height,fit=render.fit;
+    const sx=fit==='native'?1:fit==='fill'?width/w:(fit==='cover'?Math.max:Math.min)(width/w,height/h),sy=fit==='fill'?height/h:sx;
+    frame.style.width=w+'px';frame.style.height=h+'px';frame.style.left=(width-w*sx)/2+'px';frame.style.top=(height-h*sy)/2+'px';frame.style.transform=`scale(${sx},${sy})`;frame.style.transformOrigin='top left';
+   }
+   if(frame===active)frame.style.pointerEvents=localPreview?.frozen&&outputHost.parentNode===stage?'none':'auto';
+  }
  }
  let resizeTimer;const resizeObserver=new ResizeObserver(layoutFrame);resizeObserver.observe(stage);resizeObserver.observe(outputHost);
 
@@ -147,7 +159,7 @@ function editorWidget(node,name){
    const [p5,runtime,manim]=await loadLibraries(mode);if(disposed||generation!==epoch)return;
    if(active?.dataset.mode==='strudel'&&!active.dataset.stopped&&mode==='strudel'&&active.dataset.render===JSON.stringify(sizing)){active.dataset.revision=generation;post(active,{type:'compile',mode,source,revision:generation,parameters:parameterSnapshot});return readyPromise;}
    removeCandidate();const frame=document.createElement('iframe');frame.dataset.mode=mode;frame.dataset.source=source;frame.dataset.parameters=JSON.stringify(parameterSnapshot);frame.dataset.revision=generation;frame.title=`${mode} livecode preview`;frame.sandbox='allow-scripts';frame.allow='autoplay';frame.dataset.width=sizing.width;frame.dataset.height=sizing.height;frame.dataset.render=JSON.stringify(sizing);frame.style.cssText=`width:${sizing.width}px;height:${sizing.height}px;border:0;position:absolute;opacity:0;pointer-events:none;transform-origin:top left`;candidate=frame;outputHost.append(frame);layoutFrame();
-   const safe=s=>s.replace(/<\/script/gi,'<\\/script');frame.srcdoc=`<!doctype html><style>html{background:#111}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:transparent;display:flex;align-items:center;justify-content:center}canvas{max-width:100%;max-height:100%;object-fit:contain;touch-action:none}#staging{position:absolute;opacity:0;pointer-events:none}button{position:fixed;bottom:8px;right:8px}</style><div id="staging"></div><script>${safe(p5)}</script><script>${safe(manim)}</script><script>${safe(runtime)}</script>`;
+   const safe=s=>s.replace(/<\/script/gi,'<\\/script');frame.srcdoc=`<!doctype html><style>html{background:transparent;color-scheme:normal}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:transparent;display:flex;align-items:center;justify-content:center}canvas{max-width:100%;max-height:100%;object-fit:contain;touch-action:none}#staging{position:absolute;opacity:0;pointer-events:none}button{position:fixed;bottom:8px;right:8px}</style><div id="staging"></div><script>${safe(p5)}</script><script>${safe(manim)}</script><script>${safe(runtime)}</script>`;
    candidateTimeout=setTimeout(()=>{if(candidate===frame){removeCandidate();status.textContent='Compile timed out · last working sketch retained';readyWaiters.get(generation)?.reject(Error(status.textContent));readyWaiters.delete(generation);}},10000);
   }catch(error){status.textContent=`${error.message} · last working sketch retained`;readyWaiters.get(generation)?.reject(error);readyWaiters.delete(generation);}
   return readyPromise;
@@ -169,7 +181,7 @@ function editorWidget(node,name){
   if(data.type==='manim-cue'){const frame=isCandidate?candidate:active;frame._manimCue=data;if(isActive){nextCue.hidden=!data.pending;status.textContent=data.pending?`Cue: ${data.label}`:'Running';}}
   if(data.type==='runtime-status'&&isActive)status.textContent=data.message;
   if(data.type==='stopped'&&isActive){clearTimeout(timer);active.dataset.stopped='true';run.setAttribute('aria-pressed','false');stop.setAttribute('aria-pressed','true');status.textContent='Stopped · last frame retained';}
-  if(data.type==='boot'&&isCandidate){post(candidate,{type:'appearance',appearance:settings});post(candidate,{type:'compile',mode:candidate.dataset.mode,source:candidate.dataset.source,revision:Number(candidate.dataset.revision),render:JSON.parse(candidate.dataset.render),parameters:JSON.parse(candidate.dataset.parameters)});}
+  if(data.type==='boot'&&isCandidate){post(candidate,{type:'display-viewport',responsive:candidate.dataset.displayViewport==='document'});post(candidate,{type:'appearance',appearance:settings});post(candidate,{type:'compile',mode:candidate.dataset.mode,source:candidate.dataset.source,revision:Number(candidate.dataset.revision),render:JSON.parse(candidate.dataset.render),parameters:JSON.parse(candidate.dataset.parameters)});}
   if(data.type==='ready'){
    if(isCandidate){clearTimeout(candidateTimeout);const old=active;active=candidate;candidate=null;active.style.opacity='1';active.style.pointerEvents='auto';retire(old);}
    if(data.width&&data.height){frameWidth=data.width;frameHeight=data.height;active.dataset.width=data.width;active.dataset.height=data.height;if(!localPreview?.frozen)stage.style.aspectRatio=`${data.width}/${data.height}`;layoutFrame();}
@@ -227,7 +239,7 @@ function editorWidget(node,name){
  window.addEventListener('message',onMessage);
  function captureDataUrl({live=false}={}){if(!active)throw Error('Evaluate livecode before capturing');return new Promise((resolve,reject)=>{const id=++captureId;const timeout=setTimeout(()=>{pendingCapture.delete(id);reject(Error('Livecode capture timed out'));},5000);pendingCapture.set(id,{resolve,reject,timeout});post(active,{type:'capture',id,live});});}
  localPreview=previewState(node,stage,{capture:captureDataUrl,getFit:()=>render.fit,resize:()=>{if(!localPreview?.frozen)stage.style.aspectRatio=`${frameWidth}/${frameHeight}`;layoutFrame();}});
- const localOutputs=previewControls(stage,status,node,()=>{},{fitControl:false,publishOnOpen:false,interactiveSurface:outputHost,onSurfaceChange:open=>{status.textContent=open?'Interactive output overlay':active?.dataset.stopped?'Stopped · last frame retained':'Running';layoutFrame();syncOutputSize();},fitKey:null,getRenderSize:()=>({width:frameWidth,height:frameHeight}),matchOutputAspect:()=>render.sizing==='output',initialFit:render.fit,getFit:()=>render.fit,fitTarget:null,onFitChange:fit=>{render.fit=fit;previewFit.value=fit;saveRender();},onViewerChange:(open,options)=>{if(options.overlay)return;if(open)node._generetiLiveSource?.retain();else node._generetiLiveSource?.release();}});
+ const localOutputs=previewControls(stage,status,node,()=>{},{fitControl:false,publishOnOpen:false,interactiveSurface:outputHost,onNodeViewChange:()=>{layoutFrame();syncOutputSize();},onSurfaceChange:open=>{status.textContent=open?'Interactive output overlay':active?.dataset.stopped?'Stopped · last frame retained':'Running';layoutFrame();syncOutputSize();},fitKey:null,getRenderSize:()=>({width:frameWidth,height:frameHeight}),matchOutputAspect:()=>render.sizing==='output',initialFit:render.fit,getFit:()=>render.fit,fitTarget:null,onFitChange:fit=>{render.fit=fit;previewFit.value=fit;saveRender();},onViewerChange:(open,options)=>{if(options.overlay)return;if(open)node._generetiLiveSource?.retain();else node._generetiLiveSource?.release();}});
  node._generetiMountTransport=()=>{const delivery=node._generetiExecutionModeElement;if(delivery)delivery.append(...localOutputs.actions.childNodes);};
  node._generetiMountTransport();
  localPreview.actions.addEventListener('pointerdown',event=>event.stopPropagation());
