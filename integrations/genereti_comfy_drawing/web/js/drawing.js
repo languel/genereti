@@ -53,11 +53,11 @@ function makeDrawing(node, name) {
     if(overlay){overlay.close();return;}
     nodeView.close();
     node.properties ||= {};node.properties.genereti_drawing_overlay_layout ||= {};
-    overlay=overlayShell(frame,node.properties.genereti_drawing_overlay_layout,()=>{overlay=null;paintOverlay();node.graph?.change?.(node);send({type:'edit-frame',kind:'image'});},{node});
+    overlay=overlayShell(frame,node.properties.genereti_drawing_overlay_layout,()=>{overlay=null;paintOverlay();node.graph?.change?.(node);send({type:'edit-frame',kind:'image'});},{node,position:event.position});
     paintOverlay();send({type:'edit-frame',kind:'image',freehand:true});
   };
   const nodeView=nodeOutputView(node,frame,{beforeOpen:()=>overlay?.close()});
-  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
+  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:options=>overlayButton.onclick(options),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
   controls.append(deliverySlot,overlayButton,render.element,matchTheme,status); container.append(controls, frame);
   controls.addEventListener('pointerdown',event=>event.stopPropagation());
   const send = data => frame.contentWindow?.postMessage({channel:CHANNEL, ...data}, location.origin);

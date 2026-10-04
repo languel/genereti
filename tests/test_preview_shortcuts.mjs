@@ -10,7 +10,7 @@ function fixture(){
  const controls={toggleBackdrop:()=>calls.push('backdrop'),toggleOverlay:()=>calls.push('overlay'),isHovered:()=>false};
  const unregister=context.registerPreviewShortcuts(node,controls);
  const key=(code,options={})=>{const event={code,key:code.slice(3).toLowerCase(),preventDefault(){this.defaultPrevented=true;},stopPropagation(){},...options};listeners.keydown(event);return event;};
- return {app,context,node,other,controls,unregister,key,calls};
+ return {app,context,node,other,controls,unregister,key,calls,listeners};
 }
 test('selected preview shortcuts use physical keys including Option-W',()=>{
  const f=fixture();f.key('KeyD');f.key('KeyW',{altKey:true,key:'∑'});assert.deepEqual(f.calls,['backdrop','overlay']);
@@ -39,4 +39,10 @@ test('Alt-O selects output-only nodes and leaves text editing and click-through 
  f.key('KeyO',{altKey:true,target:{isContentEditable:true}});
  f.context.registerPreviewShortcuts(f.other,{isOutputHovered:()=>true,toggleOutputOnly:()=>f.calls.push('hover output')});
  f.key('KeyO',{altKey:true});assert.deepEqual(f.calls,['output','through','hover output']);
+});
+
+test('Alt-W carries the latest viewport cursor location to the selected overlay',()=>{
+ const f=fixture();let options;f.controls.toggleOverlay=value=>options=value;
+ f.listeners.pointermove({clientX:140,clientY:230});f.key('KeyW',{altKey:true});
+ assert.equal(options.position.x,140);assert.equal(options.position.y,230);
 });

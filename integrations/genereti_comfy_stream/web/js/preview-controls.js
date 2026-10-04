@@ -25,7 +25,7 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
       if(opened){viewer.close();viewer=make();assign(viewer);viewer.setFit(config.getFit?.()||node.properties?.[config.fitKey||'genereti_preview_fit']||'contain');paint(false);return;}
       if(options.overlay)nodeView.close();
       b.disabled=true;
-      try{const success=await viewer.open({...options,initialSize:config.getRenderSize?.(),matchAspect:config.matchOutputAspect?.()});paint(success);if(success&&config.publishOnOpen!==false)viewer.publish(config.initialFrame?.()||{bitmap:canvas});else if(!success)onError();}
+      try{const success=await viewer.open({...options,initialSize:config.getRenderSize?.(),matchAspect:config.matchOutputAspect?.(),position:event.position});paint(success);if(success&&config.publishOnOpen!==false)viewer.publish(config.initialFrame?.()||{bitmap:canvas});else if(!success)onError();}
       finally{b.disabled=false;}
     });
     const assign=value=>{if(options.backdrop)backdrop=value;else if(options.overlay)overlay=value;else output=value;};
@@ -42,7 +42,7 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   const setFit=value=>{fit.value=value;apply(false);};
   const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);fit.value=currentFit();apply();return result;};
   const nodeView=nodeOutputView(node,canvas,{beforeOpen:()=>{if(overlay.element)overlayButton.click();},onChange:config.onNodeViewChange});
-  const unregister=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.click(),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
+  const unregister=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:options=>overlayButton.onclick(options),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.click(),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
   overlayButton.title+=' (Alt+W · Shift-click / Alt+O: output-only node)';backdropButton.title+=' (D)';
   actions.append(windowButton,overlayButton,backdropButton);if(config.fitControl!==false)toolbar.append(fit);
   for(const row of [toolbar,actions])row.addEventListener('pointerdown',event=>event.stopPropagation());

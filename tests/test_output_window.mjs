@@ -111,3 +111,11 @@ test('fill window toggles CSS viewport bounds and restores geometry without nati
  shell.toggleFill();assert.equal(shell.filled,false);assert.equal(panel.style.left,'123px');assert.equal(panel.style.width,'640px');
  Object.assign(panel,{offsetLeft:123,offsetTop:80,offsetWidth:640,offsetHeight:480});shell.toggleFill();Object.assign(panel,{offsetWidth:1200,offsetHeight:900});shell.close();assert.equal(layout.rect.width,640);assert.equal(layout.rect.left,123);
 });
+
+test('Alt-W cursor placement overrides remembered position, preserves size and stays on screen',async()=>{
+ const f=fixture(),layout={rect:{left:900,top:600,width:400,height:300}},view=f.make(layout);
+ await view.open({overlay:true,position:{x:120,y:200}});
+ assert.equal(view.element.style.left,'120px');assert.equal(view.element.style.top,'200px');assert.equal(view.element.style.width,'400px');Object.assign(view.element,{offsetLeft:120,offsetTop:200,offsetWidth:400,offsetHeight:300});view.close();
+ const next=f.make(layout);await next.open({overlay:true,position:{x:1195,y:895}});
+ assert.equal(next.element.style.left,'792px');assert.equal(next.element.style.top,'592px');next.close();
+});

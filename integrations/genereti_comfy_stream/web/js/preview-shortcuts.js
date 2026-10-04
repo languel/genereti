@@ -2,6 +2,7 @@ import { routeStackShortcut } from './view-stack.js';
 import { app } from '../../../scripts/app.js';
 
 const previews=new Map();
+let pointer;window.addEventListener('pointermove',event=>{pointer={x:event.clientX,y:event.clientY};},{passive:true,capture:true});
 function editing(event){
   return event.composedPath?.().some(target=>target?.isContentEditable||target?.matches?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')) || event.target?.isContentEditable || event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor');
 }
@@ -27,6 +28,6 @@ export function routePreviewShortcut(event){
   const node=hovered?.[0]||(selected.length===1?selected[0]:null);
   const action=previews.get(node)?.[outputOnly?'toggleOutputOnly':through?'toggleClickThrough':backdrop?'toggleBackdrop':fill?'toggleFill':'toggleOverlay'];
   if(!action)return;
-  event.preventDefault();event.stopPropagation();action();
+  event.preventDefault();event.stopPropagation();action(overlay?{position:pointer}:undefined);
 }
 window.addEventListener('keydown',routePreviewShortcut,true);

@@ -8,11 +8,11 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
   let win = null, canvas = null, context = null, disposed = false, revision = 0;
   let frames = 0, since = performance.now(), fit = 'contain', localSurface = null, localCleanup = null, localShell = null;
   function setFit(next){native?.setFit(next);fit=['contain','cover','fill','native'].includes(next)?next:'contain';if(!canvas)return;canvas.style.cssText=fit==='native'?'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:none;max-height:none':'position:fixed;inset:0;width:100vw;height:100vh;object-fit:'+fit;}
-  function inAppOutput(initialSize,matchAspect){
+  function inAppOutput(initialSize,matchAspect,position){
     if(initialSize?.width>0&&initialSize?.height>0&&(matchAspect||!layout.rect)){const width=layout.rect?.width||innerWidth*.7;const scale=Math.min(1,innerHeight*.7/(width*initialSize.height/initialSize.width));layout.rect={left:layout.rect?.left??innerWidth*.1,top:layout.rect?.top??innerHeight*.12,width:width*scale,height:width*scale*initialSize.height/initialSize.width};}
     const interactive=config.interactiveSurface;
     const frame=interactive||document.createElement('iframe');if(!interactive)frame.title='Local output';
-    const shell=overlayShell(frame,layout,()=>{onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;config.onSurfaceChange?.(false);},config);
+    const shell=overlayShell(frame,layout,()=>{onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;config.onSurfaceChange?.(false);},{...config,position});
     localShell=shell;localSurface=shell.element;localCleanup=shell.close;
     if(interactive){config.onSurfaceChange?.(true);status.textContent='Interactive output overlay';}
     else{attach(frame.contentWindow,true);status.textContent='Output overlay · direct';}
@@ -62,13 +62,13 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
     }
   }
   return {
-    async open({floating = false, overlay = false, initialSize=null, matchAspect=false} = {}) {
+    async open({floating = false, overlay = false, initialSize=null, matchAspect=false, position=null} = {}) {
       if(disposed) return false;
       if(localSurface)return true;
       if(win && !win.closed){win.focus();return true;}
       try {
         if(desktop&&!overlay){nativeMode=true;const opened=await native.open();onStateChange(opened);return opened;}
-        if(overlay){inAppOutput(initialSize,matchAspect);}
+        if(overlay){inAppOutput(initialSize,matchAspect,position);}
         else if(floating && window.documentPictureInPicture?.requestWindow){
           attach(await window.documentPictureInPicture.requestWindow({width:960,height:720}));
 

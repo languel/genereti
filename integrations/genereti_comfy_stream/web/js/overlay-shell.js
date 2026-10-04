@@ -5,6 +5,12 @@ export function overlayShell(frame,layout={},onClose=()=>{},config={}) {
     const panel=document.createElement('div');panel.className='genereti-output-overlay';panel.setAttribute('data-chrome','auto');panel.style.cssText='position:fixed;left:10vw;top:12vh;width:70vw;height:70vh;min-width:240px;min-height:180px;z-index:10000;background:transparent;border:0;box-shadow:none';
     if(config.embedded){panel.classList.add('genereti-output-only-view');panel.style.cssText='position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;visibility:visible;pointer-events:auto;background:transparent';}
     if(!config.embedded&&layout.rect){const {left,top,width,height}=layout.rect;panel.style.left=left+'px';panel.style.top=top+'px';panel.style.width=width+'px';panel.style.height=height+'px';}
+    if(!config.embedded&&config.position){
+      const {x,y}=config.position;
+      // Cursor anchors the content's top-left; keep the edge bar and view reachable.
+      panel.style.left=Math.max(8,Math.min(x,innerWidth-(layout.rect?.width||innerWidth*.7)-8))+'px';
+      panel.style.top=Math.max(38,Math.min(y,innerHeight-(layout.rect?.height||innerHeight*.7)-8))+'px';
+    }
     let filled=false,savedGeometry;
     const saveLayout=()=>{if(filled||config.embedded)return;layout.rect={left:panel.offsetLeft,top:panel.offsetTop,width:panel.offsetWidth,height:panel.offsetHeight};};
     const glyph=(paths)=>`<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
@@ -57,7 +63,7 @@ export function overlayShell(frame,layout={},onClose=()=>{},config={}) {
     panel.onpointerenter=()=>{titleText.textContent=config.node?.title||'Output';};
     panel.append(header);(config.parent||document.body).append(panel);
     const stack=registerViewStack(panel,config.embedded?config.parent:panel);
-    panel.addEventListener('pointerdown',event=>event.stopPropagation());
+    for(const type of ['pointerdown','mousedown','click','dblclick'])panel.addEventListener(type,event=>event.stopPropagation());
     const originalParent=frame.parentNode, originalNext=frame.nextSibling, originalStyle=frame.style.cssText;
     // moveBefore preserves the live iframe's browsing context in supporting hosts.
     if(panel.moveBefore && frame.isConnected)panel.moveBefore(frame,null);else panel.append(frame);

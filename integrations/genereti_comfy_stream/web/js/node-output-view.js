@@ -3,8 +3,8 @@ import { overlayShell } from './overlay-shell.js';
 export function nodeOutputView(node,surface,{beforeOpen=()=>{},onChange=()=>{}}={}){
  if(!document.getElementById('genereti-node-output-style')){
   const style=document.createElement('style');style.id='genereti-node-output-style';style.textContent=`
-  .lg-node.genereti-output-only{background:transparent!important;border-color:transparent!important;box-shadow:none!important;filter:none!important;outline:none!important;overflow:visible!important}
-  .lg-node.genereti-output-only>:not(.genereti-output-only-view){visibility:hidden!important;pointer-events:none!important}
+  .lg-node:has(>.genereti-output-only-view){background:transparent!important;border-color:transparent!important;box-shadow:none!important;filter:none!important;outline:none!important;overflow:visible!important}
+  .lg-node:has(>.genereti-output-only-view)>:not(.genereti-output-only-view){visibility:hidden!important;pointer-events:none!important}
   `;document.head.append(style);
  }
  let host,shell,hostPointerEvents,disposed=false;
