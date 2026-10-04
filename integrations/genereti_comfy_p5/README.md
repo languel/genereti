@@ -51,3 +51,5 @@ Open **ꘇ Livecode Image Parameters.json** for a wired IMAGE + Float + GLSL exa
 See the [shortcut reference](../../docs/shortcuts.md) or **Comfy Settings → Genereti → Shortcuts**.
 Use Alt+F for Fill window, Alt+P for presentation visibility, Alt+Shift+Z for Satori,
 and Alt+Shift+I for independent canvas diagnostics. Alt is Option on macOS.
+
+Alt+W hosts the existing interactive output iframe in a content-only overlay. Sketch mouse/touch handlers, document selection, links and scrolling work there; closing returns the same renderer to the node without resetting its state. Alt+F fills the Comfy viewport. Click-through remains opt-in through the overlay toolbar or Alt+Shift+O. The interactive overlay itself needs no bitmap capture or second renderer; external image windows and backdrops still use the shared image stream.

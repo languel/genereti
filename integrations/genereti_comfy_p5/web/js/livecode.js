@@ -10,8 +10,8 @@ import {publishLive} from './live-runtime.js';
 import {routePreviewShortcut} from '../../genereti_comfy_stream/js/preview-shortcuts.js';
 import {previewControls} from '../../genereti_comfy_stream/js/preview-controls.js';
 import {SETTINGS_GLYPH,ensureControlStyle} from './control-style.js';
-import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=c34c0ad3dbde5a5b';
-const LIBRARY_VERSION='c34c0ad3dbde5a5b';
+import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=c3242bf47c0d6db0';
+const LIBRARY_VERSION='c3242bf47c0d6db0';
 ensureControlStyle();
 if(!document.getElementById('genereti-livecode-style')){const style=document.createElement('style');style.id='genereti-livecode-style';style.textContent=`
 .genereti-livecode-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:4px;position:relative;flex-shrink:0}
@@ -47,6 +47,7 @@ function editorWidget(node,name){
  const container=document.createElement('div');container.className='genereti-livecode';container.style.cssText='display:flex;flex-direction:column;gap:6px;width:100%;min-height:220px;overflow:visible;background:var(--comfy-input-bg,#171b22);color:var(--fg-color,#eee)';
  let localPreview;
  const tools=document.createElement('div'),run=document.createElement('button'),stop=document.createElement('button'),status=document.createElement('div'),code=document.createElement('div'),stage=document.createElement('div');
+ const outputHost=document.createElement('div');outputHost.style.cssText='position:absolute;inset:0;overflow:hidden;background:transparent';stage.append(outputHost);
  stage.className='genereti-livecode-stage';iconButton(run,'Run','<path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/>');run.title='Evaluate (Cmd/Ctrl+Enter)';iconButton(stop,'Stop','<rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" stroke="none"/>');stop.title='Stop · keep last frame (Ctrl+.)';tools.className='genereti-livecode-toolbar';tools.append(run,stop);
  const autoToggle=document.createElement('button');iconButton(autoToggle,'Auto-update','<path d="M20 7h-5V2M4 17h5v5"/><path d="M19 7a8 8 0 0 0-13-2M5 17a8 8 0 0 0 13 2"/>');autoToggle.title='Auto-update code';tools.append(autoToggle);
  function syncAutoUpdate(){const widget=node.widgets.find(w=>w.name==='auto_update');if(!widget)return;widget.options={...widget.options,hidden:true};widget.computeSize=()=>[0,-4];autoToggle.setAttribute('aria-pressed',String(!!widget.value));if(!widget._livecodeToggle){const callback=widget.callback;widget.callback=function(){const result=callback?.apply(this,arguments);syncAutoUpdate();return result;};widget._livecodeToggle=true;}}
@@ -107,10 +108,10 @@ function editorWidget(node,name){
  let frameWidth=render.width,frameHeight=render.height;
  function layoutFrame(){
   if(!active && !candidate)return;
-  const width=stage.clientWidth,height=stage.clientHeight;
-  for(const frame of [active,candidate])if(frame){const w=Number(frame.dataset.width)||render.width,h=Number(frame.dataset.height)||render.height;const fit=render.fit;const sx=fit==='native'?1:fit==='fill'?width/w:(fit==='cover'?Math.max:Math.min)(width/w,height/h);const sy=fit==='fill'?height/h:sx;frame.style.width=w+'px';frame.style.height=h+'px';frame.style.left=(width-w*sx)/2+'px';frame.style.top=(height-h*sy)/2+'px';frame.style.transform=`scale(${sx},${sy})`;frame.style.transformOrigin='top left';}
+  const width=outputHost.clientWidth,height=outputHost.clientHeight;
+  for(const frame of [active,candidate])if(frame){const w=Number(frame.dataset.width)||render.width,h=Number(frame.dataset.height)||render.height;const fit=render.fit;const sx=fit==='native'?1:fit==='fill'?width/w:(fit==='cover'?Math.max:Math.min)(width/w,height/h);const sy=fit==='fill'?height/h:sx;frame.style.width=w+'px';frame.style.height=h+'px';frame.style.left=(width-w*sx)/2+'px';frame.style.top=(height-h*sy)/2+'px';frame.style.transform=`scale(${sx},${sy})`;frame.style.transformOrigin='top left';if(frame===active)frame.style.pointerEvents=localPreview?.frozen&&outputHost.parentNode===stage?'none':'auto';}
  }
- let resizeTimer;const resizeObserver=new ResizeObserver(layoutFrame);resizeObserver.observe(stage);
+ let resizeTimer;const resizeObserver=new ResizeObserver(layoutFrame);resizeObserver.observe(stage);resizeObserver.observe(outputHost);
 
  function saveAppearance(){node.properties.generetiLivecodeAppearance={...settings};view?.setAppearance({...settings,overlay:show.value==='overlay',fillHeight:true});post(active,{type:'appearance',appearance:settings});post(candidate,{type:'appearance',appearance:settings});}
  const drafts=new Map();let draftMode='p5';
@@ -145,7 +146,7 @@ function editorWidget(node,name){
   try{
    const [p5,runtime,manim]=await loadLibraries(mode);if(disposed||generation!==epoch)return;
    if(active?.dataset.mode==='strudel'&&!active.dataset.stopped&&mode==='strudel'&&active.dataset.render===JSON.stringify(sizing)){active.dataset.revision=generation;post(active,{type:'compile',mode,source,revision:generation,parameters:parameterSnapshot});return readyPromise;}
-   removeCandidate();const frame=document.createElement('iframe');frame.dataset.mode=mode;frame.dataset.source=source;frame.dataset.parameters=JSON.stringify(parameterSnapshot);frame.dataset.revision=generation;frame.title=`${mode} livecode preview`;frame.sandbox='allow-scripts';frame.allow='autoplay';frame.dataset.width=sizing.width;frame.dataset.height=sizing.height;frame.dataset.render=JSON.stringify(sizing);frame.style.cssText=`width:${sizing.width}px;height:${sizing.height}px;border:0;position:absolute;opacity:0;pointer-events:none;transform-origin:top left`;candidate=frame;stage.append(frame);layoutFrame();
+   removeCandidate();const frame=document.createElement('iframe');frame.dataset.mode=mode;frame.dataset.source=source;frame.dataset.parameters=JSON.stringify(parameterSnapshot);frame.dataset.revision=generation;frame.title=`${mode} livecode preview`;frame.sandbox='allow-scripts';frame.allow='autoplay';frame.dataset.width=sizing.width;frame.dataset.height=sizing.height;frame.dataset.render=JSON.stringify(sizing);frame.style.cssText=`width:${sizing.width}px;height:${sizing.height}px;border:0;position:absolute;opacity:0;pointer-events:none;transform-origin:top left`;candidate=frame;outputHost.append(frame);layoutFrame();
    const safe=s=>s.replace(/<\/script/gi,'<\\/script');frame.srcdoc=`<!doctype html><style>html{background:#111}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{background:transparent;display:flex;align-items:center;justify-content:center}canvas{max-width:100%;max-height:100%;object-fit:contain;touch-action:none}#staging{position:absolute;opacity:0;pointer-events:none}button{position:fixed;bottom:8px;right:8px}</style><div id="staging"></div><script>${safe(p5)}</script><script>${safe(manim)}</script><script>${safe(runtime)}</script>`;
    candidateTimeout=setTimeout(()=>{if(candidate===frame){removeCandidate();status.textContent='Compile timed out · last working sketch retained';readyWaiters.get(generation)?.reject(Error(status.textContent));readyWaiters.delete(generation);}},10000);
   }catch(error){status.textContent=`${error.message} · last working sketch retained`;readyWaiters.get(generation)?.reject(error);readyWaiters.delete(generation);}
@@ -226,7 +227,7 @@ function editorWidget(node,name){
  window.addEventListener('message',onMessage);
  function captureDataUrl({live=false}={}){if(!active)throw Error('Evaluate livecode before capturing');return new Promise((resolve,reject)=>{const id=++captureId;const timeout=setTimeout(()=>{pendingCapture.delete(id);reject(Error('Livecode capture timed out'));},5000);pendingCapture.set(id,{resolve,reject,timeout});post(active,{type:'capture',id,live});});}
  localPreview=previewState(node,stage,{capture:captureDataUrl,getFit:()=>render.fit,resize:()=>{if(!localPreview?.frozen)stage.style.aspectRatio=`${frameWidth}/${frameHeight}`;layoutFrame();}});
- const localOutputs=previewControls(stage,status,node,()=>{},{fitControl:false,publishOnOpen:false,fitKey:null,getRenderSize:()=>({width:frameWidth,height:frameHeight}),matchOutputAspect:()=>render.sizing==='output',initialFit:render.fit,getFit:()=>render.fit,fitTarget:null,onFitChange:fit=>{render.fit=fit;previewFit.value=fit;saveRender();},onViewerChange:open=>{if(open)node._generetiLiveSource?.retain();else node._generetiLiveSource?.release();}});
+ const localOutputs=previewControls(stage,status,node,()=>{},{fitControl:false,publishOnOpen:false,interactiveSurface:outputHost,onSurfaceChange:open=>{status.textContent=open?'Interactive output overlay':active?.dataset.stopped?'Stopped · last frame retained':'Running';layoutFrame();syncOutputSize();},fitKey:null,getRenderSize:()=>({width:frameWidth,height:frameHeight}),matchOutputAspect:()=>render.sizing==='output',initialFit:render.fit,getFit:()=>render.fit,fitTarget:null,onFitChange:fit=>{render.fit=fit;previewFit.value=fit;saveRender();},onViewerChange:(open,options)=>{if(options.overlay)return;if(open)node._generetiLiveSource?.retain();else node._generetiLiveSource?.release();}});
  node._generetiMountTransport=()=>{const delivery=node._generetiExecutionModeElement;if(delivery)delivery.append(...localOutputs.actions.childNodes);};
  node._generetiMountTransport();
  localPreview.actions.addEventListener('pointerdown',event=>event.stopPropagation());

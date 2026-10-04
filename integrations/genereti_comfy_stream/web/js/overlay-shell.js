@@ -51,9 +51,10 @@ export function overlayShell(frame,layout={},onClose=()=>{},config={}) {
     // moveBefore preserves the live iframe's browsing context in supporting hosts.
     if(panel.moveBefore && frame.isConnected)panel.moveBefore(frame,null);else panel.append(frame);
     frame.style.cssText='display:block;width:100%;height:100%;min-height:0;border:0;background:transparent;color-scheme:normal';
+    if(frame.tagName!=='IFRAME'){frame.style.position='relative';frame.style.overflow='hidden';}
     opacity.oninput=()=>{frame.style.opacity=String(Number(opacity.value)/100);opacity.title=`Output opacity · ${opacity.value}%`;};
     through.onclick=()=>{clickThrough=!clickThrough;frame.style.pointerEvents=clickThrough?'none':'auto';panel.style.pointerEvents=clickThrough?'none':'auto';through.setAttribute('aria-pressed',String(clickThrough));};
-    const recover=event=>{if(config.node)routePreviewShortcut(event);if(event.altKey&&event.shiftKey&&event.code==='KeyO'&&!event.repeat){event.preventDefault();event.stopPropagation?.();through.onclick();}};document.addEventListener('keydown',recover);
+    const recover=event=>{if(config.node)routePreviewShortcut(event);if(event.defaultPrevented)return;if(event.altKey&&event.shiftKey&&event.code==='KeyO'&&!event.repeat){event.preventDefault();event.stopPropagation?.();through.onclick();}};document.addEventListener('keydown',recover);
     let frameWindow;const bindKeys=()=>{frameWindow?.removeEventListener?.('keydown',recover,true);try{frameWindow=frame.contentWindow;frameWindow?.addEventListener?.('keydown',recover,true);}catch{frameWindow=null;}};
     bindKeys();frame.addEventListener('load',bindKeys);
     const cleanup=()=>{document.removeEventListener('keydown',recover);frameWindow?.removeEventListener?.('keydown',recover,true);frame.removeEventListener('load',bindKeys);};
@@ -71,6 +72,6 @@ export function overlayShell(frame,layout={},onClose=()=>{},config={}) {
       panel.remove();onClose();
     };
     close.onclick=dismiss;
-    return {element:panel,close:dismiss,toggleFill,get filled(){return filled;}};
+    return {element:panel,close:dismiss,toggleFill,toggleClickThrough:()=>through.onclick(),get filled(){return filled;}};
 
 }

@@ -10,10 +10,12 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
   function setFit(next){native?.setFit(next);fit=['contain','cover','fill','native'].includes(next)?next:'contain';if(!canvas)return;canvas.style.cssText=fit==='native'?'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:none;max-height:none':'position:fixed;inset:0;width:100vw;height:100vh;object-fit:'+fit;}
   function inAppOutput(initialSize,matchAspect){
     if(initialSize?.width>0&&initialSize?.height>0&&(matchAspect||!layout.rect)){const width=layout.rect?.width||innerWidth*.7;const scale=Math.min(1,innerHeight*.7/(width*initialSize.height/initialSize.width));layout.rect={left:layout.rect?.left??innerWidth*.1,top:layout.rect?.top??innerHeight*.12,width:width*scale,height:width*scale*initialSize.height/initialSize.width};}
-    const frame=document.createElement('iframe');frame.title='Local output';
-    const shell=overlayShell(frame,layout,()=>{onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;},config);
+    const interactive=config.interactiveSurface;
+    const frame=interactive||document.createElement('iframe');if(!interactive)frame.title='Local output';
+    const shell=overlayShell(frame,layout,()=>{onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;config.onSurfaceChange?.(false);},config);
     localShell=shell;localSurface=shell.element;localCleanup=shell.close;
-    attach(frame.contentWindow,true);status.textContent='Output overlay · direct';
+    if(interactive){config.onSurfaceChange?.(true);status.textContent='Interactive output overlay';}
+    else{attach(frame.contentWindow,true);status.textContent='Output overlay · direct';}
   }
   function attach(target,overlay=false) {
     win = target;
@@ -62,6 +64,7 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
   return {
     async open({floating = false, overlay = false, initialSize=null, matchAspect=false} = {}) {
       if(disposed) return false;
+      if(localSurface)return true;
       if(win && !win.closed){win.focus();return true;}
       try {
         if(desktop&&!overlay){nativeMode=true;const opened=await native.open();onStateChange(opened);return opened;}
@@ -96,10 +99,11 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
     },
     setFit,
     close(){onStateChange(false);localCleanup?.();native?.close();disposed=true;revision++;if(localSurface){localSurface.remove();localSurface=null;}else win?.close();win=null;canvas=null;context=null;},
-    getViewport(){return win&&!win.closed?{width:win.innerWidth,height:win.innerHeight}:null;},
+    getViewport(){if(localSurface&&config.interactiveSurface)return {width:localSurface.clientWidth,height:localSurface.clientHeight};return win&&!win.closed?{width:win.innerWidth,height:win.innerHeight}:null;},
     get window(){return win;},
     get element(){return localSurface;},
     toggleFill(){localShell?.toggleFill();},
+    toggleClickThrough(){localShell?.toggleClickThrough();},
     get filled(){return Boolean(localSurface&&localShell?.filled);},
   };
 }

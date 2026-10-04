@@ -193,3 +193,7 @@ This FPS is neither inference speed nor the output’s frame delivery rate.
 ### Node names and discovery
 
 All Genereti node labels start with `ꘇ`. Operator labels attach it directly to the family name, for example `ꘇdat.totop`; other labels use a space, for example `ꘇ livecode`. The glyph is visual branding, while stable `Genereti…` node IDs prevent namespace conflicts and preserve existing workflows. Search aliases include plain family names (`dat`, `top`, `chop`) and branded phrases (`genereti dat`, `genereti top`, `genereti chop`), so typing the glyph is optional. Existing descriptive workflow titles receive the prefix when loaded; their wording and node IDs are preserved.
+
+### Interactive output overlays
+
+Livecode Alt+W moves the existing output surface into the overlay, rather than displaying a raster copy. The same iframe keeps its sketch state, selectable document text, links, scrolling and pointer interaction. Closing returns it to the node; code and parameter controls stay in the node. Interaction is enabled by default; the click-through glyph (Alt+Shift+O) explicitly passes input to the graph underneath. Node preview freeze/minimize affects only the embedded view, while the interactive overlay and downstream frames continue. External output windows and graph backdrops remain image displays.

@@ -17,8 +17,8 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   };
   const toggle=(label,paths,options)=>{
     let viewer,opened=false;const state={viewport:()=>viewer.getViewport?.(),opened:false,order:0};viewers.push(state);
-    const paint=value=>{if(opened===value)return;opened=value;state.opened=value;if(value)state.order=++viewerOrder;b.setAttribute('aria-pressed',String(value));b.title=(value?'Close ':'Open ')+label;b.setAttribute('aria-label',b.title);b.title+=options.overlay?' (Alt+W)':options.backdrop?' (D)':'';config.onViewerChange?.(value);};
-    const make=()=>options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:{},{node});
+    const paint=value=>{if(opened===value)return;opened=value;state.opened=value;if(value)state.order=++viewerOrder;b.setAttribute('aria-pressed',String(value));b.title=(value?'Close ':'Open ')+label;b.setAttribute('aria-label',b.title);b.title+=options.overlay?' (Alt+W)':options.backdrop?' (D)':'';config.onViewerChange?.(value,options);};
+    const make=()=>options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:{},{node,interactiveSurface:options.overlay?config.interactiveSurface:null,onSurfaceChange:config.onSurfaceChange});
     const b=button('Open '+label,paths,async()=>{
       if(opened){viewer.close();viewer=make();assign(viewer);viewer.setFit(config.getFit?.()||node.properties?.[config.fitKey||'genereti_preview_fit']||'contain');paint(false);return;}
       b.disabled=true;
@@ -38,7 +38,7 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   fit.value=currentFit();fit.onchange=()=>apply(true);apply();
   const setFit=value=>{fit.value=value;apply(false);};
   const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);fit.value=currentFit();apply();return result;};
-  const unregister=registerPreviewShortcuts(node,{toggleOverlay:()=>overlayButton.click(),toggleBackdrop:()=>backdropButton.click(),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
+  const unregister=registerPreviewShortcuts(node,{toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.click(),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
   overlayButton.title+=' (Alt+W)';backdropButton.title+=' (D)';
   actions.append(windowButton,overlayButton,backdropButton);if(config.fitControl!==false)toolbar.append(fit);
   for(const row of [toolbar,actions])row.addEventListener('pointerdown',event=>event.stopPropagation());

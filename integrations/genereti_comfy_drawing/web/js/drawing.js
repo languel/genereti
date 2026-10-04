@@ -53,7 +53,7 @@ function makeDrawing(node, name) {
     overlay=overlayShell(frame,node.properties.genereti_drawing_overlay_layout,()=>{overlay=null;paintOverlay();node.graph?.change?.(node);send({type:'edit-frame',kind:'image'});},{node});
     paintOverlay();send({type:'edit-frame',kind:'image',freehand:true});
   };
-  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOverlay:()=>overlayButton.click(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
+  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
   controls.append(deliverySlot,overlayButton,render.element,matchTheme,status); container.append(controls, frame);
   controls.addEventListener('pointerdown',event=>event.stopPropagation());
   const send = data => frame.contentWindow?.postMessage({channel:CHANNEL, ...data}, location.origin);
