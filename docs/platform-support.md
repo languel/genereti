@@ -18,22 +18,22 @@ Apple’s Core ML runtime can use the CPU, GPU, and Neural Engine on Apple devic
 
 To try interactive p5 or camera/window capture in ComfyUI without Genereti’s Mac server, copy the relevant folder from this repository into your ComfyUI `custom_nodes` folder, then restart ComfyUI:
 
-- For the sketch canvas: copy `integrations/genereti_comfy_p5` and open `ꘇ p5 Source.json`.
-- For doodle, webcam, and window/screen input: also copy `integrations/genereti_comfy_inputs` and open `ꘇ Input Sources.json`.
+- For the sketch canvas: copy `integrations/genereti_comfy_p5` and open `ꘇ-p5-Source.json`.
+- For doodle, webcam, and window/screen input: also copy `integrations/genereti_comfy_inputs` and open `ꘇ-Input-Sources.json`.
 
 On Windows, first set `$ComfyUI` to the folder that contains `custom_nodes` (often `C:\ComfyUI_windows_portable\ComfyUI`):
 
 ```powershell
 $ComfyUI = "C:\ComfyUI_windows_portable\ComfyUI"
 Copy-Item -Recurse .\integrations\genereti_comfy_p5 "$ComfyUI\custom_nodes\genereti_comfy_p5"
-Copy-Item ".\integrations\comfyui_genereti\workflows\ꘇ p5 Source.json" "$ComfyUI\user\default\workflows\"
+Copy-Item ".\integrations\comfyui_genereti\workflows\ꘇ-p5-Source.json" "$ComfyUI\user\default\workflows\"
 ```
 
 For camera/window capture, copy that second node folder and workflow too:
 
 ```powershell
 Copy-Item -Recurse .\integrations\genereti_comfy_inputs "$ComfyUI\custom_nodes\genereti_comfy_inputs"
-Copy-Item ".\integrations\comfyui_genereti\workflows\ꘇ Input Sources.json" "$ComfyUI\user\default\workflows\"
+Copy-Item ".\integrations\comfyui_genereti\workflows\ꘇ-Input-Sources.json" "$ComfyUI\user\default\workflows\"
 ```
 
 You can also drag a workflow JSON onto the ComfyUI page. The source-only workflows preview and save their current image directly; they do not call the unsupported Core ML generator. Newer ComfyUI versions are required for the included nodes’ current extension API.

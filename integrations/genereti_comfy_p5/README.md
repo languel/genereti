@@ -44,7 +44,7 @@ GLSL uses `float influence = 0.5; /* 0..1 */` or `int count = 8; /* 2..40 */`. N
 
 Each declaration creates a typed **FLOAT / INT / BOOLEAN / STRING** Comfy input socket and a local default widget. Sockets sit beside their default widgets, following Comfy’s normal parameter layout. Connect a scalar output directly; the local widget is disabled while wired. Wires override defaults on Queue. Built-in Primitive values also update visual runtimes live; arbitrary Python computations update when queued. Values are bounded by the declared range. Socket identities follow parameter names across reordering and save/reload. Removing a declaration removes its socket and wire. Maximum 64 parameters per node. Width/height changes recreate the runtime; parameter and image changes reuse it. Queue also reuses an unchanged visual runtime, preserving accumulated p5 drawing state. A syntax error keeps the last accepted parameter sockets and output until a replacement compiles successfully.
 
-Open **ꘇ Livecode Image Parameters.json** for a wired IMAGE + Float + GLSL example. The standard p5 starter uses the requested random-line/mouse-circle sketch and follows the node’s width and height.
+Open **ꘇ-Livecode-Image-Parameters.json** for a wired IMAGE + Float + GLSL example. The standard p5 starter uses the requested random-line/mouse-circle sketch and follows the node’s width and height.
 
 ## Keyboard shortcuts
 
@@ -60,3 +60,8 @@ The same runtime remains interactive. Alt+W moves it to the overlay instead.
 Document overlays and output-only views reflow at native viewport size; IMAGE
 capture still respects render width/height. Reload the browser after frontend
 updates to replace older runtimes; no Comfy backend restart is needed.
+
+Shift-click the overlay glyph for Alt+O output-only mode; regular click gives
+Alt+W. Both views share their edge-revealed opacity, click-through and stacking
+bar. Cmd+[ / ] moves backward/forward; Cmd+Shift+[ / ] sends back/front.
+Text fields and CodeMirror keep their editing shortcuts.

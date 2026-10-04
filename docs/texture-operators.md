@@ -1,10 +1,10 @@
 # Live texture operators
 
 Install with `scripts/install_comfy.sh`, restart ComfyUI, and refresh the page.
-Open **Workflows → Genereti → ꘇ Texture Lab**. It contains a transparent
+Open **Workflows → Genereti → ꘇ-Texture-Lab**. It contains a transparent
 p5 moving brush → Feedback → Blur → Corner Pin → Composite → Image Preview.
 No model download, Core ML server, camera permission or external service is needed.
-`ꘇ Texture Queue.json` exercises all seven operators using ordinary Comfy
+`ꘇ-Texture-Queue.json` exercises all seven operators using ordinary Comfy
 constant images, including batch broadcasting; choose Run to render it.
 
 The first pack is `integrations/genereti_comfy_texture`. These are normal IMAGE

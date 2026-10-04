@@ -1,6 +1,6 @@
 import {app} from '../../../scripts/app.js';
 import {ensureControlStyle} from './control-style.js';
-import {createEditor,defaultAppearance} from '../lib/editor.mjs?v=fedc1ed5112f4d35';
+import {createEditor,defaultAppearance} from '../lib/editor.mjs?v=df4e0b3cf7553f2a';
 // Small CodeMirror surface shared by DAT text and TOP/CHOP expressions. Values
 // remain ordinary STRING inputs in saved/queued workflows.
 app.registerExtension({name:'Genereti.OperatorEditor',getCustomWidgets(){return {
@@ -19,6 +19,10 @@ app.registerExtension({name:'Genereti.OperatorEditor',getCustomWidgets(){return 
   run.onclick=apply;auto.onclick=()=>{held=!held;auto.setAttribute('aria-pressed',String(!held));if(!held)apply();};toggle.onclick=()=>{code.hidden=!code.hidden;toggle.textContent=code.hidden?'▸':'▾';toggle.setAttribute('aria-expanded',String(!code.hidden));node.setSize?.([node.size[0],node.computeSize()[1]]);};fonts.onchange=()=>{node.properties.generetiOperatorFont=Number(fonts.value);view.setAppearance(appearance());};
   code.addEventListener('wheel',event=>{event.preventDefault();event.stopPropagation();if(event.ctrlKey||event.metaKey)return;const k=event.deltaMode===1?Number(fonts.value)*1.55:event.deltaMode===2?view.scrollDOM.clientHeight:1;view.scrollDOM.scrollTop+=(event.shiftKey&&Math.abs(event.deltaX)>Math.abs(event.deltaY)?event.deltaX:event.deltaY)*k;if(!event.shiftKey)view.scrollDOM.scrollLeft+=event.deltaX*k;},{capture:true,passive:false});
   const widget=node.addDOMWidget(name,'GENERETI_OPERATOR_TEXT',surface,{serialize:true,getValue:()=>source,setValue:value=>{source=draft=String(value??'');if(view.state.doc.toString()!==source)view.replaceDocument(source);}});widget.computeSize=width=>[width,code.hidden?34:198];widget.serializeValue=()=>source;
+  // Restore DOM text explicitly: newer Comfy frontends do not call the
+  // DOM widget setter when replaying widgets_values during graph loading.
+  const configured=node.onConfigure;node.onConfigure=function(data){configured?.apply(this,arguments);const saved=data?.properties?.generetiOperatorText?.[name]??data?.widgets_values?.[node.widgets.indexOf(widget)];if(typeof saved==='string')widget.options.setValue(saved);};
+  const serialized=node.onSerialize;node.onSerialize=function(data){serialized?.apply(this,arguments);data.properties??={};data.properties.generetiOperatorText={...data.properties.generetiOperatorText,[name]:source};};
   const removed=node.onRemoved;node.onRemoved=function(){view.destroy();return removed?.apply(this,arguments);};
   return {widget};
  }

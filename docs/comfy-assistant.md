@@ -31,7 +31,7 @@ The Attach button opens a searchable picker for **Nodes**, **Assets**, **Workflo
 
 ```text
 Use @asset:"input/my portrait.png" with @template:"default/image_qwen_image_2_1_image_edit".
-Use @workflow:"Genereti/ꘇ p5 Source.json" as the starting point.
+Use @workflow:"Genereti/ꘇ-p5-Source.json" as the starting point.
 ```
 
 Use the picker or `library_search` to get real IDs; example tokens are illustrative and may not exist on every installation. Saved workflow references retain their folder paths. Installed custom-node templates use `@template:"module/name"`. Asset IDs come from Comfy's asset API when enabled, or `input/`, `output/` and `temp/` file references in the fallback catalog.

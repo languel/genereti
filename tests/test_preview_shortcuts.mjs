@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 function fixture(){
  const app={graph:{},canvas:{selected_nodes:{}}},listeners={},calls=[];
- const context=vm.createContext({app,window:{addEventListener:(name,fn)=>listeners[name]=fn}});
+ const context=vm.createContext({app,routeStackShortcut:()=>false,window:{addEventListener:(name,fn)=>listeners[name]=fn}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/preview-shortcuts.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function'),context);
  const node={graph:app.graph},other={graph:app.graph};app.canvas.selected_nodes={1:node};
  const controls={toggleBackdrop:()=>calls.push('backdrop'),toggleOverlay:()=>calls.push('overlay'),isHovered:()=>false};

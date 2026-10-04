@@ -30,11 +30,11 @@ Install the Genereti node packs and example workflows:
 ./scripts/install_comfy.sh "$HOME/Documents/ComfyUI"
 ```
 
-Examples are installed under **Workflows → Genereti** (`user/default/workflows/Genereti/`). The installer consolidates older root-level `Genereti-*.json` files into that folder. Existing customized files are preserved; independently edited root copies receive a ` (from root)` suffix. Redundant root copies and previous managed examples are backed up outside the workflow browser under `user/default/.genereti-workflow-backups/`. A small manifest lets later installs update unchanged examples while keeping your edits. Examples now use the **ꘇ** filename prefix; the installer renames older Genereti-prefixed copies in place, including customized examples, and carries their managed checksums forward.
+Examples are installed under **Workflows → Genereti** (`user/default/workflows/Genereti/`). The installer consolidates older root-level `Genereti-*.json` files into that folder. Existing customized files are preserved; independently edited root copies receive a ` (from root)` suffix. Redundant root copies and previous managed examples are backed up outside the workflow browser under `user/default/.genereti-workflow-backups/`. A small manifest lets later installs update unchanged examples while keeping your edits. Examples now use the **ꘇ-** filename prefix; the installer renames older Genereti-prefixed and glyph-space copies in place, including customized examples, and carries their managed checksums forward.
 
-Then restart ComfyUI. `ꘇ Live Inputs.json` shows doodle, webcam, and window/screen sources connected to Genereti. `ꘇ Input Sources.json` previews and saves captured input without calling Genereti, so it also works on a PC; the source selector evaluates only its selected input. The graph passes that image to Genereti’s Core ML generate node. `ꘇ Image Bridge.json` is a basic image bridge, and `ꘇ Output Monitor.json` reads the latest published frame.
+Then restart ComfyUI. `ꘇ-Live-Inputs.json` shows doodle, webcam, and window/screen sources connected to Genereti. `ꘇ-Input-Sources.json` previews and saves captured input without calling Genereti, so it also works on a PC; the source selector evaluates only its selected input. The graph passes that image to Genereti’s Core ML generate node. `ꘇ-Image-Bridge.json` is a basic image bridge, and `ꘇ-Output-Monitor.json` reads the latest published frame.
 
-`ꘇ p5 Source.json` and `ꘇ p5 Realtime.json` use **ꘇ livecode** in p5 mode, making the editable code node the default p5.js demo. The source workflow previews and saves its canvas without a generator, so it also works on a PC. The starter draws random grayscale lines; mouse dragging adds circles sized by pointer movement. Evaluate with Run or Cmd/Ctrl+Enter, then queue to capture the current canvas as an IMAGE. **GeneretiP5Sketch** remains available as a compact alternative; its source-only sample is `ꘇ p5 Send Receive.json`.
+`ꘇ-p5-Source.json` and `ꘇ-p5-Realtime.json` use **ꘇ livecode** in p5 mode, making the editable code node the default p5.js demo. The source workflow previews and saves its canvas without a generator, so it also works on a PC. The starter draws random grayscale lines; mouse dragging adds circles sized by pointer movement. Evaluate with Run or Cmd/Ctrl+Enter, then queue to capture the current canvas as an IMAGE. **GeneretiP5Sketch** remains available as a compact alternative; its source-only sample is `ꘇ-p5-Send-Receive.json`.
 
 The standalone p5 source node increments a hidden canvas revision after each mouse/touch gesture or key release. With ComfyUI's **Run (on change)** mode enabled, a completed interaction queues the latest canvas without queuing every animation frame. It remains available in the node library and in the p5 send/receive example. See [the classic SD 1.5 and Qwen 2.1 guide](comfy-sd15-and-qwen21.md) for the bottle demo and a smaller direct-prompt Qwen workflow.
 
@@ -44,7 +44,7 @@ The Genereti Generate node has a **resolution** selector (default **auto**). Aut
 
 The Genereti Generate node calls the local Core ML server, so this node requires Genereti running on the same Mac. The capture and p5 nodes can also serve as independent ComfyUI sources on a PC.
 
-When upgrading from an older custom-node pack, restart ComfyUI so it loads the renamed Genereti node classes, then open the supplied `ꘇ *.json` workflow. Tabs already open in ComfyUI retain their old labels and node classes in memory; save any unsaved edits before closing or replacing those tabs.
+When upgrading from an older custom-node pack, restart ComfyUI so it loads the renamed Genereti node classes, then open the supplied `ꘇ-*.json` workflow. Tabs already open in ComfyUI retain their old labels and node classes in memory; save any unsaved edits before closing or replacing those tabs.
 
 If ComfyUI reports a missing Genereti node, close stale workflow tabs, rerun `scripts/install_comfy.sh` for the active ComfyUI folder, restart ComfyUI, and reopen the current workflow from its Workflows menu. The installer links the node packs and installs examples in the Genereti subfolder; it does not install model weights. The bridge's Generate and Live Frame nodes also need the Genereti server running on the same Mac.
 
@@ -54,7 +54,7 @@ After updating capture nodes, restart ComfyUI and refresh its browser page. Sele
 
 ### Direct live preview in Comfy
 
-Open **ꘇ p5 SDXS.json** for p5 → SDXS sketch → live image preview. For drawing, use **ꘇ Drawing SDXS.json** or **ꘇ Drawing SD Turbo.json**. Each native generator chooses its own model package path; no loader or pipeline socket is needed. Select Live and play, or Comfy Queue and Run. Native generators run in Comfy on macOS 14+ Apple silicon; model resolution and baked style follow the selected package. The external-server **ꘇ generator** remains available for comparison in **ꘇ Drawing Generator Preview.json**. Connect any generator to **ꘇ live image preview** for viewing and projection.
+Open **ꘇ-p5-SDXS.json** for p5 → SDXS sketch → live image preview. For drawing, use **ꘇ-Drawing-SDXS.json** or **ꘇ-Drawing-SD-Turbo.json**. Each native generator chooses its own model package path; no loader or pipeline socket is needed. Select Live and play, or Comfy Queue and Run. Native generators run in Comfy on macOS 14+ Apple silicon; model resolution and baked style follow the selected package. The external-server **ꘇ generator** remains available for comparison in **ꘇ-Drawing-Generator-Preview.json**. Connect any generator to **ꘇ live image preview** for viewing and projection.
 
 This is a browser preview of the Genereti output, not continuous execution of the Comfy graph. Its standalone live projector mirrors the same frames without generating again; double-click its window for fullscreen. Queue on Live Preview reads the latest shared output without evaluating its lazy source; connected downstream Save/processing nodes run only when queued. Painter and arbitrary tensor-based IMAGE sources currently require Queue. Live preview disables AI upscaling and does not change server resolution. Restart Comfy and refresh its browser page after installing the extension.
 
@@ -73,7 +73,7 @@ Validation for generic preview: the installed V3 API accepted the schema; a batc
 
 ### Browser realtime clock
 
-Open **ꘇ p5 Realtime.json** for p5 Livecode → Live Image Preview. Evaluate the p5 sketch, then click **Start realtime** on the preview. Drawing and preview run independently of Comfy Queue. The node can also open its output window, in-Comfy overlay, or graph backdrop directly; no Genereti inference server is needed for this raw image preview.
+Open **ꘇ-p5-Realtime.json** for p5 Livecode → Live Image Preview. Evaluate the p5 sketch, then click **Start realtime** on the preview. Drawing and preview run independently of Comfy Queue. The node can also open its output window, in-Comfy overlay, or graph backdrop directly; no Genereti inference server is needed for this raw image preview.
 
 The browser runtime transfers ImageBitmaps directly, with one outstanding source frame and bounded projector delivery. It avoids per-frame PNG uploads, tensor conversion, JPEG encoding and saved preview files. The preview reports delivered FPS and frame delivery time. A local 512px p5 + preview + projector test delivered about 41 fps over five seconds without queuing; this is a measured example, not a guaranteed rate.
 
@@ -85,7 +85,7 @@ Projector windows in separate browsers/profiles fall back to a local in-memory J
 
 See [Livecode languages](livecode-languages.md) for all thirteen modes, code contracts, math syntax and example workflows.
 
-**Genereti Livecode** (Interactive Sources) is a separate CodeMirror 6 node; **Genereti p5.js Sketch** remains available. Open **ꘇ Livecode Realtime.json**, evaluate with ▶ or Ctrl+Enter (Cmd+Enter also works), then start realtime on Live Image Preview. The p5 starter draws random grayscale lines; dragging the mouse paints circles sized by pointer movement. It follows the node’s width and height. The IMAGE output can also feed Send Frame, model Live Preview, and Projector. Queue renders with that run’s connected IMAGE and parameter values; editing and Genereti browser frame delivery do not require Queue.
+**Genereti Livecode** (Interactive Sources) is a separate CodeMirror 6 node; **Genereti p5.js Sketch** remains available. Open **ꘇ-Livecode-Realtime.json**, evaluate with ▶ or Ctrl+Enter (Cmd+Enter also works), then start realtime on Live Image Preview. The p5 starter draws random grayscale lines; dragging the mouse paints circles sized by pointer movement. It follows the node’s width and height. The IMAGE output can also feed Send Frame, model Live Preview, and Projector. Queue renders with that run’s connected IMAGE and parameter values; editing and Genereti browser frame delivery do not require Queue.
 
 Visual edits compile a hidden candidate and promote it only after it renders its first frame, following Underscores' prepare/render/swap design. Failed syntax, setup, or first-frame rendering keeps the previous running runtime and reports the error beside the editor. Auto-update debounces visual edits by 400ms; turn it off to keep a draft until evaluation. Strudel defaults to manual evaluation and keeps its previous pattern on compile errors. Drafts and the last accepted source are saved separately, so reopening a workflow can run the accepted source even if the draft is broken. Ctrl+. stops/pauses the active runtime and holds the last canvas. These shortcuts also work with preview focus and in the original p5 node. This is not a guarantee against an infinite loop or arbitrary JavaScript side effects.
 
@@ -126,11 +126,11 @@ Livecode uses a borderless icon toolbar. Auto-update is the circular-arrow toggl
 
 The Livecode display label is **ꘇ livecode**; its internal `GeneretiLivecode` ID and Genereti search alias remain unchanged. Cmd/Ctrl+Shift+Plus/Minus adjusts only the focused code editor’s font (9–36px), saved with its appearance. Shift + two-finger scrolling over the editor scrolls code vertically without moving or zooming the Comfy graph.
 
-Livecode image inputs, typed code parameter sockets and native width/height controls are documented in the [browser source guide](../integrations/genereti_comfy_p5/README.md#images-and-code-parameters). The IMAGE/Float/GLSL example is **ꘇ Livecode Image Parameters.json**. Restart Comfy and refresh its frontend after this schema change.
+Livecode image inputs, typed code parameter sockets and native width/height controls are documented in the [browser source guide](../integrations/genereti_comfy_p5/README.md#images-and-code-parameters). The IMAGE/Float/GLSL example is **ꘇ-Livecode-Image-Parameters.json**. Restart Comfy and refresh its frontend after this schema change.
 
 ## GPU Texture Lab
 
-Open **ꘇ Creative Stage Showcase.json** under **Workflows → Genereti** for
+Open **ꘇ-Creative-Stage-Showcase.json** under **Workflows → Genereti** for
 the combined demo. Its top lane connects a transparent p5 brush through all seven
 texture operators: Math, Crop, Transform, Feedback, Filter, Corner Pin and
 Composite. Press the brush editor's Run triangle if needed, then draw in the
@@ -151,11 +151,18 @@ freeze/minimize, feedback reset, and interactive drawing overlays. For every
 language's starter code, use the separate Livecode Languages and Livecode Math
 examples alongside the showcase.
 
-Open `ꘇ Texture Lab.json` for transparent livecode feedback, blur, projective
+Open `ꘇ-Texture-Lab.json` for transparent livecode feedback, blur, projective
 corner pin and compositing. Install the new texture pack and restart ComfyUI. See
 the [texture operator guide](texture-operators.md) for GPU boundaries, queued
 semantics and performance checks. No Core ML models are required.
 
 ## OpenTouch operators and authored lessons
 
-**ꘇ OpenTouch Operators and Lessons.json** is a model-free connected lab covering TOP, CHOP, DAT, all family conversions, Three.js, document exports, tutorial authoring and basic music. Its MIDI/OSC ports and browser audio stay stopped until explicitly started. The DAT report and `dat.lesson` author toolbar export Markdown, standalone HTML and Print / Save as PDF. See the [catalog](opentouch-catalog.md) and [authoring guide](opentouch-lessons.md).
+**ꘇ-OpenTouch-Operators-and-Lessons.json** is a model-free connected lab covering TOP, CHOP, DAT, all family conversions, Three.js, document exports, tutorial authoring and basic music. Its MIDI/OSC ports and browser audio stay stopped until explicitly started. The DAT report and `dat.lesson` author toolbar export Markdown, standalone HTML and Print / Save as PDF. See the [catalog](opentouch-catalog.md) and [authoring guide](opentouch-lessons.md).
+
+## Small model-free learning demos
+
+- **ꘇ-Tutorial-Authoring.json**: one editable `dat.lesson`, a real texture exercise, an image preview and exportable author notes. Open Settings → Genereti → Learning → Interactive lessons, then **Open authoring workflow** to open it in a separate tab and start the tutorial about making tutorials.
+- **ꘇ-Interactive-Output-Views.json**: clickable p5, a scrollable Markdown/math document, active drawing and an authored mini guide. Try Alt+O or Shift-click on the overlay glyph for output-only node chrome; use a regular click or Alt+W for a floating overlay. Both views share opacity, click-through and stacking controls.
+
+Demo filenames use `ꘇ-…`. Stable node IDs and the **Genereti** folder remain unchanged. The installer preserves customized examples and archives redundant or retired unchanged managed copies outside the workflow browser.

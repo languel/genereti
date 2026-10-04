@@ -10,8 +10,8 @@ import {publishLive} from './live-runtime.js';
 import {routePreviewShortcut} from '../../genereti_comfy_stream/js/preview-shortcuts.js';
 import {previewControls} from '../../genereti_comfy_stream/js/preview-controls.js';
 import {SETTINGS_GLYPH,ensureControlStyle} from './control-style.js';
-import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=fedc1ed5112f4d35';
-const LIBRARY_VERSION='fedc1ed5112f4d35';
+import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=df4e0b3cf7553f2a';
+const LIBRARY_VERSION='df4e0b3cf7553f2a';
 ensureControlStyle();
 if(!document.getElementById('genereti-livecode-style')){const style=document.createElement('style');style.id='genereti-livecode-style';style.textContent=`
 .genereti-livecode-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:4px;position:relative;flex-shrink:0}
@@ -195,7 +195,7 @@ function editorWidget(node,name){
    if(isActive&&data.clock!=='host')lastAnimationFrame=performance.now();
    try{if(isActive&&users)publishLive(node,data.bitmap);if(isActive)localOutputs?.publish({bitmap:data.bitmap});}finally{data.bitmap?.close();post(active,{type:'live-ack'});}
   }
-  if(data.type==='preview-shortcut'&&isActive)routePreviewShortcut({code:data.code,key:data.key,altKey:data.altKey,shiftKey:data.shiftKey,preventDefault(){this.defaultPrevented=true;},stopPropagation(){}});
+  if(data.type==='preview-shortcut'&&isActive)routePreviewShortcut({code:data.code,key:data.key,altKey:data.altKey,shiftKey:data.shiftKey,metaKey:data.metaKey,ctrlKey:data.ctrlKey,preventDefault(){this.defaultPrevented=true;},stopPropagation(){}});
   if(data.type==='draft'&&isActive)setDraft(data.source);
   if(data.type==='audio-state')status.textContent=`Running · audio ${data.state}`;
   if(data.type==='capture'||data.type==='capture-error'){const request=pendingCapture.get(data.id);if(request){clearTimeout(request.timeout);pendingCapture.delete(data.id);data.type==='capture'?request.resolve(data.data):request.reject(Error(data.message));}}

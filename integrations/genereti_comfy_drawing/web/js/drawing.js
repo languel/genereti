@@ -46,9 +46,10 @@ function makeDrawing(node, name) {
   const overlayButton=document.createElement('button');overlayButton.type='button';
   overlayButton.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="9" y="9" width="10" height="10" rx="1"/></svg>';
   let overlay=null;
-  const paintOverlay=()=>{overlayButton.setAttribute('aria-pressed',String(!!overlay));overlayButton.title=overlay?'Return drawing to node':'Open interactive drawing overlay · annotate over the graph';overlayButton.setAttribute('aria-label',overlayButton.title);overlayButton.title+=' (Alt+W)';};
+  const paintOverlay=()=>{overlayButton.setAttribute('aria-pressed',String(!!overlay));overlayButton.title=overlay?'Return drawing to node':'Open interactive drawing overlay · annotate over the graph';overlayButton.setAttribute('aria-label',overlayButton.title);overlayButton.title+=' (Alt+W · Shift-click / Alt+O: output-only node)';};
   paintOverlay();
-  overlayButton.onclick=()=>{
+  overlayButton.onclick=(event={})=>{
+    if(event.shiftKey){nodeView.toggle();return;}
     if(overlay){overlay.close();return;}
     nodeView.close();
     node.properties ||= {};node.properties.genereti_drawing_overlay_layout ||= {};
@@ -56,7 +57,7 @@ function makeDrawing(node, name) {
     paintOverlay();send({type:'edit-frame',kind:'image',freehand:true});
   };
   const nodeView=nodeOutputView(node,frame,{beforeOpen:()=>overlay?.close()});
-  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
+  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:()=>overlayButton.click(),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
   controls.append(deliverySlot,overlayButton,render.element,matchTheme,status); container.append(controls, frame);
   controls.addEventListener('pointerdown',event=>event.stopPropagation());
   const send = data => frame.contentWindow?.postMessage({channel:CHANNEL, ...data}, location.origin);

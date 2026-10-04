@@ -1,3 +1,4 @@
+import { routeStackShortcut } from './view-stack.js';
 import { app } from '../../../scripts/app.js';
 
 const previews=new Map();
@@ -9,7 +10,8 @@ export function registerPreviewShortcuts(node,controls){
   return ()=>{if(previews.get(node)===controls)previews.delete(node);};
 }
 export function routePreviewShortcut(event){
-  if(event.defaultPrevented||event.repeat||event.isComposing||editing(event)||event.ctrlKey||event.metaKey)return;
+  if(event.defaultPrevented||event.repeat||event.isComposing||editing(event))return;
+  if(routeStackShortcut(event)||event.ctrlKey||event.metaKey)return;
   if(event.altKey&&((!event.shiftKey&&event.code==='KeyP')||(event.shiftKey&&['KeyZ','KeyI'].includes(event.code)))){window.dispatchEvent(new CustomEvent('genereti-workspace-shortcut',{detail:event}));return;}
   const through=event.altKey&&event.shiftKey&&event.code==='KeyO';
   if(event.shiftKey&&!through)return;
@@ -21,7 +23,7 @@ export function routePreviewShortcut(event){
   if(!backdrop&&!overlay&&!fill&&!escape&&!through&&!outputOnly)return;
   if(escape){const filled=[...previews].reverse().find(([node,controls])=>node.graph===app.graph&&controls.isFilled?.());if(!filled)return;event.preventDefault();event.stopPropagation();filled[1].toggleFill();return;}
   const selected=[...new Set([...Object.values(app.canvas?.selected_nodes||{}),...Array.from(app.canvas?.selectedItems||[])])].filter(node=>node.graph===app.graph);
-  const hovered=(overlay||fill||through||outputOnly)&&([...previews].reverse().find(([node,controls])=>node.graph===app.graph&&(outputOnly?controls.isOutputHovered?.():controls.isHovered?.())));
+  const hovered=(overlay||fill||through||outputOnly)&&([...previews].reverse().find(([node,controls])=>node.graph===app.graph&&(outputOnly?controls.isOutputHovered?.():controls.isHovered?.()||(through&&controls.isOutputHovered?.()))));
   const node=hovered?.[0]||(selected.length===1?selected[0]:null);
   const action=previews.get(node)?.[outputOnly?'toggleOutputOnly':through?'toggleClickThrough':backdrop?'toggleBackdrop':fill?'toggleFill':'toggleOverlay'];
   if(!action)return;

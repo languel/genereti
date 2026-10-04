@@ -1263,7 +1263,7 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "The main stage needs no models. SDXS is deliberately in Comfy Queue; install models using scripts/setup_macos.sh then scripts/download_models.sh before queuing the whole graph. Choose an installed model_path and use the node Live dropdown + Play for realtime inference. One generator at a time is best while benchmarking. Camera/screen remain off until you start them. For other language demos, open ꘇ Livecode Languages or ꘇ Livecode Math alongside this workflow."
+        "The main stage needs no models. SDXS is deliberately in Comfy Queue; install models using scripts/setup_macos.sh then scripts/download_models.sh before queuing the whole graph. Choose an installed model_path and use the node Live dropdown + Play for realtime inference. One generator at a time is best while benchmarking. Camera/screen remain off until you start them. For other language demos, open ꘇ-Livecode-Languages or ꘇ-Livecode-Math alongside this workflow."
       ],
       "id": 25,
       "pos": [

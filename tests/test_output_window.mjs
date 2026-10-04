@@ -11,6 +11,7 @@ function fixture(desktop=false){
  const document=doc();document.body.append=e=>panels.push(e);
  const window={open(){const w=target();popups.push(w);return w;},...(desktop?{__comfyDesktop2:{},documentPictureInPicture:{requestWindow:async()=>{throw new Error('Not allowed by this host');}}}:{})};
  const context=vm.createContext({nativeOutput:()=>({open:async()=>{nativeOpens++;return true;},publish:frame=>nativeFrames.push(frame),setFit(){},close(){}}),document,window,navigator:{userAgent:desktop?'Electron':'Chrome'},innerWidth:1200,innerHeight:900,crypto:{randomUUID:()=> 'test'},performance});
+ vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/view-stack.js',import.meta.url),'utf8').replaceAll('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/overlay-shell.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/output-window.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export function','function'),context);
  const status={textContent:''};return {shell:(frame,layout,onClose)=>context.overlayShell(frame,layout,onClose),make:(layout,config)=>context.outputWindow(status,undefined,layout,config),status,panels,popups,draws,nativeFrames,nativeOpens:()=>nativeOpens};

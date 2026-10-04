@@ -186,5 +186,132 @@
         }
       }
     ]
+  },
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "lesson-authoring",
+    "title": "Make a tutorial with Genereti",
+    "summary": "Author, test and export a short guided lesson from a dat.lesson node.",
+    "steps": [
+      {
+        "title": "A lesson is a workflow document",
+        "text": "The dat.lesson node holds your guide JSON in CodeMirror. Its toolbar runs the learner dialogue and exports the document. The learner dialogue only navigates the lesson.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "code",
+          "widget": "guide"
+        }
+      },
+      {
+        "title": "Give your lesson an identity",
+        "text": "Change the title in the sample guide JSON. Use a unique id when you make another lesson, and keep format genereti-guide and version 1. All steps need a title and text.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "code",
+          "widget": "guide"
+        },
+        "check": {
+          "kind": "changed-widget"
+        }
+      },
+      {
+        "title": "Describe a learner action",
+        "text": "Edit the first step text to give a concrete action and explain what should change. Narration is plain text; it never executes scripts or starts devices.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "code",
+          "widget": "guide"
+        },
+        "check": {
+          "kind": "changed-widget"
+        }
+      },
+      {
+        "title": "Focus a real tool",
+        "text": "target.nodeType uses the stable internal ID, for example GeneretiTextureExpression. part can be node, code, preview, toolbar or parameter. widget names the control, such as expression. Focus currently chooses the first matching node type.",
+        "target": {
+          "nodeType": "GeneretiTextureExpression",
+          "part": "code",
+          "widget": "expression"
+        }
+      },
+      {
+        "title": "Try the check yourself",
+        "text": "Change this texture expression. A changed-widget check compares its value to the value at step entry, then enables Next. Learners can skip checks; this does not grade artistic quality.",
+        "target": {
+          "nodeType": "GeneretiTextureExpression",
+          "part": "code",
+          "widget": "expression"
+        },
+        "check": {
+          "kind": "changed-widget"
+        }
+      },
+      {
+        "title": "Export from the author toolbar",
+        "text": "Use Document export on dat.lesson for Markdown, standalone HTML, or Print / Save as PDF. Use {} for editable lesson JSON. Save the Comfy workflow separately to keep its nodes and wiring. Exports are deliberately outside the learner dialogue.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "toolbar"
+        }
+      },
+      {
+        "title": "Run and share your draft",
+        "text": "Press Run authored lesson on dat.lesson to register and play your edited guide. That replaces this walkthrough with your own learner dialogue. Stop ends playback without undoing edits. Sharing the workflow supplies the actual tools; sharing HTML/PDF supplies static notes.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "toolbar"
+        }
+      }
+    ]
+  },
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "interactive-output-views",
+    "title": "Interactive output views",
+    "summary": "Present a working sketch or document without losing interaction.",
+    "steps": [
+      {
+        "title": "Use the sketch",
+        "text": "Click the p5 output; its click counter changes. The moving circle follows your pointer.",
+        "target": {
+          "nodeType": "GeneretiLivecode",
+          "part": "preview"
+        }
+      },
+      {
+        "title": "Hide just the node chrome",
+        "text": "Select p5 and press Alt+O, or Shift-click its overlay button. Only output remains. Hover just outside an edge to reveal its opacity and stacking controls. The restore glyph brings the chrome back.",
+        "target": {
+          "nodeType": "GeneretiLivecode",
+          "part": "node"
+        }
+      },
+      {
+        "title": "Move it into an overlay",
+        "text": "Restore the node, then press Alt+W or click the overlay button normally. The same sketch moves into an interactive overlay.",
+        "target": {
+          "nodeType": "GeneretiLivecode",
+          "part": "toolbar"
+        },
+        "check": {
+          "kind": "overlay-open"
+        }
+      },
+      {
+        "title": "Arrange two views",
+        "text": "Open the scrollable document overlay too. Hover a view and use Cmd+[ / ] for backward/forward, or Cmd+Shift+[ / ] for back/front. The bar has the same controls; Shift-click a stacking arrow for back/front. Code editors keep their own bracket shortcuts."
+      },
+      {
+        "title": "Annotate and present",
+        "text": "The drawing node keeps the active editor in both views. Alt+Shift+O toggles click-through. Alt+F fills an overlay inside Comfy; Alt+P hides graph/code and Alt+Shift+Z hides the outer Comfy shell. Native browser fullscreen remains separate.",
+        "target": {
+          "nodeType": "GeneretiDrawing",
+          "part": "preview"
+        }
+      }
+    ]
   }
 ]

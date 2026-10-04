@@ -4,47 +4,95 @@
   "groups": [],
   "extra": {
     "ds": {
-      "scale": 0.78,
+      "scale": 0.72,
       "offset": [
-        50,
-        100
+        80,
+        120
       ]
     },
     "frontendVersion": "1.53.6"
   },
-  "last_node_id": 6,
-  "last_link_id": 4,
+  "last_node_id": 8,
+  "last_link_id": 6,
   "nodes": [
     {
       "id": 1,
-      "type": "GeneretiP5Sketch",
+      "type": "GeneretiDrawing",
       "pos": [
         0,
-        80
+        90
       ],
       "size": [
-        510,
-        620
+        960,
+        680
       ],
       "flags": {},
       "order": 0,
       "mode": 0,
-      "inputs": [
+      "inputs": [],
+      "outputs": [
         {
-          "localized_name": "sketch",
-          "name": "sketch",
-          "type": "STRING",
-          "widget": {
-            "name": "sketch"
-          },
-          "link": null
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
         },
         {
-          "localized_name": "canvas_revision",
-          "name": "canvas_revision",
-          "type": "INT",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": []
+        },
+        {
+          "name": "SVG",
+          "type": "STRING",
+          "slot_index": 2,
+          "links": []
+        },
+        {
+          "name": "JSON",
+          "type": "STRING",
+          "slot_index": 3,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDrawing"
+      },
+      "widgets_values": [
+        "",
+        ""
+      ],
+      "widgets_values_named": {
+        "drawing": "",
+        "capture": ""
+      },
+      "title": "\ua607 drawing"
+    },
+    {
+      "id": 2,
+      "type": "GeneretiCameraCapture",
+      "pos": [
+        0,
+        920
+      ],
+      "size": [
+        330,
+        170
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "capture",
+          "name": "capture",
+          "type": "STRING",
           "widget": {
-            "name": "canvas_revision"
+            "name": "capture"
           },
           "link": null
         }
@@ -56,76 +104,149 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            1,
             2
           ]
         }
       ],
       "properties": {
-        "Node name for S&R": "GeneretiP5Sketch",
-        "cnr_id": "genereti_comfy_p5",
+        "Node name for S&R": "GeneretiCameraCapture",
+        "cnr_id": "genereti_comfy_inputs",
         "ver": "0.1.0"
       },
       "widgets_values": [
-        "function setup(){createCanvas(windowWidth,windowHeight);background(245)}function draw(){stroke(random(255));line(random(width),random(height),random(width),random(height));if(mouseIsPressed){noStroke();fill(random(255));circle(mouseX,mouseY,dist(mouseX,mouseY,pmouseX,pmouseY))}}",
-        0
+        "GENERETI_OFF:Webcam"
       ],
       "widgets_values_named": {
-        "sketch": "// Draw with the mouse. Press C to clear and change the palette with keys 1\u20135.\nlet hueShift = 0;\n\nfunction setup() {\n  createCanvas(512, 512);\n  colorMode(HSB, 360, 100, 100, 100);\n  background(225, 28, 12);\n}\n\nfunction draw() {\n  noStroke();\n  if (mouseIsPressed) {\n    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);\n    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));\n  }\n  if (keyIsPressed) {\n    fill((hueShift + 180) % 360, 70, 100, 55);\n    circle(mouseX, mouseY, 14);\n  }\n}\n\nfunction keyPressed() {\n  if (key === 'c' || key === 'C') background(225, 28, 12);\n  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;\n  return false;\n}\n",
-        "canvas_revision": 0
+        "capture": ""
       }
     },
     {
-      "id": 2,
-      "type": "PreviewImage",
+      "id": 3,
+      "type": "GeneretiScreenCapture",
       "pos": [
-        610,
-        90
+        0,
+        1160
       ],
       "size": [
-        300,
-        280
+        330,
+        170
       ],
       "flags": {},
-      "order": 1,
+      "order": 2,
       "mode": 0,
       "inputs": [
         {
-          "localized_name": "images",
-          "name": "images",
-          "type": "IMAGE",
-          "link": 1
+          "localized_name": "capture",
+          "name": "capture",
+          "type": "STRING",
+          "widget": {
+            "name": "capture"
+          },
+          "link": null
         }
       ],
       "outputs": [
         {
-          "localized_name": "images",
-          "name": "images",
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
           "type": "IMAGE",
           "slot_index": 0,
-          "links": []
+          "links": [
+            3
+          ]
         }
       ],
       "properties": {
-        "Node name for S&R": "PreviewImage",
-        "cnr_id": "comfy-core",
-        "ver": "0.14.1"
+        "Node name for S&R": "GeneretiScreenCapture",
+        "cnr_id": "genereti_comfy_inputs",
+        "ver": "0.1.0"
       },
-      "widgets_values": []
+      "widgets_values": [
+        "GENERETI_OFF:Window / Screen"
+      ],
+      "widgets_values_named": {
+        "capture": ""
+      }
     },
     {
-      "id": 3,
+      "id": 4,
+      "type": "GeneretiInputSelect",
+      "pos": [
+        1100,
+        430
+      ],
+      "size": [
+        360,
+        190
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "source",
+          "name": "source",
+          "type": "COMBO",
+          "widget": {
+            "name": "source"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "doodle",
+          "name": "doodle",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "localized_name": "webcam",
+          "name": "webcam",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "localized_name": "screen",
+          "name": "screen",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiInputSelect",
+        "cnr_id": "genereti_comfy_inputs",
+        "ver": "0.1.0"
+      },
+      "widgets_values": [
+        "Doodle"
+      ],
+      "widgets_values_named": {
+        "source": "Doodle"
+      }
+    },
+    {
+      "id": 5,
       "type": "GeneretiGenerate",
       "pos": [
-        610,
+        1540,
         420
       ],
       "size": [
-        380,
+        375,
         370
       ],
       "flags": {},
-      "order": 2,
+      "order": 4,
       "mode": 0,
       "inputs": [
         {
@@ -195,7 +316,7 @@
           "localized_name": "image",
           "name": "image",
           "type": "IMAGE",
-          "link": 2
+          "link": 4
         }
       ],
       "outputs": [
@@ -205,8 +326,8 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            3,
-            4
+            5,
+            6
           ]
         }
       ],
@@ -217,7 +338,7 @@
       },
       "widgets_values": [
         "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
-        "image",
+        "sketch",
         "base",
         true,
         4862,
@@ -227,8 +348,8 @@
         "auto"
       ],
       "widgets_values_named": {
-        "prompt": "Transform this interactive p5 drawing into a luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
-        "mode": "image",
+        "prompt": "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
+        "mode": "sketch",
         "style": "base",
         "preprocess": true,
         "seed": 4862,
@@ -237,25 +358,25 @@
       }
     },
     {
-      "id": 4,
+      "id": 6,
       "type": "PreviewImage",
       "pos": [
-        1050,
-        420
+        1990,
+        430
       ],
       "size": [
         300,
         280
       ],
       "flags": {},
-      "order": 3,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
           "localized_name": "images",
           "name": "images",
           "type": "IMAGE",
-          "link": 3
+          "link": 5
         }
       ],
       "outputs": [
@@ -275,25 +396,25 @@
       "widgets_values": []
     },
     {
-      "id": 5,
+      "id": 7,
       "type": "SaveImage",
       "pos": [
-        1050,
-        750
+        1990,
+        760
       ],
       "size": [
         315,
         58
       ],
       "flags": {},
-      "order": 4,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
           "localized_name": "images",
           "name": "images",
           "type": "IMAGE",
-          "link": 4
+          "link": 6
         },
         {
           "localized_name": "filename_prefix",
@@ -320,37 +441,37 @@
         "ver": "0.14.1"
       },
       "widgets_values": [
-        "ꘇ p5 Sketch/Generated"
+        "ꘇ-Live-Inputs/Generated"
       ],
       "widgets_values_named": {
-        "filename_prefix": "ꘇ p5 Sketch/Generated"
+        "filename_prefix": "ꘇ-Live-Inputs/Generated"
       }
     },
     {
-      "id": 6,
+      "id": 8,
       "type": "Note",
       "pos": [
         0,
-        750
+        1380
       ],
       "size": [
-        500,
-        150
+        430,
+        180
       ],
       "flags": {},
-      "order": 5,
+      "order": 7,
       "mode": 0,
       "inputs": [],
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "Interactive source: click Run sketch, then draw in the preview with mouse and keyboard. Queue to send its current frame to Genereti in image mode. The raw canvas is also available on the direct p5 \u2192 Preview Image wire."
+        "Draw inside the \ua607 output frame. Expand editor for full tools and zoom. Connect its IMAGE just like Painter, then Queue. Camera and screen capture still need their explicit Start buttons."
       ],
       "widgets_values_named": {
-        "text": "Interactive source: click Run sketch, then draw in the preview with mouse and keyboard. Queue to send its current frame to Genereti in image mode. The raw canvas is also available on the direct p5 \u2192 Preview Image wire."
+        "text": "Choose a source and connect it to Genereti Input Source.\n\nDoodle \u2192 leave mode on sketch. Webcam or Window / Screen \u2192 set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
       },
-      "color": "#243",
-      "bgcolor": "#365"
+      "color": "#432",
+      "bgcolor": "#653"
     }
   ],
   "links": [
@@ -358,31 +479,47 @@
       1,
       1,
       0,
-      2,
-      0,
+      4,
+      1,
       "IMAGE"
     ],
     [
       2,
-      1,
+      2,
       0,
+      4,
+      2,
+      "IMAGE"
+    ],
+    [
       3,
+      3,
+      0,
+      4,
+      3,
+      "IMAGE"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
       7,
       "IMAGE"
     ],
     [
-      3,
-      3,
+      5,
+      5,
       0,
-      4,
+      6,
       0,
       "IMAGE"
     ],
     [
-      4,
-      3,
-      0,
+      6,
       5,
+      0,
+      7,
       0,
       "IMAGE"
     ]

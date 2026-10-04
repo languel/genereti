@@ -56,7 +56,7 @@ Install with `scripts/install_comfy.sh /path/to/ComfyUI`, then restart ComfyUI. 
 - **Genereti Send Frame** (`GeneretiSendFrame`): sends the first IMAGE in a batch plus prompt/mode/size/seed/guide strength. Defaults to SDXS sketch at 512, `ink wash 水墨画`. Advanced `options_json` exposes the remaining server options. Returns a frame ID and acknowledgement metadata, not an image.
 - **Genereti Receive Frame** (`GeneretiReceiveFrame`): reads the latest output into IMAGE + frame ID without generation. Leave `after_frame` at zero for an independent receiver. Connect the sender's frame ID to `after_frame` to order both operations in one graph.
 
-Open **ꘇ p5 Send Receive.json** from your workflow folder: p5 input → Send Frame → Receive Frame → Preview. `integrations/genereti_comfy_stream/workflow-api.json` provides an API-format LoadImage variant. Both nodes bypass cache on repeated execution. Use Comfy's repeated/instant queue for continuous updates; they execute one frame per queue run rather than maintaining a background stream.
+Open **ꘇ-p5-Send-Receive.json** from your workflow folder: p5 input → Send Frame → Receive Frame → Preview. `integrations/genereti_comfy_stream/workflow-api.json` provides an API-format LoadImage variant. Both nodes bypass cache on repeated execution. Use Comfy's repeated/instant queue for continuous updates; they execute one frame per queue run rather than maintaining a background stream.
 
 Output is the server's **latest shared** frame. `after_frame` ensures it is not older than the acknowledgement, but another producer can replace it; this is not a per-client channel or guaranteed exact-frame history. Stop other producers when you need deterministic pairing. This workflow was tested on Apple silicon. The Core ML generator remains Mac-only; this demo does not add a network or PC GPU backend. See the platform guide for existing PC-compatible source nodes.
 
@@ -67,7 +67,7 @@ Real browser generation succeeded at 512px with the initial prompt, using the st
 
 ### Browser realtime clock
 
-Open **ꘇ p5 Realtime.json** for p5 Livecode → Live Image Preview. Evaluate the p5 sketch and click **Start realtime** on the preview. Drawing and preview run independently of Comfy Queue. The Livecode node can also open an output window, an in-Comfy overlay, or a graph backdrop. No Genereti inference server is needed for this raw image preview.
+Open **ꘇ-p5-Realtime.json** for p5 Livecode → Live Image Preview. Evaluate the p5 sketch and click **Start realtime** on the preview. Drawing and preview run independently of Comfy Queue. The Livecode node can also open an output window, an in-Comfy overlay, or a graph backdrop. No Genereti inference server is needed for this raw image preview.
 
 The browser runtime transfers ImageBitmaps directly, with one outstanding source frame and bounded projector delivery. It avoids per-frame PNG uploads, tensor conversion, JPEG encoding and saved preview files. The preview reports delivered FPS and frame delivery time. A local 512px p5 + preview + projector test delivered about 41 fps over five seconds without queuing; this is a measured example, not a guaranteed rate.
 

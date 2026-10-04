@@ -22,8 +22,8 @@ code parameters create typed sockets beside their local default widgets.
 | `orca` | Text grid and native operator clock; optional `bpm` parameter | Character grid; event data inside the preview |
 | `hyperframes` | HTML with finite composition clock, CSS `--hf-time`/`--hf-progress` | Animated document snapshot |
 
-Open **ꘇ Livecode Languages.json** for Tixy, Play Core, HTML, SVG, Orca,
-and HyperFrames examples, or **ꘇ Livecode Math.json** for Markdown, LaTeX,
+Open **ꘇ-Livecode-Languages.json** for Tixy, Play Core, HTML, SVG, Orca,
+and HyperFrames examples, or **ꘇ-Livecode-Math.json** for Markdown, LaTeX,
 and Manim. These workflows require only the Livecode pack and stock Preview Image;
 no inference model or Genereti server is needed. Queue captures the current frame.
 Keep the workflow open in the browser client that queued it.

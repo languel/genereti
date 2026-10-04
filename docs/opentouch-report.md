@@ -13,7 +13,7 @@ The node families are interfaces to the existing creative tools, rather than thr
 
 ## Try the connected lesson
 
-Open **ꘇ OpenTouch Operators and Lessons** under Workflows → Genereti. It is model-free and includes:
+Open **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. It is model-free and includes:
 
 1. A `top.expression` texture, with familiar compact CodeMirror editing.
 2. A CHOP oscillator, smoothing, and a FLOAT wire controlling texture arithmetic.
@@ -99,3 +99,11 @@ The report and lesson exports use our local KaTeX renderer for these formulas.
 Prioritize a transport/clock interface, channel resampling/interpolation controls, trigger/envelope/event processors, and parameter mapping presets. A future DAT language bridge should explicitly distinguish editable source, data and evaluated code. A future shader node can expose multiple IMAGE inputs and familiar uniforms while remaining in our render system.
 
 Keep geometry creation, cameras, lights and materials in Three.js for now. Defer NDI, OAK, Syphon/Spout and other device integrations. Before claiming performance improvements, measure the exact connected chain, its source rate, view costs, model round trip, and delivery FPS separately.
+
+## Focused lesson and presentation examples
+
+`ꘇ-Tutorial-Authoring.json` teaches making, testing and exporting a guide from
+`dat.lesson`. `ꘇ-Interactive-Output-Views.json` demonstrates native document
+scrolling, p5 pointer callbacks, active drawing, output-only nodes and floating
+overlays. Both are model-free and available from the lesson chooser. Display
+stacking and opacity leave the renderer and downstream texture unchanged.

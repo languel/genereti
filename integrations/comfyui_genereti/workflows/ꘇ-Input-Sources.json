@@ -10,7 +10,8 @@
         120
       ]
     },
-    "frontendVersion": "1.53.6"
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti Live Input Sources"
   },
   "last_node_id": 8,
   "last_link_id": 6,
@@ -255,7 +256,8 @@
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
-            4
+            4,
+            5
           ]
         }
       ],
@@ -269,129 +271,6 @@
       ],
       "widgets_values_named": {
         "source": "Doodle"
-      }
-    },
-    {
-      "id": 5,
-      "type": "GeneretiGenerate",
-      "pos": [
-        870,
-        420
-      ],
-      "size": [
-        375,
-        370
-      ],
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "inputs": [
-        {
-          "localized_name": "prompt",
-          "name": "prompt",
-          "type": "STRING",
-          "widget": {
-            "name": "prompt"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "mode",
-          "name": "mode",
-          "type": "COMBO",
-          "widget": {
-            "name": "mode"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "style",
-          "name": "style",
-          "type": "COMBO",
-          "widget": {
-            "name": "style"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "preprocess",
-          "name": "preprocess",
-          "type": "BOOLEAN",
-          "widget": {
-            "name": "preprocess"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "seed",
-          "name": "seed",
-          "type": "INT",
-          "widget": {
-            "name": "seed"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "strength",
-          "name": "strength",
-          "type": "FLOAT",
-          "widget": {
-            "name": "strength"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "control_scale",
-          "name": "control_scale",
-          "type": "FLOAT",
-          "widget": {
-            "name": "control_scale"
-          },
-          "link": null
-        },
-        {
-          "localized_name": "image",
-          "name": "image",
-          "type": "IMAGE",
-          "link": 4
-        }
-      ],
-      "outputs": [
-        {
-          "localized_name": "IMAGE",
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": [
-            5,
-            6
-          ]
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "GeneretiGenerate",
-        "cnr_id": "genereti_comfy_bridge",
-        "ver": "0.1.0"
-      },
-      "widgets_values": [
-        "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
-        "sketch",
-        "base",
-        true,
-        4862,
-        "fixed",
-        0.65,
-        0.8,
-        "auto"
-      ],
-      "widgets_values_named": {
-        "prompt": "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition",
-        "mode": "sketch",
-        "style": "base",
-        "preprocess": true,
-        "seed": 4862,
-        "strength": 0.65,
-        "control_scale": 0.8
       }
     },
     {
@@ -478,10 +357,10 @@
         "ver": "0.14.1"
       },
       "widgets_values": [
-        "ꘇ Live Inputs/Generated"
+        "ꘇ-Live-Inputs/Generated"
       ],
       "widgets_values_named": {
-        "filename_prefix": "ꘇ Live Inputs/Generated"
+        "filename_prefix": "ꘇ-Live-Inputs/Generated"
       }
     },
     {
@@ -502,10 +381,10 @@
       "outputs": [],
       "properties": {},
       "widgets_values": [
-        "Choose a source and connect it to Genereti Input Source.\n\nDoodle → leave mode on sketch. Webcam or Window / Screen → set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
+        "Choose Doodle, Webcam, or Window / Screen. Start camera or screen sharing only when you want that source, then queue to preview and save the captured image. This source-only workflow does not call Genereti or require the Core ML server."
       ],
       "widgets_values_named": {
-        "text": "Choose a source and connect it to Genereti Input Source.\n\nDoodle → leave mode on sketch. Webcam or Window / Screen → set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
+        "text": "Choose a source and connect it to Genereti Input Source.\n\nDoodle \u2192 leave mode on sketch. Webcam or Window / Screen \u2192 set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
       },
       "color": "#432",
       "bgcolor": "#653"
@@ -540,21 +419,13 @@
       4,
       4,
       0,
-      5,
-      7,
-      "IMAGE"
-    ],
-    [
-      5,
-      5,
-      0,
       6,
       0,
       "IMAGE"
     ],
     [
-      6,
       5,
+      4,
       0,
       7,
       0,

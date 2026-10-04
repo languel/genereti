@@ -214,3 +214,9 @@ still uses configured render width/height (or Follow output sizing), independent
 of the displayed document dimensions. P5 retains texture sizing and its authored
 mouse, touch and keyboard callbacks. Reload the Comfy frontend after updating
 these browser modules; existing iframe runtimes keep their old code until reload.
+
+### Shared output bars and stacking
+
+Alt+O output-only nodes and Alt+W floating overlays use the same edge-revealed bar: node title, opacity, backward/forward, click-through, keep-visible and close/restore. Output-only nodes hide move/resize lock and fill-window controls, which belong to floating overlays. **Shift-click the node's overlay glyph** toggles output-only mode; an unmodified click toggles the floating overlay. Neither action clones or restarts the renderer.
+
+Hover a view or interact with it, then press **Cmd+[ / Cmd+]** to move it backward/forward one layer. **Cmd+Shift+[ / Cmd+Shift+]** sends it to the back/front. The bar's backward/forward glyphs support Shift-click for the end positions. Ctrl is the equivalent modifier on other hosts. Text fields and code editors retain their bracket shortcuts. Sorting changes display order only and leaves graph execution, source pixels and opacity unchanged. Floating overlays sort against other floating overlays; output-only nodes sort within the graph's node layer. Graph nodes remain below floating overlays. Stack order is session-only.

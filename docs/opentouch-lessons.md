@@ -1,6 +1,6 @@
 # Authoring OpenTouch lessons
 
-Install the DAT, CHOP, texture, p5, stream and agent packs with `scripts/install_comfy.sh`, then restart Comfy and refresh. Open **Workflows → Genereti → ꘇ OpenTouch Operators and Lessons**. The model-free project includes real operators, the report and a `dat.lesson` authoring node. Camera, device I/O, audio and model inference never start automatically.
+Install the DAT, CHOP, texture, p5, stream and agent packs with `scripts/install_comfy.sh`, then restart Comfy and refresh. Open **Workflows → Genereti → ꘇ-OpenTouch-Operators-and-Lessons**. The model-free project includes real operators, the report and a `dat.lesson` authoring node. Camera, device I/O, audio and model inference never start automatically.
 
 ## Authoring node
 
@@ -49,3 +49,11 @@ DAT text/table nodes and the lesson authoring node share the document export uti
 PDF uses the host print dialog. Choose Save as PDF; hosts without printing can export HTML and print in a regular browser. This exports the authored lesson/report document, not an interactive executable Comfy graph. Export the Comfy workflow JSON separately to preserve its nodes and links.
 
 This first pass does not record teacher actions, snapshot/undo the full graph, grade students, synchronize classrooms or upload learner activity. The semantic focus/check pattern draws on the existing Underscores and Artist–Model Studio walkthroughs.
+
+## Learn to author a tutorial
+
+Open **Settings → Genereti → Learning → Interactive lessons → Open authoring workflow**. This opens `ꘇ-Tutorial-Authoring.json` in a separate tab and starts **Make a tutorial with Genereti**. Its steps teach document identity, narration, semantic targets, learner checks, exports and playback. Edit the single `dat.lesson` node to make your own two-step texture lesson. The example includes the actual tools the learner will use.
+
+Running your draft replaces the authoring walkthrough with your own guide. Export controls remain on the author node. Save workflow JSON for the working graph, editable guide JSON for reuse, and Markdown/HTML/PDF for static notes. The learner dialogue exports nothing.
+
+`ꘇ-Interactive-Output-Views.json` offers another small authoring example about interaction, overlays and presentation. Bundled chooser actions open either mini demo without replacing the current workflow. Rebuild these small fixtures with `python3 scripts/build_learning_examples.py`; they reuse canonical operator schemas and start no devices or model inference.

@@ -25,8 +25,9 @@ def same(left, right):
 
 
 def display_name(name):
-    if name.startswith('Genereti-'):
-        return 'ꘇ ' + name[len('Genereti-'):].replace('-', ' ')
+    for prefix in ('Genereti-', 'genereti-', 'ꘇ '):
+        if name.startswith(prefix):
+            return 'ꘇ-' + name[len(prefix):].replace(' ', '-')
     return name
 
 
@@ -34,6 +35,8 @@ def install(examples, workflows):
     examples, workflows = Path(examples), Path(workflows)
     destination = workflows / 'Genereti'
     destination.mkdir(parents=True, exist_ok=True)
+    sources = [p for p in examples.glob('*.json') if p.name.startswith(('ꘇ-', 'ꘇ ', 'Genereti-', 'genereti-'))]
+    names = {display_name(p.name) for p in sources}
     manifest_path = workflows.parent / '.genereti-workflows.json'
     try:
         manifest = json.loads(manifest_path.read_text())
@@ -46,11 +49,13 @@ def install(examples, workflows):
     def backup(path):
         archive.mkdir(parents=True, exist_ok=True)
         shutil.move(str(path), str(archive / path.name))
-        print(f'Archived root copy: {path.name}')
+        print(f'Archived example copy: {path.name}')
 
     # Rename installed examples, including customized copies, without replacing
     # their contents. Move the managed checksum with its filename as well.
-    for old in sorted(destination.glob('Genereti-*.json')):
+    for old in sorted(destination.glob('*.json')):
+        if display_name(old.name) == old.name or (display_name(old.name) not in names and old.name not in manifest):
+            continue
         target = destination / display_name(old.name)
         if target.exists():
             if same(old, target):
@@ -71,11 +76,11 @@ def install(examples, workflows):
 
     # Keep the user's existing folder as canonical. Root copies installed by an
     # older installer are redundant even when the folder copy was later edited.
-    for legacy in sorted([*workflows.glob('Genereti-*.json'), *workflows.glob('ꘇ *.json')]):
+    for legacy in sorted(workflows.glob('*.json')):
         if not legacy.is_file():
             continue
         name = display_name(legacy.name)
-        if legacy.name.startswith('ꘇ ') and not (examples / name).is_file():
+        if name not in names:
             continue  # A user's own glyph-titled workflow is not an example.
         target, example = destination / name, examples / name
         if not example.exists():
@@ -98,7 +103,7 @@ def install(examples, workflows):
                 shutil.move(str(legacy), str(sibling))
                 print(f'Preserved separate root edit: {sibling.name}')
 
-    for example in sorted([*examples.glob('ꘇ *.json'), *examples.glob('Genereti-*.json')]):
+    for example in sorted(sources):
         name = display_name(example.name)
         target = destination / name
         unchanged = target.is_file() and manifest.get(name) == digest(target)
@@ -113,6 +118,12 @@ def install(examples, workflows):
             shutil.copy2(example, target)
             print(f'Installed: Genereti/{target.name}')
         manifest[name] = digest(target)
+    # Retire only unchanged managed examples. Custom work remains in place.
+    for name, checksum in list(manifest.items()):
+        target = destination / name
+        if name not in names and target.is_file() and digest(target) == checksum:
+            backup(target)
+            manifest.pop(name, None)
     temporary = manifest_path.with_suffix('.tmp')
     temporary.write_text(json.dumps(manifest, indent=2) + '\n')
     temporary.replace(manifest_path)

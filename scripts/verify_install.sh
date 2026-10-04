@@ -5,7 +5,7 @@ cd "$ROOT"
 python3 - <<'PY'
 import json
 from pathlib import Path
-for path in Path('integrations/comfyui_genereti/workflows').glob('ꘇ *.json'):
+for path in Path('integrations/comfyui_genereti/workflows').glob('ꘇ-*.json'):
     json.loads(path.read_text())
     print('valid workflow:', path.name)
 PY

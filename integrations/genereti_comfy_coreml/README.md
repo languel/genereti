@@ -46,9 +46,9 @@ appear there too, with details in the hover tip and browser console.
 
 ## Examples
 
-- `ꘇ p5 SDXS.json`: p5 drawing → SDXS sketch → live image preview.
-- `ꘇ Drawing SDXS.json`: drawing → SDXS sketch → live image preview.
-- `ꘇ Drawing SD Turbo.json`: drawing → SD Turbo Canny → live image preview.
+- `ꘇ-p5-SDXS.json`: p5 drawing → SDXS sketch → live image preview.
+- `ꘇ-Drawing-SDXS.json`: drawing → SDXS sketch → live image preview.
+- `ꘇ-Drawing-SD-Turbo.json`: drawing → SD Turbo Canny → live image preview.
 
 Both live and queue call the same inference code. Live inference uses Comfy's
 loopback-only `/genereti/coreml/generate` endpoint, with one inference at a time
