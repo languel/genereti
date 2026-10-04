@@ -84,7 +84,7 @@ class GeneretiLivecode(io.ComfyNode):
     def define_schema(cls):
         return io.Schema(
             node_id='GeneretiLivecode', display_name='ꘇ livecode',
-            search_aliases=['livecode', 'live code', 'p5', 'GLSL', 'Three.js', 'Strudel', 'Tixy', 'Play Core', 'Manim', 'LaTeX', 'KaTeX', 'SVG', 'Orca', 'HyperFrames'],
+            search_aliases=['genereti', 'Genereti Livecode', 'livecode', 'live code', 'p5', 'GLSL', 'Three.js', 'Strudel', 'Tixy', 'Play Core', 'Manim', 'LaTeX', 'KaTeX', 'SVG', 'Orca', 'HyperFrames'],
             category='Genereti / Interactive Sources', not_idempotent=True,
             inputs=[
                 io.Image.Input('image', optional=True, tooltip='Available as inputImage / __.image / u_image in code'),

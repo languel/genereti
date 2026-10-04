@@ -8,7 +8,7 @@ CHOP=io.Custom('GENERETI_CHOP')
 
 def number(name,value=0,low=-100000,high=100000):return io.Float.Input(name,default=value,min=low,max=high,step=.01)
 def common():return [io.Int.Input('channels',default=1,min=1,max=64),io.Int.Input('samples',default=1,min=1,max=4096),number('sample_rate',60,1,1000),number('time',0)]
-def schema(kind,inputs,output=False):return io.Schema(node_id='GeneretiChop'+kind,display_name='chop.'+kind.lower(),category='ꘇ / CHOP',inputs=inputs,outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')],is_output_node=output,description='Named sampled control channels and last value of first channel. Live in browser; Queue evaluates explicit samples/time. Device I/O only runs after its Connect button, never on opening or Queue.')
+def schema(kind,inputs,output=False):return io.Schema(node_id='GeneretiChop'+kind,display_name='ꘇ'+('chop.'+kind.lower()),search_aliases=['genereti', 'chop', 'genereti chop'],category='ꘇ / CHOP',inputs=inputs,outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')],is_output_node=output,description='Named sampled control channels and last value of first channel. Live in browser; Queue evaluates explicit samples/time. Device I/O only runs after its Connect button, never on opening or Queue.')
 
 class Constant(io.ComfyNode):
     @classmethod

@@ -137,7 +137,7 @@ class FamilyGenerator(io.ComfyNode):
             io.Float.Input('movement',default=0.,min=0.,max=100.,step=.01,tooltip='Live seed-noise rotation speed. Zero holds noise fixed. Queue renders one phase.'),
             io.Image.Input('image',optional=True)])
         return io.Schema(node_id=cls.__name__,display_name='ꘇ SD Turbo generator' if turbo else 'ꘇ SDXS generator',
-            category='Genereti / Native Core ML',not_idempotent=True,
+            search_aliases=['genereti', 'genereti generator', 'SD Turbo', 'SDXS'],category='Genereti / Native Core ML',not_idempotent=True,
             description='Native Core ML on macOS 14+ Apple silicon. Live through Comfy or Comfy Queue. Connect IMAGE to live image preview. No external generator server.',
             inputs=inputs,outputs=[io.Image.Output(display_name='image'),io.String.Output(display_name='metrics')])
 

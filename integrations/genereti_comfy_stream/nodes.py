@@ -9,7 +9,7 @@ from PIL import Image
 class GeneretiSendFrame(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return io.Schema(node_id='GeneretiSendFrame', display_name='Genereti Send Frame',
+        return io.Schema(node_id='GeneretiSendFrame', display_name='ꘇ Send Frame',search_aliases=['genereti', 'Send Frame', 'genereti Send Frame'],
             category='Genereti / Streams', is_output_node=True, not_idempotent=True,
             description='Send one input frame to the local generator; returns an acknowledgement, not an image. Uses the first image in a batch. Resolution changes the shared server.',
             inputs=[io.Image.Input('image'), io.String.Input('server_url', default='http://127.0.0.1:8765'),
@@ -27,7 +27,7 @@ class GeneretiSendFrame(io.ComfyNode):
 class GeneretiReceiveFrame(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return io.Schema(node_id='GeneretiReceiveFrame', display_name='Genereti Receive Frame',
+        return io.Schema(node_id='GeneretiReceiveFrame', display_name='ꘇ Receive Frame',search_aliases=['genereti', 'Receive Frame', 'genereti Receive Frame'],
             category='Genereti / Streams', not_idempotent=True,
             description='Receive the latest shared output without generating. Connect after_frame to a sender to order execution, or leave it at zero for an independent receiver.',
             inputs=[io.String.Input('server_url', default='http://127.0.0.1:8765'),
@@ -40,7 +40,7 @@ class GeneretiReceiveFrame(io.ComfyNode):
 class GeneretiLivePreview(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return io.Schema(node_id='GeneretiLivePreview', display_name='Genereti Live Preview',
+        return io.Schema(node_id='GeneretiLivePreview', display_name='ꘇ Live Preview',search_aliases=['genereti', 'Live Preview', 'genereti Live Preview'],
             category='Genereti / Streams', is_output_node=True, not_idempotent=True,
             description='Browser-driven live generation and standalone projector. Connect a webcam/screen/p5 source and click Start live preview; no Queue needed. Queue reads the latest shared frame.',
             inputs=[io.Image.Input('image', optional=True, lazy=True),
@@ -80,7 +80,7 @@ class GeneretiLiveGenerator(GeneretiLivePreview):
 class GeneretiLiveImagePreview(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return io.Schema(node_id='GeneretiLiveImagePreview', display_name='ꘇ image preview',
+        return io.Schema(node_id='GeneretiLiveImagePreview', display_name='ꘇ image preview',search_aliases=['genereti', 'image preview', 'genereti image preview'],
             category='Genereti / Streams', is_output_node=True, not_idempotent=True,
             description='Preview any IMAGE without writing preview files. Updates when upstream executes; passthrough preserves the entire original batch.',
             inputs=[io.Image.Input('image'),

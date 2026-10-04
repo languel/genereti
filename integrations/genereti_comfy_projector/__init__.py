@@ -8,7 +8,7 @@ class GeneretiProjector(io.ComfyNode):
     def define_schema(cls):
         return io.Schema(
             node_id="GeneretiProjector",
-            display_name="Genereti Projector",
+            display_name='ꘇ Projector',search_aliases=['genereti', 'Projector', 'genereti Projector'],
             category="Genereti / Output",
             description=(
                 "Pass an image through and open the latest queued image in a separate, "

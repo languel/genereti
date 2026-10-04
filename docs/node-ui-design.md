@@ -189,3 +189,7 @@ N = total nodes [visible nodes]; V = graph revision; FPS = graph redraw frequenc
 This FPS is neither inference speed nor the output’s frame delivery rate.
 
 **Alt+Shift+R** toggles the right properties sidebar independently, including a temporary reveal in Satori. Satori hides that sidebar and its resize gutter without changing the saved open/closed preference. Escape hides temporarily revealed panels.
+
+### Node names and discovery
+
+All Genereti node labels start with `ꘇ`. Operator labels attach it directly to the family name, for example `ꘇdat.totop`; other labels use a space, for example `ꘇ livecode`. The glyph is visual branding, while stable `Genereti…` node IDs prevent namespace conflicts and preserve existing workflows. Search aliases include plain family names (`dat`, `top`, `chop`) and branded phrases (`genereti dat`, `genereti top`, `genereti chop`), so typing the glyph is optional. Existing descriptive workflow titles receive the prefix when loaded; their wording and node IDs are preserved.

@@ -17,19 +17,19 @@ def matrix_image(matrix):
     rgb=np.repeat(matrix[:512,:512,None],3,axis=-1);return torch.from_numpy(np.concatenate([rgb.clip(0,1),np.ones_like(rgb[...,:1])],axis=-1)).unsqueeze(0)
 class TopToChop(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return io.Schema(node_id='GeneretiConvertTopToChop',display_name='top.tochop',category='ꘇ / TOP',inputs=sample_inputs(),outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')],description='Explicit image readback boundary: bounded bilinear sampling to r/g/b/a channels in row-major order. Live rate limits GPU readback; Queue samples one selected batch frame.')
+    def define_schema(cls):return io.Schema(node_id='GeneretiConvertTopToChop',display_name='ꘇtop.tochop',search_aliases=['genereti', 'top.tochop', 'genereti top.tochop', 'top', 'genereti top'],category='ꘇ / TOP',inputs=sample_inputs(),outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')],description='Explicit image readback boundary: bounded bilinear sampling to r/g/b/a channels in row-major order. Live rate limits GPU readback; Queue samples one selected batch frame.')
     @classmethod
     def execute(cls,image,sample_width,sample_height,sample_rate,batch_index):
         p=pixels(image,sample_width,sample_height,batch_index);channels={n:p[...,c].reshape(-1) for c,n in enumerate('rgba')};return io.NodeOutput(dict(channels=channels,sample_rate=sample_rate,start=0.),float(channels['r'][-1]))
 class TopToDat(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return io.Schema(node_id='GeneretiConvertTopToDat',display_name='top.todat',category='ꘇ / TOP',inputs=sample_inputs(),outputs=[DAT.Output(display_name='table'),io.String.Output(display_name='text')],description='Explicit image readback: x/y/r/g/b/a rows from bounded samples. Live rate limits sampling; Queue selects one batch frame.')
+    def define_schema(cls):return io.Schema(node_id='GeneretiConvertTopToDat',display_name='ꘇtop.todat',search_aliases=['genereti', 'top.todat', 'genereti top.todat', 'top', 'genereti top'],category='ꘇ / TOP',inputs=sample_inputs(),outputs=[DAT.Output(display_name='table'),io.String.Output(display_name='text')],description='Explicit image readback: x/y/r/g/b/a rows from bounded samples. Live rate limits sampling; Queue selects one batch frame.')
     @classmethod
     def execute(cls,image,sample_width,sample_height,sample_rate,batch_index):
         p=pixels(image,sample_width,sample_height,batch_index);data=tables.table([['x','y','r','g','b','a'],*[[x,y,*p[y,x].tolist()] for y in range(p.shape[0]) for x in range(p.shape[1])]]);return io.NodeOutput(data,tables.text(data))
 class ChopToTop(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return io.Schema(node_id='GeneretiConvertChopToTop',display_name='chop.totop',category='ꘇ / CHOP',inputs=[CHOP.Input('input'),io.Combo.Input('layout',options=['channel_rows','rgba']),io.Int.Input('width',default=16,min=1,max=512)],outputs=[io.Image.Output(display_name='image')],description='Channels-as-grayscale-rows, or first four channels as RGBA pixels packed to the requested width. Clamps to 0..1; at most 512×512. This is a CPU-data-to-texture upload boundary.')
+    def define_schema(cls):return io.Schema(node_id='GeneretiConvertChopToTop',display_name='ꘇchop.totop',search_aliases=['genereti', 'chop.totop', 'genereti chop.totop', 'chop', 'genereti chop'],category='ꘇ / CHOP',inputs=[CHOP.Input('input'),io.Combo.Input('layout',options=['channel_rows','rgba']),io.Int.Input('width',default=16,min=1,max=512)],outputs=[io.Image.Output(display_name='image')],description='Channels-as-grayscale-rows, or first four channels as RGBA pixels packed to the requested width. Clamps to 0..1; at most 512×512. This is a CPU-data-to-texture upload boundary.')
     @classmethod
     def execute(cls,input,layout,width=16):
         values=list(input['channels'].values())
@@ -40,7 +40,7 @@ class ChopToTop(io.ComfyNode):
         return io.NodeOutput(torch.from_numpy(out.clip(0,1)))
 class DatToTop(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return io.Schema(node_id='GeneretiConvertDatToTop',display_name='dat.totop',category='ꘇ / DAT',inputs=[DAT.Input('input'),io.Boolean.Input('header',default=False)],outputs=[io.Image.Output(display_name='image')],description='Numeric table cells become a grayscale texture: columns are x, rows are y. Optional header skip; invalid numbers become zero, values clamp to 0..1. At most 512×512.')
+    def define_schema(cls):return io.Schema(node_id='GeneretiConvertDatToTop',display_name='ꘇdat.totop',search_aliases=['genereti', 'dat.totop', 'genereti dat.totop', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[DAT.Input('input'),io.Boolean.Input('header',default=False)],outputs=[io.Image.Output(display_name='image')],description='Numeric table cells become a grayscale texture: columns are x, rows are y. Optional header skip; invalid numbers become zero, values clamp to 0..1. At most 512×512.')
     @classmethod
     def execute(cls,input,header):
         rows=input['rows'][1:] if header else input['rows'];width=min(512,max(map(len,rows),default=1));out=np.zeros((min(512,len(rows)),width),dtype=np.float32)

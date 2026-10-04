@@ -6,7 +6,7 @@ WEB_DIRECTORY='./web'
 CATEGORY='ꘇ / TOP'
 
 def schema(name,inputs,description):
-    return io.Schema(node_id='GeneretiTexture'+name,display_name='top.'+('cornerpin' if name=='CornerPin' else name.lower()),category=CATEGORY,
+    return io.Schema(node_id='GeneretiTexture'+name,display_name='ꘇ'+('top.'+('cornerpin' if name=='CornerPin' else name.lower())),search_aliases=['genereti', 'top', 'genereti top'],category=CATEGORY,
                      description=description,inputs=inputs,outputs=[io.Image.Output(display_name='image')])
 
 def number(name,default=0.,low=-4.,high=4.,tooltip=None):

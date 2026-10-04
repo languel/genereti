@@ -24,7 +24,7 @@ class GeneretiP5Sketch(io.ComfyNode):
     def define_schema(cls):
         return io.Schema(
             node_id="GeneretiP5Sketch",
-            display_name="Genereti p5.js Sketch",
+            display_name='ꘇ p5.js Sketch',search_aliases=['genereti', 'p5.js Sketch', 'genereti p5.js Sketch'],
             category="Genereti / Interactive Sources",
             description=(
                 "Edit and run a p5.js sketch in the node, draw with mouse and keyboard, "

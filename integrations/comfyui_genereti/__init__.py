@@ -98,6 +98,6 @@ class GeneretiLiveFrame:
         except urllib.error.URLError as exc:raise RuntimeError('Start Genereti and generate at least one frame.') from exc
 
 NODE_CLASS_MAPPINGS={'GeneretiGenerate':GeneretiGenerate,'GeneretiLiveFrame':GeneretiLiveFrame}
-NODE_DISPLAY_NAME_MAPPINGS={'GeneretiGenerate':'Genereti Generate (Core ML)','GeneretiLiveFrame':'Genereti Live Frame'}
+NODE_DISPLAY_NAME_MAPPINGS={'GeneretiGenerate':'ꘇ Generate (Core ML)','GeneretiLiveFrame':'ꘇ Live Frame'}
 
 WEB_DIRECTORY="./web"
