@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {validateGuide,guideMarkdown} from '../integrations/genereti_comfy_agent/web/js/guide-model.js';
+import {guideStyle} from '../integrations/genereti_comfy_agent/web/js/guide-style.js';
+const guide=()=>({format:'genereti-guide',version:1,id:'style-test',title:'Styled guide',steps:[{title:'One',text:'Try it'}]});
+test('guide and step styles survive JSON export and inherit individual fields',()=>{const input=guide();input.style={panel:{glow:{enabled:true}},target:{frame:{color:'#65c9b5',width:2},glow:{radius:12,pulse:true}}};input.steps[0].style={target:{glow:{pulse:false}}};const validated=validateGuide(input),roundTrip=validateGuide(JSON.parse(JSON.stringify(validated))),merged=guideStyle(roundTrip,0);assert.deepEqual(merged.target.frame,{color:'#65c9b5',width:2});assert.deepEqual(merged.target.glow,{radius:12,pulse:false});assert.equal(merged.panel.glow.enabled,true);assert.match(guideMarkdown(validated),/Try it/);});
+test('old guides stay unstyled; unsafe or malformed style dimensions are rejected',()=>{assert.equal(validateGuide(guide()).style,undefined);for(const glow of [{radius:Infinity},{spread:-1},{duration:0},{enabled:'yes'}]){const input=guide();input.style={target:{glow}};assert.throws(()=>validateGuide(input));}});

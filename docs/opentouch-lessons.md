@@ -60,3 +60,26 @@ Open **Settings → Genereti → Learning → Interactive lessons → Open autho
 Running your draft replaces the authoring walkthrough with your own guide. Export controls remain on the author node. Save workflow JSON for the working graph, editable guide JSON for reuse, and Markdown/HTML/PDF for static notes. The learner dialogue exports nothing.
 
 `ꘇ-Interactive-Output-Views.json` offers another small authoring example about interaction, overlays and presentation. Bundled chooser actions open either mini demo without replacing the current workflow. Rebuild these small fixtures with `python3 scripts/build_learning_examples.py`; they reuse canonical operator schemas and start no devices or model inference.
+
+## Guide appearance in JSON
+
+An optional `style` on the guide supplies defaults. A step's `style` overrides only the fields it supplies. Settings remain the fallback; existing guide files need no changes.
+
+```json
+"style": {
+  "panel": {
+    "backdrop": "#20262b",
+    "frame": {"color": "#65c9b5", "width": 1, "radius": 10},
+    "glow": {"enabled": true, "radius": 12, "spread": 3, "pulse": true, "duration": 3}
+  },
+  "target": {
+    "backdrop": "rgba(101, 201, 181, 0.06)",
+    "frame": {"color": "#65c9b5", "width": 2},
+    "glow": {"enabled": true, "radius": 12, "spread": 3, "pulse": true, "duration": 3}
+  }
+}
+```
+
+`target` styles the active node or targeted code/toolbar/preview region. Its corner radius automatically follows the target and graph zoom unless explicitly supplied. `backdrop` is the surface fill, not a full-workspace veil; use `transparent` to remove it. Colors are CSS colors. The panel glow inherits the target frame color unless `glow.color` is supplied. With no style, panel glow stays off and the target uses a tighter 12 px glow with a three-second cycle. Setting `pulse: false` keeps a steady glow; `enabled: false` removes it. Reduced-motion preferences always suppress animation.
+
+Dimensions are screen pixels: frame width 0–8, radius 0–64, glow radius 0–64, spread 0–16; duration is 0.5–20 seconds. These structured fields are validated and retained when exporting editable guide JSON. Invalid CSS colors fall back to the theme. For example, a step can override just `"style": {"target": {"glow": {"enabled": false}}}` without losing the guide's other styles.
