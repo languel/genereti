@@ -1,3 +1,4 @@
+import {noiseExpression} from './noise.js';
 import { app } from '../../scripts/app.js';
 import { attachExecutionMode, subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
 import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
@@ -25,7 +26,7 @@ function flush(now){
  // Temporal edges become visible only after the complete graph tick.
  for(const state of states.values())if(state.latch?.commit())schedule(state);
  flushing=false;
- for(const state of states.values())if((state.kind==='Expression'||state.kind==='FeedbackRef'&&state.referenceKey||state.kind==='Feedback'&&state.inputs[0]))schedule(state);
+ for(const state of states.values())if((state.kind==='Expression'||state.kind==='Noise'&&Number(valuesFor(state.node,state.kind).speed)!==0||state.kind==='FeedbackRef'&&state.referenceKey||state.kind==='Feedback'&&state.inputs[0]))schedule(state);
  if(dirty.size&&!clock)clock=requestAnimationFrame(flush);
 }
 
@@ -50,7 +51,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  },getFit:()=>node.properties?.genereti_preview_fit??'contain'});
  let gpu,frame,presentationCanvas,presentedFrame,output,localRunning=true,reset=true,history=0,lastStatus=0,times=[];
  const state={node,kind,status,dead:false,users:0,inputs:[],inputKeys:[],stops:[],render(now){
-  if(!gpu||(!state.inputs[0]&&!['Expression','FeedbackRef'].includes(kind)))return;
+  if(!gpu||(!state.inputs[0]&&!['Expression','Noise','FeedbackRef'].includes(kind)))return;
   const values=valuesFor(node,kind);const signature=JSON.stringify(values);
   if(kind==='FeedbackRef')bindReference(values.reference);
   if(state.signature!==signature){state.params=parameters(kind,values);state.signature=signature;}
@@ -64,7 +65,8 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
     previous=frame??gpu.target(prefix+'history:empty',a.width,a.height);
     history=1-history;
   }
-  if(kind==='Expression'){
+  if(kind==='Expression'||kind==='Noise'){
+   if(kind==='Noise')values.expression=noiseExpression(values);
    if(state.expression!==values.expression){state.expression=values.expression;state.expressionPipeline=null;const source=values.expression;gpu.expressionPipeline(source).then(pipeline=>{if(state.dead||state.expression!==source)return;state.expressionPipeline=pipeline;schedule(state);}).catch(error=>{if(state.expression===source)status.textContent=error.message;});}
    if(!state.expressionPipeline)return;
    p.set([now/1000+Number(values.time),a.width,a.height,state.inputs[0]?1:0]);

@@ -96,6 +96,34 @@ class Expression(io.ComfyNode):
         out[...,3]=values[...,3]
         return io.NodeOutput(torch.from_numpy(out.clip(0,1)).to(image) if image is not None else torch.from_numpy(out.clip(0,1)))
 
+class Noise(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return schema('Noise',[
+            io.Combo.Input('algorithm',options=['perlin','simplex','value']),
+            io.Int.Input('dimensions',default=3,min=1,max=4),
+            io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),
+            number('scale',8,.01,256),io.Int.Input('seed',default=0,min=0,max=65535,control_after_generate=False),
+            number('z',0,-10000,10000),number('time',0,-100000,100000),number('speed',.2,-10,10),
+            io.Int.Input('octaves',default=1,min=1,max=6),number('lacunarity',2,1,4),number('gain',.5,0,1),
+            io.Combo.Input('color',options=['Grayscale','RGB'])],
+            'Coherent 1–4D Perlin, simplex or value noise. Signed noise is mapped to 0..1; layered octaves are normalized. Seed offsets the domain. 1/2D animation translates x; 3D animates z; 4D uses z and a separate time coordinate. Live WebGPU; Queue samples the explicit time.')
+    @classmethod
+    def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color):
+        import numpy as np
+        import torch
+        from .noise import noise
+        y,x=np.mgrid[:height,:width];x=(x+.5)/width;y=(y+.5)/height
+        result=np.empty((1,height,width,4),dtype=np.float32);result[...,3]=1
+        for c in range(3 if color=='RGB' else 1):
+            frequency=scale;weight=1.;total=0.;out=0.
+            for o in range(octaves):
+                coordinates=[x*frequency+seed*.123+o*19.19+(c*31.7 if color=='RGB' else 0)+(time*speed if dimensions<3 else 0),y*frequency,z+(time*speed if dimensions==3 else 0),time*speed][:dimensions]
+                out+=weight*noise(algorithm,*coordinates);total+=weight;weight*=gain;frequency*=lacunarity
+            result[...,c]=np.clip(.5+.5*out/total,0,1)
+        if color!='RGB':result[...,1]=result[...,2]=result[...,0]
+        return io.NodeOutput(torch.from_numpy(result))
+
 class FeedbackRef(io.ComfyNode):
     @classmethod
     def define_schema(cls):
@@ -137,6 +165,6 @@ class Channels(io.ComfyNode):
         return io.NodeOutput(ops.channels(image,image_b,red,green,blue,alpha,channels))
 
 class TextureExtension(ComfyExtension):
-    async def get_node_list(self): return [Composite,Math,Filter,Transform,Crop,CornerPin,Feedback,FeedbackRef,Bloom,Displace,Channels,Expression]
+    async def get_node_list(self): return [Composite,Math,Filter,Transform,Crop,CornerPin,Feedback,FeedbackRef,Bloom,Displace,Channels,Expression,Noise]
 
 async def comfy_entrypoint(): return TextureExtension()

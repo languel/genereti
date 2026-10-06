@@ -1,3 +1,4 @@
+import {NOISE_WGSL} from './noise.js';
 import {parseExpression,expressionWGSL} from './expression.js';
 // One device per module/Comfy page. Intermediate frames are borrowed GPUTexture
 // handles, never CPU pixels. Commands are ordered on the shared queue.
@@ -141,6 +142,7 @@ export class TextureGPU {
     if(this.expressions.has(source))return this.expressions.get(source);
     const expression=expressionWGSL(parseExpression(source));
     const code=SHADER.slice(0,SHADER.indexOf('@fragment'))+`
+${NOISE_WGSL}
 fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {return ${expression};}
 @fragment fn fragment(in:Vertex)->@location(0) vec4f {
  let w=p.v[0].y;let h=p.v[0].z;let t=p.v[0].x;let i=floor(in.uv.y*h)*w+floor(in.uv.x*w);

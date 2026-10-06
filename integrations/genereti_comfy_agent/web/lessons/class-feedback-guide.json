@@ -9,7 +9,46 @@
         "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d"
       },
       "text": "Each RGB channel has a separate c index: 0 red, 1 green, 2 blue. Phase offsets give the dots different colors. This expression uses the same moving shape mask for all channels.",
-      "title": "Make a colored source"
+      "title": "Make a colored source",
+      "hint": "Use c in the color term, but leave it out of the shape mask. Try changing 24 to 16; Do it restores the colored-dot formula and 512 × 384 resolution.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureExpression",
+            "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d",
+            "widget": "expression"
+          },
+          "value": "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))*(0.25+0.75*(0.5+0.5*sin(i*0.17+c*2.094)))"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureExpression",
+            "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d",
+            "widget": "width"
+          },
+          "value": 512
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureExpression",
+            "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d",
+            "widget": "height"
+          },
+          "value": 384
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureExpression",
+            "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d",
+            "widget": "time"
+          },
+          "value": 0
+        }
+      ]
     },
     {
       "target": {
@@ -18,7 +57,50 @@
         "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc"
       },
       "text": "The source IMAGE seeds top.feedbackref. Its picker targets the final composite, so each frame samples the completed image from the preceding graph tick. Clear delayed reference frame resets it back to the seed. No cyclic IMAGE wire is needed.",
-      "title": "Seed and reference feedback"
+      "title": "Seed and reference feedback",
+      "hint": "Connect the dots to the image seed, then choose the final screen composite in the reference picker. The reference samples the previous frame; do not draw a cyclic IMAGE cable.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureExpression",
+            "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureFeedbackRef",
+            "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureFeedbackRef",
+            "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc",
+            "widget": "reference"
+          },
+          "value": "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureFeedbackRef",
+            "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc",
+            "widget": "width"
+          },
+          "value": 512
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureFeedbackRef",
+            "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc",
+            "widget": "height"
+          },
+          "value": 384
+        }
+      ]
     },
     {
       "target": {
@@ -27,7 +109,50 @@
         "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0"
       },
       "text": "Threshold selects bright marks. A separable Gaussian blur spreads their light; strength adds the glow. Change radius to alter the displacement map softness. This is a compact four-pass GPU bloom, not an exact replica of TD bloom.",
-      "title": "Bloom the history"
+      "title": "Bloom the history",
+      "hint": "Connect feedback to bloom. Start with threshold 0.4, radius 16 and strength 0.8. A lower threshold spreads more of the history into the displacement map.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureFeedbackRef",
+            "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureBloom",
+            "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureBloom",
+            "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0",
+            "widget": "threshold"
+          },
+          "value": 0.4
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureBloom",
+            "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0",
+            "widget": "radius"
+          },
+          "value": 16
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureBloom",
+            "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0",
+            "widget": "strength"
+          },
+          "value": 0.8
+        }
+      ]
     },
     {
       "target": {
@@ -36,7 +161,63 @@
         "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba"
       },
       "text": "The delayed image connects to image, and its bloomed copy connects to displacement. Red moves horizontal sampling and green moves vertical sampling relative to center 0.5. Try smaller amounts first; outside is transparent.",
-      "title": "Displace the previous frame"
+      "title": "Displace the previous frame",
+      "hint": "Use feedback as the image and bloom as the displacement map. Begin with 0.01 on both axes and center 0.5; larger amounts quickly distort the trail.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureFeedbackRef",
+            "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureDisplace",
+            "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureBloom",
+            "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureDisplace",
+            "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba"
+          },
+          "output": "image",
+          "input": "displacement"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureDisplace",
+            "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba",
+            "widget": "amount_x"
+          },
+          "value": 0.01
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureDisplace",
+            "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba",
+            "widget": "amount_y"
+          },
+          "value": 0.01
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureDisplace",
+            "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba",
+            "widget": "center"
+          },
+          "value": 0.5
+        }
+      ]
     },
     {
       "target": {
@@ -45,7 +226,116 @@
         "ref": "ba61e572-ddfe-4eb3-a191-dec5acd32c19"
       },
       "text": "Multiply history RGB by 0.98 to fade it, and set fresh input level around 0.4. Screen composite combines both branches. Reference the composite to accumulate a recursive trail; reference the original source for a simple delayed effect.",
-      "title": "Balance old and fresh images"
+      "title": "Balance old and fresh images",
+      "hint": "Use multiply 0.98 on the displaced history and level 0.4 on the fresh source. Connect history to background and fresh marks to image on a screen composite.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureDisplace",
+            "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureMath",
+            "ref": "5c0d6588-d57f-4e81-9e0e-20484c85d035"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureExpression",
+            "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureFilter",
+            "ref": "7a5a84db-4026-4aa1-9329-52e63151042d"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureMath",
+            "ref": "5c0d6588-d57f-4e81-9e0e-20484c85d035"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureComposite",
+            "ref": "ba61e572-ddfe-4eb3-a191-dec5acd32c19"
+          },
+          "output": "image",
+          "input": "background"
+        },
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureFilter",
+            "ref": "7a5a84db-4026-4aa1-9329-52e63151042d"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureComposite",
+            "ref": "ba61e572-ddfe-4eb3-a191-dec5acd32c19"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureMath",
+            "ref": "5c0d6588-d57f-4e81-9e0e-20484c85d035",
+            "widget": "operation"
+          },
+          "value": "multiply"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureMath",
+            "ref": "5c0d6588-d57f-4e81-9e0e-20484c85d035",
+            "widget": "value"
+          },
+          "value": 0.98
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureFilter",
+            "ref": "7a5a84db-4026-4aa1-9329-52e63151042d",
+            "widget": "operation"
+          },
+          "value": "level"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureFilter",
+            "ref": "7a5a84db-4026-4aa1-9329-52e63151042d",
+            "widget": "amount"
+          },
+          "value": 0.4
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureComposite",
+            "ref": "ba61e572-ddfe-4eb3-a191-dec5acd32c19",
+            "widget": "operation"
+          },
+          "value": "screen"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureComposite",
+            "ref": "ba61e572-ddfe-4eb3-a191-dec5acd32c19",
+            "widget": "opacity"
+          },
+          "value": 1
+        }
+      ]
     },
     {
       "target": {
@@ -54,7 +344,81 @@
         "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16"
       },
       "text": "top.channels can extract alpha or luminance, swap RGB, or combine A with B channels such as br/bg/bb/ba. B here is the bloom. RGB uses opaque GPU alpha and returns a three-channel queued IMAGE; RGBA uses the alpha selector. Live texture storage remains RGBA.",
-      "title": "Route and combine channels"
+      "title": "Route and combine channels",
+      "hint": "A is the composite; B is bloom. Try red=b or green=bg to remix the color. Do it restores r/g/b with opaque alpha and RGB output.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureComposite",
+            "ref": "ba61e572-ddfe-4eb3-a191-dec5acd32c19"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureBloom",
+            "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0"
+          },
+          "target": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16"
+          },
+          "output": "image",
+          "input": "image_b"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16",
+            "widget": "red"
+          },
+          "value": "r"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16",
+            "widget": "green"
+          },
+          "value": "g"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16",
+            "widget": "blue"
+          },
+          "value": "b"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16",
+            "widget": "alpha"
+          },
+          "value": "one"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16",
+            "widget": "channels"
+          },
+          "value": "RGB"
+        }
+      ]
     },
     {
       "target": {
@@ -63,7 +427,32 @@
         "ref": "397ab396-3a65-48cc-9180-961661b283f3"
       },
       "text": "Alt-W opens the interactive output, Alt-F fills the window. Clear delayed reference frame resets the loop without reconstructing the graph. top.feedback remains the convenient self-contained variant. Audio, camera and screen remain explicitly user-started.",
-      "title": "Present and experiment"
+      "title": "Present and experiment",
+      "hint": "Connect the routed channels to the viewer. Do it opens its output overlay; then use Alt-F to fill the window and Escape to restore it.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiTextureChannels",
+            "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16"
+          },
+          "target": {
+            "nodeType": "GeneretiLiveImagePreview",
+            "ref": "397ab396-3a65-48cc-9180-961661b283f3"
+          },
+          "output": "image",
+          "input": "image"
+        },
+        {
+          "kind": "view",
+          "target": {
+            "nodeType": "GeneretiLiveImagePreview",
+            "ref": "397ab396-3a65-48cc-9180-961661b283f3"
+          },
+          "view": "overlay",
+          "enabled": true
+        }
+      ]
     }
   ],
   "summary": "Reproduce the reference-based feedback lesson with independent GPU operators.",

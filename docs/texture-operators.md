@@ -134,3 +134,37 @@ conversion. Use delivered FPS below each preview to measure the live graph;
 it is distinct from Comfy's corner graph-redraw FPS.
 
 `top.expression` generates or processes pixels with our bounded arithmetic language. `top.tochop` and `top.todat` are explicit CPU readback boundaries with sampling size/rate controls. `chop.totop` and `dat.totop` upload signal/table data. Native scalar sockets can be driven by CHOP FLOAT or DAT cell outputs. See the [complete catalog](opentouch-catalog.md) and [performance report](opentouch-report.md).
+
+## Coherent noise
+
+`ꘇtop.noise` provides Perlin gradient, simplex and interpolated value noise in
+1–4 dimensions. A shared deterministic integer hash keeps browser scalar,
+WebGPU and queued NumPy results consistent (GPU output has floating-point and
+8-bit texture rounding). Perlin uses quintic interpolation, following the
+[improved-noise approach](https://cs.nyu.edu/~perlin/noise/); this implementation
+uses its own gradients and hash, so it does not reproduce p5 or TD seed tables.
+1D simplex uses the 1D gradient-noise equivalent.
+
+Choose scale, seed, grayscale/RGB, and up to six normalized octaves; lacunarity
+controls the frequency multiplier and gain the amplitude multiplier. Seed offsets
+the domain. 1D/2D animation translates x; 3D moves through z; 4D keeps a separate
+z slice and time coordinate. Speed zero holds the field. Live time follows the
+graph clock; Queue samples the explicit time value. Noise stays in the shared GPU
+texture chain with no per-frame CPU readback. More octaves and dimensions cost
+more work per pixel; start with one octave for a performance baseline.
+
+TOP and CHOP expressions accept `noise(...)` (alias for `perlin`), `perlin(...)`,
+`simplex(...)`, and `value(...)`, each with 1–4 scalar coordinates. Results are
+signed, approximately -1..1; map them to display range explicitly:
+
+- `0.5+0.5*noise(x*8,y*8)` — 2D Perlin.
+- `0.5+0.5*simplex(x*8,y*8,t*0.2)` — evolving 3D simplex.
+- `0.5+0.5*perlin(x*8,y*8,0.5,t*0.2+c*2)` — 4D colored noise.
+- `noise(t*0.5+c*2)` — a 1D CHOP control signal.
+
+Open **ꘇ-Noise-Dimensions** for the four-step mini-demo. The class feedback demo
+now includes Hint and Do it on all seven steps. Do it restores the selected
+step's existing-node parameters and wires; the final step opens the output
+overlay. Hints suggest manual experiments before restoring the demonstrated
+recipe. Reload the page and reopen the saved workflow to replace an older
+embedded lesson. Adding `top.noise` requires a Comfy restart to register its schema.

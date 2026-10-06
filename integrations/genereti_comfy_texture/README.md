@@ -1,6 +1,6 @@
 # Genereti textures
 
-Seven V3 IMAGE operators, with a shared WebGPU live renderer and PyTorch queued
+Thirteen V3 IMAGE operators, with a shared WebGPU live renderer and PyTorch queued
 implementations. See [the operator guide](../../docs/texture-operators.md) for
 installation, controls, performance boundaries and tests.
 

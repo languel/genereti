@@ -1,0 +1,509 @@
+{
+  "config": {},
+  "extra": {
+    "ds": {
+      "offset": [
+        1465,
+        715
+      ],
+      "scale": 0.4
+    }
+  },
+  "groups": [],
+  "id": "b48dce73-dac6-48ee-88af-ca3453d29717",
+  "last_link_id": 2,
+  "last_node_id": 5,
+  "links": [
+    [
+      1,
+      1,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "nodes": [
+    {
+      "flags": {},
+      "id": 1,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "algorithm",
+          "name": "algorithm",
+          "type": "COMBO",
+          "widget": {
+            "name": "algorithm"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "dimensions",
+          "name": "dimensions",
+          "type": "INT",
+          "widget": {
+            "name": "dimensions"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "scale",
+          "name": "scale",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "z",
+          "name": "z",
+          "type": "FLOAT",
+          "widget": {
+            "name": "z"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "speed",
+          "name": "speed",
+          "type": "FLOAT",
+          "widget": {
+            "name": "speed"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "octaves",
+          "name": "octaves",
+          "type": "INT",
+          "widget": {
+            "name": "octaves"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "lacunarity",
+          "name": "lacunarity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "lacunarity"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "gain",
+          "name": "gain",
+          "type": "FLOAT",
+          "widget": {
+            "name": "gain"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "color",
+          "name": "color",
+          "type": "COMBO",
+          "widget": {
+            "name": "color"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 0,
+      "outputs": [
+        {
+          "links": [
+            1
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        0,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureNoise",
+        "generetiLessonRef": "98b45994-19f7-44f8-83a0-4202b996cead",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "algorithm": "simplex",
+          "color": "RGB",
+          "dimensions": 3,
+          "gain": 0.5,
+          "height": 384,
+          "lacunarity": 2,
+          "octaves": 3,
+          "scale": 8,
+          "seed": 12,
+          "speed": 0.2,
+          "time": 0,
+          "width": 512,
+          "z": 0
+        }
+      },
+      "size": [
+        540,
+        900
+      ],
+      "type": "GeneretiTextureNoise",
+      "widgets_values": [
+        "simplex",
+        3,
+        512,
+        384,
+        8,
+        12,
+        0,
+        0,
+        0.2,
+        3,
+        2,
+        0.5,
+        "RGB",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "algorithm": "simplex",
+        "color": "RGB",
+        "dimensions": 3,
+        "gain": 0.5,
+        "genereti_delivery": "Live",
+        "height": 384,
+        "lacunarity": 2,
+        "octaves": 3,
+        "scale": 8,
+        "seed": 12,
+        "speed": 0.2,
+        "texture_preview": "",
+        "time": 0,
+        "width": 512,
+        "z": 0
+      }
+    },
+    {
+      "flags": {},
+      "id": 2,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 1,
+      "outputs": [
+        {
+          "links": [
+            2
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        640,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureExpression",
+        "generetiLessonRef": "b0e6dd67-2ed4-4f56-99e8-3536c6eba547",
+        "generetiOperatorHeights": {
+          "expression": 160
+        },
+        "generetiOperatorText": {
+          "expression": "0.5+0.5*perlin(x*8,y*8,t*.2+c*2)"
+        },
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "expression": "0.5+0.5*perlin(x*8,y*8,t*.2+c*2)",
+          "height": 384,
+          "time": 0,
+          "width": 512
+        }
+      },
+      "size": [
+        540,
+        720
+      ],
+      "type": "GeneretiTextureExpression",
+      "widgets_values": [
+        "0.5+0.5*perlin(x*8,y*8,t*.2+c*2)",
+        512,
+        384,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "expression": "0.5+0.5*perlin(x*8,y*8,t*.2+c*2)",
+        "genereti_delivery": "Live",
+        "height": 384,
+        "texture_preview": "",
+        "time": 0,
+        "width": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 3,
+      "inputs": [
+        {
+          "link": 1,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 3,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        0,
+        1000
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "51c218b9-38ff-4a15-8a8f-7a2106ed5edf",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "size": [
+        540,
+        530
+      ],
+      "type": "GeneretiLiveImagePreview",
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "live_image_preview": "",
+        "preview_size": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 4,
+      "inputs": [
+        {
+          "link": 2,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 4,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        640,
+        1000
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "cff52ae6-5821-416a-9fad-0ae31ba9d208",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "size": [
+        540,
+        530
+      ],
+      "type": "GeneretiLiveImagePreview",
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "live_image_preview": "",
+        "preview_size": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 5,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 2,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT"
+        },
+        {
+          "links": null,
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING"
+        }
+      ],
+      "pos": [
+        1280,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiLessonRef": "062a77e7-e7ef-484d-adf8-b3c05768ea35",
+        "generetiOperatorHeights": {
+          "guide": 160
+        },
+        "generetiOperatorText": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"noise-dimensions\",\n  \"title\": \"Coherent noise: textures and expressions\",\n  \"summary\": \"Compare layered simplex textures with per-channel Perlin expressions.\",\n  \"steps\": [\n    {\n      \"title\": \"Layer a simplex texture\",\n      \"text\": \"top.noise generates live GPU textures. Its seed offsets the noise domain; octaves layer finer detail with normalized amplitude.\",\n      \"hint\": \"Try simplex, 3 dimensions, scale 8, 3 octaves and seed 12. RGB offsets the channels to give independent color.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureNoise\",\n        \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"algorithm\"\n          },\n          \"value\": \"simplex\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"dimensions\"\n          },\n          \"value\": 3\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"scale\"\n          },\n          \"value\": 8\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"octaves\"\n          },\n          \"value\": 3\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"color\"\n          },\n          \"value\": \"RGB\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"seed\"\n          },\n          \"value\": 12\n        }\n      ]\n    },\n    {\n      \"title\": \"Choose dimensionality\",\n      \"text\": \"1D is a varying stripe; 2D is a plane. In 3D, time moves through depth. In 4D, z selects a volume slice and time has its own axis. Set speed to zero to hold the field.\",\n      \"hint\": \"Switch to 4 dimensions, z 0.5 and speed 0.2. Change z to explore a different slice.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureNoise\",\n        \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"dimensions\"\n          },\n          \"value\": 4\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"z\"\n          },\n          \"value\": 0.5\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"speed\"\n          },\n          \"value\": 0.2\n        }\n      ]\n    },\n    {\n      \"title\": \"Write a noise expression\",\n      \"text\": \"noise is an alias for perlin. perlin, simplex and value accept 1–4 coordinates and return signed values. Map to display range with 0.5+0.5*noise(...). CHOP expressions share these functions.\",\n      \"hint\": \"Use x/y for spatial coordinates, t for evolution and c to offset RGB channels. This panel shows 3D Perlin.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"ref\": \"b0e6dd67-2ed4-4f56-99e8-3536c6eba547\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"b0e6dd67-2ed4-4f56-99e8-3536c6eba547\",\n            \"part\": \"node\",\n            \"widget\": \"expression\"\n          },\n          \"value\": \"0.5+0.5*perlin(x*8,y*8,t*.2+c*2)\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Present the result\",\n      \"text\": \"The viewer receives a GPU texture. Alt-W opens its output overlay; Alt-F fills the window. Queue samples the explicit time parameter.\",\n      \"hint\": \"Do it opens the layered noise viewer. Explore value noise or connect the result as a displacement map in the class feedback patch.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"ref\": \"51c218b9-38ff-4a15-8a8f-7a2106ed5edf\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"view\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"51c218b9-38ff-4a15-8a8f-7a2106ed5edf\",\n            \"part\": \"node\"\n          },\n          \"view\": \"overlay\",\n          \"enabled\": true\n        }\n      ]\n    }\n  ]\n}"
+        }
+      },
+      "size": [
+        640,
+        860
+      ],
+      "type": "GeneretiDatLesson",
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"noise-dimensions\",\n  \"title\": \"Coherent noise: textures and expressions\",\n  \"summary\": \"Compare layered simplex textures with per-channel Perlin expressions.\",\n  \"steps\": [\n    {\n      \"title\": \"Layer a simplex texture\",\n      \"text\": \"top.noise generates live GPU textures. Its seed offsets the noise domain; octaves layer finer detail with normalized amplitude.\",\n      \"hint\": \"Try simplex, 3 dimensions, scale 8, 3 octaves and seed 12. RGB offsets the channels to give independent color.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureNoise\",\n        \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"algorithm\"\n          },\n          \"value\": \"simplex\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"dimensions\"\n          },\n          \"value\": 3\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"scale\"\n          },\n          \"value\": 8\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"octaves\"\n          },\n          \"value\": 3\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"color\"\n          },\n          \"value\": \"RGB\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"seed\"\n          },\n          \"value\": 12\n        }\n      ]\n    },\n    {\n      \"title\": \"Choose dimensionality\",\n      \"text\": \"1D is a varying stripe; 2D is a plane. In 3D, time moves through depth. In 4D, z selects a volume slice and time has its own axis. Set speed to zero to hold the field.\",\n      \"hint\": \"Switch to 4 dimensions, z 0.5 and speed 0.2. Change z to explore a different slice.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureNoise\",\n        \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"dimensions\"\n          },\n          \"value\": 4\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"z\"\n          },\n          \"value\": 0.5\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"speed\"\n          },\n          \"value\": 0.2\n        }\n      ]\n    },\n    {\n      \"title\": \"Write a noise expression\",\n      \"text\": \"noise is an alias for perlin. perlin, simplex and value accept 1–4 coordinates and return signed values. Map to display range with 0.5+0.5*noise(...). CHOP expressions share these functions.\",\n      \"hint\": \"Use x/y for spatial coordinates, t for evolution and c to offset RGB channels. This panel shows 3D Perlin.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"ref\": \"b0e6dd67-2ed4-4f56-99e8-3536c6eba547\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"b0e6dd67-2ed4-4f56-99e8-3536c6eba547\",\n            \"part\": \"node\",\n            \"widget\": \"expression\"\n          },\n          \"value\": \"0.5+0.5*perlin(x*8,y*8,t*.2+c*2)\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Present the result\",\n      \"text\": \"The viewer receives a GPU texture. Alt-W opens its output overlay; Alt-F fills the window. Queue samples the explicit time parameter.\",\n      \"hint\": \"Do it opens the layered noise viewer. Explore value noise or connect the result as a displacement map in the class feedback patch.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"ref\": \"51c218b9-38ff-4a15-8a8f-7a2106ed5edf\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"view\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"51c218b9-38ff-4a15-8a8f-7a2106ed5edf\",\n            \"part\": \"node\"\n          },\n          \"view\": \"overlay\",\n          \"enabled\": true\n        }\n      ]\n    }\n  ]\n}",
+        ""
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"noise-dimensions\",\n  \"title\": \"Coherent noise: textures and expressions\",\n  \"summary\": \"Compare layered simplex textures with per-channel Perlin expressions.\",\n  \"steps\": [\n    {\n      \"title\": \"Layer a simplex texture\",\n      \"text\": \"top.noise generates live GPU textures. Its seed offsets the noise domain; octaves layer finer detail with normalized amplitude.\",\n      \"hint\": \"Try simplex, 3 dimensions, scale 8, 3 octaves and seed 12. RGB offsets the channels to give independent color.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureNoise\",\n        \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"algorithm\"\n          },\n          \"value\": \"simplex\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"dimensions\"\n          },\n          \"value\": 3\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"scale\"\n          },\n          \"value\": 8\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"octaves\"\n          },\n          \"value\": 3\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"color\"\n          },\n          \"value\": \"RGB\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"seed\"\n          },\n          \"value\": 12\n        }\n      ]\n    },\n    {\n      \"title\": \"Choose dimensionality\",\n      \"text\": \"1D is a varying stripe; 2D is a plane. In 3D, time moves through depth. In 4D, z selects a volume slice and time has its own axis. Set speed to zero to hold the field.\",\n      \"hint\": \"Switch to 4 dimensions, z 0.5 and speed 0.2. Change z to explore a different slice.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureNoise\",\n        \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"dimensions\"\n          },\n          \"value\": 4\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"z\"\n          },\n          \"value\": 0.5\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureNoise\",\n            \"ref\": \"98b45994-19f7-44f8-83a0-4202b996cead\",\n            \"part\": \"node\",\n            \"widget\": \"speed\"\n          },\n          \"value\": 0.2\n        }\n      ]\n    },\n    {\n      \"title\": \"Write a noise expression\",\n      \"text\": \"noise is an alias for perlin. perlin, simplex and value accept 1–4 coordinates and return signed values. Map to display range with 0.5+0.5*noise(...). CHOP expressions share these functions.\",\n      \"hint\": \"Use x/y for spatial coordinates, t for evolution and c to offset RGB channels. This panel shows 3D Perlin.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"ref\": \"b0e6dd67-2ed4-4f56-99e8-3536c6eba547\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"b0e6dd67-2ed4-4f56-99e8-3536c6eba547\",\n            \"part\": \"node\",\n            \"widget\": \"expression\"\n          },\n          \"value\": \"0.5+0.5*perlin(x*8,y*8,t*.2+c*2)\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Present the result\",\n      \"text\": \"The viewer receives a GPU texture. Alt-W opens its output overlay; Alt-F fills the window. Queue samples the explicit time parameter.\",\n      \"hint\": \"Do it opens the layered noise viewer. Explore value noise or connect the result as a displacement map in the class feedback patch.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"ref\": \"51c218b9-38ff-4a15-8a8f-7a2106ed5edf\",\n        \"part\": \"node\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"view\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"51c218b9-38ff-4a15-8a8f-7a2106ed5edf\",\n            \"part\": \"node\"\n          },\n          \"view\": \"overlay\",\n          \"enabled\": true\n        }\n      ]\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      }
+    }
+  ],
+  "revision": 0,
+  "version": 0.4
+}

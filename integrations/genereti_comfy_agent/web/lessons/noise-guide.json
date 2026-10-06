@@ -1,0 +1,167 @@
+{
+  "format": "genereti-guide",
+  "id": "noise-dimensions",
+  "steps": [
+    {
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "algorithm"
+          },
+          "value": "simplex"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "dimensions"
+          },
+          "value": 3
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "scale"
+          },
+          "value": 8
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "octaves"
+          },
+          "value": 3
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "color"
+          },
+          "value": "RGB"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "seed"
+          },
+          "value": 12
+        }
+      ],
+      "hint": "Try simplex, 3 dimensions, scale 8, 3 octaves and seed 12. RGB offsets the channels to give independent color.",
+      "target": {
+        "nodeType": "GeneretiTextureNoise",
+        "part": "node",
+        "ref": "98b45994-19f7-44f8-83a0-4202b996cead"
+      },
+      "text": "top.noise generates live GPU textures. Its seed offsets the noise domain; octaves layer finer detail with normalized amplitude.",
+      "title": "Layer a simplex texture"
+    },
+    {
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "dimensions"
+          },
+          "value": 4
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "z"
+          },
+          "value": 0.5
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureNoise",
+            "part": "node",
+            "ref": "98b45994-19f7-44f8-83a0-4202b996cead",
+            "widget": "speed"
+          },
+          "value": 0.2
+        }
+      ],
+      "hint": "Switch to 4 dimensions, z 0.5 and speed 0.2. Change z to explore a different slice.",
+      "target": {
+        "nodeType": "GeneretiTextureNoise",
+        "part": "node",
+        "ref": "98b45994-19f7-44f8-83a0-4202b996cead"
+      },
+      "text": "1D is a varying stripe; 2D is a plane. In 3D, time moves through depth. In 4D, z selects a volume slice and time has its own axis. Set speed to zero to hold the field.",
+      "title": "Choose dimensionality"
+    },
+    {
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiTextureExpression",
+            "part": "node",
+            "ref": "b0e6dd67-2ed4-4f56-99e8-3536c6eba547",
+            "widget": "expression"
+          },
+          "value": "0.5+0.5*perlin(x*8,y*8,t*.2+c*2)"
+        }
+      ],
+      "hint": "Use x/y for spatial coordinates, t for evolution and c to offset RGB channels. This panel shows 3D Perlin.",
+      "target": {
+        "nodeType": "GeneretiTextureExpression",
+        "part": "node",
+        "ref": "b0e6dd67-2ed4-4f56-99e8-3536c6eba547"
+      },
+      "text": "noise is an alias for perlin. perlin, simplex and value accept 1–4 coordinates and return signed values. Map to display range with 0.5+0.5*noise(...). CHOP expressions share these functions.",
+      "title": "Write a noise expression"
+    },
+    {
+      "actions": [
+        {
+          "enabled": true,
+          "kind": "view",
+          "target": {
+            "nodeType": "GeneretiLiveImagePreview",
+            "part": "node",
+            "ref": "51c218b9-38ff-4a15-8a8f-7a2106ed5edf"
+          },
+          "view": "overlay"
+        }
+      ],
+      "hint": "Do it opens the layered noise viewer. Explore value noise or connect the result as a displacement map in the class feedback patch.",
+      "target": {
+        "nodeType": "GeneretiLiveImagePreview",
+        "part": "node",
+        "ref": "51c218b9-38ff-4a15-8a8f-7a2106ed5edf"
+      },
+      "text": "The viewer receives a GPU texture. Alt-W opens its output overlay; Alt-F fills the window. Queue samples the explicit time parameter.",
+      "title": "Present the result"
+    }
+  ],
+  "summary": "Compare layered simplex textures with per-channel Perlin expressions.",
+  "title": "Coherent noise: textures and expressions",
+  "version": 1
+}

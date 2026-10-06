@@ -6,6 +6,28 @@ Review checkpoint: **2026-10-04**, `main`, functional changes through **17b0adc*
 
 The independent `ꘇmod.*` family adds ten Web Audio routing nodes with OpenTouch CHOP note/scalar interoperability. Review **ꘇ-Modular-Audio** and its embedded walkthrough: Start on `mod.output`, edit both grids, mute/solo the mixer, adjust delay, then Stop/Panic. The [audio guide](modular-audio.md) records contracts and current limits. Legacy `chop.synth` endpoints are preserved. Backend restart and frontend refresh are needed for the new schemas/modules. Verification used an owned 8001 instance; the user's 8000 workflow was preserved. Validated 81 JavaScript tests, 14 Python operator tests and 6 installer tests; all 30 canonical workflows parse. Browser checks covered grid edits/save/reload, explicit start, mute/solo, Panic and real OfflineAudioContext rendering (audible RMS 0.0169, muted RMS 0). No hardware MIDI or speaker latency claim is made.
 
+## Class hints and coherent noise · 2026-10-06
+
+All seven **ꘇ-Class-Feedback-Bloom-Displace** lesson steps now include Hint and
+Do it. Playback restores existing-node settings and connections; the final step
+opens the output overlay. Browser verification replayed all 36 actions and used
+the actual Hint/Do it buttons.
+
+**ꘇtop.noise** adds Perlin, simplex and value noise in 1–4 dimensions, with seed,
+scale, RGB, time/speed and normalized octaves. TOP/CHOP expressions share
+`noise`/`perlin`, `simplex` and `value` functions. **ꘇ-Noise-Dimensions** is a
+four-step mini-demo in the workflow folder and Learning chooser. The
+[texture guide](texture-operators.md#coherent-noise) explains dimensions and
+signed ranges. Restart Comfy and refresh to register the new node; reopen saved
+examples to replace stale embedded guides.
+
+Validated 132 JavaScript tests, 9 CPU texture tests, 2 cross-runtime noise tests,
+and all 12 queued noise variants. All 12 WebGPU type/dimension combinations
+compiled and rendered; pixel comparisons differed by less than 0.5 of an 8-bit
+level. Browser demos delivered live output; no broad performance benchmark is
+claimed. Speed-zero noise renders only on changes. User's 8000 instance was
+preserved; tests used an owned 8001 instance.
+
 ## Start the review here
 
 In Comfy, open **Workflows → Genereti**. The examples are installed locally in `user/default/workflows/Genereti/` and their canonical sources live in `integrations/comfyui_genereti/workflows/`.
@@ -17,11 +39,13 @@ In Comfy, open **Workflows → Genereti**. The examples are installed locally in
 | `ꘇ-Tutorial-Authoring` | A seven-step guide to authoring guides, editable two-step lesson, actual texture exercise and export controls |
 | `ꘇ-Creative-Stage-Showcase` | Broader creative-stage overview, capture and optional Core ML generation |
 | `ꘇ-Livecode-Languages` / `ꘇ-Livecode-Math` | Language starters, document rendering and formulas |
+| `ꘇ-Noise-Dimensions` | Layered simplex, 1–4D coordinates, signed expressions and Hint/Do it |
+| `ꘇ-Class-Feedback-Bloom-Displace` | Reference feedback, bloom/displacement, channel routing and seven actionable steps |
 | `ꘇ-Texture-Lab` / `ꘇ-Texture-Queue` | GPU live texture operators versus ordinary queued execution |
 
 **Settings → Genereti → Learning → Interactive lessons** opens the guide chooser. The command palette also exposes **ꘇ OpenTouch lessons**. Its workflow buttons create a separate Comfy workflow tab; they do not replace the current graph.
 
-The [operator catalog](opentouch-catalog.md) lists **48 OpenTouch operators** with inputs, outputs and stable IDs. It covers TOP/CHOP/DAT, not every Genereti integration node. The [report](opentouch-report.md), [language guide](livecode-languages.md), [lesson guide](opentouch-lessons.md), [UI conventions](node-ui-design.md) and [workflow guide](workflows.md) explain the surrounding features.
+The [operator catalog](opentouch-catalog.md) lists **49 OpenTouch operators** with inputs, outputs and stable IDs. It covers TOP/CHOP/DAT, not every Genereti integration node. The [report](opentouch-report.md), [language guide](livecode-languages.md), [lesson guide](opentouch-lessons.md), [UI conventions](node-ui-design.md) and [workflow guide](workflows.md) explain the surrounding features.
 
 ## What is implemented
 

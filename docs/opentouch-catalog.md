@@ -2,7 +2,7 @@
 
 TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs retain saved workflow compatibility. [Report](opentouch-report.md) explains transport, conversion and device boundaries. [Lessons](opentouch-lessons.md) covers authoring and exports.
 
-48 OpenTouch TOP/CHOP/DAT operators, plus 10 independent modular audio operators.
+49 OpenTouch TOP/CHOP/DAT operators, plus 10 independent modular audio operators.
 
 ## TOP
 
@@ -18,6 +18,7 @@ TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs
 | `ꘇtop.feedback` | image: IMAGE, decay: FLOAT, translate_x: FLOAT, translate_y: FLOAT, scale: FLOAT, rotate: FLOAT, blend: screen/add/over | image: IMAGE | `GeneretiTextureFeedback` |
 | `ꘇtop.feedbackref` | image: IMAGE (optional seed), reference: STRING/picker, width/height: INT | image: IMAGE | `GeneretiTextureFeedbackRef` |
 | `ꘇtop.filter` | image: IMAGE, operation: COMBO, amount: FLOAT | image: IMAGE | `GeneretiTextureFilter` |
+| `ꘇtop.noise` | algorithm: Perlin/simplex/value, dimensions: 1–4, width/height, scale, seed, z, time, speed, octaves, lacunarity, gain, color | image: IMAGE | `GeneretiTextureNoise` |
 | `ꘇtop.math` | image: IMAGE, operation: COMBO, value: FLOAT, operand: IMAGE | image: IMAGE | `GeneretiTextureMath` |
 | `ꘇtop.tochop` | image: IMAGE, sample_width: INT, sample_height: INT, sample_rate: FLOAT, batch_index: INT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiConvertTopToChop` |
 | `ꘇtop.todat` | image: IMAGE, sample_width: INT, sample_height: INT, sample_rate: FLOAT, batch_index: INT | table: GENERETI_DAT, text: STRING | `GeneretiConvertTopToDat` |
