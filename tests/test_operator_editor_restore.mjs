@@ -5,7 +5,7 @@ import vm from 'node:vm';
 test('operator text restores positional legacy values and saves named text for future widget changes',()=>{
  let extension,doc='default';
  const element=()=>({style:{},append(){},setAttribute(){},addEventListener(){}});
- const context=vm.createContext({app:{registerExtension(e){extension=e;}},ensureControlStyle(){},captureEditorInput(){return ()=>{};},document:{createElement:element},Option:class{},defaultAppearance:{},createEditor(){return {state:{doc:{toString:()=>doc}},replaceDocument(text){doc=text;},destroy(){}};}});
+ const context=vm.createContext({app:{registerExtension(e){extension=e;}},editorAppearance(){return {};},subscribeEditorAppearance(){return ()=>{};},captureFontShortcut(){return ()=>{};},ensureControlStyle(){},captureEditorInput(){return ()=>{};},document:{createElement:element},Option:class{},defaultAppearance:{},createEditor(){return {state:{doc:{toString:()=>doc}},replaceDocument(text){doc=text;},setAppearance(){},destroy(){}};}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_p5/web/js/operator-editor.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,''),context);
  const node={properties:{},widgets:[],addDOMWidget(name,type,surface,options){const w={name,options};Object.defineProperty(w,'value',{get:options.getValue});this.widgets.push(w);return w;}};
  const {widget}=extension.getCustomWidgets().GENERETI_OPERATOR_TEXT(node,'guide',['STRING',{default:'default'}]);
@@ -17,7 +17,7 @@ test('operator text restores positional legacy values and saves named text for f
 test('lesson editor play and evaluate apply the draft before running, while auto-apply stays silent',()=>{
  let extension,change,evaluate,doc='default',runs=0,seen;
  const elements=[];const element=()=>{const el={style:{},append(){},setAttribute(){},addEventListener(){}};elements.push(el);return el;};
- const context=vm.createContext({app:{registerExtension(e){extension=e;}},ensureControlStyle(){},captureEditorInput(){return ()=>{};},document:{createElement:element},Option:class{},defaultAppearance:{},createEditor(host,text,language,onChange,onEvaluate){change=onChange;evaluate=onEvaluate;return {state:{doc:{toString:()=>doc}},replaceDocument(text){doc=text;},destroy(){}};}});
+ const context=vm.createContext({app:{registerExtension(e){extension=e;}},editorAppearance(){return {};},subscribeEditorAppearance(){return ()=>{};},captureFontShortcut(){return ()=>{};},ensureControlStyle(){},captureEditorInput(){return ()=>{};},document:{createElement:element},Option:class{},defaultAppearance:{},createEditor(host,text,language,onChange,onEvaluate){change=onChange;evaluate=onEvaluate;return {state:{doc:{toString:()=>doc}},replaceDocument(text){doc=text;},setAppearance(){},destroy(){}};}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_p5/web/js/operator-editor.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,''),context);
  const node={comfyClass:'GeneretiDatLesson',properties:{},widgets:[],addDOMWidget(name,type,surface,options){const w={name,options};this.widgets.push(w);return w;}};
  const {widget}=extension.getCustomWidgets().GENERETI_OPERATOR_TEXT(node,'guide',['STRING',{default:'default'}]);

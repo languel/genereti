@@ -227,3 +227,9 @@ Alt+W anchors the opened overlay at the current cursor position, clamped to the 
 ### Modular audio controls
 
 `ꘇmod.*` uses the same compact themed controls: explicit output Start/Panic, accessible note/drum grids, audition keys and mixer mute/solo/faders. Native parameters remain available for Comfy socket conversion and saved values. Sound never starts on node creation, workflow load or queue. Runtime AudioNodes and playing state are excluded from workflow serialization.
+
+## Shared CodeMirror controls
+
+Livecode and DAT/TOP/CHOP text surfaces use the same editor defaults in **Settings → Genereti → Editor** (theme, font, default size, line height, wrapping, completion, hover docs and color overrides). Livecode keeps its settings menu as a shortcut to these global preferences. Its chevron minimizes just the editor; the output and renderer continue. Auto-update uses a lightning glyph. Compact operator editors omit the font dropdown; **Cmd/Ctrl+Shift+Plus/Minus** changes the focused or selected node font size, saved in `generetiEditorFontSize`. This override survives changes to the shared default. Editing Default size in the Livecode menu clears that node override.
+
+Format and minify operate on explicit selections (including multiple ranges), or the whole document when all selections are empty. Each operation is one isolated undo transaction; a changed draft/selection cancels an in-flight format. Fragments must be valid for the chosen formatter; parse errors leave text unchanged. GLSL reindent follows the same selection rule.

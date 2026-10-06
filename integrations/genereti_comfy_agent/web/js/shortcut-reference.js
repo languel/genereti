@@ -16,7 +16,8 @@ const shortcuts=[
   ['Alt+Z','Drawing Satori','Inside the drawing editor'],
   ['Cmd/Ctrl+Enter','Run livecode','Inside the code editor or livecode preview'],
   ['Ctrl+.','Stop livecode','Keep the last frame'],
-  ['Cmd/Ctrl+Shift+F','Format code','Inside the livecode editor'],
+  ['Cmd/Ctrl+Shift+F','Format code','Selected text only; entire document when selection is empty'],
+  ['Cmd/Ctrl+Shift+Plus / Minus','Editor font size','Focused editor or one selected editor node; saved per node'],
   ['Alt+Shift+Right','Next Manim cue','Inside the active Manim editor/preview'],
 ];
 function reference(){
@@ -34,7 +35,7 @@ function reference(){
   // Editor-local and pointer gestures retain their editor context; do not
   // present them as globally editable commands.
   const local=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Editor and pointer gestures';local.append(summary);
-  for(const [keys,label,scope] of shortcuts.filter(row=>['Shift-click overlay glyph','Escape','Alt+Z','Cmd/Ctrl+Enter','Ctrl+.','Cmd/Ctrl+Shift+F','Alt+Shift+Right'].includes(row[0]))){
+  for(const [keys,label,scope] of shortcuts.filter(row=>['Shift-click overlay glyph','Escape','Alt+Z','Cmd/Ctrl+Enter','Ctrl+.','Cmd/Ctrl+Shift+F','Cmd/Ctrl+Shift+Plus / Minus','Alt+Shift+Right'].includes(row[0]))){
     const line=document.createElement('div');line.style.cssText='display:flex;gap:12px;padding:6px 0';line.title=scope;const kbd=document.createElement('kbd');kbd.textContent=keys;const text=document.createElement('span');text.textContent=label;line.append(kbd,text);local.append(line);
   }
   root.append(local);return root;

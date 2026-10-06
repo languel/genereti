@@ -25,7 +25,8 @@ IME composition alone. Select one node when a shortcut needs a graph selection.
 | Alt+Z | Drawing Satori | Inside the drawing editor |
 | Cmd/Ctrl+Enter | Run livecode | Inside the code editor or livecode preview |
 | Ctrl+. | Stop livecode | Keep the last frame |
-| Cmd/Ctrl+Shift+F | Format code | Inside the livecode editor |
+| Cmd/Ctrl+Shift+F | Format code | Selected text; whole document when nothing is selected |
+| Cmd/Ctrl+Shift+Plus / Minus | Adjust editor font size | Focused editor or one selected editor node; saved per node |
 | Alt+Shift+Right | Next Manim cue | Inside the active Manim editor/preview |
 
 For artwork presentation, combine **Alt+F**, **Alt+P** and **Alt+Shift+Z**.

@@ -1,4 +1,4 @@
-import {Prec,Compartment,StateField,EditorState,Transaction} from '@codemirror/state';
+import {Prec,Compartment,StateField,EditorState,EditorSelection,Transaction} from '@codemirror/state';
 import {EditorView,basicSetup} from 'codemirror';
 import {autocompletion,completeFromList,startCompletion} from '@codemirror/autocomplete';
 import {indentSelection,isolateHistory,undo,redo} from '@codemirror/commands';
@@ -45,8 +45,9 @@ export function createEditor(parent,source,mode,onChange,onRun,settings={}){
  // exclusion also recognizes this textarea type marker.
  view.contentDOM.type='textarea';
  view.undo=()=>undo(view);view.redo=()=>redo(view);view.complete=()=>settings.autocomplete!==false&&startCompletion(view);
+ view.replaceRanges=(changes,ranges)=>view.dispatch({changes,selection:EditorSelection.create(ranges.map(({anchor,head})=>EditorSelection.range(anchor,head))),annotations:[Transaction.userEvent.of('input.format'),isolateHistory.of('full')]});
  view.replaceDocument=source=>view.dispatch({changes:{from:0,to:view.state.doc.length,insert:source},selection:{anchor:0},annotations:[Transaction.userEvent.of('input.format'),isolateHistory.of('full')]});
- view.reindent=()=>{view.dispatch({selection:{anchor:0,head:view.state.doc.length}});return indentSelection(view);};
+ view.reindent=()=>{if(view.state.selection.ranges.every(range=>range.empty))view.dispatch({selection:{anchor:0,head:view.state.doc.length}});return indentSelection(view);};
  view.setAppearance=next=>{settings=next;view.dispatch({effects:[appearance.reconfigure(styling(next)),completionControl.reconfigure(completionConfig(next)),hoverControl.reconfigure(hoverConfig(next))]});};
  view.setStrudelVisuals=(meta,haps,time)=>{if(meta){updateMiniLocations(view,meta.miniLocations||[]);updateWidgets(view,(meta.widgets||[]).filter(w=>w.type!=='slider'));updateSliderWidgets(view,(meta.widgets||[]).filter(w=>w.type==='slider'));}if(haps)highlightMiniLocations(view,time,haps);};
  view.dom.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='f'){event.preventDefault();view.formatDocument?.();}event.stopPropagation();});view.dom.addEventListener('pointerdown',event=>event.stopPropagation());return view;

@@ -1,0 +1,8 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {transformEditorSelection} from '../integrations/genereti_comfy_p5/web/js/editor-transform.js';
+function editor(text,ranges){return {state:{doc:{toString:()=>text},selection:{ranges}},replaceRanges(changes,selections){this.changes=changes;this.selections=selections;for(const {from,to,insert} of [...changes].reverse())text=text.slice(0,from)+insert+text.slice(to);}};}
+test('formatting changes only selected ranges and preserves surrounding text',async()=>{const view=editor('before abc after',[{from:7,to:10,empty:false}]);await transformEditorSelection(view,s=>s.toUpperCase());assert.equal(view.state.doc.toString(),'before ABC after');assert.deepEqual(view.selections,[{anchor:7,head:10}]);});
+test('empty selections format whole document',async()=>{const view=editor('abc',[{from:1,to:1,empty:true}]);await transformEditorSelection(view,s=>s.toUpperCase());assert.equal(view.state.doc.toString(),'ABC');});
+test('multiple selections preserve unselected content and adjust selection offsets',async()=>{const view=editor('a + b',[{from:0,to:1,empty:false},{from:4,to:5,empty:false}]);await transformEditorSelection(view,s=>s+s);assert.equal(view.state.doc.toString(),'aa + bb');assert.deepEqual(view.selections,[{anchor:0,head:2},{anchor:5,head:7}]);});
+test('async formatting cancels if the selection changes',async()=>{const view=editor('abc',[{from:0,to:3,empty:false}]);await assert.rejects(transformEditorSelection(view,async()=>{view.state.selection.ranges=[{from:1,to:1,empty:true}];return 'ABC';}),/selection changed/);assert.equal(view.state.doc.toString(),'abc');});

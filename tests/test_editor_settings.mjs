@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFileSync} from 'node:fs';
+function fixture(){const values=new Map(),handlers={};let extension;
+ const context=vm.createContext({defaultAppearance:{fontSize:14,theme:'dark'},document:{activeElement:null},window:{addEventListener:(key,fn)=>handlers[key]=fn,removeEventListener(){}},app:{canvas:{selected_nodes:{}},ui:{settings:{getSettingValue:(id,fallback)=>values.has(id)?values.get(id):fallback,async setSettingValue(id,value){values.set(id,value);extension.settings.find(s=>s.id===id)?.onChange();}}},registerExtension:e=>extension=e}});
+ vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_p5/web/js/editor-settings.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function').replaceAll('export async function','async function'),context);return {context,values,handlers};}
+test('shared preferences update subscribers while preserving a node font override',async()=>{const f=fixture(),node={properties:{generetiEditorFontSize:18}};let calls=0;const release=f.context.subscribeEditorAppearance(()=>calls++);await f.context.saveGlobalEditorAppearance({fontSize:16,lineHeight:1.7});assert.equal(f.context.editorAppearance(node).fontSize,18);assert.equal(f.context.editorAppearance(node).lineHeight,1.7);assert.ok(calls>0);release();calls=0;await f.context.saveGlobalEditorAppearance({fontSize:15});assert.equal(calls,0);});
+test('empty color overrides preserve the chosen theme palette',()=>{const f=fixture();f.values.set('Genereti.Editor.background','');assert.equal(f.context.globalEditorAppearance().background,undefined);});
+test('font shortcut changes only the focused node and saves an override',()=>{const f=fixture(),node={properties:{}};f.context.captureFontShortcut(node,{contains:()=>true},()=>{});let prevented=false;f.handlers.keydown({key:'+',code:'Equal',metaKey:true,shiftKey:true,preventDefault(){prevented=true;},stopImmediatePropagation(){}});assert.ok(prevented);assert.equal(node.properties.generetiEditorFontSize,15);assert.equal(f.values.size,0);});

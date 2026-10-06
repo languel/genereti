@@ -57,3 +57,6 @@ await writeFile(entry,entrySource.replace(/editor\.mjs\?v=[^']+/,`editor.mjs?v=$
 
 const operatorEditor="integrations/genereti_comfy_p5/web/js/operator-editor.js";
 await writeFile(operatorEditor,(await readFile(operatorEditor,"utf8")).replace(/editor\.mjs\?v=[^']+/,`editor.mjs?v=${version}`));
+
+const editorSettings="integrations/genereti_comfy_p5/web/js/editor-settings.js";
+await writeFile(editorSettings,(await readFile(editorSettings,"utf8")).replace(/editor\.mjs\?v=[^']+/,`editor.mjs?v=${version}`));

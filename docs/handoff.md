@@ -123,3 +123,7 @@ Build changed Livecode runtime assets with `node scripts/build_livecode.mjs`. Re
 Viewing commands register with Comfy commands/keybindings. Settings → Keybinding supports search Genereti/ꘇ, native keycaps, presets, conflicts and remapping. Genereti → Shortcuts links there; command hover tips describe scope. P on an empty canvas selection toggles parameters; selected items keep native Pin. Alt+Shift+R remains a directly editable sidebar binding. Editor shortcuts remain local.
 
 `keybinding-router.js` isolates Comfy’s currently non-public Pinia binding lookup for macOS Option physical keys and iframe forwarding. It reads the active map every event and defers if that store becomes unavailable; there is no hard-coded default fallback that would defeat unbinding. Recheck this seam on frontend upgrades.
+
+## Shared editors checkpoint
+
+Shared appearance settings live in `genereti_comfy_p5/web/js/editor-settings.js`; open Livecode and operator editors subscribe to changes and release subscriptions on removal. Livecode retains its menu, now editing global defaults. Per-node font overrides use Cmd/Ctrl+Shift+Plus/Minus. Livecode has an editor-only collapse chevron and lightning auto-update toggle. Selection transforms use `editor-transform.js` and CodeMirror isolated undo. Rebuild bundles with `npm run build:livecode`; the build versions editor imports in all three consumers.
