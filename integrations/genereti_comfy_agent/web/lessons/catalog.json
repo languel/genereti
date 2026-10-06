@@ -232,7 +232,7 @@
       },
       {
         "title": "Record a demonstration",
-        "text": "On dat.lesson press ● Record tutorial actions. Select the texture expression node, edit its code or width/height, and connect nodes. Click/drag gestures are visual cues; values and connections are semantic actions. Device start, queue and arbitrary UI clicks are not replayed.",
+        "text": "On dat.lesson press ● Record tutorial actions. Add or remove a node, select the texture expression node, edit its code or width/height, and connect nodes. Click/drag gestures are visual cues; values and connections are semantic actions. Device start, queue and arbitrary UI clicks are not replayed. The starting patch, node layout and titles are recorded too.",
         "target": {
           "nodeType": "GeneretiDatLesson",
           "part": "toolbar"
@@ -260,7 +260,7 @@
       },
       {
         "title": "Try Hint and Do it",
-        "text": "Run your guide. Hint reveals advice. Do it replays only the current step, visibly types committed text, changes real parameter values and restores recorded wiring. Next stays learner-controlled. Source auto-update is paused while typing; a recorded Livecode Run compiles afterward. Audio/capture stays explicitly activated.",
+        "text": "Run your guide. Hint reveals advice. Do it replays only the current step, visibly types committed text, changes real parameter values and restores recorded wiring. Next stays learner-controlled. Play all replays successive steps and pauses at manual instructions. Source auto-update is paused while typing; a recorded Livecode Run compiles afterward. Audio/capture stays explicitly activated.",
         "target": {
           "nodeType": "GeneretiDatLesson",
           "part": "toolbar"
@@ -357,5 +357,1007 @@
         }
       }
     ]
+  },
+  {
+    "format": "genereti-guide",
+    "id": "feedback-av-build",
+    "steps": [
+      {
+        "actions": [
+          {
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              318
+            ],
+            "target": {
+              "nodeId": "2",
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
+            },
+            "title": "ꘇtop.expression",
+            "widgets": {
+              "expression": "0.5 + 0.5*sin(t + x*12)*cos(y*12)",
+              "genereti_delivery": "Live",
+              "height": 512,
+              "time": 0,
+              "width": 512
+            }
+          },
+          {
+            "delayMs": 5,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              154
+            ],
+            "target": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4"
+            },
+            "title": "ꘇtop.feedback",
+            "widgets": {
+              "decay": 0.96,
+              "genereti_delivery": "Live",
+              "rotate": 0,
+              "scale": 1,
+              "translate_x": 0,
+              "translate_y": 0
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "type-text",
+            "target": {
+              "nodeId": "2",
+              "nodeType": "GeneretiTextureExpression",
+              "part": "code",
+              "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1",
+              "widget": "expression"
+            },
+            "value": "step(0.92,sin(t*1.5+x*24)*cos(y*24-t))"
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "2",
+              "nodeType": "GeneretiTextureExpression",
+              "part": "parameter",
+              "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1",
+              "widget": "height"
+            },
+            "value": 384
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              760,
+              0
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "2",
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
+            },
+            "title": "ꘇtop.expression"
+          },
+          {
+            "delayMs": 33,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "part": "parameter",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4",
+              "widget": "scale"
+            },
+            "value": 1.01
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "part": "parameter",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4",
+              "widget": "rotate"
+            },
+            "value": 0.8
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              1170,
+              0
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4"
+            },
+            "title": "ꘇtop.feedback"
+          },
+          {
+            "delayMs": 0,
+            "input": "image",
+            "kind": "connect",
+            "output": "image",
+            "source": {
+              "nodeId": "2",
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
+            },
+            "target": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4"
+            }
+          },
+          {
+            "delayMs": 31,
+            "kind": "layout",
+            "position": [
+              760,
+              0
+            ],
+            "size": [
+              330,
+              563.5
+            ],
+            "target": {
+              "nodeId": "2",
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
+            },
+            "title": "ꘇtop.expression"
+          }
+        ],
+        "hint": "Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.",
+        "target": {
+          "nodeId": "2",
+          "nodeType": "GeneretiTextureExpression",
+          "part": "node",
+          "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
+        },
+        "text": "Create a texture expression and connect it to temporal feedback. No cyclic cable is needed: top.feedback stores the preceding frame internally.",
+        "title": "Create the moving texture and feedback"
+      },
+      {
+        "actions": [
+          {
+            "delayMs": 2000,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              58
+            ],
+            "target": {
+              "nodeId": "4",
+              "nodeType": "GeneretiLiveImagePreview",
+              "ref": "f76e200f-632f-4207-ab2b-c0aff132d2d3"
+            },
+            "title": "ꘇ image preview",
+            "widgets": {
+              "genereti_delivery": "Live",
+              "preview_size": 512
+            }
+          },
+          {
+            "delayMs": 4,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              82
+            ],
+            "target": {
+              "nodeId": "5",
+              "nodeType": "GeneretiTextureFilter",
+              "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8"
+            },
+            "title": "ꘇtop.filter",
+            "widgets": {
+              "amount": 1,
+              "genereti_delivery": "Live",
+              "operation": "level"
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "part": "parameter",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4",
+              "widget": "decay"
+            },
+            "value": 0.97
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "part": "parameter",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4",
+              "widget": "rotate"
+            },
+            "value": 1.2
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              1580,
+              0
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "4",
+              "nodeType": "GeneretiLiveImagePreview",
+              "ref": "f76e200f-632f-4207-ab2b-c0aff132d2d3"
+            },
+            "title": "ꘇ image preview"
+          },
+          {
+            "delayMs": 0,
+            "input": "image",
+            "kind": "connect",
+            "output": "image",
+            "source": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4"
+            },
+            "target": {
+              "nodeId": "4",
+              "nodeType": "GeneretiLiveImagePreview",
+              "ref": "f76e200f-632f-4207-ab2b-c0aff132d2d3"
+            }
+          },
+          {
+            "delayMs": 50,
+            "input": "image",
+            "kind": "connect",
+            "output": "image",
+            "source": {
+              "nodeId": "5",
+              "nodeType": "GeneretiTextureFilter",
+              "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8"
+            },
+            "target": {
+              "nodeId": "4",
+              "nodeType": "GeneretiLiveImagePreview",
+              "ref": "f76e200f-632f-4207-ab2b-c0aff132d2d3"
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "type-text",
+            "target": {
+              "nodeId": "5",
+              "nodeType": "GeneretiTextureFilter",
+              "part": "code",
+              "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8",
+              "widget": "operation"
+            },
+            "value": "invert"
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "5",
+              "nodeType": "GeneretiTextureFilter",
+              "part": "parameter",
+              "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8",
+              "widget": "amount"
+            },
+            "value": 0.35
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              1170,
+              700
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "5",
+              "nodeType": "GeneretiTextureFilter",
+              "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8"
+            },
+            "title": "ꘇtop.filter"
+          },
+          {
+            "delayMs": 0,
+            "input": "image",
+            "kind": "connect",
+            "output": "image",
+            "source": {
+              "nodeId": "3",
+              "nodeType": "GeneretiTextureFeedback",
+              "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4"
+            },
+            "target": {
+              "nodeId": "5",
+              "nodeType": "GeneretiTextureFilter",
+              "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8"
+            }
+          }
+        ],
+        "hint": "Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.",
+        "target": {
+          "nodeId": "4",
+          "nodeType": "GeneretiLiveImagePreview",
+          "part": "node",
+          "ref": "f76e200f-632f-4207-ab2b-c0aff132d2d3"
+        },
+        "text": "Add the image viewer, tune decay/rotation and insert an invert filter. Edit decay gently to balance fresh shapes with trails.",
+        "title": "Filter and preview the trails"
+      },
+      {
+        "actions": [
+          {
+            "delayMs": 239,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              82
+            ],
+            "target": {
+              "nodeId": "6",
+              "nodeType": "GeneretiAudioTransport",
+              "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13"
+            },
+            "title": "ꘇmod.transport",
+            "widgets": {
+              "bpm": 110,
+              "swing": 0
+            }
+          },
+          {
+            "delayMs": 4,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              130
+            ],
+            "target": {
+              "nodeId": "7",
+              "nodeType": "GeneretiAudioSequence",
+              "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61"
+            },
+            "title": "ꘇmod.sequence",
+            "widgets": {
+              "division": 4,
+              "gate": 0.55,
+              "pattern": "60 64 67 72 67 64 - 55 60 - 67 - 72 67 64 -",
+              "velocity": 0.65
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "6",
+              "nodeType": "GeneretiAudioTransport",
+              "part": "parameter",
+              "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13",
+              "widget": "bpm"
+            },
+            "value": 96
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "6",
+              "nodeType": "GeneretiAudioTransport",
+              "part": "parameter",
+              "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13",
+              "widget": "swing"
+            },
+            "value": 0.1
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              760,
+              1420
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "6",
+              "nodeType": "GeneretiAudioTransport",
+              "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13"
+            },
+            "title": "ꘇmod.transport"
+          },
+          {
+            "delayMs": 5,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              322
+            ],
+            "target": {
+              "nodeId": "8",
+              "nodeType": "GeneretiAudioSynth",
+              "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c"
+            },
+            "title": "ꘇmod.synth",
+            "widgets": {
+              "attack": 0.02,
+              "cutoff": 2200,
+              "decay": 0.15,
+              "glide": 0.015,
+              "level": 0.35,
+              "polyphony": 8,
+              "release": 0.3,
+              "resonance": 0.7,
+              "sustain": 0.6,
+              "vibrato": 0,
+              "vibrato_rate": 5,
+              "voice": "sine"
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "type-text",
+            "target": {
+              "nodeId": "7",
+              "nodeType": "GeneretiAudioSequence",
+              "part": "code",
+              "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61",
+              "widget": "pattern"
+            },
+            "value": "48 55 60 63 67 - 63 60 48 - 55 60 - 67 63 -"
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "7",
+              "nodeType": "GeneretiAudioSequence",
+              "part": "parameter",
+              "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61",
+              "widget": "velocity"
+            },
+            "value": 0.5
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              1170,
+              1420
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "7",
+              "nodeType": "GeneretiAudioSequence",
+              "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61"
+            },
+            "title": "ꘇmod.sequence"
+          },
+          {
+            "delayMs": 62,
+            "input": "clock",
+            "kind": "connect",
+            "output": "clock",
+            "source": {
+              "nodeId": "6",
+              "nodeType": "GeneretiAudioTransport",
+              "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13"
+            },
+            "target": {
+              "nodeId": "7",
+              "nodeType": "GeneretiAudioSequence",
+              "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61"
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "type-text",
+            "target": {
+              "nodeId": "8",
+              "nodeType": "GeneretiAudioSynth",
+              "part": "code",
+              "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c",
+              "widget": "voice"
+            },
+            "value": "fm"
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "8",
+              "nodeType": "GeneretiAudioSynth",
+              "part": "parameter",
+              "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c",
+              "widget": "level"
+            },
+            "value": 0.25
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "8",
+              "nodeType": "GeneretiAudioSynth",
+              "part": "parameter",
+              "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c",
+              "widget": "cutoff"
+            },
+            "value": 1600
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              1580,
+              1420
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "8",
+              "nodeType": "GeneretiAudioSynth",
+              "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c"
+            },
+            "title": "ꘇmod.synth"
+          },
+          {
+            "delayMs": 0,
+            "input": "notes",
+            "kind": "connect",
+            "output": "notes",
+            "source": {
+              "nodeId": "7",
+              "nodeType": "GeneretiAudioSequence",
+              "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61"
+            },
+            "target": {
+              "nodeId": "8",
+              "nodeType": "GeneretiAudioSynth",
+              "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c"
+            }
+          }
+        ],
+        "hint": "Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.",
+        "target": {
+          "nodeId": "6",
+          "nodeType": "GeneretiAudioTransport",
+          "part": "node",
+          "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13"
+        },
+        "text": "Build a 96 BPM transport, melodic note sequence and FM voice. Audio remains stopped while the patch is assembled.",
+        "title": "Build the sequencer and FM synth"
+      },
+      {
+        "actions": [
+          {
+            "delayMs": 2000,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              106
+            ],
+            "target": {
+              "nodeId": "9",
+              "nodeType": "GeneretiAudioDelay",
+              "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
+            },
+            "title": "ꘇmod.delay",
+            "widgets": {
+              "feedback": 0.25,
+              "mix": 0.25,
+              "seconds": 0.25
+            }
+          },
+          {
+            "delayMs": 6,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              502
+            ],
+            "target": {
+              "nodeId": "10",
+              "nodeType": "GeneretiAudioMixer",
+              "ref": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11"
+            },
+            "title": "ꘇmod.mixer",
+            "widgets": {
+              "level_1": 0.7,
+              "level_2": 0.7,
+              "level_3": 0.7,
+              "level_4": 0.7,
+              "master": 0.7,
+              "mute_1": false,
+              "mute_2": false,
+              "mute_3": false,
+              "mute_4": false,
+              "pan_1": 0,
+              "pan_2": 0,
+              "pan_3": 0,
+              "pan_4": 0,
+              "solo_1": false,
+              "solo_2": false,
+              "solo_3": false,
+              "solo_4": false
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "9",
+              "nodeType": "GeneretiAudioDelay",
+              "part": "parameter",
+              "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c",
+              "widget": "seconds"
+            },
+            "value": 0.31
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "9",
+              "nodeType": "GeneretiAudioDelay",
+              "part": "parameter",
+              "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c",
+              "widget": "feedback"
+            },
+            "value": 0.35
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "9",
+              "nodeType": "GeneretiAudioDelay",
+              "part": "parameter",
+              "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c",
+              "widget": "mix"
+            },
+            "value": 0.3
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              1990,
+              1420
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "9",
+              "nodeType": "GeneretiAudioDelay",
+              "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
+            },
+            "title": "ꘇmod.delay"
+          },
+          {
+            "delayMs": 3,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              82
+            ],
+            "target": {
+              "nodeId": "11",
+              "nodeType": "GeneretiAudioOutput",
+              "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
+            },
+            "title": "ꘇmod.output",
+            "widgets": {
+              "level": 0.65,
+              "mute": false
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "10",
+              "nodeType": "GeneretiAudioMixer",
+              "part": "parameter",
+              "ref": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11",
+              "widget": "master"
+            },
+            "value": 0.6
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              2400,
+              1420
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "10",
+              "nodeType": "GeneretiAudioMixer",
+              "ref": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11"
+            },
+            "title": "ꘇmod.mixer"
+          },
+          {
+            "delayMs": 41,
+            "input": "input",
+            "kind": "connect",
+            "output": "audio",
+            "source": {
+              "nodeId": "8",
+              "nodeType": "GeneretiAudioSynth",
+              "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c"
+            },
+            "target": {
+              "nodeId": "9",
+              "nodeType": "GeneretiAudioDelay",
+              "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
+            }
+          },
+          {
+            "delayMs": 0,
+            "input": "input_1",
+            "kind": "connect",
+            "output": "audio",
+            "source": {
+              "nodeId": "9",
+              "nodeType": "GeneretiAudioDelay",
+              "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
+            },
+            "target": {
+              "nodeId": "10",
+              "nodeType": "GeneretiAudioMixer",
+              "ref": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11"
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "11",
+              "nodeType": "GeneretiAudioOutput",
+              "part": "parameter",
+              "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f",
+              "widget": "level"
+            },
+            "value": 0.25
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              2810,
+              1420
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "11",
+              "nodeType": "GeneretiAudioOutput",
+              "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
+            },
+            "title": "ꘇmod.output"
+          },
+          {
+            "delayMs": 0,
+            "input": "input",
+            "kind": "connect",
+            "output": "audio",
+            "source": {
+              "nodeId": "10",
+              "nodeType": "GeneretiAudioMixer",
+              "ref": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11"
+            },
+            "target": {
+              "nodeId": "11",
+              "nodeType": "GeneretiAudioOutput",
+              "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
+            }
+          }
+        ],
+        "hint": "Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.",
+        "target": {
+          "nodeId": "9",
+          "nodeType": "GeneretiAudioDelay",
+          "part": "node",
+          "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
+        },
+        "text": "Route the synth through a tempo-matched delay, into mixer channel 1 and a low-level output.",
+        "title": "Patch delay, mixer and output"
+      },
+      {
+        "actions": [
+          {
+            "delayMs": 260,
+            "kind": "create-node",
+            "position": [
+              10,
+              10
+            ],
+            "size": [
+              270,
+              102
+            ],
+            "target": {
+              "nodeId": "12",
+              "nodeType": "GeneretiTextureMath",
+              "ref": "fe8f8a27-eee5-49ab-abba-e36e06818e1f"
+            },
+            "title": "ꘇtop.math",
+            "widgets": {
+              "genereti_delivery": "Live",
+              "operation": "multiply",
+              "value": 1
+            }
+          },
+          {
+            "delayMs": 0,
+            "kind": "set-widget",
+            "target": {
+              "nodeId": "12",
+              "nodeType": "GeneretiTextureMath",
+              "part": "parameter",
+              "ref": "fe8f8a27-eee5-49ab-abba-e36e06818e1f",
+              "widget": "value"
+            },
+            "value": 0.5
+          },
+          {
+            "delayMs": 0,
+            "kind": "layout",
+            "position": [
+              1990,
+              700
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "12",
+              "nodeType": "GeneretiTextureMath",
+              "ref": "fe8f8a27-eee5-49ab-abba-e36e06818e1f"
+            },
+            "title": "ꘇtop.math"
+          },
+          {
+            "delayMs": 1,
+            "kind": "delete-node",
+            "target": {
+              "nodeId": "12",
+              "nodeType": "GeneretiTextureMath",
+              "ref": "fe8f8a27-eee5-49ab-abba-e36e06818e1f"
+            }
+          },
+          {
+            "delayMs": 51,
+            "kind": "layout",
+            "position": [
+              2810,
+              1600
+            ],
+            "size": [
+              330,
+              500
+            ],
+            "target": {
+              "nodeId": "11",
+              "nodeType": "GeneretiAudioOutput",
+              "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
+            },
+            "title": "ꘇmod.output"
+          }
+        ],
+        "hint": "Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.",
+        "target": {
+          "nodeId": "12",
+          "nodeType": "GeneretiTextureMath",
+          "part": "node",
+          "ref": "fe8f8a27-eee5-49ab-abba-e36e06818e1f"
+        },
+        "text": "Create an arithmetic processor to experiment, remove it, and arrange the output. Deletion and layout are recorded too.",
+        "title": "Test a processor and tidy the patch"
+      },
+      {
+        "hint": "This step is manual because device and audio activation are explicit gestures.",
+        "target": {
+          "nodeId": "11",
+          "nodeType": "GeneretiAudioOutput",
+          "part": "node",
+          "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
+        },
+        "text": "Playback pauses here. Press Start on mod.output explicitly, then listen and adjust the melody, cutoff and mixer. Watch the feedback viewer; Alt-W opens its overlay, Alt-F fills the window. Stop/Panic ends the audio. Save the patch and record another variation with the lesson toolbar.",
+        "title": "Start and test the performance"
+      }
+    ],
+    "summary": "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition. A recorded, model-free patch-building session.",
+    "title": "Build a feedback AV synth",
+    "version": 1
   }
 ]

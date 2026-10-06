@@ -83,3 +83,5 @@ See [modular audio](modular-audio.md) for routing, timing and queue boundaries.
 | `ꘇmod.delay` | Audio bus, seconds, feedback, mix | GENERETI_AUDIO_BUS | `GeneretiAudioDelay` |
 | `ꘇmod.mixer` | Four optional buses, channel gain/pan/mute/solo, master | GENERETI_AUDIO_BUS | `GeneretiAudioMixer` |
 | `ꘇmod.output` | Audio bus, level, mute; explicit browser Start | GENERETI_AUDIO_BUS | `GeneretiAudioOutput` |
+
+Recorded patch-building examples: **ꘇ-Feedback-AV-Build-Tutorial** starts with only the author node; **ꘇ-Feedback-AV-Recorded-Patch** opens the completed feedback/sequence/synth/delay/mixer graph. The lesson playlist supports sequential replay and pauses for explicit audio activation. See [recording and playback](opentouch-lessons.md#record-and-replay-a-patch-building-session).

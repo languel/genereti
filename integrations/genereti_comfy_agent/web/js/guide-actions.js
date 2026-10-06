@@ -1,5 +1,5 @@
 // Structured, local node actions. Imported guides cannot supply selectors or JS.
-const kinds=new Set(['select','set-widget','type-text','connect','disconnect','view','pointer','run-code']);
+const kinds=new Set(['select','set-widget','type-text','connect','disconnect','view','pointer','run-code','create-node','delete-node','layout']);
 const views=new Set(['overlay','backdrop','freeze','minimize']);
 export function validateReference(value){
  if(!value||typeof value.nodeType!=='string'||value.nodeType.length>100)throw Error('Action requires a node type');
@@ -11,6 +11,8 @@ export function validateActions(actions){
  const name=value=>{if(typeof value!=='string'||value.length>100)throw Error('Invalid socket name');return value;};
  const point=value=>{if(!Array.isArray(value)||value.length!==2||value.some(n=>typeof n!=='number'||!Number.isFinite(n)||n<0||n>1))throw Error('Pointer coordinates must be normalized');return value;};
  return actions.map(a=>{if(!a||!kinds.has(a.kind))throw Error('Unknown tutorial action');const out={kind:a.kind,target:validateReference(a.target)};
+  if(a.delayMs!==undefined){if(!Number.isFinite(a.delayMs)||a.delayMs<0||a.delayMs>5000)throw Error('Invalid action delay');out.delayMs=a.delayMs;}
+  if(['create-node','layout'].includes(a.kind)){if(a.mode!==undefined){if(!Number.isInteger(a.mode)||a.mode<0||a.mode>4)throw Error('Invalid node mode');out.mode=a.mode;}if(a.collapsed!==undefined){if(typeof a.collapsed!=='boolean')throw Error('Invalid collapsed state');out.collapsed=a.collapsed;}const pair=(v,size=false)=>{if(!Array.isArray(v)||v.length!==2||v.some(n=>!Number.isFinite(n)||Math.abs(n)>100000||size&&n<1))throw Error('Invalid node geometry');return [...v];};if(a.position)out.position=pair(a.position);if(a.size)out.size=pair(a.size,true);if(a.title!==undefined){if(typeof a.title!=='string'||a.title.length>200)throw Error('Invalid node title');out.title=a.title;}if(a.kind==='create-node'){if(!out.target.ref||!out.position||!out.size)throw Error('Created node requires ref and geometry');if(!a.widgets||typeof a.widgets!=='object'||Array.isArray(a.widgets)||Object.keys(a.widgets).length>200)throw Error('Invalid node widgets');out.widgets={};for(const [key,value]of Object.entries(a.widgets)){name(key);if(!['string','number','boolean'].includes(typeof value)||typeof value==='number'&&!Number.isFinite(value)||typeof value==='string'&&value.length>100000)throw Error('Invalid node widget');out.widgets[key]=value;}}}
   if(a.kind==='set-widget'||a.kind==='type-text'){if(!out.target.widget)throw Error('Action requires a widget');if(!['string','number','boolean'].includes(typeof a.value)||typeof a.value==='number'&&!Number.isFinite(a.value)||typeof a.value==='string'&&a.value.length>100000)throw Error('Invalid widget value');if(a.kind==='type-text'&&typeof a.value!=='string')throw Error('Typing requires text');out.value=a.value;}
   if(a.kind==='connect'){out.source=validateReference(a.source);out.output=name(a.output);out.input=name(a.input);}
   if(a.kind==='disconnect')out.input=name(a.input);
@@ -21,12 +23,12 @@ export function validateActions(actions){
 }
 export function resolveNode(graph,target){
  const nodes=graph?._nodes??[];
- if(target.ref){const found=nodes.find(n=>n.properties?.generetiLessonRef===target.ref);if(found)return found;}
+ if(target.ref){const found=nodes.find(n=>n.properties?.generetiLessonRef===target.ref);if(found&&(found.comfyClass??found.type)===target.nodeType)return found;throw Error('Tutorial target is missing: '+target.nodeType);}
  if(target.nodeId!==undefined){const found=nodes.find(n=>String(n.id)===String(target.nodeId)&&(n.comfyClass??n.type)===target.nodeType);if(found)return found;}
  const matches=nodes.filter(n=>(n.comfyClass??n.type)===target.nodeType);if(matches.length===1)return matches[0];throw Error(matches.length?'Several matching nodes; record a specific target':'Tutorial target is missing: '+target.nodeType);
 }
 export function nodeReference(node){node.properties??={};node.properties.generetiLessonRef??=crypto.randomUUID();return {nodeType:node.comfyClass??node.type,nodeId:node.id,ref:node.properties.generetiLessonRef};}
 export function coalesceAction(actions,action){
  // Consecutive slider changes or typed revisions become one committed value.
- const last=actions.at(-1);if(last&&['set-widget','type-text'].includes(action.kind)&&last.kind===action.kind&&JSON.stringify(last.target)===JSON.stringify(action.target)){actions[actions.length-1]=action;}else actions.push(action);
+ const last=actions.at(-1);if(last&&['set-widget','type-text','layout'].includes(action.kind)&&last.kind===action.kind&&JSON.stringify(last.target)===JSON.stringify(action.target)){actions[actions.length-1]=action;}else actions.push(action);
 }

@@ -55,10 +55,10 @@ authoring = {'format': 'genereti-guide',
             'check': {'kind': 'changed-widget'},
             'hint': 'Use Focus to locate the tool, then follow the step instructions.'},
            {'title': 'Record a demonstration',
-            'text': 'On dat.lesson press ● Record tutorial actions. Select the texture expression node, edit '
+            'text': 'On dat.lesson press ● Record tutorial actions. Add or remove a node, select the texture expression node, edit '
                     'its code or width/height, and connect nodes. Click/drag gestures are visual cues; '
                     'values and connections are semantic actions. Device start, queue and arbitrary UI '
-                    'clicks are not replayed.',
+                    'clicks are not replayed. The starting patch, node layout and titles are recorded too.',
             'target': {'nodeType': 'GeneretiDatLesson', 'part': 'toolbar'},
             'hint': 'The filled circle starts recording. It does not run a learner guide.'},
            {'title': 'Split the recording into teaching steps',
@@ -77,7 +77,7 @@ authoring = {'format': 'genereti-guide',
            {'title': 'Try Hint and Do it',
             'text': 'Run your guide. Hint reveals advice. Do it replays only the current step, visibly types '
                     'committed text, changes real parameter values and restores recorded wiring. Next stays '
-                    'learner-controlled. Source auto-update is paused while typing; a recorded Livecode Run '
+                    'learner-controlled. Play all replays successive steps and pauses at manual instructions. Source auto-update is paused while typing; a recorded Livecode Run '
                     'compiles afterward. Audio/capture stays explicitly activated.',
             'target': {'nodeType': 'GeneretiDatLesson', 'part': 'toolbar'},
             'hint': 'The sample lesson already includes Hint and Do it examples. Run authored lesson '

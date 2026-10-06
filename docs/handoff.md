@@ -127,3 +127,9 @@ Viewing commands register with Comfy commands/keybindings. Settings → Keybindi
 ## Shared editors checkpoint
 
 Shared appearance settings live in `genereti_comfy_p5/web/js/editor-settings.js`; open Livecode and operator editors subscribe to changes and release subscriptions on removal. Livecode retains its menu, now editing global defaults. Per-node font overrides use Cmd/Ctrl+Shift+Plus/Minus. Livecode has an editor-only collapse chevron and lightning auto-update toggle. Selection transforms use `editor-transform.js` and CodeMirror isolated undo. Rebuild bundles with `npm run build:livecode`; the build versions editor imports in all three consumers.
+
+### Patch recording checkpoint
+
+`guide-cua.js` now records graph creation/deletion plus widget edits, named wiring, title/layout and bounded action timing. `guide-patch.js` recreates instances using persistent refs. `dat.lesson` and the guide expose Play all/remaining and Stop, pausing at manual steps. Canonical browser recording: `web/lessons/feedback-av-recording.json`; demos: `ꘇ-Feedback-AV-Build-Tutorial.json` and `ꘇ-Feedback-AV-Recorded-Patch.json`. See `docs/opentouch-lessons.md` for supported operations and limitations.
+
+Verified by recording a real 10-operator patch in an isolated Comfy browser tab, deleting it and playing the six-step lesson back from the author node alone. The final step paused for explicit audio Start; the reconstructed Web Audio output produced a nonzero peak (about 0.0068) and Panic stopped it. This verifies browser routing/meter output, not an external MIDI device or acoustic listening test.
