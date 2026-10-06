@@ -112,3 +112,7 @@ A step may include `hint` and `actions`:
 A Do it attempt is grouped with the graph change hooks for Comfy undo. Closing the guide, changing steps or switching workflows interrupts playback; already-applied edits stay. Run failure is shown in the guide, so the learner can correct a missing tool or socket. Exports retain hints and actions in editable JSON; static Markdown/HTML/PDF include hints and action summaries, not an executable player.
 
 Open **ꘇ-Tutorial-Authoring** for the expanded “Make a tutorial with Genereti” walkthrough and runnable typing/Hint/Do it examples.
+
+### Lesson outline playlist
+
+Click a step title in `ꘇdat.lesson` to open that step directly in the learner guide. The outline marks the current step as you move with the guide’s Previous/Next controls. Choosing a step opens its instructions and target; recorded actions still require **Do it**. Run starts from the beginning. The divider between the code and lesson toolbar resizes the code area; arrow keys adjust it, double-click resets it, and its height is saved with the workflow.
