@@ -1,0 +1,4 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';
+import {describe,display} from '../integrations/genereti_comfy_dat/web/inspect-value.js';
+test('inspector preserves scalars, formats JSON and bounds sampled arrays',()=>{assert.equal(display(1.25),'1.25');assert.equal(display('hello','text'),'hello');assert.equal(JSON.parse(display({channels:{x:new Float32Array([1,2,3])}},'json',2)).channels.x.length,3);assert.deepEqual(describe([1,2,3],2),[1,2,'… 1 more items']);});
+test('inspector handles circular data, nonfinite values, nesting and hostile text as data',()=>{const a={html:'<script>bad()</script>',nan:NaN};a.self=a;assert.equal(describe(a).self,'[circular]');assert.equal(describe(a).nan,'NaN');assert(display(a).includes('<script>'));let deep={};for(let i=0;i<12;i++)deep={deep};assert(display(deep).includes('depth limit'));});

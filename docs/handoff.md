@@ -206,3 +206,14 @@ untouched. Restart Comfy and reload once to discover the four new schemas.
 The earlier multipass shader checkpoint remains the next runtime task: named
 Common/Buffer/Image/Sound passes, routing, editor tabs and GPU sound are planned
 in `docs/livecode-multipass.md`; these analysis nodes do not implement them.
+
+
+## Current-value inspector (2026-10-06)
+
+`dat.inspect` adds a wildcard input and read-only CodeMirror viewer for live
+OpenTouch scalar/CHOP/DAT data and queued Comfy results. It bounds sampled
+arrays, describes tensor metadata, freezes only the display, and exposes its
+formatted text. No history logger was added. Shared `createEditor` now accepts
+`readOnly`; existing editors remain editable. `ꘇ-Inspect-Values` is installed in
+the Genereti workflow folder. Browser validation used an isolated server on
+8001; the user workflow on 8000 remained untouched.

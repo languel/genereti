@@ -3,6 +3,7 @@ from comfy_api.latest import ComfyExtension, io
 from . import tables
 from .conversions import CONVERTERS
 from .lesson import Lesson
+from .inspect import Inspect
 WEB_DIRECTORY='./web'
 DAT=io.Custom('GENERETI_DAT');CHOP=io.Custom('GENERETI_CHOP')
 def code(name,default):return io.String.Input(name,default=default,multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'})
@@ -61,5 +62,5 @@ class FromChop(io.ComfyNode):
     @classmethod
     def execute(cls,input):return output(tables.from_chop(input))
 class DatExtension(ComfyExtension):
-    async def get_node_list(self):return [Text,Table,JSON,Select,Merge,Transpose,Replace,Expression,ToChop,Cell,FromChop,Lesson,*CONVERTERS]
+    async def get_node_list(self):return [Text,Table,JSON,Select,Merge,Transpose,Replace,Expression,ToChop,Cell,FromChop,Lesson,Inspect,*CONVERTERS]
 async def comfy_entrypoint():return DatExtension()

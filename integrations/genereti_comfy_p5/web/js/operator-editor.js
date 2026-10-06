@@ -2,7 +2,7 @@ import {editorAppearance,subscribeEditorAppearance,captureFontShortcut} from './
 import {app} from '../../../scripts/app.js';
 import {ensureControlStyle} from './control-style.js';
 import {captureEditorInput} from './editor-input.js';
-import {createEditor,defaultAppearance} from '../lib/editor.mjs?v=ffb57dd5c16bd92c';
+import {createEditor,defaultAppearance} from '../lib/editor.mjs?v=27024ccf1ec1c74f';
 // Small CodeMirror surface shared by DAT text and TOP/CHOP expressions. Values
 // remain ordinary STRING inputs in saved/queued workflows.
 app.registerExtension({name:'Genereti.OperatorEditor',getCustomWidgets(){return {

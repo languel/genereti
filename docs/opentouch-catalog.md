@@ -57,6 +57,7 @@ TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs
 | --- | --- | --- | --- |
 | `ꘇdat.cell` | input: GENERETI_DAT, row: INT, column: INT | text: STRING, value: FLOAT | `GeneretiDatCell` |
 | `ꘇdat.expression` | input: GENERETI_DAT, expression: STRING | table: GENERETI_DAT, text: STRING | `GeneretiDatExpression` |
+| `ꘇdat.inspect` | Any input, JSON/text format, preview limit | text: STRING | `GeneretiDatInspect` |
 | `ꘇdat.json` | text: STRING | table: GENERETI_DAT, text: STRING | `GeneretiDatJSON` |
 | `ꘇdat.lesson` | guide: STRING | document: GENERETI_DAT, markdown: STRING | `GeneretiDatLesson` |
 | `ꘇdat.merge` | input: GENERETI_DAT, other: GENERETI_DAT | table: GENERETI_DAT, text: STRING | `GeneretiDatMerge` |
@@ -98,3 +99,19 @@ See [modular audio](modular-audio.md) for routing, timing and queue boundaries.
 Recorded patch-building examples: **ꘇ-Feedback-AV-Build-Tutorial** starts with only the author node; **ꘇ-Feedback-AV-Recorded-Patch** opens the completed feedback/sequence/synth/delay/mixer graph. The lesson playlist supports sequential replay and pauses for explicit audio activation. See [recording and playback](opentouch-lessons.md#record-and-replay-a-patch-building-session).
 
 Painterly example: **ꘇ-Painterly-Feedback-Tutorial** teaches fresh pigment → crossfade and delayed reference → displacement → blur → crossfade, with the final crossfade as the reference target. The completed companion is **ꘇ-Painterly-Feedback-Patch**. See the [texture guide](texture-operators.md#painterly-reference-feedback-tutorial), including the complete `top.expression` syntax reference.
+
+
+### Inspect current values
+
+Use `ꘇdat.inspect` (search `inspect`, `debug`, or `genereti dat`) to view numbers,
+strings, objects, DAT tables and named CHOP samples in a read-only CodeMirror
+display. Connect any output to its input. OpenTouch live values update at 10 Hz;
+other Comfy values appear after Queue. Tensor/image data shows shape and dtype
+without copying pixels. Arrays/objects show up to `limit` entries per level.
+`json` formats structured data; `text` displays strings without JSON quotes.
+Freeze pauses only the display. Text can be selected/copied or exported from
+the toolbar; global editor appearance and per-node font shortcuts apply.
+The display is runtime state, not saved data or a history log.
+
+**ꘇ-Inspect-Values** demonstrates a live oscillator and a JSON DAT feeding two
+inspectors. Restart Comfy and reload once to discover the new schema.
