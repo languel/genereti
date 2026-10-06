@@ -192,7 +192,7 @@ This FPS is neither inference speed nor the output’s frame delivery rate.
 
 ### Node names and discovery
 
-All Genereti node labels start with `ꘇ`. Operator labels attach it directly to the family name, for example `ꘇdat.totop`; other labels use a space, for example `ꘇ livecode`. The glyph is visual branding, while stable `Genereti…` node IDs prevent namespace conflicts and preserve existing workflows. Search aliases include plain family names (`dat`, `top`, `chop`) and branded phrases (`genereti dat`, `genereti top`, `genereti chop`), so typing the glyph is optional. Existing descriptive workflow titles receive the prefix when loaded; their wording and node IDs are preserved.
+All Genereti node labels start with `ꘇ`. Operator labels attach it directly to the family name, for example `ꘇdat.totop`; other labels use a space, for example `ꘇ livecode`. The glyph is visual branding, while stable `Genereti…` node IDs prevent namespace conflicts and preserve existing workflows. Search aliases include plain family names (`dat`, `top`, `chop`, `mod`) and branded phrases (`genereti dat`, `genereti top`, `genereti chop`, `genereti mod`), so typing the glyph is optional. Existing descriptive workflow titles receive the prefix when loaded; their wording and node IDs are preserved.
 
 ### Interactive output overlays
 
@@ -222,3 +222,7 @@ Alt+O output-only nodes and Alt+W floating overlays use the same edge-revealed b
 Hover a view or interact with it, then press **Cmd+[ / Cmd+]** to move it backward/forward one layer. **Cmd+Shift+[ / Cmd+Shift+]** sends it to the back/front. The bar's backward/forward glyphs support Shift-click for the end positions. Ctrl is the equivalent modifier on other hosts. Text fields and code editors retain their bracket shortcuts. Sorting changes display order only and leaves graph execution, source pixels and opacity unchanged. Floating overlays sort against other floating overlays; output-only nodes sort within the graph's node layer. Graph nodes remain below floating overlays. Stack order is session-only.
 
 Alt+W anchors the opened overlay at the current cursor position, clamped to the viewport so its controls remain reachable. Its last size is retained. Opening with the node glyph retains the saved rectangle. Output-only hiding follows the embedded view itself, so Comfy selection updates cannot restore the chrome accidentally.
+
+### Modular audio controls
+
+`ꘇmod.*` uses the same compact themed controls: explicit output Start/Panic, accessible note/drum grids, audition keys and mixer mute/solo/faders. Native parameters remain available for Comfy socket conversion and saved values. Sound never starts on node creation, workflow load or queue. Runtime AudioNodes and playing state are excluded from workflow serialization.

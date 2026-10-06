@@ -1,0 +1,582 @@
+{
+  "last_node_id": 11,
+  "last_link_id": 10,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiAudioTransport",
+      "title": "ꘇmod.transport",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        300,
+        180
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "links": [
+            1,
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioTransport"
+      },
+      "widgets_values": [
+        110,
+        0.12
+      ]
+    },
+    {
+      "id": 2,
+      "type": "GeneretiAudioSequence",
+      "title": "ꘇmod.sequence",
+      "pos": [
+        360,
+        0
+      ],
+      "size": [
+        460,
+        240
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSequence"
+      },
+      "widgets_values": [
+        "60 64 67 72 67 64 - 55 60 - 67 - 72 67 64 -",
+        4,
+        0.55,
+        0.65
+      ]
+    },
+    {
+      "id": 3,
+      "type": "GeneretiAudioDrumSequence",
+      "title": "ꘇmod.drumsequence",
+      "pos": [
+        360,
+        320
+      ],
+      "size": [
+        460,
+        250
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDrumSequence"
+      },
+      "widgets_values": [
+        "kick:1000100010001000;snare:0000100000001000;hat:1010101010101010",
+        4,
+        0.65
+      ]
+    },
+    {
+      "id": 4,
+      "type": "GeneretiAudioSynth",
+      "title": "ꘇmod.synth",
+      "pos": [
+        880,
+        0
+      ],
+      "size": [
+        340,
+        630
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSynth"
+      },
+      "widgets_values": [
+        "sine",
+        0.35,
+        0.02,
+        0.15,
+        0.6,
+        0.3,
+        2200,
+        0.7,
+        0.015,
+        0,
+        5,
+        8
+      ]
+    },
+    {
+      "id": 5,
+      "type": "GeneretiAudioDrumKit",
+      "title": "ꘇmod.drumkit",
+      "pos": [
+        880,
+        700
+      ],
+      "size": [
+        340,
+        220
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDrumKit"
+      },
+      "widgets_values": [
+        0.4,
+        0.18,
+        1
+      ]
+    },
+    {
+      "id": 6,
+      "type": "GeneretiAudioGain",
+      "title": "ꘇmod.gain",
+      "pos": [
+        1280,
+        0
+      ],
+      "size": [
+        300,
+        200
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioGain"
+      },
+      "widgets_values": [
+        0.8,
+        0,
+        false
+      ]
+    },
+    {
+      "id": 7,
+      "type": "GeneretiAudioFilter",
+      "title": "ꘇmod.filter",
+      "pos": [
+        1280,
+        250
+      ],
+      "size": [
+        300,
+        200
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioFilter"
+      },
+      "widgets_values": [
+        "lowpass",
+        1800,
+        0.7
+      ]
+    },
+    {
+      "id": 8,
+      "type": "GeneretiAudioDelay",
+      "title": "ꘇmod.delay",
+      "pos": [
+        1280,
+        500
+      ],
+      "size": [
+        300,
+        200
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDelay"
+      },
+      "widgets_values": [
+        0.25,
+        0.25,
+        0.25
+      ]
+    },
+    {
+      "id": 9,
+      "type": "GeneretiAudioMixer",
+      "title": "ꘇmod.mixer",
+      "pos": [
+        1640,
+        0
+      ],
+      "size": [
+        380,
+        800
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input_1",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 8
+        },
+        {
+          "name": "input_2",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 9
+        },
+        {
+          "name": "input_3",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        },
+        {
+          "name": "input_4",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioMixer"
+      },
+      "widgets_values": [
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7
+      ]
+    },
+    {
+      "id": 10,
+      "type": "GeneretiAudioOutput",
+      "title": "ꘇmod.output",
+      "pos": [
+        2080,
+        0
+      ],
+      "size": [
+        320,
+        240
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioOutput"
+      },
+      "widgets_values": [
+        0.65,
+        false
+      ]
+    },
+    {
+      "id": 11,
+      "type": "GeneretiDatLesson",
+      "pos": [
+        0,
+        740
+      ],
+      "size": [
+        740,
+        560
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson"
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"modular-audio\",\n  \"title\": \"A modular Web Audio patch\",\n  \"summary\": \"Patch instruments, effects and a mixer independently of Comfy execution.\",\n  \"steps\": [\n    {\n      \"title\": \"Enable the output\",\n      \"text\": \"Sound starts only when you press ▷ on mod.output. Queue never plays audio. Begin with a low output level.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Change the melody\",\n      \"text\": \"Edit MIDI pitches in the note grid; - is a rest. Both sequences share transport BPM and swing. Edits reset pending notes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSequence\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Edit the drums\",\n      \"text\": \"The three rows are kick, snare and hi-hat. Click steps to enable or disable them.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioDrumSequence\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Shape the synth\",\n      \"text\": \"Choose a voice and change ADSR or cutoff. The notes socket also accepts OpenTouch CHOP and MIDI channels. Audition keys work while a connected output runs.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSynth\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Mix and process\",\n      \"text\": \"Follow the live audio bus through gain/pan, filter and delay into mixer channel 1. Drums enter channel 2. Use M to mute, S to solo, or drag channel faders. Parameters remain normal Comfy controls.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioMixer\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Stop and save\",\n      \"text\": \"▷ toggles the output off. The square Panic button stops all modular outputs. Saved workflows retain the patch and patterns, never permission to play sound. Browser timing can degrade when backgrounded.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"part\": \"node\"\n      }\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"opentouch-basics\",\n  \"title\": \"Textures, signals and tables\",\n  \"summary\": \"Edit an expression, connect a control signal, and use a table as a parameter source.\",\n  \"steps\": [\n    {\n      \"title\": \"One graph, three interfaces\",\n      \"text\": \"TOP carries images, CHOP carries sampled channels, and DAT carries documents and tables. The lesson workflow uses real nodes you can keep editing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Write a texture expression\",\n      \"text\": \"Change the expression, for example change x*12 to x*8. CodeMirror applies it while typing. The GPU program recompiles only when its source changes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"Change a signal\",\n      \"text\": \"Adjust oscillator frequency. The FLOAT output is the last sample of its first channel; the channel output carries the whole named block.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopOscillator\",\n        \"part\": \"parameter\",\n        \"widget\": \"frequency\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"A FLOAT becomes a texture control\",\n      \"text\": \"Follow the wire from chop.lag to top.transform rotate. These are regular Comfy input sockets; signals update the live shader without a Python queue.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\"\n      },\n      \"check\": {\n        \"kind\": \"connected-input\",\n        \"input\": \"rotate\"\n      }\n    },\n    {\n      \"title\": \"A table becomes a parameter\",\n      \"text\": \"Edit a number in the table. dat.cell selects one cell and exposes it as STRING and FLOAT. The lesson wires its FLOAT into top.math value.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatTable\",\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"GPU composition and history\",\n      \"text\": \"Inspect feedback, corner pin and compositing. Feedback keeps two GPU textures and avoids cyclic graph wires. Its history exists in Live mode; Queue returns the current input.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedback\",\n        \"part\": \"preview\"\n      }\n    },\n    {\n      \"title\": \"Keep 3D in Three.js\",\n      \"text\": \"The Three.js Livecode source uses the same IMAGE path. Its code can read inputTexture and declared CHOP-driven parameters; no separate geometry engine is needed.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"code\"\n      }\n    },\n    {\n      \"title\": \"Read and export the report\",\n      \"text\": \"The DAT document contains the library report. Use its export controls for Markdown, standalone HTML, or Print / Save as PDF. The report describes performance and device boundaries.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"part\": \"toolbar\"\n      }\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      },
+      "title": "ꘇ modular audio · start here"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      2,
+      1,
+      0,
+      3,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      3,
+      2,
+      0,
+      4,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      4,
+      3,
+      0,
+      5,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      5,
+      4,
+      0,
+      6,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      6,
+      6,
+      0,
+      7,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      7,
+      7,
+      0,
+      8,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      8,
+      8,
+      0,
+      9,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      9,
+      5,
+      0,
+      9,
+      1,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      10,
+      9,
+      0,
+      10,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.43,
+      "offset": [
+        100,
+        170
+      ]
+    }
+  },
+  "version": 0.4
+}

@@ -57,3 +57,7 @@ without it. See the stream pack README for setup and local transport details.
 ## OpenTouch packs
 
 TOP/CHOP/DAT and lesson nodes are independent of Core ML. Live TOP requires WebGPU in a secure-context host; queued image operations use PyTorch. Signal/table Queue uses NumPy. Web MIDI and host print/PDF availability vary by browser/desktop harness. OSC uses an explicit-start loopback UDP bridge. Synth/drum endpoints use user-started Web Audio; they pass data through silently in Queue. See the [OpenTouch report](opentouch-report.md) for copy/readback and timing limits. This does not expand Core ML generator support beyond macOS 14+ on Apple silicon.
+
+## Modular browser audio
+
+The independent `ꘇmod.*` family uses Web Audio in a supported browser on macOS, Windows or Linux. It is independent of the Apple-silicon Core ML generator. Start is an explicit browser action on `mod.output`; queueing only passes route descriptions/control data, not Comfy `AUDIO` tensors. Browser background throttling and host audio policies affect scheduling. See [modular audio](modular-audio.md).

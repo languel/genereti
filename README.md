@@ -28,7 +28,7 @@ or Comfy Queue above the editor. Transparent paper, output sizing, auto masks an
 Satori shortcuts are covered in the [drawing guide](integrations/genereti_comfy_drawing/README.md).
 Install with `scripts/install_comfy.sh`, restart ComfyUI and refresh the browser.
 
-**OpenTouch operators** add `top.*` WebGPU textures, `chop.*` sampled signals/MIDI/OSC/music, and `dat.*` documents/tables/lessons. All six family conversions are explicit. Open **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. The `dat.lesson` toolbar authors/runs/exports lessons; Settings → Genereti → Learning opens mini guides. Browser synth/drum audio is explicitly started. See the [catalog](docs/opentouch-catalog.md), [report](docs/opentouch-report.md) and [lesson/export guide](docs/opentouch-lessons.md).
+**OpenTouch operators** add `top.*` WebGPU textures, `chop.*` sampled signals/MIDI/OSC/music, and `dat.*` documents/tables/lessons. All six family conversions are explicit. Open **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. The `dat.lesson` toolbar authors/runs/exports lessons; Settings → Genereti → Learning opens mini guides. Browser synth/drum audio is explicitly started. The independent `mod.*` Web Audio layer adds routed instruments, sequencers, effects and a mixer; open **ꘇ-Modular-Audio** and press Start on `mod.output`. See the [audio guide](docs/modular-audio.md), [catalog](docs/opentouch-catalog.md), [report](docs/opentouch-report.md) and [lesson/export guide](docs/opentouch-lessons.md).
 Open [ꘇ-Drawing-Source.json](<integrations/comfyui_genereti/workflows/ꘇ-Drawing-Source.json>)
 for a drawing → **ꘇ live image preview** example without a model server. Custom
 node controls follow the [node UI design rules](docs/node-ui-design.md).

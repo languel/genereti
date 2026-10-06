@@ -166,3 +166,7 @@ semantics and performance checks. No Core ML models are required.
 - **ꘇ-Interactive-Output-Views.json**: clickable p5, a scrollable Markdown/math document, active drawing and an authored mini guide. Try Alt+O or Shift-click on the overlay glyph for output-only node chrome; use a regular click or Alt+W for a floating overlay. Both views share opacity, click-through and stacking controls.
 
 Demo filenames use `ꘇ-…`. Stable node IDs and the **Genereti** folder remain unchanged. The installer preserves customized examples and archives redundant or retired unchanged managed copies outside the workflow browser.
+
+## Modular audio demo
+
+**ꘇ-Modular-Audio.json** connects shared transport, melody/drum grids, polyphonic synth and procedural drums through gain/pan, filter, delay and a four-bus mixer into an explicitly started output. Its `dat.lesson` provides a walkthrough. These are independent `mod.*` nodes that accept OpenTouch CHOP notes and scalar controls. No models or hardware are required. See [modular audio](modular-audio.md).

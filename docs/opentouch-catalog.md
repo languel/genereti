@@ -2,7 +2,7 @@
 
 TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs retain saved workflow compatibility. [Report](opentouch-report.md) explains transport, conversion and device boundaries. [Lessons](opentouch-lessons.md) covers authoring and exports.
 
-44 registered operators in this checkpoint.
+44 OpenTouch TOP/CHOP/DAT operators, plus 10 independent modular audio operators.
 
 ## TOP
 
@@ -66,3 +66,20 @@ TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs
 IMAGE uses normal Comfy image sockets; named blocks use `GENERETI_CHOP` and string tables use `GENERETI_DAT`. Conversion operators bridge all six directions. FLOAT/STRING scalar outputs connect to regular parameter sockets. Audio endpoints are silent until their own Start button; MIDI/OSC endpoints require Connect.
 
 3D remains in Livecode Three.js. No SOP/POP/MAT family is introduced.
+
+## MOD · independent Web Audio
+
+See [modular audio](modular-audio.md) for routing, timing and queue boundaries.
+
+| Operator | Inputs | Output | Stable node ID |
+| --- | --- | --- | --- |
+| `ꘇmod.transport` | BPM, swing | GENERETI_AUDIO_CLOCK | `GeneretiAudioTransport` |
+| `ꘇmod.sequence` | Clock, pattern, division, gate, velocity | GENERETI_CHOP | `GeneretiAudioSequence` |
+| `ꘇmod.drumsequence` | Clock, drum rows, division, velocity | GENERETI_CHOP | `GeneretiAudioDrumSequence` |
+| `ꘇmod.synth` | CHOP notes, voice, ADSR, filter, glide, vibrato, polyphony | GENERETI_AUDIO_BUS | `GeneretiAudioSynth` |
+| `ꘇmod.drumkit` | CHOP notes, level, decay, tone | GENERETI_AUDIO_BUS | `GeneretiAudioDrumKit` |
+| `ꘇmod.gain` | Audio bus, level, pan, mute | GENERETI_AUDIO_BUS | `GeneretiAudioGain` |
+| `ꘇmod.filter` | Audio bus, mode, cutoff, resonance | GENERETI_AUDIO_BUS | `GeneretiAudioFilter` |
+| `ꘇmod.delay` | Audio bus, seconds, feedback, mix | GENERETI_AUDIO_BUS | `GeneretiAudioDelay` |
+| `ꘇmod.mixer` | Four optional buses, channel gain/pan/mute/solo, master | GENERETI_AUDIO_BUS | `GeneretiAudioMixer` |
+| `ꘇmod.output` | Audio bus, level, mute; explicit browser Start | GENERETI_AUDIO_BUS | `GeneretiAudioOutput` |

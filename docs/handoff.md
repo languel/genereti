@@ -2,6 +2,10 @@
 
 Review checkpoint: **2026-10-04**, `main`, functional changes through **17b0adc**. These changes are pushed to `origin/main`. This document is the review map, not a claim that every device or performance configuration has been tested.
 
+## Modular audio follow-up · 2026-10-06
+
+The independent `ꘇmod.*` family adds ten Web Audio routing nodes with OpenTouch CHOP note/scalar interoperability. Review **ꘇ-Modular-Audio** and its embedded walkthrough: Start on `mod.output`, edit both grids, mute/solo the mixer, adjust delay, then Stop/Panic. The [audio guide](modular-audio.md) records contracts and current limits. Legacy `chop.synth` endpoints are preserved. Backend restart and frontend refresh are needed for the new schemas/modules. Verification used an owned 8001 instance; the user's 8000 workflow was preserved. Validated 81 JavaScript tests, 14 Python operator tests and 6 installer tests; all 30 canonical workflows parse. Browser checks covered grid edits/save/reload, explicit start, mute/solo, Panic and real OfflineAudioContext rendering (audible RMS 0.0169, muted RMS 0). No hardware MIDI or speaker latency claim is made.
+
 ## Start the review here
 
 In Comfy, open **Workflows → Genereti**. The examples are installed locally in `user/default/workflows/Genereti/` and their canonical sources live in `integrations/comfyui_genereti/workflows/`.

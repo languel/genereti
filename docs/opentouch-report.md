@@ -107,3 +107,7 @@ Keep geometry creation, cameras, lights and materials in Three.js for now. Defer
 scrolling, p5 pointer callbacks, active drawing, output-only nodes and floating
 overlays. Both are model-free and available from the lesson chooser. Display
 stacking and opacity leave the renderer and downstream texture unchanged.
+
+## Independent modular audio follow-up
+
+The ten `ꘇmod.*` operators now provide a browser audio-bus graph, shared transport, editable sequencers, polyphonic synth, procedural drums, gain/pan, filter, delay, mixer and explicit output. They interoperate with CHOP notes/scalars while retaining separate Web Audio timing and resources. Legacy `chop.synth` endpoints described above remain unchanged. See [modular audio](modular-audio.md) and **ꘇ-Modular-Audio** for the first routed milestone and its limits.
