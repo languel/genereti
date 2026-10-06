@@ -17,9 +17,13 @@ export function registerViewStack(element,owner=element){
  paint();
  return {move:entry.move,dispose(){if(disposed)return;disposed=true;element.removeEventListener('pointerdown',select,true);element.removeEventListener('pointerenter',select);entries.splice(entries.indexOf(entry),1);owner.style.zIndex=previous;paint();if(active===entry)active=entries.at(-1);}};
 }
+export function moveActiveView(direction){
+ const hovered=entries.filter(item=>item.element.matches(':hover')).sort((a,b)=>Number(b.owner.style.zIndex)-Number(a.owner.style.zIndex))[0];
+ const entry=hovered||active;if(!entry)return false;entry.move(direction);return true;
+}
 export function routeStackShortcut(event){
  if(event.defaultPrevented||event.repeat||event.isComposing||event.altKey||!(event.metaKey||event.ctrlKey)||!['BracketLeft','BracketRight'].includes(event.code))return false;
- const hovered=entries.filter(item=>item.element.matches(':hover')).sort((a,b)=>Number(b.owner.style.zIndex)-Number(a.owner.style.zIndex))[0];
- const entry=hovered||active;if(!entry)return false;
- event.preventDefault();event.stopPropagation();entry.move(event.code==='BracketLeft'?(event.shiftKey?'back':'backward'):(event.shiftKey?'front':'forward'));return true;
+ const direction=event.code==='BracketLeft'?(event.shiftKey?'back':'backward'):(event.shiftKey?'front':'forward');
+ if(!moveActiveView(direction))return false;
+ event.preventDefault();event.stopPropagation();return true;
 }

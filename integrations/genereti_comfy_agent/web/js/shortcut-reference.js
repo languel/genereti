@@ -20,14 +20,38 @@ const shortcuts=[
   ['Alt+Shift+Right','Next Manim cue','Inside the active Manim editor/preview'],
 ];
 function reference(){
-  const root=document.createElement('div');root.style.cssText='width:100%;font-size:12px;color:inherit';
-  const table=document.createElement('table');table.setAttribute('aria-label','Genereti keyboard shortcuts');table.style.cssText='width:100%;border-collapse:collapse;text-align:left';
-  const head=table.createTHead().insertRow();for(const text of ['Shortcut','Action','Scope']){const cell=document.createElement('th');cell.textContent=text;cell.style.cssText='padding:6px 8px;font-weight:500';head.append(cell);}
-  const body=table.createTBody();for(const row of shortcuts){const tr=body.insertRow();row.forEach((text,index)=>{const td=tr.insertCell();td.style.cssText='padding:6px 8px;vertical-align:top';const content=document.createElement(index===0?'kbd':'span');content.textContent=text;if(index===0)content.style.whiteSpace='nowrap';td.append(content);});}
-  const note=document.createElement('p');note.style.cssText='margin:10px 8px;opacity:.75;line-height:1.5';note.textContent='On macOS, Alt is Option. Viewing shortcuts leave text fields and code editing alone. Fill window stays inside Comfy; browser/macOS fullscreen is separate. Canvas diagnostics: T = graph time, I = iterations, N = total [in-view] nodes, V = revision, FPS = graph redraw rate, not generation or output FPS.';
-  root.append(table,note);return root;
+  const root=document.createElement('div');
+  const button=document.createElement('button');button.textContent='Open keybindings';
+  button.title='Use Comfy’s native editor to search ꘇ / Genereti, edit bindings, resolve conflicts, and save presets. Hover commands for scope. P on blank canvas toggles parameters; with selected nodes it pins them.';
+  button.addEventListener('click',async()=>{
+    const open=()=>{const tab=[...document.querySelectorAll('button,[role=button]')].find(item=>item.textContent.trim()==='Keybinding');if(!tab)return false;tab.click();return true;};
+    if(open())return;
+    await app.extensionManager.command.execute('Comfy.ShowSettingsDialog');
+    if(open())return;
+    const observer=new MutationObserver(()=>{if(open())observer.disconnect();});observer.observe(document.body,{childList:true,subtree:true});setTimeout(()=>observer.disconnect(),3000);
+  });
+  root.append(button);
+  // Editor-local and pointer gestures retain their editor context; do not
+  // present them as globally editable commands.
+  const local=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Editor and pointer gestures';local.append(summary);
+  for(const [keys,label,scope] of shortcuts.filter(row=>['Shift-click overlay glyph','Escape','Alt+Z','Cmd/Ctrl+Enter','Ctrl+.','Cmd/Ctrl+Shift+F','Alt+Shift+Right'].includes(row[0]))){
+    const line=document.createElement('div');line.style.cssText='display:flex;gap:12px;padding:6px 0';line.title=scope;const kbd=document.createElement('kbd');kbd.textContent=keys;const text=document.createElement('span');text.textContent=label;line.append(kbd,text);local.append(line);
+  }
+  root.append(local);return root;
 }
-app.registerExtension({name:'Genereti.ShortcutReference',settings:[{
+app.registerExtension({name:'Genereti.ShortcutReference',setup(){
+  // Native KeybindingPanel currently titles command cells with only the ID.
+  // Add authored scope to that hover tip without replacing its native UI.
+  const tips=()=>{
+    const commands=app.extensionManager.command.commands;
+    for(const cell of document.querySelectorAll('.keybinding-panel [title^="Genereti."],.keybinding-panel [data-genereti-command]')){
+      const id=cell.dataset.generetiCommand||cell.title;
+      const command=commands.find(item=>item.id===id);
+      if(command?.tooltip){cell.dataset.generetiCommand=id;cell.title=`${command.tooltip} (${id})`;}
+    }
+  };
+  new MutationObserver(tips).observe(document.body,{childList:true,subtree:true});tips();
+},settings:[{
   id:'Genereti.Shortcuts.Reference',name:'Keyboard shortcuts',category:['Genereti','Shortcuts','Reference'],
   type:reference,defaultValue:null,tooltip:'Reference for Genereti viewing, presentation and creative-editor shortcuts. These are actions, not workflow parameters.',
 }]});

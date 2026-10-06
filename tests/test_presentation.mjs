@@ -9,7 +9,7 @@ function fixture(){
  let extension;const app={canvas,registerExtension:x=>extension=x},window={dispatchEvent(){},addEventListener:(key,fn)=>listeners[key]=fn};
  const context=vm.createContext({app,document,window,Element:class{},MutationObserver:class{observe(){}},Event:class{}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_agent/web/js/satori.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,''),context);extension.setup();
- const key=(code,options={})=>listeners.keydown({code,preventDefault(){this.defaultPrevented=true;},stopImmediatePropagation(){},...options});
+ const key=(code,options={})=>{const binding=extension.keybindings.find(b=>b.combo.key.toUpperCase()===code.slice(3)&&Boolean(b.combo.alt)===Boolean(options.altKey)&&Boolean(b.combo.shift)===Boolean(options.shiftKey));if(binding)extension.commands.find(c=>c.id===binding.commandId).function();};
  return {canvas,classes,calls,key,listeners};
 }
 test('presentation skips nodes and links but keeps output background and restores graph drawing',()=>{
@@ -21,6 +21,7 @@ test('Satori hides diagnostics with independent stats peek and preserves normal 
  const f=fixture();f.key('KeyZ',{altKey:true,shiftKey:true});assert.equal(f.canvas.show_info,false);f.key('KeyI',{altKey:true,shiftKey:true});assert.equal(f.canvas.show_info,true);
  f.key('KeyZ',{altKey:true,shiftKey:true});f.key('KeyI',{altKey:true,shiftKey:true});assert.equal(f.canvas.show_info,false);f.key('KeyZ',{altKey:true,shiftKey:true});f.key('KeyZ',{altKey:true,shiftKey:true});assert.equal(f.canvas.show_info,false);
 });
-test('overlay keyboard forwarding reaches workspace visibility controls',()=>{
- const f=fixture();f.listeners['genereti-workspace-shortcut']({detail:{code:'KeyP',altKey:true,preventDefault(){},stopImmediatePropagation(){}}});assert.equal(f.classes.has('genereti-presentation'),true);
+test('workspace commands have native bindings and scope tooltips',()=>{
+ const f=fixture();f.key('KeyP',{altKey:true});assert.equal(f.classes.has('genereti-presentation'),true);
+ const source=readFileSync(new URL('../integrations/genereti_comfy_agent/web/js/satori.js',import.meta.url),'utf8');assert.ok(source.includes("tooltip:'Toggle the right properties/parameters panel"));
 });

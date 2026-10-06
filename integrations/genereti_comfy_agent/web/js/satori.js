@@ -60,7 +60,7 @@ function markChrome() {
 }
 app.registerExtension({
   name: 'Genereti.Satori',
-  commands: [{id:'Genereti.TogglePropertiesPanel',label:'ꘇ Properties sidebar',icon:'pi pi-sidebar',function:toggleProperties},{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', icon:'pi pi-circle', function:toggle},{id:'Genereti.TogglePresentation',label:'ꘇ Presentation visibility',icon:'pi pi-eye-slash',function:togglePresentation},{id:'Genereti.ToggleCanvasStats',label:'ꘇ Canvas diagnostics',icon:'pi pi-chart-line',function:toggleStats}],
+  commands: [{id:'Genereti.TogglePropertiesPanel',label:'ꘇ Parameters sidebar',tooltip:'Toggle the right properties/parameters panel. P on blank canvas also toggles it; with selected nodes P keeps Comfy pin behavior.',icon:'pi pi-sidebar',function:toggleProperties},{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', tooltip:'Hide Comfy chrome and diagnostics; renderers continue.', icon:'pi pi-circle', function:toggle},{id:'Genereti.TogglePresentation',label:'ꘇ Presentation visibility',tooltip:'Hide graph nodes, code and links; renderers continue.',icon:'pi pi-eye-slash',function:togglePresentation},{id:'Genereti.ToggleCanvasStats',label:'ꘇ Canvas diagnostics',tooltip:'T: graph time; I: iterations; N: total [visible] nodes; V: revision; FPS: graph redraw rate, not output/generation FPS.',icon:'pi pi-chart-line',function:toggleStats}],
   keybindings: [{commandId:'Genereti.TogglePropertiesPanel',combo:{key:'r',alt:true,shift:true}},{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}},{commandId:'Genereti.TogglePresentation',combo:{key:'p',alt:true}},{commandId:'Genereti.ToggleCanvasStats',combo:{key:'i',alt:true,shift:true}}],
   afterConfigureGraph(){syncCanvas();},
   setup() {
@@ -103,12 +103,6 @@ html.${MODE} .comfyui-body {grid-template-rows:0 1fr 0!important;grid-template-c
     new MutationObserver(markChrome).observe(document.getElementById('vue-app') || document.body, {childList:true,subtree:true});
     const handleKey=event=>{
       if(event.defaultPrevented||event.repeat||event.isComposing||editable(event.target)||event.ctrlKey||event.metaKey)return;
-      if(event.altKey&&event.shiftKey&&event.code==='KeyR'){event.preventDefault();event.stopImmediatePropagation?.();toggleProperties().catch(console.error);return;}
-      if(event.altKey&&((!event.shiftKey&&event.code==='KeyP')||(event.shiftKey&&event.code==='KeyI'))){event.preventDefault();event.stopImmediatePropagation?.();event.code==='KeyP'?togglePresentation():toggleStats();return;}
-      // Physical key works with macOS Option's alternate character mapping too.
-      if (event.code === 'KeyZ' && event.altKey && event.shiftKey && !event.ctrlKey && !event.metaKey && !event.repeat && !editable(event.target)) {
-        event.preventDefault(); event.stopImmediatePropagation(); toggle(); return;
-      }
       if (!document.documentElement.classList.contains(MODE)) return;
       if (event.code === 'Escape') document.documentElement.classList.remove(PEEK,PROPERTIES_PEEK);
       if (editable(event.target)) return;

@@ -117,3 +117,9 @@ Useful next operator work: shared transport/clock, resampling/interpolation, tri
 - Safe example migration: `scripts/install_comfy_workflows.py`
 
 Build changed Livecode runtime assets with `node scripts/build_livecode.mjs`. Rebuild mini demos with `python3 scripts/build_learning_examples.py`, validate JSON, and reinstall examples with `scripts/install_comfy_workflows.py SOURCE WORKFLOW_FOLDER`. Run `node --test tests/*.mjs`; installer checks use `python3 -m unittest discover -s tests -p test_comfy_workflow_install.py`.
+
+## Native keybinding editor checkpoint
+
+Viewing commands register with Comfy commands/keybindings. Settings → Keybinding supports search Genereti/ꘇ, native keycaps, presets, conflicts and remapping. Genereti → Shortcuts links there; command hover tips describe scope. P on an empty canvas selection toggles parameters; selected items keep native Pin. Alt+Shift+R remains a directly editable sidebar binding. Editor shortcuts remain local.
+
+`keybinding-router.js` isolates Comfy’s currently non-public Pinia binding lookup for macOS Option physical keys and iframe forwarding. It reads the active map every event and defers if that store becomes unavailable; there is no hard-coded default fallback that would defeat unbinding. Recheck this seam on frontend upgrades.

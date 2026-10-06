@@ -3,13 +3,16 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {readFileSync} from 'node:fs';
 function fixture(){
- const app={graph:{},canvas:{selected_nodes:{}}},listeners={},calls=[];
- const context=vm.createContext({app,routeStackShortcut:()=>false,window:{addEventListener:(name,fn)=>listeners[name]=fn}});
+ const app={graph:{},canvas:{selected_nodes:{}}},listeners={},calls=[],bindings=new Map(),commands=new Map();
+ app.registerExtension=extension=>{for(const c of extension.commands)commands.set(c.id,c.function);for(const b of extension.keybindings)bindings.set(`${b.combo.key.toUpperCase()}:false:${Boolean(b.combo.alt)}:${Boolean(b.combo.shift)}`,b);};
+ app.extensionManager={_p:{_s:new Map([['keybinding',{getKeybinding:key=>bindings.get(key.serialize())}]])},command:{execute:id=>{commands.get(id)?.();return Promise.resolve();}}};
+ const context=vm.createContext({app,console,document:{getElementById:()=>null},moveActiveView:()=>false,window:{addEventListener:(name,fn)=>listeners[name]=fn}});
+ vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/keybinding-router.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/preview-shortcuts.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function'),context);
  const node={graph:app.graph},other={graph:app.graph};app.canvas.selected_nodes={1:node};
  const controls={toggleBackdrop:()=>calls.push('backdrop'),toggleOverlay:()=>calls.push('overlay'),isHovered:()=>false};
  const unregister=context.registerPreviewShortcuts(node,controls);
- const key=(code,options={})=>{const event={code,key:code.slice(3).toLowerCase(),preventDefault(){this.defaultPrevented=true;},stopPropagation(){},...options};listeners.keydown(event);return event;};
+ const key=(code,options={})=>{const event={code,key:code.slice(3).toLowerCase(),preventDefault(){this.defaultPrevented=true;},stopPropagation(){},stopImmediatePropagation(){},...options};listeners.keydown(event);return event;};
  return {app,context,node,other,controls,unregister,key,calls,listeners};
 }
 test('selected preview shortcuts use physical keys including Option-W',()=>{
@@ -22,8 +25,8 @@ test('typing, composition and modified keys remain untouched',()=>{
 });
 test('hovered overlay takes priority; ambiguous selection and disposed nodes do nothing',()=>{
  const f=fixture();let hover=true;f.context.registerPreviewShortcuts(f.other,{toggleOverlay:()=>f.calls.push('hovered'),isHovered:()=>hover});f.key('KeyW',{altKey:true});assert.deepEqual(f.calls,['hovered']);
- hover=false;f.app.canvas.selected_nodes={1:f.node,2:f.other};assert.equal(f.key('KeyD').defaultPrevented,undefined);
- f.app.canvas.selected_nodes={1:f.node};f.unregister();assert.equal(f.key('KeyD').defaultPrevented,undefined);
+ hover=false;f.app.canvas.selected_nodes={1:f.node,2:f.other};f.key('KeyD');assert.deepEqual(f.calls,['hovered']);
+ f.app.canvas.selected_nodes={1:f.node};f.unregister();f.key('KeyD');assert.deepEqual(f.calls,['hovered']);
 });
 
 test('Alt-F fills selected output, prioritizes hover and Escape restores filled overlay',()=>{
@@ -45,4 +48,26 @@ test('Alt-W carries the latest viewport cursor location to the selected overlay'
  const f=fixture();let options;f.controls.toggleOverlay=value=>options=value;
  f.listeners.pointermove({clientX:140,clientY:230});f.key('KeyW',{altKey:true});
  assert.equal(options.position.x,140);assert.equal(options.position.y,230);
+});
+
+test('native remapping and removal replace the original default',()=>{
+ const f=fixture(),store=f.app.extensionManager._p._s.get('keybinding');
+ store.getKeybinding=combo=>combo.serialize()==='B:false:false:false'?{commandId:'Genereti.Backdrop'}:undefined;
+ f.key('KeyD');assert.deepEqual(f.calls,[]);f.key('KeyB');assert.deepEqual(f.calls,['backdrop']);
+ store.getKeybinding=()=>undefined;f.key('KeyB');assert.deepEqual(f.calls,['backdrop']);
+});
+test('blank-canvas Pin binding toggles parameters, selected items keep native Pin',()=>{
+ const f=fixture(),store=f.app.extensionManager._p._s.get('keybinding');let executed=[];
+ store.getKeybinding=()=>({commandId:'Comfy.Canvas.ToggleSelected.Pin',targetElementId:'graph-canvas-container'});
+ vm.runInContext("document.getElementById=()=>({contains:()=>true})",f.context);
+ f.app.extensionManager.command.execute=id=>{executed.push(id);return Promise.resolve();};
+ f.key('KeyP');assert.deepEqual(executed,[]);
+ f.app.canvas.selected_nodes={};f.key('KeyP');assert.deepEqual(executed,['Genereti.TogglePropertiesPanel']);
+ f.app.canvas.selectedItems=new Set([{}]);f.key('KeyP');assert.equal(executed.length,1);
+ f.app.canvas.selectedItems.clear();f.key('KeyP',{target:{isContentEditable:true}});assert.equal(executed.length,1);
+});
+test('dialogs and another native command on the same key take priority',()=>{
+ const f=fixture(),store=f.app.extensionManager._p._s.get('keybinding');
+ f.key('KeyW',{altKey:true,target:{closest:()=>true}});assert.deepEqual(f.calls,[]);
+ store.getKeybinding=()=>({commandId:'Other.Extension'});f.key('KeyW',{altKey:true,key:'∑'});assert.deepEqual(f.calls,[]);
 });

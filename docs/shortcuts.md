@@ -1,11 +1,19 @@
 # Genereti keyboard shortcuts
 
-Find this reference in **Comfy Settings → Genereti → Shortcuts**. On macOS,
+Edit viewing shortcuts in **Comfy Settings → Keybinding**: search **Genereti** or **ꘇ**.
+**Genereti → Shortcuts → Open keybindings** opens the same native editor.
+Hover a command for its scope. Native add/edit/delete/reset, presets and conflict
+indicators apply; remapping or removing a binding changes the active shortcut.
+Editor-local commands and pointer gestures are listed separately in Genereti settings. On macOS,
 **Alt** means **Option**. Viewing shortcuts leave code editors, text fields and
 IME composition alone. Select one node when a shortcut needs a graph selection.
 
 | Shortcut | Action | Scope |
 | --- | --- | --- |
+| P | Parameters sidebar | Canvas with no selection; selected items retain Comfy pin/unpin. Follows the native Pin binding if remapped |
+| Alt+Shift+R | Parameters sidebar | Independent toggle, including in Satori |
+| Alt+O | Output-only node | Selected node or output-only node under pointer |
+| Cmd/Ctrl+[ / ] | Stack backward / forward | Hovered or last interacted view; add Shift to send back / front |
 | D | Toggle graph backdrop | Selected preview-capable node |
 | Alt+W | Toggle in-Comfy overlay | Hovered overlay first, otherwise selected node |
 | Alt+F | Fill window / restore | Hovered overlay first, otherwise selected node; opens its overlay if needed |
