@@ -88,6 +88,12 @@ See [modular audio](modular-audio.md) for routing, timing and queue boundaries.
 | `ꘇmod.delay` | Audio bus, seconds, feedback, mix | GENERETI_AUDIO_BUS | `GeneretiAudioDelay` |
 | `ꘇmod.mixer` | Four optional buses, channel gain/pan/mute/solo, master | GENERETI_AUDIO_BUS | `GeneretiAudioMixer` |
 | `ꘇmod.output` | Audio bus, level, mute; explicit browser Start | GENERETI_AUDIO_BUS | `GeneretiAudioOutput` |
+| `ꘇmod.scope` | Audio bus, FFT size, smoothing, display gain | Audio bus, stereo CHOP, RMS/peak FLOAT, IMAGE | `GeneretiAudioScope` |
+| `ꘇmod.spectrum` | Audio bus, FFT size, smoothing, display gain | Audio bus, frequency/magnitude CHOP, RMS/peak FLOAT, IMAGE | `GeneretiAudioSpectrum` |
+| `ꘇmod.lissajous` | Audio bus, FFT size, smoothing, display gain | Audio bus, stereo CHOP, RMS/peak FLOAT, IMAGE | `GeneretiAudioLissajous` |
+| `ꘇmod.analyze` | Audio bus, FFT size, smoothing, display gain | Audio bus, level/band CHOP, RMS/peak FLOAT, IMAGE | `GeneretiAudioAnalyze` |
+
+**ꘇ-Sound-Analysis** teaches all four views and wires RMS into a TOP opacity control. See [sound analysis](modular-audio.md#sound-analysis-and-visuals).
 
 Recorded patch-building examples: **ꘇ-Feedback-AV-Build-Tutorial** starts with only the author node; **ꘇ-Feedback-AV-Recorded-Patch** opens the completed feedback/sequence/synth/delay/mixer graph. The lesson playlist supports sequential replay and pauses for explicit audio activation. See [recording and playback](opentouch-lessons.md#record-and-replay-a-patch-building-session).
 

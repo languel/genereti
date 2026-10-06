@@ -1,3 +1,4 @@
+import {ANALYSIS_KINDS,analysisFrame} from './audio-analysis.js';
 // Native Web Audio graph: bus connections retain AudioNodes, never PCM copies.
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,Number(n)||0));
 const hz=n=>440*2**((n-69)/12);
@@ -20,10 +21,11 @@ export class AudioPatch {
   if(kind==='Gain'){m.pan=make('createStereoPanner');input.connect(m.pan);m.pan.connect(m.output);}
   else if(kind==='Filter'){m.filter=make('createBiquadFilter');input.connect(m.filter);m.filter.connect(m.output);}
   else if(kind==='Delay'){m.delay=c.createDelay(2);m.nodes.push(m.delay);m.feedback=make('createGain');m.wet=make('createGain');m.dry=make('createGain');input.connect(m.dry);m.dry.connect(m.output);input.connect(m.delay);m.delay.connect(m.feedback);m.feedback.connect(m.delay);m.delay.connect(m.wet);m.wet.connect(m.output);}
+  else if(ANALYSIS_KINDS.has(kind)){input.channelCount=2;input.channelCountMode='explicit';input.connect(m.output);m.split=c.createChannelSplitter(2);m.nodes.push(m.split);input.connect(m.split);m.analysers=[make('createAnalyser'),make('createAnalyser')];m.analysers.forEach((a,i)=>m.split.connect(a,i));}
   else if(kind==='Output'){m.compressor=make('createDynamicsCompressor');m.analyser=make('createAnalyser');m.analyser.fftSize=512;m.samples=new Float32Array(512);input.connect(m.compressor);m.compressor.connect(m.output);m.output.connect(m.analyser);}
   else input.connect(m.output);return m;
  }
- update(m,s){const now=this.ctx.currentTime;if(m.kind==='Mixer'){const solo=[1,2,3,4].some(i=>s[`solo_${i}`]);for(let i=1;i<=4;i++){smooth(m.inputs[`input_${i}`].gain,s[`mute_${i}`]||(solo&&!s[`solo_${i}`])?0:clamp(s[`level_${i}`],0,2),now);smooth(m[`pan_${i}`].pan,clamp(s[`pan_${i}`],-1,1),now);}smooth(m.output.gain,clamp(s.master,0,1),now);}
+ update(m,s){if(ANALYSIS_KINDS.has(m.kind)){const size=Number(s.fft_size)||1024;for(const a of m.analysers){a.fftSize=size;a.smoothingTimeConstant=clamp(s.smoothing,0,.99);}if(m.left?.length!==size){m.left=new Float32Array(size);m.right=new Float32Array(size);m.db=new Float32Array(size/2);m.dbRight=new Float32Array(size/2);}return;}const now=this.ctx.currentTime;if(m.kind==='Mixer'){const solo=[1,2,3,4].some(i=>s[`solo_${i}`]);for(let i=1;i<=4;i++){smooth(m.inputs[`input_${i}`].gain,s[`mute_${i}`]||(solo&&!s[`solo_${i}`])?0:clamp(s[`level_${i}`],0,2),now);smooth(m[`pan_${i}`].pan,clamp(s[`pan_${i}`],-1,1),now);}smooth(m.output.gain,clamp(s.master,0,1),now);}
   else if(m.kind==='Gain'||m.kind==='Output'){smooth(m.output.gain,s.mute?0:clamp(s.level,0,2),now);if(m.pan)smooth(m.pan.pan,clamp(s.pan,-1,1),now);}
   else if(m.kind==='Filter'){m.filter.type=s.mode;smooth(m.filter.frequency,clamp(s.cutoff,20,18000),now);smooth(m.filter.Q,clamp(s.resonance,.1,12),now);}
   else if(m.kind==='Delay'){smooth(m.delay.delayTime,clamp(s.seconds,.01,2),now);smooth(m.feedback.gain,clamp(s.feedback,0,.85),now);smooth(m.wet.gain,clamp(s.mix,0,1),now);smooth(m.dry.gain,1-clamp(s.mix,0,1),now);}
@@ -49,6 +51,7 @@ export class AudioPatch {
  setHeld(id,notes){const m=this.modules.get(id);if(!m)return;const next=new Map(notes.map(n=>[n.key,n]));for(const [key,v] of m.held)if(!next.has(key)){this.release(m,v.voice);m.held.delete(key);}else if(next.get(key).note!==v.note){if(Number(m.settings.glide)>0&&v.voice?.carrier&&!v.voice.ended){v.voice.carrier.frequency.setTargetAtTime(hz(next.get(key).note),this.ctx.currentTime,Number(m.settings.glide));v.note=next.get(key).note;}else{this.release(m,v.voice);m.held.delete(key);}}for(const [key,n] of next)if(!m.held.has(key)){const voice=this.trigger(id,n.note,this.ctx.currentTime,Infinity,n.velocity);m.held.set(key,{...n,voice});}}
  clearVoices(id){const m=this.modules.get(id);if(m){for(const v of [...m.voices])this.destroyVoice(m,v);m.held.clear();}}
  destroyVoice(m,v){if(!v||v.ended)return;v.ended=true;for(const source of v.sources){try{source.stop();}catch{}source.disconnect();}for(const n of v.nodes)n.disconnect();m.voices.delete(v);}
+ analyze(id){const m=this.modules.get(id);if(!m?.analysers)return null;m.analysers[0].getFloatTimeDomainData(m.left);m.analysers[1].getFloatTimeDomainData(m.right);m.analysers[0].getFloatFrequencyData(m.db);m.analysers[1].getFloatFrequencyData(m.dbRight);for(let i=0;i<m.db.length;i++){const power=(10**(m.db[i]/10)+10**(m.dbRight[i]/10))*.5;m.db[i]=power>0?10*Math.log10(power):-Infinity;}return analysisFrame(m.kind,m.left,m.right,m.db,this.ctx.sampleRate,this.ctx.currentTime);}
  meter(id){const m=this.modules.get(id);if(!m?.analyser)return {rms:0,peak:0};m.analyser.getFloatTimeDomainData(m.samples);let sum=0,peak=0;for(const x of m.samples){sum+=x*x;peak=Math.max(peak,Math.abs(x));}return {rms:Math.sqrt(sum/m.samples.length),peak};}
  dispose(m){for(const v of [...m.voices])this.destroyVoice(m,v);for(const n of m.nodes)n.disconnect();}
  stop(){for(const m of this.modules.values())this.dispose(m);this.modules.clear();this.edges.clear();}

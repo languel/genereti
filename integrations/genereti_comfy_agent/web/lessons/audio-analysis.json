@@ -1,0 +1,107 @@
+{
+  "format": "genereti-guide",
+  "version": 1,
+  "id": "audio-analysis",
+  "title": "See sound, use sound",
+  "summary": "Scopes, spectral analysis, stereo geometry and audio-driven visual controls.",
+  "steps": [
+    {
+      "title": "Start the patch",
+      "text": "Press ▷ on mod.output. Sound starts explicitly at a low level. The analysis taps remain silent until their source is part of a running output patch.",
+      "target": {
+        "nodeType": "GeneretiAudioOutput",
+        "part": "node"
+      },
+      "hint": "Use Start on the output, not Queue or the lesson Play button."
+    },
+    {
+      "title": "Read the waveform",
+      "text": "mod.scope draws left and right waveforms. Its channels output carries sampled stereo data; image carries the drawing. RMS and peak sockets are scalar controls.",
+      "target": {
+        "nodeType": "GeneretiAudioScope",
+        "part": "node"
+      },
+      "hint": "Increase display_gain to enlarge the drawing without changing sound.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiAudioScope",
+            "widget": "display_gain",
+            "part": "parameter"
+          },
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Read the spectrum",
+      "text": "mod.spectrum draws decibels on a linear-frequency axis. Channels are magnitude and frequency in Hz. fft_size trades frequency detail for a longer analysis window; smoothing affects spectral bins only.",
+      "target": {
+        "nodeType": "GeneretiAudioSpectrum",
+        "part": "node"
+      },
+      "hint": "The frequency of bin i is i × sampleRate / fft_size.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiAudioSpectrum",
+            "widget": "fft_size",
+            "part": "parameter"
+          },
+          "value": 2048
+        }
+      ]
+    },
+    {
+      "title": "See stereo relationships",
+      "text": "mod.lissajous plots left versus right. A centered mono signal forms a diagonal. Change pan to stretch it; richer stereo effects can create loops. Correlation is +1 for identical signals, -1 for opposite phase.",
+      "target": {
+        "nodeType": "GeneretiAudioLissajous",
+        "part": "node"
+      },
+      "hint": "Pan changes balance, not phase; it will tilt a line rather than generate a loop.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiAudioGain",
+            "widget": "pan",
+            "part": "parameter"
+          },
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "title": "Use analysis as controls",
+      "text": "mod.analyze exposes rms, peak, correlation and low/mid/high spectral band amplitudes. chop.select chooses rms, chop.math multiplies it by 12, and its FLOAT output drives the opacity of the scope image in top.filter.",
+      "target": {
+        "nodeType": "GeneretiChopMath",
+        "part": "node"
+      },
+      "hint": "Follow channels → select rms → math → FLOAT amount. These are control-rate measurements, not an audio-rate CHOP DSP engine.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiChopMath",
+            "widget": "value",
+            "part": "parameter"
+          },
+          "value": 20
+        }
+      ]
+    },
+    {
+      "title": "Stop and save",
+      "text": "Press ■ Panic on mod.output. Analysis and scalar controls return to zero. Save retains wiring and settings, never a playing AudioContext.",
+      "target": {
+        "nodeType": "GeneretiAudioOutput",
+        "part": "node"
+      },
+      "hint": "Queue returns silent analysis data and placeholder IMAGEs; the browser owns live analysis."
+    }
+  ]
+}

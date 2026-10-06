@@ -83,4 +83,19 @@ class Output(Route):
     def define_schema(cls):
         return schema('Output', [BUS.Input('input'), f('level',.65),io.Boolean.Input('mute',default=False)], endpoint=True)
 
-MODULAR=[Transport,Sequence,DrumSequence,Synth,DrumKit,Gain,Filter,Delay,Mixer,Output]
+class Scope(Route):
+    KIND = 'Scope'
+    @classmethod
+    def define_schema(cls):
+        return schema(cls.KIND, [BUS.Input('input'),io.Combo.Input('fft_size',options=[256,512,1024,2048,4096],default=1024),f('smoothing',.5,0,.99),f('display_gain',2,.1,20)],
+            [BUS.Output(display_name='audio'),CHOP.Output(display_name='channels'),io.Float.Output(display_name='rms'),io.Float.Output(display_name='peak'),io.Image.Output(display_name='image')])
+    @classmethod
+    def execute(cls, **values):
+        import torch
+        channels={'magnitude':[0],'frequency':[0]} if cls.KIND=='Spectrum' else {key:[0] for key in (['rms','peak','correlation','low','mid','high'] if cls.KIND=='Analyze' else ['left','right'])}
+        return io.NodeOutput({'format':'genereti-audio-route','version':1,'kind':cls.KIND,'settings':values},signal(channels),0.,0.,torch.zeros((1,512 if cls.KIND=='Lissajous' else 256,512,3)))
+class Spectrum(Scope): KIND = 'Spectrum'
+class Lissajous(Scope): KIND = 'Lissajous'
+class Analyze(Scope): KIND = 'Analyze'
+
+MODULAR=[Transport,Sequence,DrumSequence,Synth,DrumKit,Gain,Filter,Delay,Mixer,Output,Scope,Spectrum,Lissajous,Analyze]

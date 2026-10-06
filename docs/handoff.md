@@ -190,3 +190,19 @@ supports main/mainImage and one IMAGE sampler; GPU Sound and Buffer A–D remain
 unimplemented. Underscores' compact shader adapter is a concrete reuse candidate;
 its current shader module does not provide mainSound rendering. Sound activation
 must remain an explicit user gesture and route through the modular audio system.
+
+
+## Sound analysis milestone (2026-10-06)
+
+Added `mod.scope`, `mod.spectrum`, `mod.lissajous`, `mod.analyze`. Native stereo
+analysers tap active audio buses, pass audio unchanged, and emit IMAGE, CHOP and
+RMS/peak FLOAT outputs. Analysis roots follow an explicitly active output;
+unrelated sources remain stopped. The `ꘇ-Sound-Analysis` workflow and lesson
+catalog entry show a complete RMS → select → math → TOP opacity path. Rebuild
+with `scripts/build_audio_analysis_demo.py --server http://127.0.0.1:8001`.
+Browser verification uses a separate server, leaving the user workflow on 8000
+untouched. Restart Comfy and reload once to discover the four new schemas.
+
+The earlier multipass shader checkpoint remains the next runtime task: named
+Common/Buffer/Image/Sound passes, routing, editor tabs and GPU sound are planned
+in `docs/livecode-multipass.md`; these analysis nodes do not implement them.

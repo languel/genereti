@@ -58,6 +58,42 @@ Disconnected modules and stopped voices release their native resources. Multiple
 outputs can share upstream modules and the AudioContext. Meter painting and
 custom grid updates are bounded; there is no per-frame audio serialization.
 
+## Sound analysis and visuals
+
+Open **Workflows → Genereti → ꘇ-Sound-Analysis** for a six-step lesson and a
+working audio-driven visual control. Restart Comfy once to register the new node
+schemas, then reload the browser. These four nodes pass their incoming audio bus
+through unchanged; use them inline or as parallel taps on an active patch.
+They never start an unrelated instrument. Start a connected `mod.output` first.
+
+| Operator | Channels output | Visual |
+| --- | --- | --- |
+| `ꘇmod.scope` | `left`, `right` waveform blocks | Stereo oscilloscope |
+| `ꘇmod.spectrum` | `magnitude` (linear amplitude), `frequency` (Hz) | -90 to 0 dB on a linear frequency axis |
+| `ꘇmod.lissajous` | `left`, `right` waveform blocks | Left vs right XY trace |
+| `ꘇmod.analyze` | `rms`, `peak`, `correlation`, `low`, `mid`, `high` | Level/band bars |
+
+Every tap also exposes `rms` and `peak` FLOAT sockets and an IMAGE drawing. Use
+Alt+W/Alt+O or its viewing toolbar for an overlay/output-only scope; its IMAGE
+can feed TOPs or Livecode. `display_gain` changes only the drawing, never the
+sound or reported measurements. Waveform channels use the AudioContext sample
+rate. Spectrum channels are frequency bins, **not sequential time samples**;
+bin spacing is `sampleRate / fft_size`. The spectrum averages left/right power.
+
+`mod.analyze` reports one control sample at up to 40 Hz. Low/mid/high are RMS
+spectral amplitudes over 20–250, 250–2000 and 2000–20000 Hz (clipped at Nyquist),
+not calibrated loudness or musical onset detectors. Correlation is +1 for the
+same signal, -1 for inverse phase, and 0 for silence. Mono sources are upmixed to
+stereo for analysis. FFT smoothing affects spectral bins, not waveform or RMS.
+
+The example wires `mod.analyze → chop.select (rms) → chop.math (×12) →
+top.filter (amount)` to animate opacity from sound. Connect a direct RMS/peak
+FLOAT for simpler controls; use named CHOP channels to select bands or phase.
+Analysis buffers and AudioNodes are reused; drawings and CHOP snapshots update
+on the control timer. This is a visual/control bridge, not an audio-rate CHOP
+processing engine. Stop/Panic clears all measurements; queued execution returns
+silent channels/scalars and a placeholder IMAGE without reading live sound.
+
 ## Scope and verification
 
 This is a first modular milestone, not a BespokeSynth port, DAW or VST host.
@@ -69,6 +105,13 @@ returns route descriptions or silent note data. Synth/effect processing runs in
 Web Audio's engine, while event lookahead can still be affected by background
 browser throttling. This layer is browser-portable and independent of the macOS
 Core ML generator.
+
+Analysis verification: 142 JavaScript tests passed, including RMS/phase, FFT bin
+units, side-tap activation and buffer reuse; Python checks confirm the four
+schemas and silent queue outputs. A separate browser test on port 8001 verified
+all views, nonzero FFT/RMS, the CHOP → TOP control path, Panic returning controls
+to zero, and lesson Hint / Do it changing the real pan parameter. The user
+workflow on 8000 was left untouched.
 
 Unit tests cover shared-route reuse, mixer mute/solo, voice limits, cleanup,
 pattern validation, rests, simultaneous drum events, swing and MIDI channel
