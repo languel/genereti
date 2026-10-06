@@ -1,3 +1,4 @@
+import {decorateToolbarChoices} from './choice-glyphs.js';
 export const SETTINGS_GLYPH='<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M9 3h6l.6 2.5 2.1 1.2 2.4-.7 3 5.2-1.8 1.8v2.4l1.8 1.8-3 5.2-2.4-.7-2.1 1.2-.6 2.5H9l-.6-2.5-2.1-1.2-2.4.7-3-5.2 1.8-1.8V13l-1.8-1.8 3-5.2 2.4.7 2.1-1.2z" transform="translate(2 0) scale(.83)"/><circle cx="12" cy="12" r="3"/></svg>';
 // Shared node chrome follows the livecode toolbar. See docs/node-ui-design.md.
 export function ensureControlStyle() {
@@ -26,6 +27,14 @@ export function ensureControlStyle() {
  :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select::picker-icon{content:"";display:block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);color:inherit;transition:none}
  :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
 }
+.genereti-glyph-choice{width:52px!important;min-width:52px!important;padding:0 7px!important}
+.genereti-glyph-choice::picker-icon{margin-left:0!important}
+.genereti-glyph-choice>button{display:contents!important}
+.genereti-glyph-choice selectedcontent{display:flex;align-items:center;justify-content:center}
+.genereti-glyph-choice selectedcontent .genereti-choice-label{display:none}
+.genereti-choice-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;flex:none}
+.genereti-choice-icon svg{width:18px;height:18px;display:block}
+.genereti-glyph-choice::picker(select){min-width:160px!important}
 .genereti-node-controls button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;width:30px;min-width:30px;padding:0}
 .genereti-node-controls button svg{display:block;width:18px;height:18px;flex:none}
 .genereti-node-controls select:hover{background:color-mix(in srgb,currentColor 8%,transparent)}
@@ -43,6 +52,8 @@ export function ensureControlStyle() {
 .genereti-drawing-settings-panel input{background:transparent;border:1px solid var(--border-color,#555);border-radius:4px;padding:4px}
 `;
   document.head.append(style);
+  new MutationObserver(()=>decorateToolbarChoices()).observe(document.body,{childList:true,subtree:true});
+  decorateToolbarChoices();
   // Pickers live in the top layer, outside the graph's CSS transform. Match the
   // control's displayed text size when opening, without work in the render loop.
   const syncPickerScale = event => {
