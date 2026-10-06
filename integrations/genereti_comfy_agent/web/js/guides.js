@@ -25,7 +25,7 @@ function appearance(){
   if(panel)el.style.borderRadius=(frame.radius??8)+'px';
   el.style.background=validColor(surface.backdrop,panel?panelBackground:`color-mix(in srgb,${color} 5%,transparent)`);
   el.style.setProperty('--genereti-glow-color',validColor(glow.color,color));el.style.setProperty('--genereti-glow-radius',(glow.radius??12)+'px');el.style.setProperty('--genereti-glow-spread',(glow.spread??3)+'px');el.style.setProperty('--genereti-glow-duration',(glow.duration??3)+'s');
-  const enabled=glow.enabled??!panel,pulse=glow.pulse??setting('HighlightPulse',true);el.classList.toggle('genereti-guide-glow',enabled);el.classList.toggle('genereti-guide-pulse',enabled&&pulse);
+  const enabled=glow.enabled??!panel,pulse=glow.pulse??(panel?false:setting('HighlightPulse',true));el.classList.toggle('genereti-guide-glow',enabled);el.classList.toggle('genereti-guide-pulse',enabled&&pulse);
  }
 }
 
