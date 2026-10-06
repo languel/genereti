@@ -1,3 +1,4 @@
+import {captureEditorInput} from './editor-input.js';
 import {exportDocument} from './document-export.js';
 import {parseParameters,parameterValues} from './code-parameters.js';
 import {codeParameters} from './livecode-parameters.js';
@@ -211,15 +212,7 @@ function editorWidget(node,name){
   if(action){event.preventDefault();event.stopImmediatePropagation();action();}
  }
  function onEditorWheel(event){
-  if(view.dom.contains(event.target)){
-   // Momentum events can lose Shift at the end of a trackpad gesture. Keep all
-   // editor wheel events here, including at the scroll limits; never zoom Comfy.
-   event.preventDefault();event.stopImmediatePropagation();
-   if(event.ctrlKey||event.metaKey)return; // Pinch must not zoom the browser page.
-   const multiplier=event.deltaMode===1?Number(settings.fontSize)*Number(settings.lineHeight):event.deltaMode===2?view.scrollDOM.clientHeight:1;
-   if(event.shiftKey){const delta=Math.abs(event.deltaY)>=Math.abs(event.deltaX)?event.deltaY:event.deltaX;view.scrollDOM.scrollTop+=delta*multiplier;}
-   else{view.scrollDOM.scrollTop+=event.deltaY*multiplier;view.scrollDOM.scrollLeft+=event.deltaX*multiplier;}
-  }else if(stage.contains(event.target)&&(event.ctrlKey||event.metaKey)){
+  if(stage.contains(event.target)&&(event.ctrlKey||event.metaKey)){
    event.preventDefault();event.stopImmediatePropagation();zoomWorkflow(event);
   }
  }
@@ -234,6 +227,7 @@ function editorWidget(node,name){
  // Comfy binds graph undo before CodeMirror receives the event. Capture at
  // window level so editing code never undoes/removes the graph's nodes.
  window.addEventListener('keydown',onEditorShortcut,true);
+ const releaseEditorInput=captureEditorInput(()=>view,()=>settings);
  window.addEventListener('wheel',onEditorWheel,{capture:true,passive:false});
  window.addEventListener('pointerdown',onOutsidePointer,true);
  window.addEventListener('message',onMessage);
@@ -247,7 +241,7 @@ function editorWidget(node,name){
  node._generetiLiveSource={retain(){if(++users===1){post(active,{type:'live-start'});startLiveClock();}},release(){users=Math.max(0,users-1);if(!users){clearInterval(liveClock);post(active,{type:'live-stop'});}}};
  function syncOutputSize(){if(!active||candidate||queuedSizing||active.dataset.stopped)return;const size=resolvedRender();if(JSON.stringify(size)===active.dataset.render)return;if(active.dataset.mode==='p5'){active.dataset.width=size.width;active.dataset.height=size.height;active.dataset.render=JSON.stringify(size);post(active,{type:'resize-render',render:size});layoutFrame();}else{clearTimeout(resizeTimer);resizeTimer=setTimeout(evaluate,150);}}
  const outputSizingPoll=setInterval(syncOutputSize,250);
- const previous=node.onRemoved;node.onRemoved=function(){disposed=true;++epoch;clearTimeout(timer);clearTimeout(resizeTimer);clearInterval(parameterPoll);cancelAnimationFrame(controlFrame);window.removeEventListener('genereti-control-frame',onControlFrame);clearInterval(outputSizingPoll);clearInterval(liveClock);api.removeEventListener('genereti-livecode-render',queuedRender);unsubscribeInput();for(const request of inputWaiters.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}for(const request of readyWaiters.values())request.reject(Error('Node removed'));localOutputs.close();resizeObserver.disconnect();parentResize.disconnect();removeCandidate();retire(active);view.destroy();window.removeEventListener('message',onMessage);window.removeEventListener('keydown',onEditorShortcut,true);window.removeEventListener('wheel',onEditorWheel,true);window.removeEventListener('pointerdown',onOutsidePointer,true);for(const request of pendingCapture.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}return previous?.apply(this,arguments);};
+ const previous=node.onRemoved;node.onRemoved=function(){disposed=true;++epoch;clearTimeout(timer);clearTimeout(resizeTimer);clearInterval(parameterPoll);cancelAnimationFrame(controlFrame);window.removeEventListener('genereti-control-frame',onControlFrame);clearInterval(outputSizingPoll);clearInterval(liveClock);api.removeEventListener('genereti-livecode-render',queuedRender);unsubscribeInput();for(const request of inputWaiters.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}for(const request of readyWaiters.values())request.reject(Error('Node removed'));localOutputs.close();resizeObserver.disconnect();parentResize.disconnect();removeCandidate();retire(active);view.destroy();window.removeEventListener('message',onMessage);window.removeEventListener('keydown',onEditorShortcut,true);releaseEditorInput();window.removeEventListener('wheel',onEditorWheel,true);window.removeEventListener('pointerdown',onOutsidePointer,true);for(const request of pendingCapture.values()){clearTimeout(request.timeout);request.reject(Error('Node removed'));}return previous?.apply(this,arguments);};
  node._livecodeConfigure=()=>{params.update(draft);for(const key of ['width','height']){const w=node.widgets.find(w=>w.name===key);if(w&&!w._livecodeDimension){const cb=w.callback;w.callback=function(){cb?.apply(this,arguments);clearTimeout(resizeTimer);resizeTimer=setTimeout(evaluate,150);};w._livecodeDimension=true;}}syncAutoUpdate();Object.assign(settings,node.properties.generetiLivecodeAppearance||{});Object.assign(customThemes,node.properties.generetiLivecodeThemes||{});refreshThemes();Object.assign(render,node.properties.generetiLivecodeRender||{});previewFit.value=render.fit;sizingControl.value=render.sizing;localOutputs.setFit(render.fit);for(const [key,input] of inputs){input.value=settings[key]??appearanceValues(settings)[key];if(input.type==='checkbox')input.checked=settings[key]!==false;}split=node.properties.generetiLivecodeSplit??.4;css.value=settings.css||'';wrap.checked=settings.wrap;show.value=node.properties.generetiLivecodeView||'both';applyView();draftMode=value(node,'language')||'p5';createView();const mode=node.widgets.find(w=>w.name==='language');if(mode&&!mode._livecode){const callback=mode.callback;mode.callback=function(next){callback?.apply(this,arguments);drafts.set(draftMode,draft);draftMode=next;setDraft(drafts.get(next)||examples[next]);createView();const auto=node.widgets.find(w=>w.name==='auto_update');if(auto)auto.value=next!=='strudel';syncAutoUpdate();};mode._livecode=true;}};
  return {widget};
 }

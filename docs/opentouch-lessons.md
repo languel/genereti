@@ -6,7 +6,7 @@ Install the DAT, CHOP, texture, p5, stream and agent packs with `scripts/install
 
 Add **dat.lesson**. Its shared CodeMirror editor holds the lesson JSON. Its toolbar provides:
 
-- **▷ Run**: validate/register the document and start its learner guide.
+- **▷ Run**: validate/register the document and start its learner guide. The editor’s play button and **Cmd/Ctrl+Enter** do the same, applying the current draft first. **Apply while typing** updates the JSON without starting the guide.
 - **■ Stop**: end the guide; learner edits stay and the prior viewport returns.
 - **Document export**: Markdown, standalone static HTML, or Print / Save as PDF.
 - **{}**: export editable lesson JSON for reuse or Import guide.
