@@ -7,6 +7,7 @@ export function ensureControlStyle() {
   style.id = 'genereti-node-controls-style';
   style.textContent = `
 .genereti-node-controls{display:flex;align-items:center;flex-wrap:wrap;gap:4px;color:var(--fg-color,#eee)}
+.genereti-lightning{display:inline-block;line-height:1;transform:scaleY(1.2);transform-origin:center}
 .genereti-node-controls[hidden]{display:none!important}
 /* Vue expands DOM widget grid tracks by default. Transport/settings rows
    are content-sized; livecode has its own editor-only expanding track. */

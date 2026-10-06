@@ -12,7 +12,7 @@ app.registerExtension({name:'Genereti.OperatorEditor',getCustomWidgets(){return 
   const tools=document.createElement('div');tools.className='genereti-node-controls';
   const toggle=document.createElement('button');toggle.textContent='⌄';toggle.title='Minimize code editor';toggle.setAttribute('aria-label',toggle.title);toggle.setAttribute('aria-expanded','true');tools.append(toggle);
   const run=document.createElement('button');run.textContent='▶';run.title=node.comfyClass==='GeneretiDatLesson'?'Run authored lesson · Cmd/Ctrl+Enter':'Apply text · Cmd/Ctrl+Enter';run.setAttribute('aria-label',run.title);tools.append(run);
-  const auto=document.createElement('button');auto.textContent='ϟ';auto.title='Apply while typing';auto.setAttribute('aria-label',auto.title);auto.setAttribute('aria-pressed','true');tools.append(auto);
+  const auto=document.createElement('button');auto.innerHTML='<span class="genereti-lightning" aria-hidden="true">ϟ</span>';auto.title='Apply while typing';auto.setAttribute('aria-label',auto.title);auto.setAttribute('aria-pressed','true');tools.append(auto);
   const code=document.createElement('div');code.style.cssText='height:160px;min-height:0;width:100%;overflow:hidden';surface.append(tools,code);
   let draft=source;const apply=()=>{source=draft;node.setDirtyCanvas?.(true,true);};
   const runAction=()=>{apply();return node._generetiOperatorRun?.();};

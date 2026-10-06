@@ -33,7 +33,6 @@ if(!document.getElementById('genereti-livecode-style')){const style=document.cre
 .genereti-livecode select{color-scheme:inherit}
 .genereti-livecode select option,.genereti-livecode select optgroup{background:var(--comfy-input-bg,#222);color:var(--fg-color,#eee)}
 .genereti-livecode summary::-webkit-details-marker{display:none}
-.lg-node:has(.genereti-livecode) .mt-auto .rounded-full.bg-component-node-widget-background{display:none}
 /* Vue's DOM-widget rows otherwise share spare node height with the delivery
    toolbar. Only the editor's explicit remaining-height calculation expands. */
 .lg-node:has(.genereti-livecode) .lg-node-widgets{grid-template-rows:var(--genereti-livecode-rows,min-content min-content minmax(220px,1fr) min-content)!important}
@@ -54,7 +53,7 @@ function editorWidget(node,name){
  stage.className='genereti-livecode-stage';iconButton(run,'Run','<path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/>');run.title='Evaluate (Cmd/Ctrl+Enter)';iconButton(stop,'Stop','<rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" stroke="none"/>');stop.title='Stop · keep last frame (Ctrl+.)';tools.className='genereti-livecode-toolbar';tools.append(run,stop);
  const minimizeEditor=document.createElement('button');iconButton(minimizeEditor,'Minimize code editor','<path d="m6 9 6 6 6-6"/>');minimizeEditor.title='Minimize code editor';minimizeEditor.setAttribute('aria-expanded','true');tools.prepend(minimizeEditor);
  let editorMinimized=!!node.properties.generetiEditorMinimized;minimizeEditor.onclick=()=>{editorMinimized=!editorMinimized;node.properties.generetiEditorMinimized=editorMinimized;applyView();};
- const autoToggle=document.createElement('button');iconButton(autoToggle,'Auto-update','');autoToggle.textContent='ϟ';autoToggle.title='Auto-update code';tools.append(autoToggle);
+ const autoToggle=document.createElement('button');iconButton(autoToggle,'Auto-update','');autoToggle.innerHTML='<span class="genereti-lightning" aria-hidden="true">ϟ</span>';autoToggle.title='Auto-update code';tools.append(autoToggle);
  function syncAutoUpdate(){const widget=node.widgets.find(w=>w.name==='auto_update');if(!widget)return;widget.options={...widget.options,hidden:true};widget.computeSize=()=>[0,-4];autoToggle.setAttribute('aria-pressed',String(!!widget.value));if(!widget._livecodeToggle){const callback=widget.callback;widget.callback=function(){const result=callback?.apply(this,arguments);syncAutoUpdate();return result;};widget._livecodeToggle=true;}}
  autoToggle.onclick=()=>{const widget=node.widgets.find(w=>w.name==='auto_update');if(!widget)return;widget.value=!widget.value;widget.callback?.(widget.value);syncAutoUpdate();if(!widget.value)clearTimeout(timer);};
  status.style.cssText='font-size:11px;white-space:pre-wrap;max-height:72px;overflow:auto;flex-shrink:0';stage.style.cssText='position:relative;width:100%;aspect-ratio:1;height:0;min-height:0;overflow:hidden;background:#111;flex:1 1 0';container.append(tools,code,stage,status);
