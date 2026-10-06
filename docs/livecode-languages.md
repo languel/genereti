@@ -160,3 +160,27 @@ window continues to display the shared render using the selected fit.
 Freezing the node preview preserves its frame aspect and current fit; live output
 resizing and downstream delivery continue. Unfreezing adopts the current render
 aspect. Native pixels, Contain, Cover and Stretch also apply to the frozen view.
+
+## GLSL compatibility checkpoint · 2026-10-06
+
+The current runtime accepts complete WebGL 1 fragment shaders and WebGL 2
+`#version 300 es` shaders. `gl_FragCoord` is the normal GLSL built-in.
+Shadertoy-style `mainImage(out vec4 color, in vec2 coord)` gets a generated
+`main()` entry point. Supported bridge names are `iTime`, `iResolution`,
+`iMouse`, and `iChannel0`, alongside the Genereti `u_*` names in the table above.
+`iChannel0` samples the single connected IMAGE. Mouse coordinates are pixels;
+`iMouse.zw` currently remain zero, so mouse-down/origin behavior is incomplete.
+
+Minifying a complete valid GLSL shader works; minification does not provide a
+dialect adapter. Body-only Twigl snippets (`o`, `FC`, `r`, `t`, etc.) are not yet
+wrapped. There is no dedicated fragment.xyz import/adapter. Shadertoy Buffer
+A–D, Common/Sound passes, four channel routing, channel metadata, `iFrame`,
+`iTimeDelta`, `iDate`, GPU-generated sound, cube-map/keyboard channel sources
+and full project import are not implemented. Do not describe current Livecode
+as a complete Shadertoy player. Existing `top.feedbackref` is an independent
+OpenTouch temporal operator, not a Shadertoy buffer implementation.
+
+The [multi-pass design](livecode-multipass.md) records the requested next phase:
+editable tabs and interoperable graph nodes, named multi-input channels,
+explicit feedback timing and GPU sound with user-started Web Audio output.
+Current supported behavior remains unchanged at this checkpoint.

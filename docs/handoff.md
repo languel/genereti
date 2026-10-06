@@ -171,3 +171,22 @@ New examples: `ꘇ-Feedback-Reference-Chain.json` and `ꘇ-Class-Feedback-Bloom-
 Pointer recording now retains bounded curved hover/click/drag paths anchored to named controls. Numeric drag playback interpolates the real widget value. The tutorial uses explicitly authored cursor demonstrations; the recorder was separately tested using native browser pointer input on a noise field. No arbitrary DOM commands, embedded iframe interaction or OS automation is implied.
 
 Validated 137 JavaScript tests and all 37 canonical workflow JSON files. Browser verification built all six steps with animated playback, tested learner Hint / Do it and replayed curved recorded paths and a numeric value change. The procedural output rendered on WebGPU in owned 8001/8002 test instances. Reopening the completed patch and replaying all steps preserved 11 nodes and 10 links without duplicate instances. The user's 8000 workflow was left untouched. No backend schemas changed; refresh the browser to load recorder changes and reopen the saved examples for the new lesson source.
+
+## Livecode multi-pass planning checkpoint · 2026-10-06
+
+The working implementation baseline is **a454de1**, pushed to main: six-step
+painterly feedback tutorial, completed patch, bounded pointer-path recording,
+Hint / Do it, and explicit TOP expression documentation. 137 JavaScript tests
+passed; all 37 canonical workflows parse. The user's in-progress 8000 patch was
+preserved; owned test instances were stopped.
+
+The next requested milestone is multi-tab/multi-buffer Livecode, interoperable
+node channels, complete Shadertoy/compact shader authoring and GPU-generated
+sound. See [the design brief](livecode-multipass.md) and the
+[current compatibility limits](livecode-languages.md#glsl-compatibility-checkpoint--2026-10-06).
+The recommended architecture uses a shared pass/channel scheduler for both tabs
+and separate nodes. Source tabs alone do not implement feedback. Current GLSL
+supports main/mainImage and one IMAGE sampler; GPU Sound and Buffer A–D remain
+unimplemented. Underscores' compact shader adapter is a concrete reuse candidate;
+its current shader module does not provide mainSound rendering. Sound activation
+must remain an explicit user gesture and route through the modular audio system.
