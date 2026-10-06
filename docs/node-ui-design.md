@@ -7,6 +7,7 @@ these rules when adding or changing node UI.
 - Buttons and dropdowns have no resting borders, shadows or filled backgrounds.
   Use the host's text and surface colors. Hover and active states use a subtle
   fill derived from the current text color.
+- Collapse/expand controls use outline chevrons **⌄ / ›**, distinct from play triangles.
 - Actions and boolean toggles use simple glyphs with native hover tips (`title`)
   and accessible names (`aria-label`). Toggles expose `aria-pressed` and retain
   a visible active fill. Avoid persistent labels, checkboxes and radio rows for

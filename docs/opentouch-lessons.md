@@ -10,7 +10,10 @@ Add **dat.lesson**. Its shared CodeMirror editor holds the lesson JSON. Its tool
 - **■ Stop**: end the guide; learner edits stay and the prior viewport returns.
 - **Document export**: Markdown, standalone static HTML, or Print / Save as PDF.
 - **{}**: export editable lesson JSON for reuse or Import guide.
-- **▾**: minimize the outline.
+- **⌄ / ›**: collapse or expand the outline.
+- **Tutorial startup**: Manual start (default), Start on open, or Start if not played. Startup is saved with the lesson node; first-time tracking is local to this browser and keyed by lesson ID. Starting a guide never starts audio, capture or inference. If several lessons request startup, the first one in the workflow opens.
+
+Drag the learner panel by its title bar to reposition it; its position stays through steps and reopening during the session. **Settings → Genereti → Learning → Appearance** provides **Pulse guide highlight**, **Guide panel background** (Theme, Soft contrast, Custom), and a custom CSS background color. Theme preserves the existing default. The gentle glow respects reduced-motion preferences. Highlight tracking follows graph panning every animation frame while a guide is active.
 
 The learner dialogue only contains narration, focus, previous/next, action checks and skip. It has no document exports. **Settings → Genereti → Learning → Interactive lessons** or **ꘇ OpenTouch lessons** in the command palette opens the bundled lesson chooser. “Open lesson workflow” creates a separate temporary Comfy workflow tab, preserving the current workflow.
 

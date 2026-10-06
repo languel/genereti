@@ -9,7 +9,7 @@ app.registerExtension({name:'Genereti.OperatorEditor',getCustomWidgets(){return 
   ensureControlStyle();let source=inputData?.[1]?.default??'',held=false;node.properties??={};
   const surface=document.createElement('div');surface.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%';surface.className='genereti-operator-editor';
   const tools=document.createElement('div');tools.className='genereti-node-controls';
-  const toggle=document.createElement('button');toggle.textContent='▾';toggle.title='Minimize code editor';toggle.setAttribute('aria-label',toggle.title);toggle.setAttribute('aria-expanded','true');tools.append(toggle);
+  const toggle=document.createElement('button');toggle.textContent='⌄';toggle.title='Minimize code editor';toggle.setAttribute('aria-label',toggle.title);toggle.setAttribute('aria-expanded','true');tools.append(toggle);
   const run=document.createElement('button');run.textContent='▶';run.title=node.comfyClass==='GeneretiDatLesson'?'Run authored lesson · Cmd/Ctrl+Enter':'Apply text · Cmd/Ctrl+Enter';run.setAttribute('aria-label',run.title);tools.append(run);
   const auto=document.createElement('button');auto.textContent='ϟ';auto.title='Apply while typing';auto.setAttribute('aria-label',auto.title);auto.setAttribute('aria-pressed','true');tools.append(auto);
   const fonts=document.createElement('select');fonts.setAttribute('aria-label','Operator font size');for(const n of [11,12,14,16,18])fonts.append(new Option(`${n} px`,String(n)));fonts.value=String(node.properties.generetiOperatorFont??12);tools.append(fonts);
@@ -18,7 +18,7 @@ app.registerExtension({name:'Genereti.OperatorEditor',getCustomWidgets(){return 
   const runAction=()=>{apply();return node._generetiOperatorRun?.();};
   const appearance=()=>({...defaultAppearance,fontSize:Number(fonts.value),fillHeight:true});
   const view=createEditor(code,source,(name==='expression'||name==='guide')?'javascript':node.comfyClass==='GeneretiDatJSON'?'javascript':'markdown',text=>{draft=text;if(!held)apply();},runAction,appearance());
-  run.onclick=runAction;auto.onclick=()=>{held=!held;auto.setAttribute('aria-pressed',String(!held));if(!held)apply();};toggle.onclick=()=>{code.hidden=!code.hidden;toggle.textContent=code.hidden?'▸':'▾';toggle.setAttribute('aria-expanded',String(!code.hidden));node.setSize?.([node.size[0],node.computeSize()[1]]);};fonts.onchange=()=>{node.properties.generetiOperatorFont=Number(fonts.value);view.setAppearance(appearance());};
+  run.onclick=runAction;auto.onclick=()=>{held=!held;auto.setAttribute('aria-pressed',String(!held));if(!held)apply();};toggle.onclick=()=>{code.hidden=!code.hidden;toggle.textContent=code.hidden?'›':'⌄';toggle.setAttribute('aria-expanded',String(!code.hidden));node.setSize?.([node.size[0],node.computeSize()[1]]);};fonts.onchange=()=>{node.properties.generetiOperatorFont=Number(fonts.value);view.setAppearance(appearance());};
   const releaseInput=captureEditorInput(view,appearance);
   const widget=node.addDOMWidget(name,'GENERETI_OPERATOR_TEXT',surface,{serialize:true,getValue:()=>source,setValue:value=>{source=draft=String(value??'');if(view.state.doc.toString()!==source)view.replaceDocument(source);}});widget.computeSize=width=>[width,code.hidden?34:198];widget.serializeValue=()=>source;
   // Restore DOM text explicitly: newer Comfy frontends do not call the
