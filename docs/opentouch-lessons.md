@@ -128,3 +128,23 @@ Edit the titles, narration and hints. Use **▷** for learner-driven navigation 
 Playback recreates nodes with new graph IDs and links by named sockets, using persistent recording references. Missing packs/widgets stop with an error. Created nodes restore scalar widget values and layout; converted sockets, non-scalar custom UI state, groups and nested subgraphs are not yet reconstructed. This first milestone is a semantic patch recorder, not a universal UI macro recorder. Non-audio Livecode Run can be replayed; audio, camera/screen permission, MIDI and queued inference remain explicit controls.
 
 The example creates a moving texture, temporal feedback, invert filter and viewer, then transport → sequence → FM synth → delay → mixer → output. Both paths are real-time and run independently; it does not claim audio-reactive modulation. Feedback history and audio playing state are runtime data and are never saved. Audio starts only by pressing Start on `mod.output`. Static Markdown/HTML/PDF exports describe the session; editable JSON and the workflow retain executable actions. `scripts/build_feedback_av_demo.py` packages the canonical browser-recorded session into both demo files and the lesson catalog.
+
+### Cursor paths and numeric drags
+
+Record now captures pointer movement within node surfaces, clicks and drags.
+Paths use normalized coordinates anchored to the node or named parameter/editor,
+so their cues follow the layout. Each path retains up to 96 samples over at most
+five seconds. Playback shows a hollow moving cursor, a click pulse, or a pressed
+drag cursor. Numeric field drags carry `fromValue` and `value` and animate the
+actual named widget; ordinary edits, text, wiring and creation remain semantic
+actions. Cues do not dispatch arbitrary DOM clicks or reach into embedded iframe
+apps, operating-system controls, permissions or external devices. Hover paths
+are node-local; this is not a screen recording of every cursor position.
+
+`ꘇ-Painterly-Feedback-Tutorial` builds a six-step procedural paint loop with
+Hint, Do it, visible typing and authored curved drag cues. These demonstrations
+are explicitly authored, rather than claimed as a captured human session. Its
+last step explains recording your own variation. The completed companion is
+`ꘇ-Painterly-Feedback-Patch`; `scripts/build_painterly_demo.py` regenerates the
+lesson source, starter and catalog entry. Exports preserve path samples in JSON;
+static document exports describe the lesson without replaying the cursor.

@@ -17,7 +17,10 @@ export function validateActions(actions){
   if(a.kind==='connect'){out.source=validateReference(a.source);out.output=name(a.output);out.input=name(a.input);}
   if(a.kind==='disconnect')out.input=name(a.input);
   if(a.kind==='view'){if(!views.has(a.view)||typeof a.enabled!=='boolean')throw Error('Invalid preview action');out.view=a.view;out.enabled=a.enabled;}
-  if(a.kind==='pointer'){if(!['click','drag'].includes(a.gesture))throw Error('Invalid pointer gesture');out.gesture=a.gesture;out.from=point(a.from);out.to=point(a.to??a.from);}
+  if(a.kind==='pointer'){if(!['move','click','drag'].includes(a.gesture))throw Error('Invalid pointer gesture');out.gesture=a.gesture;out.from=point(a.from);out.to=point(a.to??a.from);
+   if(a.path!==undefined){if(!Array.isArray(a.path)||a.path.length<2||a.path.length>96)throw Error('Pointer path requires 2–96 samples');let last=-1;out.path=a.path.map(p=>{if(!Array.isArray(p)||p.length!==3||!Number.isFinite(p[2])||p[2]<last||p[2]>5000||p[2]<0)throw Error('Invalid pointer path time');last=p[2];return [...point(p.slice(0,2)),p[2]];});if(out.path[0][2]!==0)throw Error('Pointer path must start at zero');}
+   if(a.value!==undefined||a.fromValue!==undefined){if(a.gesture==='move'||!out.target.widget||!Number.isFinite(a.value)||!Number.isFinite(a.fromValue))throw Error('Pointer value requires a named numeric widget and gesture');out.value=a.value;out.fromValue=a.fromValue;}
+}
   return out;
  });
 }

@@ -177,3 +177,7 @@ Demo filenames use `ꘇ-…`. Stable node IDs and the **Genereti** folder remain
 ## Modular audio demo
 
 **ꘇ-Modular-Audio.json** connects shared transport, melody/drum grids, polyphonic synth and procedural drums through gain/pan, filter, delay and a four-bus mixer into an explicitly started output. Its `dat.lesson` provides a walkthrough. These are independent `mod.*` nodes that accept OpenTouch CHOP notes and scalar controls. No models or hardware are required. See [modular audio](modular-audio.md).
+
+## Painterly noise feedback
+
+**ꘇ-Painterly-Feedback-Tutorial** is a lesson-only starter with six Hint / Do it steps that create and wire the patch. **ꘇ-Painterly-Feedback-Patch** opens the completed pigment/noise/displacement loop with the same lesson. See [reference feedback and expression syntax](texture-operators.md#painterly-reference-feedback-tutorial). Both run without models or media permissions.

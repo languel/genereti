@@ -2050,5 +2050,658 @@
     "summary": "Compare layered simplex textures with per-channel Perlin expressions.",
     "title": "Coherent noise: textures and expressions",
     "version": 1
+  },
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "painterly-noise-feedback",
+    "title": "Paint with noise and reference feedback",
+    "summary": "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition. Model-free pigment, grain and brush-flow feedback; includes Hint, Do it and cursor demonstrations.",
+    "steps": [
+      {
+        "title": "Grow a broad noise field",
+        "text": "Start with 3D simplex noise: x/y make the field, the slowly moving third coordinate animates it. Scale changes the size of the pigment regions. Do it builds this step; Play remaining builds the whole patch.",
+        "hint": "Choose Live, 512 × 320, simplex, 3 dimensions, scale 3, speed 0.02. The cursor paths here are authored demonstrations; Record captures your own paths.",
+        "target": {
+          "nodeType": "GeneretiTextureNoise",
+          "ref": "0341726e-e431-570c-8a0b-64628c190bb1",
+          "part": "node"
+        },
+        "actions": [
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "0341726e-e431-570c-8a0b-64628c190bb1"
+            },
+            "title": "ꘇ top.noise · broad pigment field",
+            "position": [
+              0,
+              0
+            ],
+            "size": [
+              400,
+              780
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "algorithm": "simplex",
+              "dimensions": 3,
+              "width": 512,
+              "height": 320,
+              "scale": 3,
+              "seed": 9,
+              "z": 0,
+              "time": 0,
+              "speed": 0.02,
+              "octaves": 2,
+              "lacunarity": 2,
+              "gain": 0.5,
+              "color": "Grayscale"
+            }
+          },
+          {
+            "kind": "pointer",
+            "target": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "0341726e-e431-570c-8a0b-64628c190bb1",
+              "widget": "scale",
+              "part": "parameter"
+            },
+            "gesture": "move",
+            "from": [
+              0.3,
+              0.5
+            ],
+            "to": [
+              0.65,
+              0.5
+            ],
+            "path": [
+              [
+                0.3,
+                0.5,
+                0
+              ],
+              [
+                0.5,
+                0.7,
+                180
+              ],
+              [
+                0.65,
+                0.5,
+                350
+              ]
+            ]
+          },
+          {
+            "kind": "pointer",
+            "target": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "0341726e-e431-570c-8a0b-64628c190bb1",
+              "widget": "scale",
+              "part": "parameter"
+            },
+            "gesture": "click",
+            "from": [
+              0.3,
+              0.5
+            ],
+            "to": [
+              0.3,
+              0.5
+            ],
+            "path": [
+              [
+                0.3,
+                0.5,
+                0
+              ],
+              [
+                0.3,
+                0.5,
+                350
+              ]
+            ]
+          },
+          {
+            "kind": "set-widget",
+            "target": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "0341726e-e431-570c-8a0b-64628c190bb1",
+              "widget": "scale",
+              "part": "parameter"
+            },
+            "value": 2
+          },
+          {
+            "kind": "pointer",
+            "target": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "0341726e-e431-570c-8a0b-64628c190bb1",
+              "widget": "scale",
+              "part": "parameter"
+            },
+            "gesture": "drag",
+            "fromValue": 2,
+            "value": 3,
+            "from": [
+              0.65,
+              0.5
+            ],
+            "to": [
+              0.3,
+              0.5
+            ],
+            "path": [
+              [
+                0.65,
+                0.5,
+                0
+              ],
+              [
+                0.58,
+                0.48,
+                160
+              ],
+              [
+                0.45,
+                0.56,
+                350
+              ],
+              [
+                0.3,
+                0.5,
+                650
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Color and grain the fresh paint",
+        "text": "The expression maps grayscale noise to eight warm/cool pigment bands. Fine value noise is added at low opacity. Image is A; background is B: add gives B + opacity × A.",
+        "hint": "Connect broad noise → expression. Connect palette → composite background, fine grain → image. Opacity 0.055 keeps the grain subtle. c selects RGB; v is the incoming component.",
+        "target": {
+          "nodeType": "GeneretiTextureComposite",
+          "ref": "1ef01dde-57a7-5a99-93fe-df40592de5f2",
+          "part": "node"
+        },
+        "actions": [
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "6859bd2b-1541-54e2-b0e6-692ea07d444c"
+            },
+            "title": "ꘇ top.expression · warm / cool pigment",
+            "position": [
+              470,
+              0
+            ],
+            "size": [
+              400,
+              660
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "expression": "mix(0.06+0.26*step(0.5,c)+0.07*step(1.5,c),0.95-0.43*step(0.5,c)-0.40*step(1.5,c),floor(clamp(v,0,0.999)*8)/7)",
+              "width": 512,
+              "height": 320,
+              "time": 0
+            }
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "6859bd2b-1541-54e2-b0e6-692ea07d444c"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "0341726e-e431-570c-8a0b-64628c190bb1"
+            },
+            "output": "image",
+            "input": "image"
+          },
+          {
+            "kind": "type-text",
+            "target": {
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "6859bd2b-1541-54e2-b0e6-692ea07d444c",
+              "widget": "expression",
+              "part": "code"
+            },
+            "value": "mix(0.06+0.26*step(0.5,c)+0.07*step(1.5,c),0.95-0.43*step(0.5,c)-0.40*step(1.5,c),floor(clamp(v,0,0.999)*8)/7)"
+          },
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "15440db2-bcc5-54a8-87b0-16b056fe73e3"
+            },
+            "title": "ꘇ top.noise · fine pigment grain",
+            "position": [
+              0,
+              880
+            ],
+            "size": [
+              400,
+              780
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "algorithm": "value",
+              "dimensions": 2,
+              "width": 512,
+              "height": 320,
+              "scale": 96,
+              "seed": 21,
+              "z": 0,
+              "time": 0,
+              "speed": 0,
+              "octaves": 1,
+              "lacunarity": 2,
+              "gain": 0.5,
+              "color": "Grayscale"
+            }
+          },
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "1ef01dde-57a7-5a99-93fe-df40592de5f2"
+            },
+            "title": "ꘇ top.composite · fresh pigment",
+            "position": [
+              470,
+              880
+            ],
+            "size": [
+              400,
+              600
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "operation": "add",
+              "opacity": 0.055
+            }
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "1ef01dde-57a7-5a99-93fe-df40592de5f2"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "15440db2-bcc5-54a8-87b0-16b056fe73e3"
+            },
+            "output": "image",
+            "input": "image"
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "1ef01dde-57a7-5a99-93fe-df40592de5f2"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureExpression",
+              "ref": "6859bd2b-1541-54e2-b0e6-692ea07d444c"
+            },
+            "output": "image",
+            "input": "background"
+          }
+        ]
+      },
+      {
+        "title": "Prepare a delayed frame and brush flow",
+        "text": "feedbackref is a delay, not a composite. Its IMAGE input seeds the first frame. Its output must feed a processing chain to influence the result. Leave reference empty until we make the final target. A colored noise map supplies different red/green displacement directions.",
+        "hint": "Connect fresh pigment → feedbackref image. Make another simplex noise with RGB color, scale 5 and speed 0.012. The reference target comes in step 5.",
+        "target": {
+          "nodeType": "GeneretiTextureFeedbackRef",
+          "ref": "8505a239-f428-5c9a-8e67-d580dc4fcb91",
+          "part": "node"
+        },
+        "actions": [
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureFeedbackRef",
+              "ref": "8505a239-f428-5c9a-8e67-d580dc4fcb91"
+            },
+            "title": "ꘇ top.feedbackref · previous painted frame",
+            "position": [
+              940,
+              0
+            ],
+            "size": [
+              400,
+              600
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "reference": "",
+              "width": 512,
+              "height": 320
+            }
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureFeedbackRef",
+              "ref": "8505a239-f428-5c9a-8e67-d580dc4fcb91"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "1ef01dde-57a7-5a99-93fe-df40592de5f2"
+            },
+            "output": "image",
+            "input": "image"
+          },
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "cb33b1ef-5e35-5a9f-b79e-6af2f9c7a929"
+            },
+            "title": "ꘇ top.noise · slow brush flow",
+            "position": [
+              940,
+              880
+            ],
+            "size": [
+              400,
+              780
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "algorithm": "simplex",
+              "dimensions": 3,
+              "width": 512,
+              "height": 320,
+              "scale": 5,
+              "seed": 31,
+              "z": 0,
+              "time": 0,
+              "speed": 0.012,
+              "octaves": 2,
+              "lacunarity": 2,
+              "gain": 0.5,
+              "color": "RGB"
+            }
+          }
+        ]
+      },
+      {
+        "title": "Process the previous paint",
+        "text": "Move the delayed frame with the flow map, then soften it with a small blur. These processors sit inside the feedback loop, so their effect accumulates each frame.",
+        "hint": "feedbackref → displace image; RGB noise → displace displacement; displace → blur. Start with X/Y 0.01 and radius 0.7 pixels.",
+        "target": {
+          "nodeType": "GeneretiTextureDisplace",
+          "ref": "feb4ee39-579d-533c-885c-ac4809232b96",
+          "part": "node"
+        },
+        "actions": [
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureDisplace",
+              "ref": "feb4ee39-579d-533c-885c-ac4809232b96"
+            },
+            "title": "ꘇ top.displace · brush the old paint",
+            "position": [
+              1410,
+              0
+            ],
+            "size": [
+              400,
+              600
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "amount_x": 0.01,
+              "amount_y": 0.01,
+              "center": 0.5
+            }
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureDisplace",
+              "ref": "feb4ee39-579d-533c-885c-ac4809232b96"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureFeedbackRef",
+              "ref": "8505a239-f428-5c9a-8e67-d580dc4fcb91"
+            },
+            "output": "image",
+            "input": "image"
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureDisplace",
+              "ref": "feb4ee39-579d-533c-885c-ac4809232b96"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureNoise",
+              "ref": "cb33b1ef-5e35-5a9f-b79e-6af2f9c7a929"
+            },
+            "output": "image",
+            "input": "displacement"
+          },
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureFilter",
+              "ref": "b650ebc8-d684-527d-b2e9-4982892f9215"
+            },
+            "title": "ꘇ top.filter · soften pigment",
+            "position": [
+              1880,
+              0
+            ],
+            "size": [
+              400,
+              600
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "operation": "blur",
+              "amount": 0.7
+            }
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureFilter",
+              "ref": "b650ebc8-d684-527d-b2e9-4982892f9215"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureDisplace",
+              "ref": "feb4ee39-579d-533c-885c-ac4809232b96"
+            },
+            "output": "image",
+            "input": "image"
+          }
+        ]
+      },
+      {
+        "title": "Close the loop with a reference",
+        "text": "Crossfade fresh pigment (image A) with processed history (background B). At opacity 0.06 the result is 6% fresh + 94% old. Set feedbackref reference to the final composite named REF TARGET. That dashed logical link reads the previous completed frame; no cyclic IMAGE cable is needed. Referencing the fresh source instead would only delay it.",
+        "hint": "Wire fresh → final composite image, blur → background. In feedbackref’s picker choose “painted result / REF TARGET”. The final composite is the target, not the seed. Use the reset arrow to clear history.",
+        "target": {
+          "nodeType": "GeneretiTextureFeedbackRef",
+          "ref": "8505a239-f428-5c9a-8e67-d580dc4fcb91",
+          "part": "node"
+        },
+        "actions": [
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "f88ef2e0-65e5-50c8-bb2a-0450c0016d6e"
+            },
+            "title": "ꘇ top.composite · painted result / REF TARGET",
+            "position": [
+              2350,
+              0
+            ],
+            "size": [
+              400,
+              600
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "operation": "cross",
+              "opacity": 0.06
+            }
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "f88ef2e0-65e5-50c8-bb2a-0450c0016d6e"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "1ef01dde-57a7-5a99-93fe-df40592de5f2"
+            },
+            "output": "image",
+            "input": "image"
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "f88ef2e0-65e5-50c8-bb2a-0450c0016d6e"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureFilter",
+              "ref": "b650ebc8-d684-527d-b2e9-4982892f9215"
+            },
+            "output": "image",
+            "input": "background"
+          },
+          {
+            "kind": "set-widget",
+            "target": {
+              "nodeType": "GeneretiTextureFeedbackRef",
+              "ref": "8505a239-f428-5c9a-8e67-d580dc4fcb91",
+              "widget": "reference",
+              "part": "parameter"
+            },
+            "value": "{\"ref\":\"f88ef2e0-65e5-50c8-bb2a-0450c0016d6e\",\"outputSlot\":0}"
+          },
+          {
+            "kind": "set-widget",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "f88ef2e0-65e5-50c8-bb2a-0450c0016d6e",
+              "widget": "opacity",
+              "part": "parameter"
+            },
+            "value": 0.15
+          },
+          {
+            "kind": "pointer",
+            "target": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "f88ef2e0-65e5-50c8-bb2a-0450c0016d6e",
+              "widget": "opacity",
+              "part": "parameter"
+            },
+            "gesture": "drag",
+            "fromValue": 0.15,
+            "value": 0.06,
+            "from": [
+              0.65,
+              0.5
+            ],
+            "to": [
+              0.3,
+              0.5
+            ],
+            "path": [
+              [
+                0.65,
+                0.5,
+                0
+              ],
+              [
+                0.58,
+                0.48,
+                160
+              ],
+              [
+                0.45,
+                0.56,
+                350
+              ],
+              [
+                0.3,
+                0.5,
+                650
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Present and record a variation",
+        "text": "Open the canvas overlay with Alt-W; Alt-F fills the browser window. Increase fresh opacity for faster renewal, reduce it for longer brush memory. Change flow scale/speed for different marks. Record on dat.lesson captures named parameter changes and cursor paths; + separates steps, Stop saves them. Review its JSON before exporting or sharing.",
+        "hint": "Select the viewer for Alt-W. In the lesson toolbar press Record, drag a float parameter, hover between controls and click; stop recording and replay the new step. Audio, camera and screen capture remain manual.",
+        "target": {
+          "nodeType": "GeneretiLiveImagePreview",
+          "ref": "0da02a1c-d694-5ac3-849b-e624a046995b",
+          "part": "node"
+        },
+        "actions": [
+          {
+            "kind": "create-node",
+            "target": {
+              "nodeType": "GeneretiLiveImagePreview",
+              "ref": "0da02a1c-d694-5ac3-849b-e624a046995b"
+            },
+            "title": "ꘇ painterly canvas",
+            "position": [
+              2820,
+              0
+            ],
+            "size": [
+              500,
+              600
+            ],
+            "widgets": {
+              "genereti_delivery": "Live",
+              "preview_size": 512
+            }
+          },
+          {
+            "kind": "connect",
+            "target": {
+              "nodeType": "GeneretiLiveImagePreview",
+              "ref": "0da02a1c-d694-5ac3-849b-e624a046995b"
+            },
+            "source": {
+              "nodeType": "GeneretiTextureComposite",
+              "ref": "f88ef2e0-65e5-50c8-bb2a-0450c0016d6e"
+            },
+            "output": "image",
+            "input": "image"
+          },
+          {
+            "kind": "select",
+            "target": {
+              "nodeType": "GeneretiLiveImagePreview",
+              "ref": "0da02a1c-d694-5ac3-849b-e624a046995b"
+            }
+          }
+        ]
+      }
+    ]
   }
 ]

@@ -90,3 +90,5 @@ See [modular audio](modular-audio.md) for routing, timing and queue boundaries.
 | `ꘇmod.output` | Audio bus, level, mute; explicit browser Start | GENERETI_AUDIO_BUS | `GeneretiAudioOutput` |
 
 Recorded patch-building examples: **ꘇ-Feedback-AV-Build-Tutorial** starts with only the author node; **ꘇ-Feedback-AV-Recorded-Patch** opens the completed feedback/sequence/synth/delay/mixer graph. The lesson playlist supports sequential replay and pauses for explicit audio activation. See [recording and playback](opentouch-lessons.md#record-and-replay-a-patch-building-session).
+
+Painterly example: **ꘇ-Painterly-Feedback-Tutorial** teaches fresh pigment → crossfade and delayed reference → displacement → blur → crossfade, with the final crossfade as the reference target. The completed companion is **ꘇ-Painterly-Feedback-Patch**. See the [texture guide](texture-operators.md#painterly-reference-feedback-tutorial), including the complete `top.expression` syntax reference.

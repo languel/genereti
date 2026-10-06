@@ -168,3 +168,71 @@ step's existing-node parameters and wires; the final step opens the output
 overlay. Hints suggest manual experiments before restoring the demonstrated
 recipe. Reload the page and reopen the saved workflow to replace an older
 embedded lesson. Adding `top.noise` requires a Comfy restart to register its schema.
+
+## Painterly reference-feedback tutorial
+
+Open **ꘇ-Painterly-Feedback-Tutorial** for a lesson-only starter, or
+**ꘇ-Painterly-Feedback-Patch** for the completed graph. The lesson library also
+has **Open painterly feedback tutorial**. Each of its six steps includes Hint
+and Do it; Play remaining builds the whole graph. The source is procedural, so
+this example needs no image asset, model, camera or external service.
+
+```text
+broad noise → pigment palette ──→ fresh pigment (+ fine grain) ────→ cross → viewer
+                                   ↓ seed                          ↑ A     ⋮
+                               feedbackref → displace → blur ──────┘ B     ⋮
+                                   ↑             ↑                         ⋮
+                                   └── reference cross, previous frame ─────┘
+                                            RGB flow noise → displacement
+```
+
+The feedbackref IMAGE input seeds history; it is not a live second texture to
+blend. The reference picker selects **painted result / REF TARGET**, the final
+crossfade, so next frame receives the previous completed result. Referencing
+fresh pigment instead merely delays that source. A feedbackref with no connected
+output cannot influence the viewed result. Its reset arrow clears accumulated
+history. Queue returns the seed only: this recursive effect runs in Live mode.
+
+Crossfade opacity weights **image A**, here fresh pigment: `0.06` gives 6% fresh
+and 94% processed history. Larger values refresh faster; smaller values keep
+older brush marks. Displacement uses flow-map R/G for X/Y, centered at 0.5;
+amounts are fractions of image size. The blur is 0.7 source pixels. These are
+per-frame effects, so frame rate changes their apparent strength and memory.
+
+## Expression language reference
+
+Write one arithmetic expression, without an assignment, `return`, or semicolon.
+It is parsed once and compiled to WGSL in Live; Queue evaluates it with NumPy.
+This is a bounded math language, not JavaScript. Expressions are limited to 2048
+characters. Parentheses, decimal/scientific literals, unary `+`/`-`, and binary
+`+ - * / % ^` are supported; `^` means power, not XOR. Use parentheses for clarity.
+
+| Name | Meaning in TOP |
+| --- | --- |
+| `x`, `y` | Normalized pixel-center coordinates, 0..1 |
+| `i` | Linear pixel index (`row * width + column`) |
+| `c` | RGB component index: 0 red, 1 green, 2 blue |
+| `v`, `a` | Input value of the current RGB component; 0 without an image |
+| `b` | Reserved second operand, currently 0 |
+| `t` | Live graph seconds plus time offset; explicit time in Queue |
+| `w`, `h` | Output dimensions; input IMAGE overrides width/height |
+| `pi`, `tau` | π and 2π constants |
+
+Functions and argument counts:
+
+- One argument: `sin`, `cos`, `tan`, `abs`, `sqrt`, `floor`, `ceil`, `exp`, `log`, `fract`.
+- Two arguments: `min(a,b)`, `max(a,b)`, `pow(a,b)`, `step(edge,x)`.
+- Three arguments: `clamp(x,low,high)`, `mix(a,b,weight)`.
+- One to four coordinates: `noise(...)`, `perlin(...)`, `simplex(...)`, `value(...)`.
+  Noise functions return signed values; `noise` aliases Perlin. Map to 0..1 when displaying.
+
+`step(edge,x)` returns 0 below the edge and 1 otherwise. `mix` linearly blends
+its first two arguments. Each RGB result clamps to 0..1; input alpha is preserved,
+or opaque without input. There are no statements, loops, comparisons, ternaries,
+vector constructors, property access or arbitrary functions. Route alpha with
+`top.channels`. Keep function domains valid (for example positive `log` inputs).
+
+Try `0.5+0.5*sin(t+x*12+c*tau/3)` for colored waves,
+`0.5+0.5*simplex(x*5,y*5,t*0.1+c*2)` for colored noise, or
+`step(0.5,v)` to threshold an input image. A formula without `c` or varying input
+RGB values appears monochrome.
