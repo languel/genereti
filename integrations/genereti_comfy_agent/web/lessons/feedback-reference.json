@@ -1,0 +1,642 @@
+{
+  "config": {},
+  "extra": {
+    "ds": {
+      "offset": [
+        70,
+        100
+      ],
+      "scale": 0.32
+    }
+  },
+  "groups": [],
+  "last_link_id": 5,
+  "last_node_id": 7,
+  "links": [
+    [
+      1,
+      2,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      1,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      1,
+      "IMAGE"
+    ],
+    [
+      5,
+      5,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "nodes": [
+    {
+      "flags": {},
+      "id": 1,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 0,
+      "outputs": [
+        {
+          "links": [
+            3
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        3.191743500281291,
+        -107.48421534791812
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureExpression",
+        "generetiLessonRef": "e9268263-602c-4fa2-bf03-da37e327fb2d",
+        "generetiOperatorHeights": {
+          "expression": 160
+        },
+        "generetiOperatorText": {
+          "expression": "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))"
+        },
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "expression": "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))",
+          "height": 384,
+          "time": 0,
+          "width": 512
+        }
+      },
+      "size": [
+        340,
+        563.5
+      ],
+      "title": "ꘇ fresh moving dots",
+      "type": "GeneretiTextureExpression",
+      "widgets_values": [
+        "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))",
+        512,
+        384,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "expression": "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))",
+        "genereti_delivery": "Live",
+        "height": 384,
+        "texture_preview": "",
+        "time": 0,
+        "width": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 2,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "reference",
+          "name": "reference",
+          "type": "STRING",
+          "widget": {
+            "name": "reference"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 1,
+      "outputs": [
+        {
+          "links": [
+            1
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        0,
+        660
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureFeedbackRef",
+        "generetiLessonRef": "819225ac-3df1-4ccb-a9ba-5c193c022bfc",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "height": 384,
+          "reference": "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}",
+          "width": 512
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇtop.feedbackref · previous composite",
+      "type": "GeneretiTextureFeedbackRef",
+      "widgets_values": [
+        "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}",
+        512,
+        384,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "height": 384,
+        "reference": "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}",
+        "reference_picker": "",
+        "texture_preview": "",
+        "width": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 3,
+      "inputs": [
+        {
+          "link": 1,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operand",
+          "name": "operand",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "widget": {
+            "name": "value"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 3,
+      "outputs": [
+        {
+          "links": [
+            2
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        410,
+        660
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureMath",
+        "generetiLessonRef": "5c0d6588-d57f-4e81-9e0e-20484c85d035",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "operation": "multiply",
+          "value": 0.96
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ decay · RGB × 0.96",
+      "type": "GeneretiTextureMath",
+      "widgets_values": [
+        "multiply",
+        0.96,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "operation": "multiply",
+        "texture_preview": "",
+        "value": 0.96
+      }
+    },
+    {
+      "flags": {},
+      "id": 4,
+      "inputs": [
+        {
+          "link": 2,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "translate_x",
+          "name": "translate_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_x"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "translate_y",
+          "name": "translate_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_y"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "scale",
+          "name": "scale",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "rotate",
+          "name": "rotate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "rotate"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "flip_x",
+          "name": "flip_x",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "flip_x"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "flip_y",
+          "name": "flip_y",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "flip_y"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 4,
+      "outputs": [
+        {
+          "links": [
+            4
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        820,
+        660
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureTransform",
+        "generetiLessonRef": "73642cfc-0b9a-40f4-82d6-6a635c7283f6",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "flip_x": false,
+          "flip_y": false,
+          "rotate": 0.8,
+          "scale": 1.01,
+          "translate_x": 0,
+          "translate_y": 0
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ process delayed frame",
+      "type": "GeneretiTextureTransform",
+      "widgets_values": [
+        0,
+        0,
+        1.01,
+        0.8,
+        false,
+        false,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "flip_x": false,
+        "flip_y": false,
+        "genereti_delivery": "Live",
+        "rotate": 0.8,
+        "scale": 1.01,
+        "texture_preview": "",
+        "translate_x": 0,
+        "translate_y": 0
+      }
+    },
+    {
+      "flags": {},
+      "id": 5,
+      "inputs": [
+        {
+          "link": 3,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": 4,
+          "localized_name": "background",
+          "name": "background",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "opacity",
+          "name": "opacity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "opacity"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 5,
+      "outputs": [
+        {
+          "links": [
+            5
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        820,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureComposite",
+        "generetiLessonRef": "ba61e572-ddfe-4eb3-a191-dec5acd32c19",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "opacity": 1,
+          "operation": "screen"
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ final composite · feedback target",
+      "type": "GeneretiTextureComposite",
+      "widgets_values": [
+        "screen",
+        1,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "opacity": 1,
+        "operation": "screen",
+        "texture_preview": ""
+      }
+    },
+    {
+      "flags": {},
+      "id": 6,
+      "inputs": [
+        {
+          "link": 5,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 6,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        1230,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "397ab396-3a65-48cc-9180-961661b283f3",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ final image",
+      "type": "GeneretiLiveImagePreview",
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "live_image_preview": "",
+        "preview_size": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 7,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 2,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT"
+        },
+        {
+          "links": null,
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING"
+        }
+      ],
+      "pos": [
+        1230,
+        660
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiOperatorHeights": {
+          "guide": 160
+        },
+        "generetiOperatorText": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"id\": \"feedback-reference-chain\",\n  \"steps\": [\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\",\n        \"ref\": \"e9268263-602c-4fa2-bf03-da37e327fb2d\"\n      },\n      \"text\": \"The expression draws fresh white dots on opaque black. This branch goes directly to the composite image input.\",\n      \"title\": \"Fresh source\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"part\": \"node\",\n        \"ref\": \"819225ac-3df1-4ccb-a9ba-5c193c022bfc\"\n      },\n      \"text\": \"top.feedbackref picks the final composite as its reference. It copies that output on the GPU and exposes it on the next graph tick. No cyclic IMAGE cable is needed. The optional image input seeds the first frame; otherwise it begins transparent.\",\n      \"title\": \"Read the previous final image\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureMath\",\n        \"part\": \"node\",\n        \"ref\": \"5c0d6588-d57f-4e81-9e0e-20484c85d035\"\n      },\n      \"text\": \"Multiply RGB by 0.96 to fade older marks. Try 0 to remove trails or 0.99 for longer history. Alpha is preserved, so decay affects visible brightness.\",\n      \"title\": \"Decay the history\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\",\n        \"ref\": \"73642cfc-0b9a-40f4-82d6-6a635c7283f6\"\n      },\n      \"text\": \"Transform the preceding composite before mixing it with fresh dots. You can insert blur, corner pin or other processors anywhere along this branch.\",\n      \"title\": \"Process the delayed frame\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"part\": \"node\",\n        \"ref\": \"ba61e572-ddfe-4eb3-a191-dec5acd32c19\"\n      },\n      \"text\": \"Screen combines fresh dots with transformed history: black lets the trails show through. Over would cover history because this source is opaque. The reference targets this final composite; picking the original source instead gives a one-frame delay without recursive accumulation.\",\n      \"title\": \"Composite with the source\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\",\n        \"ref\": \"397ab396-3a65-48cc-9180-961661b283f3\"\n      },\n      \"text\": \"Alt-W opens the final view; Alt-F fills the window. For a convenient single-node effect use top.feedback, which retains its own history and offers screen/add/over. Convert the reference STRING field to an input to drive it from a primitive or DAT. Camera, screen and audio still require explicit activation.\",\n      \"title\": \"Perform and experiment\"\n    }\n  ],\n  \"title\": \"A flexible feedback loop\",\n  \"version\": 1,\n  \"summary\": \"Use a delayed node reference to make a flexible recursive GPU feedback chain.\"\n}"
+        }
+      },
+      "size": [
+        640,
+        620
+      ],
+      "title": "ꘇ guide · flexible feedback",
+      "type": "GeneretiDatLesson",
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"id\": \"feedback-reference-chain\",\n  \"steps\": [\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\",\n        \"ref\": \"e9268263-602c-4fa2-bf03-da37e327fb2d\"\n      },\n      \"text\": \"The expression draws fresh white dots on opaque black. This branch goes directly to the composite image input.\",\n      \"title\": \"Fresh source\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"part\": \"node\",\n        \"ref\": \"819225ac-3df1-4ccb-a9ba-5c193c022bfc\"\n      },\n      \"text\": \"top.feedbackref picks the final composite as its reference. It copies that output on the GPU and exposes it on the next graph tick. No cyclic IMAGE cable is needed. The optional image input seeds the first frame; otherwise it begins transparent.\",\n      \"title\": \"Read the previous final image\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureMath\",\n        \"part\": \"node\",\n        \"ref\": \"5c0d6588-d57f-4e81-9e0e-20484c85d035\"\n      },\n      \"text\": \"Multiply RGB by 0.96 to fade older marks. Try 0 to remove trails or 0.99 for longer history. Alpha is preserved, so decay affects visible brightness.\",\n      \"title\": \"Decay the history\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\",\n        \"ref\": \"73642cfc-0b9a-40f4-82d6-6a635c7283f6\"\n      },\n      \"text\": \"Transform the preceding composite before mixing it with fresh dots. You can insert blur, corner pin or other processors anywhere along this branch.\",\n      \"title\": \"Process the delayed frame\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"part\": \"node\",\n        \"ref\": \"ba61e572-ddfe-4eb3-a191-dec5acd32c19\"\n      },\n      \"text\": \"Screen combines fresh dots with transformed history: black lets the trails show through. Over would cover history because this source is opaque. The reference targets this final composite; picking the original source instead gives a one-frame delay without recursive accumulation.\",\n      \"title\": \"Composite with the source\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\",\n        \"ref\": \"397ab396-3a65-48cc-9180-961661b283f3\"\n      },\n      \"text\": \"Alt-W opens the final view; Alt-F fills the window. For a convenient single-node effect use top.feedback, which retains its own history and offers screen/add/over. Convert the reference STRING field to an input to drive it from a primitive or DAT. Camera, screen and audio still require explicit activation.\",\n      \"title\": \"Perform and experiment\"\n    }\n  ],\n  \"title\": \"A flexible feedback loop\",\n  \"version\": 1,\n  \"summary\": \"Use a delayed node reference to make a flexible recursive GPU feedback chain.\"\n}",
+        ""
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"id\": \"feedback-reference-chain\",\n  \"steps\": [\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\",\n        \"ref\": \"e9268263-602c-4fa2-bf03-da37e327fb2d\"\n      },\n      \"text\": \"The expression draws fresh white dots on opaque black. This branch goes directly to the composite image input.\",\n      \"title\": \"Fresh source\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"part\": \"node\",\n        \"ref\": \"819225ac-3df1-4ccb-a9ba-5c193c022bfc\"\n      },\n      \"text\": \"top.feedbackref picks the final composite as its reference. It copies that output on the GPU and exposes it on the next graph tick. No cyclic IMAGE cable is needed. The optional image input seeds the first frame; otherwise it begins transparent.\",\n      \"title\": \"Read the previous final image\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureMath\",\n        \"part\": \"node\",\n        \"ref\": \"5c0d6588-d57f-4e81-9e0e-20484c85d035\"\n      },\n      \"text\": \"Multiply RGB by 0.96 to fade older marks. Try 0 to remove trails or 0.99 for longer history. Alpha is preserved, so decay affects visible brightness.\",\n      \"title\": \"Decay the history\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\",\n        \"ref\": \"73642cfc-0b9a-40f4-82d6-6a635c7283f6\"\n      },\n      \"text\": \"Transform the preceding composite before mixing it with fresh dots. You can insert blur, corner pin or other processors anywhere along this branch.\",\n      \"title\": \"Process the delayed frame\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"part\": \"node\",\n        \"ref\": \"ba61e572-ddfe-4eb3-a191-dec5acd32c19\"\n      },\n      \"text\": \"Screen combines fresh dots with transformed history: black lets the trails show through. Over would cover history because this source is opaque. The reference targets this final composite; picking the original source instead gives a one-frame delay without recursive accumulation.\",\n      \"title\": \"Composite with the source\"\n    },\n    {\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\",\n        \"ref\": \"397ab396-3a65-48cc-9180-961661b283f3\"\n      },\n      \"text\": \"Alt-W opens the final view; Alt-F fills the window. For a convenient single-node effect use top.feedback, which retains its own history and offers screen/add/over. Convert the reference STRING field to an input to drive it from a primitive or DAT. Camera, screen and audio still require explicit activation.\",\n      \"title\": \"Perform and experiment\"\n    }\n  ],\n  \"title\": \"A flexible feedback loop\",\n  \"version\": 1,\n  \"summary\": \"Use a delayed node reference to make a flexible recursive GPU feedback chain.\"\n}",
+        "lesson_toolbar": ""
+      }
+    }
+  ],
+  "version": 0.4
+}

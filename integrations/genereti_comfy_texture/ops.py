@@ -121,3 +121,39 @@ def filter_image(image,operation='level',amount=1.):
             return torch.cat((rgb,alpha),-1).clamp(0,1)
     else: raise ValueError('Unknown filter')
     return torch.cat((rgb.clamp(0,1),a[...,3:]),-1)
+
+
+def displace(image,displacement,amount_x=.02,amount_y=.02,center=.5):
+    a,b=match(image,displacement)
+    uv=coords(a);amount=uv.new_tensor([amount_x,amount_y])
+    return torch.cat([sample(a[i:i+1],uv+(b[i,...,:2]-center)*amount) for i in range(a.shape[0])])
+
+
+def bloom(image,threshold=.6,radius=12.,strength=.8):
+    a=rgba(image)
+    blurred=torch.cat(((a[...,:3]-threshold).clamp_min(0)/max(1-threshold,1e-6),a[...,3:]),-1)
+    weights=[.227027,.194595,.121622,.054054,.016216]
+    uv=coords(a)
+    for direction in ([radius/4/a.shape[2],0],[0,radius/4/a.shape[1]]):
+        premul=torch.cat((blurred[...,:3]*blurred[...,3:],blurred[...,3:]),-1)*weights[0]
+        for i in range(1,5):
+            for sign in (-1,1):
+                tap=sample(blurred,uv+uv.new_tensor(direction)*i*sign)
+                premul+=torch.cat((tap[...,:3]*tap[...,3:],tap[...,3:]),-1)*weights[i]
+        blurred=torch.cat((premul[...,:3]/premul[...,3:].clamp_min(1e-8),premul[...,3:]),-1)
+    alpha=torch.maximum(a[...,3:],blurred[...,3:])
+    rgb=(a[...,:3]*a[...,3:]+strength*blurred[...,:3]*blurred[...,3:])/alpha.clamp_min(1e-8)
+    return torch.cat((rgb.clamp(0,1),alpha),-1)
+
+
+def channels(image,image_b=None,red='r',green='g',blue='b',alpha='a',channels='RGBA'):
+    a=rgba(image);b=match(a,image_b)[1] if image_b is not None else a
+    def component(name):
+        is_b=name in ('br','bg','bb','ba','bluma')
+        source=b if is_b else a;key=name[1:] if is_b else name
+        if key=='zero': return torch.zeros_like(a[...,:1])
+        if key=='one': return torch.ones_like(a[...,:1])
+        if key=='luma': return (source[...,:3]*source.new_tensor([.2126,.7152,.0722])).sum(-1,keepdim=True)
+        return source[...,['r','g','b','a'].index(key):['r','g','b','a'].index(key)+1]
+    names=[red,green,blue] if channels=='RGB' else [red,green,blue,alpha]
+    return torch.cat([component(name) for name in names],-1)

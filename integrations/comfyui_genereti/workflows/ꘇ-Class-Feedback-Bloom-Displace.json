@@ -1,0 +1,934 @@
+{
+  "config": {},
+  "extra": {
+    "ds": {
+      "offset": [
+        200,
+        120
+      ],
+      "scale": 0.4
+    }
+  },
+  "groups": [],
+  "last_link_id": 16,
+  "last_node_id": 11,
+  "links": [
+    [
+      6,
+      2,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      2,
+      0,
+      9,
+      0,
+      "IMAGE"
+    ],
+    [
+      8,
+      8,
+      0,
+      9,
+      1,
+      "IMAGE"
+    ],
+    [
+      9,
+      9,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      3,
+      0,
+      5,
+      1,
+      "IMAGE"
+    ],
+    [
+      11,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      12,
+      1,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ],
+    [
+      13,
+      10,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      14,
+      5,
+      0,
+      11,
+      0,
+      "IMAGE"
+    ],
+    [
+      15,
+      8,
+      0,
+      11,
+      1,
+      "IMAGE"
+    ],
+    [
+      16,
+      11,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "nodes": [
+    {
+      "flags": {},
+      "id": 1,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 0,
+      "outputs": [
+        {
+          "links": [
+            11,
+            12
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        0,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureExpression",
+        "generetiLessonRef": "e9268263-602c-4fa2-bf03-da37e327fb2d",
+        "generetiOperatorHeights": {
+          "expression": 160
+        },
+        "generetiOperatorText": {
+          "expression": "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))*(0.25+0.75*(0.5+0.5*sin(i*0.17+c*2.094)))"
+        },
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "expression": "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))*(0.25+0.75*(0.5+0.5*sin(i*0.17+c*2.094)))",
+          "height": 384,
+          "time": 0,
+          "width": 512
+        }
+      },
+      "size": [
+        340,
+        563.5
+      ],
+      "title": "ꘇ colored moving dots · c = RGB index",
+      "type": "GeneretiTextureExpression",
+      "widgets_values": [
+        "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))*(0.25+0.75*(0.5+0.5*sin(i*0.17+c*2.094)))",
+        512,
+        384,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "expression": "step(0.96,sin(t*1.5+x*24)*cos(y*24-t))*(0.25+0.75*(0.5+0.5*sin(i*0.17+c*2.094)))",
+        "genereti_delivery": "Live",
+        "height": 384,
+        "texture_preview": "",
+        "time": 0,
+        "width": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 2,
+      "inputs": [
+        {
+          "link": 11,
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "reference",
+          "name": "reference",
+          "type": "STRING",
+          "widget": {
+            "name": "reference"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 1,
+      "outputs": [
+        {
+          "links": [
+            6,
+            7
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        420,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureFeedbackRef",
+        "generetiLessonRef": "819225ac-3df1-4ccb-a9ba-5c193c022bfc",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "height": 384,
+          "reference": "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}",
+          "width": 512
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ history · reference final composite",
+      "type": "GeneretiTextureFeedbackRef",
+      "widgets_values": [
+        "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}",
+        512,
+        384,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "height": 384,
+        "reference": "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}",
+        "reference_picker": "",
+        "texture_preview": "",
+        "width": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 3,
+      "inputs": [
+        {
+          "link": 9,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operand",
+          "name": "operand",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "widget": {
+            "name": "value"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 8,
+      "outputs": [
+        {
+          "links": [
+            10
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        1260,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureMath",
+        "generetiLessonRef": "5c0d6588-d57f-4e81-9e0e-20484c85d035",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "operation": "multiply",
+          "value": 0.98
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ history decay · multiply",
+      "type": "GeneretiTextureMath",
+      "widgets_values": [
+        "multiply",
+        0.98,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "operation": "multiply",
+        "texture_preview": "",
+        "value": 0.98
+      }
+    },
+    {
+      "flags": {},
+      "id": 5,
+      "inputs": [
+        {
+          "link": 13,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": 10,
+          "localized_name": "background",
+          "name": "background",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "opacity",
+          "name": "opacity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "opacity"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 7,
+      "outputs": [
+        {
+          "links": [
+            14
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        1680,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureComposite",
+        "generetiLessonRef": "ba61e572-ddfe-4eb3-a191-dec5acd32c19",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "opacity": 1,
+          "operation": "screen"
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ final composite · feedback target",
+      "type": "GeneretiTextureComposite",
+      "widgets_values": [
+        "screen",
+        1,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "opacity": 1,
+        "operation": "screen",
+        "texture_preview": ""
+      }
+    },
+    {
+      "flags": {},
+      "id": 6,
+      "inputs": [
+        {
+          "link": 16,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 9,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        2100,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "397ab396-3a65-48cc-9180-961661b283f3",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "size": [
+        340,
+        460
+      ],
+      "title": "ꘇ final image",
+      "type": "GeneretiLiveImagePreview",
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "live_image_preview": "",
+        "preview_size": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 7,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 2,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT"
+        },
+        {
+          "links": null,
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING"
+        }
+      ],
+      "pos": [
+        2100,
+        650
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiOperatorHeights": {
+          "guide": 160
+        },
+        "generetiOperatorText": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"class-feedback-bloom-displace\",\n  \"title\": \"Class patch: feedback, bloom and displacement\",\n  \"summary\": \"Reproduce the reference-based feedback lesson with independent GPU operators.\",\n  \"steps\": [\n    {\n      \"title\": \"Make a colored source\",\n      \"text\": \"Each RGB channel has a separate c index: 0 red, 1 green, 2 blue. Phase offsets give the dots different colors. This expression uses the same moving shape mask for all channels.\",\n      \"target\": {\n        \"ref\": \"e9268263-602c-4fa2-bf03-da37e327fb2d\",\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Seed and reference feedback\",\n      \"text\": \"The source IMAGE seeds top.feedbackref. Its picker targets the final composite, so each frame samples the completed image from the preceding graph tick. Clear delayed reference frame resets it back to the seed. No cyclic IMAGE wire is needed.\",\n      \"target\": {\n        \"ref\": \"819225ac-3df1-4ccb-a9ba-5c193c022bfc\",\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Bloom the history\",\n      \"text\": \"Threshold selects bright marks. A separable Gaussian blur spreads their light; strength adds the glow. Change radius to alter the displacement map softness. This is a compact four-pass GPU bloom, not an exact replica of TD bloom.\",\n      \"target\": {\n        \"ref\": \"42c558d1-e964-463f-8a07-6dd051d2cac0\",\n        \"nodeType\": \"GeneretiTextureBloom\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Displace the previous frame\",\n      \"text\": \"The delayed image connects to image, and its bloomed copy connects to displacement. Red moves horizontal sampling and green moves vertical sampling relative to center 0.5. Try smaller amounts first; outside is transparent.\",\n      \"target\": {\n        \"ref\": \"a6970256-b964-4e5d-beef-d3b3c1cf6aba\",\n        \"nodeType\": \"GeneretiTextureDisplace\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Balance old and fresh images\",\n      \"text\": \"Multiply history RGB by 0.98 to fade it, and set fresh input level around 0.4. Screen composite combines both branches. Reference the composite to accumulate a recursive trail; reference the original source for a simple delayed effect.\",\n      \"target\": {\n        \"ref\": \"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Route and combine channels\",\n      \"text\": \"top.channels can extract alpha or luminance, swap RGB, or combine A with B channels such as br/bg/bb/ba. B here is the bloom. RGB uses opaque GPU alpha and returns a three-channel queued IMAGE; RGBA uses the alpha selector. Live texture storage remains RGBA.\",\n      \"target\": {\n        \"ref\": \"fa428d88-4bf9-41e8-baef-a1cc2d4ced16\",\n        \"nodeType\": \"GeneretiTextureChannels\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Present and experiment\",\n      \"text\": \"Alt-W opens the interactive output, Alt-F fills the window. Clear delayed reference frame resets the loop without reconstructing the graph. top.feedback remains the convenient self-contained variant. Audio, camera and screen remain explicitly user-started.\",\n      \"target\": {\n        \"ref\": \"397ab396-3a65-48cc-9180-961661b283f3\",\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\"\n      }\n    }\n  ]\n}"
+        }
+      },
+      "size": [
+        650,
+        620
+      ],
+      "title": "ꘇ guide · class feedback patch",
+      "type": "GeneretiDatLesson",
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"class-feedback-bloom-displace\",\n  \"title\": \"Class patch: feedback, bloom and displacement\",\n  \"summary\": \"Reproduce the reference-based feedback lesson with independent GPU operators.\",\n  \"steps\": [\n    {\n      \"title\": \"Make a colored source\",\n      \"text\": \"Each RGB channel has a separate c index: 0 red, 1 green, 2 blue. Phase offsets give the dots different colors. This expression uses the same moving shape mask for all channels.\",\n      \"target\": {\n        \"ref\": \"e9268263-602c-4fa2-bf03-da37e327fb2d\",\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Seed and reference feedback\",\n      \"text\": \"The source IMAGE seeds top.feedbackref. Its picker targets the final composite, so each frame samples the completed image from the preceding graph tick. Clear delayed reference frame resets it back to the seed. No cyclic IMAGE wire is needed.\",\n      \"target\": {\n        \"ref\": \"819225ac-3df1-4ccb-a9ba-5c193c022bfc\",\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Bloom the history\",\n      \"text\": \"Threshold selects bright marks. A separable Gaussian blur spreads their light; strength adds the glow. Change radius to alter the displacement map softness. This is a compact four-pass GPU bloom, not an exact replica of TD bloom.\",\n      \"target\": {\n        \"ref\": \"42c558d1-e964-463f-8a07-6dd051d2cac0\",\n        \"nodeType\": \"GeneretiTextureBloom\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Displace the previous frame\",\n      \"text\": \"The delayed image connects to image, and its bloomed copy connects to displacement. Red moves horizontal sampling and green moves vertical sampling relative to center 0.5. Try smaller amounts first; outside is transparent.\",\n      \"target\": {\n        \"ref\": \"a6970256-b964-4e5d-beef-d3b3c1cf6aba\",\n        \"nodeType\": \"GeneretiTextureDisplace\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Balance old and fresh images\",\n      \"text\": \"Multiply history RGB by 0.98 to fade it, and set fresh input level around 0.4. Screen composite combines both branches. Reference the composite to accumulate a recursive trail; reference the original source for a simple delayed effect.\",\n      \"target\": {\n        \"ref\": \"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Route and combine channels\",\n      \"text\": \"top.channels can extract alpha or luminance, swap RGB, or combine A with B channels such as br/bg/bb/ba. B here is the bloom. RGB uses opaque GPU alpha and returns a three-channel queued IMAGE; RGBA uses the alpha selector. Live texture storage remains RGBA.\",\n      \"target\": {\n        \"ref\": \"fa428d88-4bf9-41e8-baef-a1cc2d4ced16\",\n        \"nodeType\": \"GeneretiTextureChannels\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Present and experiment\",\n      \"text\": \"Alt-W opens the interactive output, Alt-F fills the window. Clear delayed reference frame resets the loop without reconstructing the graph. top.feedback remains the convenient self-contained variant. Audio, camera and screen remain explicitly user-started.\",\n      \"target\": {\n        \"ref\": \"397ab396-3a65-48cc-9180-961661b283f3\",\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\"\n      }\n    }\n  ]\n}",
+        ""
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"class-feedback-bloom-displace\",\n  \"title\": \"Class patch: feedback, bloom and displacement\",\n  \"summary\": \"Reproduce the reference-based feedback lesson with independent GPU operators.\",\n  \"steps\": [\n    {\n      \"title\": \"Make a colored source\",\n      \"text\": \"Each RGB channel has a separate c index: 0 red, 1 green, 2 blue. Phase offsets give the dots different colors. This expression uses the same moving shape mask for all channels.\",\n      \"target\": {\n        \"ref\": \"e9268263-602c-4fa2-bf03-da37e327fb2d\",\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Seed and reference feedback\",\n      \"text\": \"The source IMAGE seeds top.feedbackref. Its picker targets the final composite, so each frame samples the completed image from the preceding graph tick. Clear delayed reference frame resets it back to the seed. No cyclic IMAGE wire is needed.\",\n      \"target\": {\n        \"ref\": \"819225ac-3df1-4ccb-a9ba-5c193c022bfc\",\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Bloom the history\",\n      \"text\": \"Threshold selects bright marks. A separable Gaussian blur spreads their light; strength adds the glow. Change radius to alter the displacement map softness. This is a compact four-pass GPU bloom, not an exact replica of TD bloom.\",\n      \"target\": {\n        \"ref\": \"42c558d1-e964-463f-8a07-6dd051d2cac0\",\n        \"nodeType\": \"GeneretiTextureBloom\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Displace the previous frame\",\n      \"text\": \"The delayed image connects to image, and its bloomed copy connects to displacement. Red moves horizontal sampling and green moves vertical sampling relative to center 0.5. Try smaller amounts first; outside is transparent.\",\n      \"target\": {\n        \"ref\": \"a6970256-b964-4e5d-beef-d3b3c1cf6aba\",\n        \"nodeType\": \"GeneretiTextureDisplace\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Balance old and fresh images\",\n      \"text\": \"Multiply history RGB by 0.98 to fade it, and set fresh input level around 0.4. Screen composite combines both branches. Reference the composite to accumulate a recursive trail; reference the original source for a simple delayed effect.\",\n      \"target\": {\n        \"ref\": \"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Route and combine channels\",\n      \"text\": \"top.channels can extract alpha or luminance, swap RGB, or combine A with B channels such as br/bg/bb/ba. B here is the bloom. RGB uses opaque GPU alpha and returns a three-channel queued IMAGE; RGBA uses the alpha selector. Live texture storage remains RGBA.\",\n      \"target\": {\n        \"ref\": \"fa428d88-4bf9-41e8-baef-a1cc2d4ced16\",\n        \"nodeType\": \"GeneretiTextureChannels\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Present and experiment\",\n      \"text\": \"Alt-W opens the interactive output, Alt-F fills the window. Clear delayed reference frame resets the loop without reconstructing the graph. top.feedback remains the convenient self-contained variant. Audio, camera and screen remain explicitly user-started.\",\n      \"target\": {\n        \"ref\": \"397ab396-3a65-48cc-9180-961661b283f3\",\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\"\n      }\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      }
+    },
+    {
+      "flags": {},
+      "id": 8,
+      "inputs": [
+        {
+          "link": 6,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "threshold",
+          "name": "threshold",
+          "type": "FLOAT",
+          "widget": {
+            "name": "threshold"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "radius",
+          "name": "radius",
+          "type": "FLOAT",
+          "widget": {
+            "name": "radius"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "strength",
+          "name": "strength",
+          "type": "FLOAT",
+          "widget": {
+            "name": "strength"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 3,
+      "outputs": [
+        {
+          "links": [
+            8,
+            15
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        420,
+        650
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureBloom",
+        "generetiLessonRef": "42c558d1-e964-463f-8a07-6dd051d2cac0",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "radius": 16,
+          "strength": 0.8,
+          "threshold": 0.4
+        }
+      },
+      "size": [
+        340,
+        480
+      ],
+      "title": "ꘇ bloom history · displacement map",
+      "type": "GeneretiTextureBloom",
+      "widgets_values": [
+        0.4,
+        16,
+        0.8,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "radius": 16,
+        "strength": 0.8,
+        "texture_preview": "",
+        "threshold": 0.4
+      }
+    },
+    {
+      "flags": {},
+      "id": 9,
+      "inputs": [
+        {
+          "link": 7,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": 8,
+          "localized_name": "displacement",
+          "name": "displacement",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "amount_x",
+          "name": "amount_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "amount_x"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "amount_y",
+          "name": "amount_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "amount_y"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "center",
+          "name": "center",
+          "type": "FLOAT",
+          "widget": {
+            "name": "center"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 4,
+      "outputs": [
+        {
+          "links": [
+            9
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        840,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureDisplace",
+        "generetiLessonRef": "a6970256-b964-4e5d-beef-d3b3c1cf6aba",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "amount_x": 0.01,
+          "amount_y": 0.01,
+          "center": 0.5
+        }
+      },
+      "size": [
+        340,
+        480
+      ],
+      "title": "ꘇ displace the delayed image",
+      "type": "GeneretiTextureDisplace",
+      "widgets_values": [
+        0.01,
+        0.01,
+        0.5,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "amount_x": 0.01,
+        "amount_y": 0.01,
+        "center": 0.5,
+        "genereti_delivery": "Live",
+        "texture_preview": ""
+      }
+    },
+    {
+      "flags": {},
+      "id": 10,
+      "inputs": [
+        {
+          "link": 12,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "amount",
+          "name": "amount",
+          "type": "FLOAT",
+          "widget": {
+            "name": "amount"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 5,
+      "outputs": [
+        {
+          "links": [
+            13
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        0,
+        650
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureFilter",
+        "generetiLessonRef": "7a5a84db-4026-4aa1-9329-52e63151042d",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "amount": 0.4,
+          "operation": "level"
+        }
+      },
+      "size": [
+        340,
+        480
+      ],
+      "title": "ꘇ fresh input level",
+      "type": "GeneretiTextureFilter",
+      "widgets_values": [
+        "level",
+        0.4,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "amount": 0.4,
+        "genereti_delivery": "Live",
+        "operation": "level",
+        "texture_preview": ""
+      }
+    },
+    {
+      "flags": {},
+      "id": 11,
+      "inputs": [
+        {
+          "link": 14,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": 15,
+          "localized_name": "image_b",
+          "name": "image_b",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "red",
+          "name": "red",
+          "type": "COMBO",
+          "widget": {
+            "name": "red"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "green",
+          "name": "green",
+          "type": "COMBO",
+          "widget": {
+            "name": "green"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "blue",
+          "name": "blue",
+          "type": "COMBO",
+          "widget": {
+            "name": "blue"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "alpha",
+          "name": "alpha",
+          "type": "COMBO",
+          "widget": {
+            "name": "alpha"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "COMBO",
+          "widget": {
+            "name": "channels"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 6,
+      "outputs": [
+        {
+          "links": [
+            16
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        1680,
+        650
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureChannels",
+        "generetiLessonRef": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "alpha": "one",
+          "blue": "b",
+          "channels": "RGB",
+          "green": "g",
+          "red": "r"
+        }
+      },
+      "size": [
+        340,
+        480
+      ],
+      "title": "ꘇ route channels · opaque RGB",
+      "type": "GeneretiTextureChannels",
+      "widgets_values": [
+        "r",
+        "g",
+        "b",
+        "one",
+        "RGB",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "alpha": "one",
+        "blue": "b",
+        "channels": "RGB",
+        "genereti_delivery": "Live",
+        "green": "g",
+        "red": "r",
+        "texture_preview": ""
+      }
+    }
+  ],
+  "version": 0.4
+}

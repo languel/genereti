@@ -130,6 +130,13 @@ Livecode image inputs, typed code parameter sockets and native width/height cont
 
 ## GPU Texture Lab
 
+**ꘇ-Feedback-Reference-Chain.json** teaches a delayed node reference → decay →
+transform → composite loop. **ꘇ-Class-Feedback-Bloom-Displace.json** expands it
+with a colored expression source, bloom-driven displacement, independent fresh
+and history levels, and RGB/RGBA channel routing. Each includes a clickable lesson.
+Restart ComfyUI after installing these new Python node schemas, then reload the
+browser. Settings → Genereti → Learning → Open lessons also offers both workflows.
+
 Open **ꘇ-Creative-Stage-Showcase.json** under **Workflows → Genereti** for
 the combined demo. Its top lane connects a transparent p5 brush through all seven
 texture operators: Math, Crop, Transform, Feedback, Filter, Corner Pin and

@@ -1,6 +1,6 @@
-import json,time,urllib.request
+import json,time,urllib.request,sys
 # Local, model-free smoke check. Requires the texture and stream packs.
-base='http://127.0.0.1:8000'
+base=sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8000'
 def get(path): return json.load(urllib.request.urlopen(base+path))
 prompt={
 '1':{'class_type':'EmptyImage','inputs':{'width':128,'height':128,'batch_size':2,'color':8453952}},
@@ -9,10 +9,14 @@ prompt={
 '4':{'class_type':'GeneretiTextureTransform','inputs':{'image':['3',0],'translate_x':.1,'translate_y':0,'scale':1,'rotate':5,'flip_x':False,'flip_y':False}},
 '5':{'class_type':'GeneretiTextureCrop','inputs':{'image':['4',0],'left':.1,'top':.1,'right':.9,'bottom':.9}},
 '6':{'class_type':'GeneretiTextureCornerPin','inputs':{'image':['5',0], 'tl_x':.05,'tl_y':.1,'tr_x':.95,'tr_y':.05,'br_x':.85,'br_y':.95,'bl_x':.1,'bl_y':.8}},
-'7':{'class_type':'GeneretiTextureFeedback','inputs':{'image':['6',0],'decay':.95,'translate_x':0,'translate_y':0,'scale':1,'rotate':0}},
+'7':{'class_type':'GeneretiTextureFeedback','inputs':{'image':['6',0],'decay':.95,'translate_x':0,'translate_y':0,'scale':1,'rotate':0,'blend':'screen'}},
 '8':{'class_type':'EmptyImage','inputs':{'width':64,'height':64,'batch_size':1,'color':255}},
 '9':{'class_type':'GeneretiTextureComposite','inputs':{'image':['7',0],'background':['8',0],'operation':'screen','opacity':.8}},
-'10':{'class_type':'GeneretiLiveImagePreview','inputs':{'image':['9',0],'preview_size':128}}
+'10':{'class_type':'GeneretiLiveImagePreview','inputs':{'image':['14',0],'preview_size':128}},
+'11':{'class_type':'GeneretiTextureBloom','inputs':{'image':['9',0],'threshold':.3,'radius':4,'strength':.8}},
+'12':{'class_type':'GeneretiTextureDisplace','inputs':{'image':['9',0],'displacement':['11',0],'amount_x':.02,'amount_y':.02,'center':.5}},
+'13':{'class_type':'GeneretiTextureFeedbackRef','inputs':{'image':['12',0],'reference':'#9','width':128,'height':128}},
+'14':{'class_type':'GeneretiTextureChannels','inputs':{'image':['13',0],'image_b':['11',0],'red':'b','green':'bg','blue':'r','alpha':'one','channels':'RGB'}}
 }
 response=json.load(urllib.request.urlopen(urllib.request.Request(base+'/prompt',data=json.dumps({'prompt':prompt,'client_id':'genereti-texture-queue-test'}).encode(),headers={'Content-Type':'application/json'})))
 for _ in range(100):

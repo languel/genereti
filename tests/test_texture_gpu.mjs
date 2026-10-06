@@ -34,3 +34,45 @@ test('texture controls follow live Primitive sockets without evaluating Python n
  const node={widgets:[{name:'opacity',value:1},{name:'amount',value:.5}],inputs:[{name:'opacity',type:'FLOAT',widget:{name:'opacity'}},{name:'amount',type:'FLOAT'}],getInputLink:i=>({origin_id:i+1}),graph:{getNodeById:id=>nodes[id]}};
  assert.deepEqual(readTextureValues(node),{opacity:.25,amount:.5});
 });
+
+test('feedback defaults to screen and offers explicit additive/alpha-over modes',()=>{
+ const values={decay:.9,translate_x:0,translate_y:0,scale:1,rotate:0};
+ assert.equal(parameters('Feedback',values)[1],2);
+ assert.equal(parameters('Feedback',{...values,blend:'add'})[1],1);
+ assert.equal(parameters('Feedback',{...values,blend:'over'})[1],0);
+ assert(Math.abs(parameters('Feedback',values)[2]-.9)<1e-6);
+});
+
+test('reference edges resolve persistent outputs without falling back to reused IDs',async()=>{
+ const {referenceFor,resolveReference}=await import('../integrations/genereti_comfy_texture/web/texture-reference.js');
+ const a={id:5,title:'Composite',properties:{generetiLessonRef:'final'},outputs:[{type:'IMAGE'},{type:'STRING'}]},b={id:6,title:'Composite',outputs:[{type:'IMAGE'}]};
+ const graph={_nodes:[a,b]},ref=referenceFor(a);
+ assert.equal(resolveReference(graph,ref).node,a);
+ assert.equal(resolveReference(graph,'#6').node,b);
+ assert.equal(resolveReference(graph,'@final').node,a);
+ assert.equal(resolveReference(graph,'Composite'),null);
+ assert.equal(resolveReference(graph,JSON.stringify({ref:'final',outputSlot:1})),null);
+ assert.equal(resolveReference({_nodes:[b]},ref),null);
+ a.id=20;assert.equal(resolveReference(graph,ref).node,a);
+ b.properties={generetiLessonRef:'final'};a.graph=b.graph=graph;
+ assert.equal(resolveReference(graph,ref),null);referenceFor(b);
+ assert.equal(resolveReference(graph,ref).node,a);assert.notEqual(b.properties.generetiLessonRef,'final');
+});
+
+test('reference history stays on preceding tick and uses alternate copy buffers',async()=>{
+ const {FrameLatch}=await import('../integrations/genereti_comfy_texture/web/texture-reference.js');
+ const latch=new FrameLatch();let writes=[];
+ latch.capture(index=>{writes.push(index);return {value:10};});
+ assert.equal(latch.current,null);latch.commit();assert.equal(latch.current.value,10);
+ latch.capture(index=>{writes.push(index);return {value:20};});
+ assert.equal(latch.current.value,10);latch.commit();assert.equal(latch.current.value,20);
+ assert.deepEqual(writes,[1,0]);assert.equal(latch.commit(),false);
+ latch.reset();assert.equal(latch.current,null);assert.equal(parameters('FeedbackRef',{})[0],0);
+});
+
+test('bloom, displacement and channel routing pack GPU controls',()=>{
+ assert.equal(parameters('Bloom',{strength:1.5})[2],1.5);
+ const d=parameters('Displace',{amount_x:.1,amount_y:-.2,center:.5});assert.equal(d[0],10);assert.equal(d[6],.5);
+ const p=parameters('Channels',{red:'b',green:'bg',blue:'zero',alpha:'ba',channels:'RGB'});
+ assert.equal(p[3],3);assert.deepEqual([...p.slice(4,8)],[2,8,5,10]);
+});

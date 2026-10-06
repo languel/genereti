@@ -1,0 +1,72 @@
+{
+  "format": "genereti-guide",
+  "id": "class-feedback-bloom-displace",
+  "steps": [
+    {
+      "target": {
+        "nodeType": "GeneretiTextureExpression",
+        "part": "node",
+        "ref": "e9268263-602c-4fa2-bf03-da37e327fb2d"
+      },
+      "text": "Each RGB channel has a separate c index: 0 red, 1 green, 2 blue. Phase offsets give the dots different colors. This expression uses the same moving shape mask for all channels.",
+      "title": "Make a colored source"
+    },
+    {
+      "target": {
+        "nodeType": "GeneretiTextureFeedbackRef",
+        "part": "node",
+        "ref": "819225ac-3df1-4ccb-a9ba-5c193c022bfc"
+      },
+      "text": "The source IMAGE seeds top.feedbackref. Its picker targets the final composite, so each frame samples the completed image from the preceding graph tick. Clear delayed reference frame resets it back to the seed. No cyclic IMAGE wire is needed.",
+      "title": "Seed and reference feedback"
+    },
+    {
+      "target": {
+        "nodeType": "GeneretiTextureBloom",
+        "part": "node",
+        "ref": "42c558d1-e964-463f-8a07-6dd051d2cac0"
+      },
+      "text": "Threshold selects bright marks. A separable Gaussian blur spreads their light; strength adds the glow. Change radius to alter the displacement map softness. This is a compact four-pass GPU bloom, not an exact replica of TD bloom.",
+      "title": "Bloom the history"
+    },
+    {
+      "target": {
+        "nodeType": "GeneretiTextureDisplace",
+        "part": "node",
+        "ref": "a6970256-b964-4e5d-beef-d3b3c1cf6aba"
+      },
+      "text": "The delayed image connects to image, and its bloomed copy connects to displacement. Red moves horizontal sampling and green moves vertical sampling relative to center 0.5. Try smaller amounts first; outside is transparent.",
+      "title": "Displace the previous frame"
+    },
+    {
+      "target": {
+        "nodeType": "GeneretiTextureComposite",
+        "part": "node",
+        "ref": "ba61e572-ddfe-4eb3-a191-dec5acd32c19"
+      },
+      "text": "Multiply history RGB by 0.98 to fade it, and set fresh input level around 0.4. Screen composite combines both branches. Reference the composite to accumulate a recursive trail; reference the original source for a simple delayed effect.",
+      "title": "Balance old and fresh images"
+    },
+    {
+      "target": {
+        "nodeType": "GeneretiTextureChannels",
+        "part": "node",
+        "ref": "fa428d88-4bf9-41e8-baef-a1cc2d4ced16"
+      },
+      "text": "top.channels can extract alpha or luminance, swap RGB, or combine A with B channels such as br/bg/bb/ba. B here is the bloom. RGB uses opaque GPU alpha and returns a three-channel queued IMAGE; RGBA uses the alpha selector. Live texture storage remains RGBA.",
+      "title": "Route and combine channels"
+    },
+    {
+      "target": {
+        "nodeType": "GeneretiLiveImagePreview",
+        "part": "node",
+        "ref": "397ab396-3a65-48cc-9180-961661b283f3"
+      },
+      "text": "Alt-W opens the interactive output, Alt-F fills the window. Clear delayed reference frame resets the loop without reconstructing the graph. top.feedback remains the convenient self-contained variant. Audio, camera and screen remain explicitly user-started.",
+      "title": "Present and experiment"
+    }
+  ],
+  "summary": "Reproduce the reference-based feedback lesson with independent GPU operators.",
+  "title": "Class patch: feedback, bloom and displacement",
+  "version": 1
+}

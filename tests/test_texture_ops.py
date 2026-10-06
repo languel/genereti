@@ -34,4 +34,19 @@ class TextureTests(unittest.TestCase):
         self.assertTrue(torch.equal(ops.filter_image(a,'invert')[...,:3],1-a[...,:3]))
         self.assertTrue(torch.equal(ops.filter_image(a,'opacity',.5)[...,3:],a[...,3:]*.5))
         self.assertLess(ops.filter_image(a,'blur',1)[0,0,0,3].item(),1)
+    def test_displace_neutral_and_batch(self):
+        a=torch.rand(2,8,8,4);neutral=torch.ones(1,4,4,3)*.5
+        self.assertTrue(torch.allclose(ops.displace(a,neutral),a,atol=1e-6))
+        self.assertEqual(ops.displace(a,torch.ones_like(a),2,2).sum().item(),0)
+    def test_bloom_spreads_bright_pixels(self):
+        a=torch.zeros(1,17,17,4);a[...,3]=1;a[0,8,8,:3]=1
+        out=ops.bloom(a,threshold=.5,radius=4,strength=1)
+        self.assertGreater(out[0,8,9,0].item(),0)
+        self.assertEqual(out[0,8,8,0].item(),1)
+        self.assertTrue(torch.allclose(ops.bloom(a,strength=0),a))
+    def test_channel_routing_rgb_and_rgba(self):
+        a=torch.tensor([[[[.1,.2,.3,.4]]]]);b=torch.tensor([[[[.5,.6,.7,.8]]]])
+        self.assertTrue(torch.allclose(ops.channels(a,b,'b','bg','zero','ba'),torch.tensor([[[[.3,.6,0,.8]]]])))
+        self.assertEqual(ops.channels(a,channels='RGB').shape[-1],3)
+        self.assertTrue(torch.allclose(ops.channels(a,red='br',alpha='one'),torch.tensor([[[[.1,.2,.3,1.]]]])))
 if __name__=='__main__':unittest.main()

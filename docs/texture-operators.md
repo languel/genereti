@@ -19,17 +19,64 @@ IDs begin with `GeneretiTexture`.
 | `top.transform` | Translation in fractions of image size, clockwise rotation in degrees, scale about center, X/Y flips. Output resolution stays the same; outside is transparent. |
 | `top.crop` | Normalized source rectangle stretched over the existing resolution. Right/bottom must exceed left/top. |
 | `top.cornerpin` | Projective mapping to four normalized destination corners, TL/TR/BR/BL. Outside is transparent. Degenerate quads report an error. Controls are numeric for now. |
-| `top.feedback` | Current image over the transformed, alpha-decayed previous result. Two GPU textures alternate; no cyclic wire is required. Loop arrow resets history. Temporal history exists only in Live mode; Queue returns current input without history. |
+| `top.feedback` | Current image blended with its transformed, alpha-decayed previous result. Screen (default) or add reveals history beneath opaque black; over uses source alpha. Two GPU textures alternate; the loop arrow resets history. Queue returns current input without history. |
+| `top.feedbackref` | Previous frame of a selected live node/output. Optional image seeds the first frame; otherwise starts transparent at width/height. Supports downstream targets without a cyclic IMAGE wire. Queue returns seed/transparent image and does not follow browser references. |
+| `top.bloom` | Brightness threshold, separable nine-tap Gaussian blur, additive glow. Radius in source pixels; strength controls glow. Four GPU passes with reusable intermediate textures. |
+| `top.displace` | Source image displaced by map red/green minus center (default 0.5). X/Y amounts are fractions of source size. Outside is transparent. |
+| `top.channels` | Extract/reorder/combine A and optional B channels, alpha or luminance; zero/one constants. RGB output forces opaque live alpha and returns three channels in Queue. RGBA routes alpha explicitly. B defaults to A. |
 
-Use transparent source frames for feedback trails: an opaque full-frame input
-covers its history. Decay is per rendered frame, so changing frame rate changes
-trail duration. Scale just above 1 and a small rotation create expanding trails.
+An opaque full-frame source covers history with **over** blending; choose screen
+or add for bright marks on black, or provide transparent source frames. Decay is
+per rendered frame, so changing frame rate changes trail duration.
+
+## Reference-based feedback
+
+Keep the convenience `top.feedback` for self-contained trails. Use `top.feedbackref`
+when you want processors inside the loop:
+
+```text
+fresh source ───────────────────────────────→ composite → viewer
+feedbackref → process / decay / displacement → background ↑
+      ⋯ reference the final composite's previous frame ⋯
+```
+
+The picker stores a persistent node reference plus output slot. You can also type
+`#12` for a node ID, `@persistent-reference`, or an unambiguous node title.
+Convert the `reference` STRING field to an input using Comfy's context menu to
+drive it from a PrimitiveString or DAT string output. This is a reference field,
+not an IMAGE edge; only normal IMAGE cables participate in queued execution.
+Missing/deleted references never fall back to an unrelated node with a reused ID.
+Pick a live IMAGE source/output; queued-only Python effects are not live producers.
+
+Reference frames are copied immediately into alternating GPU textures and latched
+after the entire graph tick. Referencing the composite creates recursive history;
+referencing the fresh source gives a one-frame delay. Clear delayed reference frame
+resets to the seed. History is runtime state and is not saved in workflows.
+
+Open **ꘇ-Feedback-Reference-Chain** for the basic loop and
+**ꘇ-Class-Feedback-Bloom-Displace** for colored dots, bloomed history driving
+displacement, independent old/fresh level controls, screen compositing and channel
+routing. Both include clickable `dat.lesson` walkthroughs and appear in the lesson
+library. They reproduce the functional chain rather than TD's exact effect presets.
+
+## Color and channels
+
+`top.expression` evaluates once per RGB component: `c=0` red, `c=1` green,
+`c=2` blue. A formula without `c` produces the same value in each component.
+For a simple colored generator try `0.5 + 0.5*sin(t + x*12 + c*2.094)`.
+The class example separates a shared moving shape mask from channel-dependent color.
+Expression preserves input alpha (or uses 1 without input); use `top.channels`
+to construct alpha from A/B alpha or luminance, or to swap/combine streams.
+For a grayscale extraction, route `luma` to all RGB outputs; for an alpha mask,
+route `a` to all three. `br/bg/bb/ba/bluma` read B. CHOP sources already expose
+channel counts and CHOP/DAT↔TOP conversion nodes bridge sampled numeric data.
 
 Numeric controls use Comfy’s usual convert-to-input sockets. Built-in Primitive
 values update Live mode too; arbitrary Python scalar computations update on Queue.
 
 The first input defines output resolution. Width/height remain properties of the
-source texture. All operators preserve RGBA alpha; interpolation uses
+source texture. Most operators preserve RGBA alpha; Channels can route/replace it,
+and bloom expands it around transparent glow. Interpolation uses
 premultiplied color to avoid transparent-edge halos. Queued operations handle full
 batches; a single B image broadcasts across A's batch, otherwise batch sizes must
 match. Queued work uses PyTorch on the input tensor's device.

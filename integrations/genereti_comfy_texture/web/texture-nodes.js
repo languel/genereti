@@ -4,8 +4,11 @@ import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js'
 import { previewControls } from '/extensions/genereti_comfy_stream/js/preview-controls.js';
 import { textureGPU, parameters } from './texture-gpu.js';
 import { readTextureValues } from './texture-parameters.js';
+import { referenceFor, resolveReference, FrameLatch } from './texture-reference.js';
 
-const states=new Map(),dirty=new Set();let clock=0,flushing=false;
+function valuesFor(node,kind){const values=readTextureValues(node);if(kind==='Feedback')values.blend??=node.properties?.generetiFeedbackBlend??'screen';return values;}
+
+const states=new Map(),dirty=new Set(),copyParams=new Float32Array(48);let clock=0,flushing=false;
 function schedule(state){if(state.dead||!state.users||state.node._generetiLivePaused||state.node._generetiExecutionMode==='Comfy Queue')return;dirty.add(state);if(!clock&&!flushing)clock=requestAnimationFrame(flush);}
 function flush(now){
  clock=0;flushing=true;const done=new Set(),visiting=new Set();
@@ -19,15 +22,17 @@ function flush(now){
   try{state.render(now);}catch(error){state.status.textContent=error.message;if(state.performancePanel)state.performancePanel.open=true;}
  };
  for(const state of dirty)run(state);
+ // Temporal edges become visible only after the complete graph tick.
+ for(const state of states.values())if(state.latch?.commit())schedule(state);
  flushing=false;
- for(const state of states.values())if((state.kind==='Expression'||state.kind==='Feedback'&&state.inputs[0]))schedule(state);
+ for(const state of states.values())if((state.kind==='Expression'||state.kind==='FeedbackRef'&&state.referenceKey||state.kind==='Feedback'&&state.inputs[0]))schedule(state);
  if(dirty.size&&!clock)clock=requestAnimationFrame(flush);
 }
 
 window.addEventListener('genereti-control-frame',event=>{for(const state of states.values())if(state.node.inputs?.some(input=>input.type!=='IMAGE'&&state.node.graph?.links?.[input.link]?.origin_id===event.detail.nodeId))schedule(state);});
 
 // One low-rate poll covers built-in scalar wires and source-independent edits.
-setInterval(()=>{for(const state of states.values())if(state.users&&!state.dead&&JSON.stringify(readTextureValues(state.node))!==state.signature)schedule(state);},250);
+setInterval(()=>{for(const state of states.values())if(state.users&&!state.dead&&JSON.stringify(valuesFor(state.node,state.kind))!==state.signature)schedule(state);},250);
 
 app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  if(!node.comfyClass?.startsWith('GeneretiTexture'))return;
@@ -45,12 +50,13 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  },getFit:()=>node.properties?.genereti_preview_fit??'contain'});
  let gpu,frame,presentationCanvas,presentedFrame,output,localRunning=true,reset=true,history=0,lastStatus=0,times=[];
  const state={node,kind,status,dead:false,users:0,inputs:[],inputKeys:[],stops:[],render(now){
-  if(!gpu||(!state.inputs[0]&&kind!=='Expression'))return;
-  const values=readTextureValues(node),signature=JSON.stringify(values);
+  if(!gpu||(!state.inputs[0]&&!['Expression','FeedbackRef'].includes(kind)))return;
+  const values=valuesFor(node,kind);const signature=JSON.stringify(values);
+  if(kind==='FeedbackRef')bindReference(values.reference);
   if(state.signature!==signature){state.params=parameters(kind,values);state.signature=signature;}
   const p=state.params;
-  const a=state.inputs[0]??gpu.target(prefix+'empty',Number(values.width),Number(values.height)),b=state.inputs[1];
-  if(kind==='Composite'&&!b){status.textContent='Connect a live background';return;}
+  const a=(kind==='FeedbackRef'?state.latch.current:null)??state.inputs[0]??gpu.target(prefix+'empty',Number(values.width),Number(values.height)),b=state.inputs[1];
+  if(['Composite','Displace'].includes(kind)&&!b){status.textContent=kind==='Displace'?'Connect a live displacement map':'Connect a live background';return;}
   if(kind==='Math')p[3]=b?1:0;
   let previous=b;
   if(kind==='Feedback'){
@@ -63,6 +69,11 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
    if(!state.expressionPipeline)return;
    p.set([now/1000+Number(values.time),a.width,a.height,state.inputs[0]?1:0]);
    frame=gpu.expression(a,p,prefix+'output',a.width,a.height,state.expressionPipeline);
+  }else if(kind==='Bloom'){
+   const stage=state.bloomParams??=new Float32Array(48);stage[0]=9;stage[2]=values.threshold;
+   const bright=gpu.run(a,null,stage,prefix+'bloom:bright');stage[0]=11;stage[2]=values.radius;
+   const horizontal=gpu.run(bright,null,stage,prefix+'bloom:horizontal');stage[0]=12;
+   const blurred=gpu.run(horizontal,null,stage,prefix+'bloom:blurred');frame=gpu.run(a,blurred,p,prefix+'output');
   }else frame=gpu.run(a,previous,p,prefix+(kind==='Feedback'?`history:${history}`:'output'));
   frame={...frame,producedAt:now};presentedFrame=null;
   if(local.visible){const aspect=`${frame.width}/${frame.height}`,changed=preview.style.aspectRatio.replaceAll(' ','')!==aspect;preview.style.aspectRatio=canvas.style.aspectRatio=aspect;gpu.present(frame,canvas);if(changed)node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);}
@@ -70,8 +81,9 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
   window.dispatchEvent(new CustomEvent('genereti-live-frame',{detail:{nodeId:node.id,outputSlot:0,texture:frame,producedAt:now}}));
   if(outputOpened())output.publish({bitmap:present(frame)});
   if(times.length&&now-times.at(-1)>2000)times=[];times.push(now);while(times.length>2&&times[0]<now-2000)times.shift();
-  if(now-lastStatus>250){const fps=times.length>1?(1000*(times.length-1)/(now-times[0])).toFixed(1):'—';status.textContent=`${fps} fps · WebGPU · ${a.width} × ${a.height}`;lastStatus=now;}
+  if(now-lastStatus>250){const fps=times.length>1?(1000*(times.length-1)/(now-times[0])).toFixed(1):'—';status.textContent=kind==='FeedbackRef'&&!state.latch.current?'Pick a live reference · seed / empty frame':`${fps} fps · WebGPU · ${a.width} × ${a.height}${kind==='FeedbackRef'?' · previous frame':''}`;lastStatus=now;}
  }};
+ if(kind==='FeedbackRef')state.latch=new FrameLatch();
  let openViewers=0;
  const outputOpened=()=>openViewers>0;
  function present(next){
@@ -84,7 +96,23 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
    const key=state.inputKeys[index];if(key&&gpu){const cached=gpu.imports.get(key);cached?.refs.delete(prefix+index);if(cached&&!cached.refs.size){gpu.release(key);gpu.imports.delete(key);}}
    state.inputKeys[index]=null;state.inputs[index]=null;
  }
- function stopInputs(){state.stops.forEach(stop=>stop());state.stops=[];state.inputKeys.forEach((_,i)=>releaseInput(i));state.inputs=[];}
+ function stopReference(){const stop=state.referenceStop;state.referenceStop=null;state.referenceKey=null;stop?.();state.latch?.reset();gpu?.release(prefix+'reference:');}
+ function stopInputs(){state.stops.forEach(stop=>stop());state.stops=[];state.inputKeys.forEach((_,i)=>releaseInput(i));state.inputs=[];stopReference();}
+ function bindReference(value){
+  if(kind!=='FeedbackRef'||state.referenceBinding)return;
+  const resolved=resolveReference(node.graph,value),target=resolved?.node===node?null:resolved;
+  const key=target?`${target.node.id}:${target.outputSlot}`:null;
+  if(key===state.referenceKey)return;
+  state.referenceBinding=true;stopReference();state.referenceKey=key;
+  if(target){
+   const proxy={id:`reference:${node.id}`,graph:node.graph,comfyClass:'GeneretiLiveImagePreview',inputs:[{name:'image',type:'IMAGE'}],getInputLink:()=>({origin_id:target.node.id,origin_slot:target.outputSlot})};
+   state.referenceStop=subscribeLive(proxy,detail=>{
+    if(state.dead||!state.users||node._generetiLivePaused||node._generetiExecutionMode==='Comfy Queue')return;
+    state.latch.capture(index=>detail.texture?gpu.run(detail.texture,null,copyParams,prefix+'reference:'+index):gpu.upload(detail.bitmap,prefix+'reference:'+index));schedule(state);
+   },()=>{state.latch.reset();},{gpu:true});
+  }
+  state.referenceBinding=false;
+ }
 
  output=previewControls(canvas,status,node,()=>{}, {initialFrame:()=>frame?{bitmap:present(frame)}:{bitmap:canvas},getRenderSize:()=>frame??canvas,onFitChange:value=>local.setFit(value),onViewerChange:opened=>{openViewers=Math.max(0,openViewers+(opened?1:-1));}});
  const performancePanel=document.createElement('details');const summary=document.createElement('summary');summary.title='Performance details';summary.setAttribute('aria-label','Performance details');summary.style.cssText='width:30px;cursor:pointer';performancePanel.append(summary,status);state.performancePanel=performancePanel;
@@ -98,12 +126,33 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  });
  function watch(){if(state.dead)return;const host=surface.closest('.lg-node');if(host)resize.observe(host);else requestAnimationFrame(watch);}requestAnimationFrame(watch);
  node._generetiMountTransport=()=>node._generetiExecutionModeElement?.append(output.actions);
+ if(kind==='Feedback'&&!node.widgets.some(w=>w.name==='blend')){
+  const blend=document.createElement('select');blend.title='Feedback blend · screen/add keep trails visible beneath opaque black; over uses source alpha';blend.setAttribute('aria-label','Feedback blend');for(const mode of ['screen','add','over'])blend.append(new Option(mode,mode));blend.value=node.properties?.generetiFeedbackBlend??'screen';blend.onchange=()=>{node.properties.generetiFeedbackBlend=blend.value;state.signature=null;schedule(state);};output.actions.append(blend);const configured=node.onConfigure;node.onConfigure=function(){configured?.apply(this,arguments);blend.value=node.properties?.generetiFeedbackBlend??'screen';};
+ }
  if(kind==='Feedback'){
   const button=document.createElement('button');button.textContent='↺';button.type='button';button.title='Reset feedback history';button.setAttribute('aria-label',button.title);button.onclick=()=>{reset=true;schedule(state);};output.actions.append(button);
  }
+ if(kind==='FeedbackRef'){
+  const picker=document.createElement('select');picker.title='Reference node/output · sampled one frame later; reference the final composite for a recursive loop';picker.setAttribute('aria-label','Feedback reference node');
+  const label=document.createElement('label');label.className='genereti-node-controls';label.append(picker);
+  const pickWidget=node.addDOMWidget('reference_picker','GENERETI_REFERENCE_PICKER',label,{serialize:false,hideOnZoom:false});pickWidget.computeSize=width=>[width,34];
+  node.widgets.splice(node.widgets.indexOf(pickWidget),1);node.widgets.splice(node.widgets.findIndex(w=>w.name==='reference')+1,0,pickWidget);
+  let optionsKey='';const refresh=()=>{
+   if(state.dead)return;
+   let graph;try{graph=node.graph;}catch{return;}
+   const selected=valuesFor(node,kind).reference??'',choices=[['','Pick reference node…']];
+   const refSlot=node.inputs?.findIndex(input=>input.name==='reference');picker.disabled=refSlot>=0&&Boolean(node.getInputLink?.(refSlot));
+   for(const candidate of graph?._nodes??[])if(candidate!==node)for(const [slot,socket]of(candidate.outputs??[]).entries())if(socket.type==='IMAGE')choices.push([referenceFor(candidate,slot),`${candidate.title} · ${socket.name??'image'} (#${candidate.id})`]);
+   if(selected&&!choices.some(([value])=>value===selected))choices.push([selected,resolveReference(graph,selected)?selected:'Missing reference · '+selected]);
+   const next=JSON.stringify(choices);if(next!==optionsKey){optionsKey=next;picker.replaceChildren(...choices.map(([value,title])=>new Option(title,value)));schedule(state);}picker.value=selected;
+  };
+  picker.onchange=()=>{const w=node.widgets.find(w=>w.name==='reference');if(w){w.value=picker.value;w.callback?.(w.value);}schedule(state);};
+  picker.addEventListener('focus',refresh);state.referencePickerTimer=setInterval(refresh,500);requestAnimationFrame(refresh);
+  const button=document.createElement('button');button.type='button';button.textContent='↺';button.title='Clear delayed reference frame';button.setAttribute('aria-label',button.title);button.onclick=()=>{state.latch.reset();schedule(state);};output.actions.append(button);
+ }
  function bind(){
   if(state.stops.length||state.binding||!state.users||!gpu||state.dead)return;state.binding=true;
-  const names=kind==='Composite'?['image','background']:kind==='Math'?['image','operand']:['image'];
+  const names=kind==='Composite'?['image','background']:kind==='Displace'?['image','displacement']:kind==='Channels'?['image','image_b']:kind==='Math'?['image','operand']:['image'];
   state.stops=names.map((name,index)=>{
    // subscribeLive resolves the actual producer and handles rewiring/retention.
    const proxy={get id(){return node.id;},get graph(){return node.graph;},comfyClass:'GeneretiLiveImagePreview',
@@ -132,7 +181,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  // Local preview keeps this node alive. Downstream retention works when minimized.
  node._generetiLiveSource.retain();
  textureGPU().then(engine=>{if(state.dead)return;gpu=engine;status.textContent='WebGPU · waiting for live image';bind();schedule(state);}).catch(error=>{status.textContent=error.message;performancePanel.open=true;});
- const removed=node.onRemoved;node.onRemoved=function(){state.dead=true;resize.disconnect();dirty.delete(state);stopInputs();states.delete(node);output.close();gpu?.releaseCanvas(canvas);if(presentationCanvas)gpu?.releaseCanvas(presentationCanvas);gpu?.release(prefix);return removed?.apply(this,arguments);};
+ const removed=node.onRemoved;node.onRemoved=function(){state.dead=true;clearInterval(state.referencePickerTimer);resize.disconnect();dirty.delete(state);stopInputs();states.delete(node);output.close();gpu?.releaseCanvas(canvas);if(presentationCanvas)gpu?.releaseCanvas(presentationCanvas);gpu?.release(prefix);return removed?.apply(this,arguments);};
  const changed=node.onWidgetChanged;node.onWidgetChanged=function(){const result=changed?.apply(this,arguments);schedule(state);return result;};
  // Native widget callbacks also cover current Vue control edits.
  for(const w of node.widgets??[]){const callback=w.callback;w.callback=function(){const result=callback?.apply(this,arguments);schedule(state);return result;};}

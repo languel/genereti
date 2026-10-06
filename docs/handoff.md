@@ -21,7 +21,7 @@ In Comfy, open **Workflows → Genereti**. The examples are installed locally in
 
 **Settings → Genereti → Learning → Interactive lessons** opens the guide chooser. The command palette also exposes **ꘇ OpenTouch lessons**. Its workflow buttons create a separate Comfy workflow tab; they do not replace the current graph.
 
-The [operator catalog](opentouch-catalog.md) lists **44 OpenTouch operators** with inputs, outputs and stable IDs. It covers TOP/CHOP/DAT, not every Genereti integration node. The [report](opentouch-report.md), [language guide](livecode-languages.md), [lesson guide](opentouch-lessons.md), [UI conventions](node-ui-design.md) and [workflow guide](workflows.md) explain the surrounding features.
+The [operator catalog](opentouch-catalog.md) lists **48 OpenTouch operators** with inputs, outputs and stable IDs. It covers TOP/CHOP/DAT, not every Genereti integration node. The [report](opentouch-report.md), [language guide](livecode-languages.md), [lesson guide](opentouch-lessons.md), [UI conventions](node-ui-design.md) and [workflow guide](workflows.md) explain the surrounding features.
 
 ## What is implemented
 
@@ -133,3 +133,9 @@ Shared appearance settings live in `genereti_comfy_p5/web/js/editor-settings.js`
 `guide-cua.js` now records graph creation/deletion plus widget edits, named wiring, title/layout and bounded action timing. `guide-patch.js` recreates instances using persistent refs. `dat.lesson` and the guide expose Play all/remaining and Stop, pausing at manual steps. Canonical browser recording: `web/lessons/feedback-av-recording.json`; demos: `ꘇ-Feedback-AV-Build-Tutorial.json` and `ꘇ-Feedback-AV-Recorded-Patch.json`. See `docs/opentouch-lessons.md` for supported operations and limitations.
 
 Verified by recording a real 10-operator patch in an isolated Comfy browser tab, deleting it and playing the six-step lesson back from the author node alone. The final step paused for explicit audio Start; the reconstructed Web Audio output produced a nonzero peak (about 0.0068) and Panic stopped it. This verifies browser routing/meter output, not an external MIDI device or acoustic listening test.
+
+## Flexible feedback and color checkpoint
+
+`top.feedback` now defaults to screen with add/over alternatives: opaque black previously covered history and made decay appear ineffective. The new `top.feedbackref` uses a persistent node/output picker or convertible STRING reference input, with alternating GPU snapshots latched after each whole graph tick. Its optional IMAGE seeds reset/first frame; Queue returns seed or transparent pixels. `top.bloom`, `top.displace` and `top.channels` add four-pass Gaussian glow, RG vector displacement and two-source RGB/RGBA routing. Expression already exposes RGB channel index `c`; the class demo uses it for color.
+
+New examples: `ꘇ-Feedback-Reference-Chain.json` and `ꘇ-Class-Feedback-Bloom-Displace.json`, both with clickable lessons and library launchers. Browser GPU pixel checks verified recursive accumulation versus source delay, zero-decay removal and colored 512×384 output. The updated queue smoke check passed on a separate port8001 test server. The user server on8000 was left running; restart it and reload to discover new schemas. No audio or capture started.

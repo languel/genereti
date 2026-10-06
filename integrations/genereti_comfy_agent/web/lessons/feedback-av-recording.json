@@ -180,7 +180,7 @@
         "part": "node",
         "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
       },
-      "text": "Create a texture expression and connect it to temporal feedback. No cyclic cable is needed: top.feedback stores the preceding frame internally.",
+      "text": "Create a texture expression and connect it to temporal feedback. No cyclic cable is needed: top.feedback stores the preceding frame internally. Screen blending is the default so opaque black lets older trails show through; over requires transparent source frames.",
       "title": "Create the moving texture and feedback"
     },
     {

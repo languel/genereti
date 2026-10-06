@@ -2,17 +2,21 @@
 
 TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs retain saved workflow compatibility. [Report](opentouch-report.md) explains transport, conversion and device boundaries. [Lessons](opentouch-lessons.md) covers authoring and exports.
 
-44 OpenTouch TOP/CHOP/DAT operators, plus 10 independent modular audio operators.
+48 OpenTouch TOP/CHOP/DAT operators, plus 10 independent modular audio operators.
 
 ## TOP
 
 | Operator | Inputs | Outputs | Stable node ID |
 | --- | --- | --- | --- |
+| `ꘇtop.bloom` | image: IMAGE, threshold: FLOAT, radius: FLOAT, strength: FLOAT | image: IMAGE | `GeneretiTextureBloom` |
+| `ꘇtop.channels` | image: IMAGE, image_b: IMAGE (optional), red/green/blue/alpha: COMBO, channels: RGB/RGBA | image: IMAGE | `GeneretiTextureChannels` |
 | `ꘇtop.composite` | image: IMAGE, background: IMAGE, operation: COMBO, opacity: FLOAT | image: IMAGE | `GeneretiTextureComposite` |
 | `ꘇtop.cornerpin` | image: IMAGE, tl_x: FLOAT, tl_y: FLOAT, tr_x: FLOAT, tr_y: FLOAT, br_x: FLOAT, br_y: FLOAT, bl_x: FLOAT, bl_y: FLOAT | image: IMAGE | `GeneretiTextureCornerPin` |
 | `ꘇtop.crop` | image: IMAGE, left: FLOAT, top: FLOAT, right: FLOAT, bottom: FLOAT | image: IMAGE | `GeneretiTextureCrop` |
+| `ꘇtop.displace` | image: IMAGE, displacement: IMAGE, amount_x/amount_y/center: FLOAT | image: IMAGE | `GeneretiTextureDisplace` |
 | `ꘇtop.expression` | expression: STRING, width: INT, height: INT, time: FLOAT, image: IMAGE | image: IMAGE | `GeneretiTextureExpression` |
-| `ꘇtop.feedback` | image: IMAGE, decay: FLOAT, translate_x: FLOAT, translate_y: FLOAT, scale: FLOAT, rotate: FLOAT | image: IMAGE | `GeneretiTextureFeedback` |
+| `ꘇtop.feedback` | image: IMAGE, decay: FLOAT, translate_x: FLOAT, translate_y: FLOAT, scale: FLOAT, rotate: FLOAT, blend: screen/add/over | image: IMAGE | `GeneretiTextureFeedback` |
+| `ꘇtop.feedbackref` | image: IMAGE (optional seed), reference: STRING/picker, width/height: INT | image: IMAGE | `GeneretiTextureFeedbackRef` |
 | `ꘇtop.filter` | image: IMAGE, operation: COMBO, amount: FLOAT | image: IMAGE | `GeneretiTextureFilter` |
 | `ꘇtop.math` | image: IMAGE, operation: COMBO, value: FLOAT, operand: IMAGE | image: IMAGE | `GeneretiTextureMath` |
 | `ꘇtop.tochop` | image: IMAGE, sample_width: INT, sample_height: INT, sample_rate: FLOAT, batch_index: INT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiConvertTopToChop` |

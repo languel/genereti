@@ -48,6 +48,11 @@ fn transformUV(uv:vec2f)->vec2f {
  let v=(uv-.5-p.v[1].xy)/max(p.v[1].z,.001);let r=p.v[1].w;
  return vec2f(cos(r)*v.x+sin(r)*v.y,-sin(r)*v.x+cos(r)*v.y)*p.v[2].xy+.5;
 }
+fn channel(code:i32,x:vec4f,y:vec4f)->f32 {
+ if(code<4){return x[code];}if(code==4){return dot(x.rgb,vec3f(.2126,.7152,.0722));}
+ if(code==5){return 0.;}if(code==6){return 1.;}if(code<11){return y[code-7];}
+ return dot(y.rgb,vec3f(.2126,.7152,.0722));
+}
 @fragment fn fragment(in:Vertex)->@location(0) vec4f {
  let op=i32(p.v[0].x);let mode=i32(p.v[0].y);let k=p.v[0].z;let uv=in.uv;
  var x=sample(a,uv);var y=sample(b,uv);
@@ -68,7 +73,18 @@ fn transformUV(uv:vec2f)->vec2f {
  if(op==5){return sample(a,mix(p.v[1].xy,p.v[1].zw,uv));}
  if(op==6){let q=vec3f(uv,1);let z=dot(p.v[4].xyz,q);if(abs(z)<1e-8){return vec4f(0);}
  return sample(a,vec2f(dot(p.v[2].xyz,q),dot(p.v[3].xyz,q))/z);}
- if(op==7){y=sample(b,transformUV(uv));y.a*=k;return overNormal(x,y,1);}
+ if(op==7){y=sample(b,transformUV(uv));y.a*=k;return over(x,y,select(select(0,2,mode==1),4,mode==2),1);}
+ if(op==9){return vec4f(max(x.rgb-vec3f(k),vec3f(0))/max(1-k,1e-6),x.a);}
+ if(op==10){return sample(a,uv+(y.rg-vec2f(p.v[1].z))*p.v[1].xy);}
+ if(op==11||op==12){
+  let weights=array<f32,5>(.227027,.194595,.121622,.054054,.016216);
+  let direction=select(vec2f(0,1),vec2f(1,0),op==11);
+  let step=direction*k/4/vec2f(textureDimensions(a));var acc=vec4f(x.rgb*x.a,x.a)*weights[0];
+  for(var i=1;i<=4;i++){let left=sample(a,uv-step*f32(i));let right=sample(a,uv+step*f32(i));acc+=(vec4f(left.rgb*left.a,left.a)+vec4f(right.rgb*right.a,right.a))*weights[i];}
+  return vec4f(acc.rgb/max(acc.a,1e-8),acc.a);
+ }
+ if(op==13){let alpha=max(x.a,y.a);return vec4f(clamp((x.rgb*x.a+k*y.rgb*y.a)/max(alpha,1e-8),vec3f(0),vec3f(1)),alpha);}
+ if(op==14){return vec4f(channel(i32(p.v[1].x),x,y),channel(i32(p.v[1].y),x,y),channel(i32(p.v[1].z),x,y),select(channel(i32(p.v[1].w),x,y),1.,p.v[0].w==3));}
  // Canvas context uses premultiplied alpha; internal textures are straight RGBA.
  if(op==8){return vec4f(x.rgb*x.a,x.a);}return x;
 }`;
@@ -163,9 +179,13 @@ fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {retu
 export function parameters(kind,values){
  const p=new Float32Array(48);p[8]=p[9]=1;
  const modes={Composite:['over','under','add','multiply','screen','difference','cross'],Math:['multiply','add','subtract','divide','difference','minimum','maximum'],Filter:['level','invert','monochrome','threshold','opacity','blur','edge']};
- const codes={Composite:1,Math:2,Filter:3,Transform:4,Crop:5,CornerPin:6,Feedback:7};
+ const codes={FeedbackRef:0,Composite:1,Math:2,Filter:3,Transform:4,Crop:5,CornerPin:6,Feedback:7,Bloom:13,Displace:10,Channels:14};
  p[0]=codes[kind];p[1]=Math.max(0,modes[kind]?.indexOf(values.operation)??0);p[2]=values.opacity??values.value??values.amount??values.decay??1;
  if(kind==='Filter'&&[1,2,3,4].includes(p[1]))p[2]=Math.min(p[2],1);
+ if(kind==='Feedback')p[1]=['over','add','screen'].indexOf(values.blend??'screen');
+ if(kind==='Bloom')p[2]=values.strength;
+ if(kind==='Displace')p.set([values.amount_x,values.amount_y,values.center],4);
+ if(kind==='Channels'){const choices=['r','g','b','a','luma','zero','one','br','bg','bb','ba','bluma'];p[3]=values.channels==='RGB'?3:4;p.set(['red','green','blue','alpha'].map(name=>choices.indexOf(values[name])),4);}
  if(kind==='Transform'||kind==='Feedback'){p[4]=values.translate_x;p[5]=values.translate_y;p[6]=values.scale;p[7]=values.rotate*Math.PI/180;p[8]=values.flip_x?-1:1;p[9]=values.flip_y?-1:1;}
  if(kind==='Crop'){if(values.right<=values.left||values.bottom<=values.top)throw Error('Crop right/bottom must exceed left/top');p.set([values.left,values.top,values.right,values.bottom],4);}
  if(kind==='CornerPin'){const h=homography(['tl','tr','br','bl'].map(n=>[values[n+'_x'],values[n+'_y']]));p.set(h.slice(0,3),8);p.set(h.slice(3,6),12);p.set(h.slice(6,9),16);}

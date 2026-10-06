@@ -72,8 +72,8 @@ class CornerPin(io.ComfyNode):
 class Feedback(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return schema('Feedback',[io.Image.Input('image'),number('decay',.96,0,1),number('translate_x'),number('translate_y'),number('scale',1,.001,8),number('rotate',0,-360,360)],
-            'Live-only temporal feedback: previous output transformed/alpha-decayed beneath current input. Reset with the loop arrow. Queue returns current IMAGE without temporal history; no cyclic graph connection needed.')
+        return schema('Feedback',[io.Image.Input('image'),number('decay',.96,0,1),number('translate_x'),number('translate_y'),number('scale',1,.001,8),number('rotate',0,-360,360),io.Combo.Input('blend',options=['screen','add','over'],default='screen',optional=True)],
+            'Live-only temporal feedback: previous output transformed and decayed beneath current input. Screen/add reveal history through opaque black; over composites using source alpha. Reset with the loop arrow. Queue returns current IMAGE without temporal history; no cyclic graph connection needed.')
     @classmethod
     def execute(cls,image,**values): return io.NodeOutput(ops.rgba(image))
 
@@ -96,7 +96,47 @@ class Expression(io.ComfyNode):
         out[...,3]=values[...,3]
         return io.NodeOutput(torch.from_numpy(out.clip(0,1)).to(image) if image is not None else torch.from_numpy(out.clip(0,1)))
 
+class FeedbackRef(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return schema('FeedbackRef',[io.Image.Input('image',optional=True),
+            io.String.Input('reference',default='',tooltip='Pick a live IMAGE node/output, or type #nodeID, @persistentRef, or a unique node title. Convert this field to a STRING input for a wired reference. Samples the previous frame; this is not a queued IMAGE connection.'),
+            io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096)],
+            'One-frame delayed reference to a live node/output, including downstream composites. Feed this through processing into a composite with the fresh source, then reference that composite. Optional IMAGE seeds the first frame; width/height size an empty seed. Queue returns the seed or transparent IMAGE, never follows browser references.')
+    @classmethod
+    def execute(cls,reference,width,height,image=None):
+        import torch
+        return io.NodeOutput(ops.rgba(image) if image is not None else torch.zeros((1,height,width,4)))
+
+class Bloom(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return schema('Bloom',[io.Image.Input('image'),number('threshold',.6,0,1),number('radius',12,0,128),number('strength',.8,0,4)],
+            'Thresholded glow with a separable nine-tap Gaussian blur. Radius is in source pixels; live processing stays on WebGPU. Four passes, with reusable intermediate textures.')
+    @classmethod
+    def execute(cls,image,threshold,radius,strength): return io.NodeOutput(ops.bloom(image,threshold,radius,strength))
+
+class Displace(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return schema('Displace',[io.Image.Input('image'),io.Image.Input('displacement'),number('amount_x',.02,-1,1),number('amount_y',.02,-1,1),number('center',.5,0,1)],
+            'Displace source UV using map red/green channels minus center. Amounts are fractions of source dimensions; outside is transparent. Bloomed feedback can drive its own displacement.')
+    @classmethod
+    def execute(cls,image,displacement,amount_x,amount_y,center): return io.NodeOutput(ops.displace(image,displacement,amount_x,amount_y,center))
+
+class Channels(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        choices=['r','g','b','a','luma','zero','one','br','bg','bb','ba','bluma']
+        return schema('Channels',[io.Image.Input('image'),io.Image.Input('image_b',optional=True),
+            *[io.Combo.Input(name,options=choices,default=default) for name,default in [('red','r'),('green','g'),('blue','b'),('alpha','a')]],
+            io.Combo.Input('channels',options=['RGB','RGBA'],default='RGBA')],
+            'Route individual channels from A or optional B into RGB/RGBA. Use zero/one constants, luminance, or B alpha for masks. RGB forces opaque alpha in live GPU storage and returns three channels in Queue; RGBA preserves routed alpha. B defaults to A if absent.')
+    @classmethod
+    def execute(cls,image,red,green,blue,alpha,channels,image_b=None):
+        return io.NodeOutput(ops.channels(image,image_b,red,green,blue,alpha,channels))
+
 class TextureExtension(ComfyExtension):
-    async def get_node_list(self): return [Composite,Math,Filter,Transform,Crop,CornerPin,Feedback,Expression]
+    async def get_node_list(self): return [Composite,Math,Filter,Transform,Crop,CornerPin,Feedback,FeedbackRef,Bloom,Displace,Channels,Expression]
 
 async def comfy_entrypoint(): return TextureExtension()
