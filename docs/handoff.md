@@ -75,7 +75,7 @@ Full Core ML generation requires **macOS 14+ on Apple silicon**. Portable source
 
 `dat.lesson` holds authored guide JSON in CodeMirror. Run registers/plays the draft; Stop preserves learner edits. Markdown, standalone HTML, Print / Save as PDF and editable JSON exports belong on the **authoring node toolbar**, not the learner dialogue. Save/export the Comfy workflow separately to retain executable nodes and wiring.
 
-Guides use semantic node targets and bounded learner checks; they do not execute arbitrary script, request device permission or automatically queue inference. They are mini guides, not teacher-action recordings, classroom synchronization or a graph-wide undo system. The new authoring demo teaches identity, narration, targeting, checks, export and playback.
+Guides use semantic node targets and bounded learner checks; they do not execute arbitrary script, request device permission or automatically queue inference. The dat.lesson toolbar now records local selections, values/text, connections and supported preview controls into editable steps. Hint reveals authored guidance; Do it replays a step with visible typing and click/drag cues. Node references distinguish duplicate types. Arbitrary UI automation, freehand strokes and classroom synchronization remain deferred. The updated authoring demo teaches recording, hints, playback and exports; see docs/opentouch-lessons.md for action schema and limits.
 
 ## Verification at this checkpoint
 

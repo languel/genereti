@@ -32,21 +32,123 @@ def workflow(nodes, links=()):
 
 def write(path, value): path.write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n')
 
-authoring = {'format':'genereti-guide','version':1,'id':'lesson-authoring',
-    'title':'Make a tutorial with Genereti','summary':'Author, test and export a short guided lesson from a dat.lesson node.',
-    'steps':[
-        {'title':'A lesson is a workflow document','text':'The dat.lesson node holds your guide JSON in CodeMirror. Its toolbar runs the learner dialogue and exports the document. The learner dialogue only navigates the lesson.', 'target':{'nodeType':'GeneretiDatLesson','part':'code','widget':'guide'}},
-        {'title':'Give your lesson an identity','text':'Change the title in the sample guide JSON. Use a unique id when you make another lesson, and keep format genereti-guide and version 1. All steps need a title and text.', 'target':{'nodeType':'GeneretiDatLesson','part':'code','widget':'guide'},'check':{'kind':'changed-widget'}},
-        {'title':'Describe a learner action','text':'Edit the first step text to give a concrete action and explain what should change. Narration is plain text; it never executes scripts or starts devices.', 'target':{'nodeType':'GeneretiDatLesson','part':'code','widget':'guide'},'check':{'kind':'changed-widget'}},
-        {'title':'Focus a real tool','text':'target.nodeType uses the stable internal ID, for example GeneretiTextureExpression. part can be node, code, preview, toolbar or parameter. widget names the control, such as expression. Focus currently chooses the first matching node type.', 'target':{'nodeType':'GeneretiTextureExpression','part':'code','widget':'expression'}},
-        {'title':'Try the check yourself','text':'Change this texture expression. A changed-widget check compares its value to the value at step entry, then enables Next. Learners can skip checks; this does not grade artistic quality.', 'target':{'nodeType':'GeneretiTextureExpression','part':'code','widget':'expression'},'check':{'kind':'changed-widget'}},
-        {'title':'Export from the author toolbar','text':'Use Document export on dat.lesson for Markdown, standalone HTML, or Print / Save as PDF. Use {} for editable lesson JSON. Save the Comfy workflow separately to keep its nodes and wiring. Exports are deliberately outside the learner dialogue.', 'target':{'nodeType':'GeneretiDatLesson','part':'toolbar'}},
-        {'title':'Run and share your draft','text':'Press Run authored lesson on dat.lesson to register and play your edited guide. That replaces this walkthrough with your own learner dialogue. Stop ends playback without undoing edits. Sharing the workflow supplies the actual tools; sharing HTML/PDF supplies static notes.', 'target':{'nodeType':'GeneretiDatLesson','part':'toolbar'}}]}
-sample = {'format':'genereti-guide','version':1,'id':'my-first-texture-lesson', 'title':'My first texture lesson',
-    'summary':'A two-step lesson you can customize.', 'steps':[
-        {'title':'Make a different pattern','text':'Change x*8 to x*4 and watch the image.', 'target':{'nodeType':'GeneretiTextureExpression','part':'code','widget':'expression'}, 'check':{'kind':'changed-widget'}},
-        {'title':'Present your texture','text':'Select the image preview and press Alt+W to open its overlay. Hover outside an edge to reveal the controls.', 'target':{'nodeType':'GeneretiLiveImagePreview','part':'toolbar'}, 'check':{'kind':'overlay-open'}}]}
+authoring = {'format': 'genereti-guide',
+ 'version': 1,
+ 'id': 'lesson-authoring',
+ 'title': 'Make a tutorial with Genereti',
+ 'summary': 'Record selections and actions, add hints, replay demonstrations and export a guided lesson.',
+ 'steps': [{'title': 'A lesson is a workflow document',
+            'text': 'The dat.lesson node holds your guide JSON in CodeMirror. Its toolbar runs the learner '
+                    'dialogue and exports the document. The learner dialogue only navigates the lesson.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'code', 'widget': 'guide'},
+            'hint': 'Use Focus to locate the tool, then follow the step instructions.'},
+           {'title': 'Give your lesson an identity',
+            'text': 'Change the title in the sample guide JSON. Use a unique id when you make another '
+                    'lesson, and keep format genereti-guide and version 1. All steps need a title and text.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'code', 'widget': 'guide'},
+            'check': {'kind': 'changed-widget'},
+            'hint': 'Use Focus to locate the tool, then follow the step instructions.'},
+           {'title': 'Describe a learner action',
+            'text': 'Edit the first step text to give a concrete action and explain what should change. '
+                    'Narration is plain text; it never executes scripts or starts devices.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'code', 'widget': 'guide'},
+            'check': {'kind': 'changed-widget'},
+            'hint': 'Use Focus to locate the tool, then follow the step instructions.'},
+           {'title': 'Record a demonstration',
+            'text': 'On dat.lesson press ● Record tutorial actions. Select the texture expression node, edit '
+                    'its code or width/height, and connect nodes. Click/drag gestures are visual cues; '
+                    'values and connections are semantic actions. Device start, queue and arbitrary UI '
+                    'clicks are not replayed.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'toolbar'},
+            'hint': 'The filled circle starts recording. It does not run a learner guide.'},
+           {'title': 'Split the recording into teaching steps',
+            'text': 'Press + New recorded step after a coherent action. Then select another tool and type '
+                    'into its field. Press ✓ Stop recording and append steps to put your recording in the '
+                    'lesson JSON. Existing authored steps stay intact.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'toolbar'},
+            'hint': 'Use one step per idea. Intermediate slider values are coalesced; finish a gesture '
+                    'before pressing +.'},
+           {'title': 'Add a hint and review the actions',
+            'text': 'Each recorded step has editable title, text, hint, target and actions. Replace draft '
+                    'narration with a learner task; hint should explain a recovery path. type-text reveals '
+                    'text progressively; pointer cues visualize clicks and drags at normalized locations.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'code', 'widget': 'guide'},
+            'hint': 'Add "hint": "Try changing the frequency first" inside a step. Hint never runs actions.'},
+           {'title': 'Try Hint and Do it',
+            'text': 'Run your guide. Hint reveals advice. Do it replays only the current step, visibly types '
+                    'committed text, changes real parameter values and restores recorded wiring. Next stays '
+                    'learner-controlled. Source auto-update is paused while typing; a recorded Livecode Run '
+                    'compiles afterward. Audio/capture stays explicitly activated.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'toolbar'},
+            'hint': 'The sample lesson already includes Hint and Do it examples. Run authored lesson '
+                    'replaces this authoring tour with your draft.'},
+           {'title': 'Focus a real tool',
+            'text': 'Targets use stable internal node types. Record captures a persistent ref and nodeId so '
+                    'two tools of the same type remain distinct. part can be node, code, preview, toolbar or '
+                    'parameter; widget names a parameter or editor.',
+            'target': {'nodeType': 'GeneretiTextureExpression', 'part': 'code', 'widget': 'expression'},
+            'hint': 'Use Focus to locate the tool, then follow the step instructions.'},
+           {'title': 'Try the check yourself',
+            'text': 'Change this texture expression. A changed-widget check compares its value to the value '
+                    'at step entry, then enables Next. Learners can skip checks; this does not grade '
+                    'artistic quality.',
+            'target': {'nodeType': 'GeneretiTextureExpression', 'part': 'code', 'widget': 'expression'},
+            'check': {'kind': 'changed-widget'},
+            'hint': 'Use Focus to locate the tool, then follow the step instructions.'},
+           {'title': 'Export from the author toolbar',
+            'text': 'Use Document export on dat.lesson for Markdown, standalone HTML, or Print / Save as '
+                    'PDF. Use {} for editable lesson JSON. Save the Comfy workflow separately to keep its '
+                    'nodes and wiring. Exports are deliberately outside the learner dialogue.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'toolbar'},
+            'hint': 'Use Focus to locate the tool, then follow the step instructions.'},
+           {'title': 'Run and share your draft',
+            'text': 'Press Run authored lesson on dat.lesson to register and play your edited guide. That '
+                    'replaces this walkthrough with your own learner dialogue. Stop ends playback without '
+                    'undoing edits. Sharing the workflow supplies the actual tools; sharing HTML/PDF '
+                    'supplies static notes.',
+            'target': {'nodeType': 'GeneretiDatLesson', 'part': 'toolbar'},
+            'hint': 'Use Focus to locate the tool, then follow the step instructions.'}]}
+sample = {'format': 'genereti-guide',
+ 'version': 1,
+ 'id': 'my-first-texture-lesson',
+ 'title': 'My first texture lesson',
+ 'summary': 'A short lesson with hints, recorded typing and playback you can customize.',
+ 'steps': [{'title': 'Make a different pattern',
+            'text': 'Change x*8 to x*4 and watch the image.',
+            'target': {'nodeType': 'GeneretiTextureExpression', 'part': 'code', 'widget': 'expression'},
+            'check': {'kind': 'changed-widget'},
+            'hint': 'Edit the expression yourself, or use Do it to watch an example appear.',
+            'actions': [{'kind': 'pointer',
+                         'target': {'nodeType': 'GeneretiTextureExpression', 'nodeId': 2, 'part': 'code'},
+                         'gesture': 'click',
+                         'from': [0.5, 0.4]},
+                        {'kind': 'type-text',
+                         'target': {'nodeType': 'GeneretiTextureExpression',
+                                    'nodeId': 2,
+                                    'part': 'code',
+                                    'widget': 'expression'},
+                         'value': '(sin(x * 12 + t) + cos(y * 12 - t)) / 2'}]},
+           {'title': 'Present your texture',
+            'text': 'Select the image preview and press Alt+W to open its overlay. Hover outside an edge to '
+                    'reveal the controls.',
+            'target': {'nodeType': 'GeneretiLiveImagePreview', 'part': 'toolbar'},
+            'check': {'kind': 'overlay-open'}},
+           {'title': 'Type a teaching note',
+            'text': 'Do it types into a real DAT field. Try writing your own note afterward.',
+            'hint': 'The dat.text editor stores ordinary workflow text.',
+            'target': {'nodeType': 'GeneretiDatText', 'nodeId': 4, 'part': 'code', 'widget': 'text'},
+            'actions': [{'kind': 'type-text',
+                         'target': {'nodeType': 'GeneretiDatText',
+                                    'nodeId': 4,
+                                    'part': 'code',
+                                    'widget': 'text'},
+                         'value': '# A recorded lesson\n'
+                                  '\n'
+                                  'Selections focus tools. Actions demonstrate changes.\n'
+                                  '\n'
+                                  'Try it yourself, ask for a hint, or use Do it.'}]}]}
 lesson = node('GeneretiDatLesson',1,'author your lesson',(0,0),(510,790));lesson['widgets_values']=[json.dumps(sample,ensure_ascii=False,indent=2),'Live']
+lesson['properties']['generetiOperatorText']={'guide':lesson['widgets_values'][0]}
 texture = node('GeneretiTextureExpression',2,'learner exercise',(580,0));preview = node('GeneretiLiveImagePreview',3,'learner output',(1100,0),(410,620))
 texture['outputs'][0]['links']=[1];preview['inputs'][0]['link']=1
 notes = node('GeneretiDatText',4,'authoring notes · export here too',(0,870),(700,540));notes['widgets_values']=[(ROOT/'docs/opentouch-lessons.md').read_text(),'Live']

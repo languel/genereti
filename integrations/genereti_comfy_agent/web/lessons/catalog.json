@@ -192,7 +192,7 @@
     "version": 1,
     "id": "lesson-authoring",
     "title": "Make a tutorial with Genereti",
-    "summary": "Author, test and export a short guided lesson from a dat.lesson node.",
+    "summary": "Record selections and actions, add hints, replay demonstrations and export a guided lesson.",
     "steps": [
       {
         "title": "A lesson is a workflow document",
@@ -201,7 +201,8 @@
           "nodeType": "GeneretiDatLesson",
           "part": "code",
           "widget": "guide"
-        }
+        },
+        "hint": "Use Focus to locate the tool, then follow the step instructions."
       },
       {
         "title": "Give your lesson an identity",
@@ -213,7 +214,8 @@
         },
         "check": {
           "kind": "changed-widget"
-        }
+        },
+        "hint": "Use Focus to locate the tool, then follow the step instructions."
       },
       {
         "title": "Describe a learner action",
@@ -225,16 +227,55 @@
         },
         "check": {
           "kind": "changed-widget"
-        }
+        },
+        "hint": "Use Focus to locate the tool, then follow the step instructions."
+      },
+      {
+        "title": "Record a demonstration",
+        "text": "On dat.lesson press ● Record tutorial actions. Select the texture expression node, edit its code or width/height, and connect nodes. Click/drag gestures are visual cues; values and connections are semantic actions. Device start, queue and arbitrary UI clicks are not replayed.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "toolbar"
+        },
+        "hint": "The filled circle starts recording. It does not run a learner guide."
+      },
+      {
+        "title": "Split the recording into teaching steps",
+        "text": "Press + New recorded step after a coherent action. Then select another tool and type into its field. Press ✓ Stop recording and append steps to put your recording in the lesson JSON. Existing authored steps stay intact.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "toolbar"
+        },
+        "hint": "Use one step per idea. Intermediate slider values are coalesced; finish a gesture before pressing +."
+      },
+      {
+        "title": "Add a hint and review the actions",
+        "text": "Each recorded step has editable title, text, hint, target and actions. Replace draft narration with a learner task; hint should explain a recovery path. type-text reveals text progressively; pointer cues visualize clicks and drags at normalized locations.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "code",
+          "widget": "guide"
+        },
+        "hint": "Add \"hint\": \"Try changing the frequency first\" inside a step. Hint never runs actions."
+      },
+      {
+        "title": "Try Hint and Do it",
+        "text": "Run your guide. Hint reveals advice. Do it replays only the current step, visibly types committed text, changes real parameter values and restores recorded wiring. Next stays learner-controlled. Source auto-update is paused while typing; a recorded Livecode Run compiles afterward. Audio/capture stays explicitly activated.",
+        "target": {
+          "nodeType": "GeneretiDatLesson",
+          "part": "toolbar"
+        },
+        "hint": "The sample lesson already includes Hint and Do it examples. Run authored lesson replaces this authoring tour with your draft."
       },
       {
         "title": "Focus a real tool",
-        "text": "target.nodeType uses the stable internal ID, for example GeneretiTextureExpression. part can be node, code, preview, toolbar or parameter. widget names the control, such as expression. Focus currently chooses the first matching node type.",
+        "text": "Targets use stable internal node types. Record captures a persistent ref and nodeId so two tools of the same type remain distinct. part can be node, code, preview, toolbar or parameter; widget names a parameter or editor.",
         "target": {
           "nodeType": "GeneretiTextureExpression",
           "part": "code",
           "widget": "expression"
-        }
+        },
+        "hint": "Use Focus to locate the tool, then follow the step instructions."
       },
       {
         "title": "Try the check yourself",
@@ -246,7 +287,8 @@
         },
         "check": {
           "kind": "changed-widget"
-        }
+        },
+        "hint": "Use Focus to locate the tool, then follow the step instructions."
       },
       {
         "title": "Export from the author toolbar",
@@ -254,7 +296,8 @@
         "target": {
           "nodeType": "GeneretiDatLesson",
           "part": "toolbar"
-        }
+        },
+        "hint": "Use Focus to locate the tool, then follow the step instructions."
       },
       {
         "title": "Run and share your draft",
@@ -262,7 +305,8 @@
         "target": {
           "nodeType": "GeneretiDatLesson",
           "part": "toolbar"
-        }
+        },
+        "hint": "Use Focus to locate the tool, then follow the step instructions."
       }
     ]
   },

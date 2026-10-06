@@ -83,3 +83,32 @@ An optional `style` on the guide supplies defaults. A step's `style` overrides o
 `target` styles the active node or targeted code/toolbar/preview region. Its corner radius automatically follows the target and graph zoom unless explicitly supplied. `backdrop` is the surface fill, not a full-workspace veil; use `transparent` to remove it. Colors are CSS colors. The panel glow inherits the target frame color unless `glow.color` is supplied. Panel glow is steady by default; only the target pulses by default. Set panel `glow.pulse: true` explicitly to animate it. With no style, panel glow stays off and the target uses a tighter 12 px glow with a three-second cycle. Setting `pulse: false` keeps a steady glow; `enabled: false` removes it. Reduced-motion preferences always suppress animation.
 
 Dimensions are screen pixels: frame width 0–8, radius 0–64, glow radius 0–64, spread 0–16; duration is 0.5–20 seconds. These structured fields are validated and retained when exporting editable guide JSON. Invalid CSS colors fall back to the theme. For example, a step can override just `"style": {"target": {"glow": {"enabled": false}}}` without losing the guide's other styles.
+
+## Record selections and actions
+
+The authoring toolbar has **● Record tutorial actions**, **+ New recorded step**, and **✓ Stop recording and append steps**. Record starts a local session; perform a coherent task, press +, and repeat. Stop appends the draft steps to the lesson without replacing existing narration. Edit each draft's title, text and hint before sharing. Removing the author node cancels recording.
+
+Recording captures node clicks/selections, scalar parameter and text edits, input connection changes, and Genereti overlay/backdrop/freeze/minimize toggles. Slider revisions coalesce into their final value. Click/drag positions are normalized within a node and become visible pointer cues; these cues show the gesture rather than dispatching arbitrary synthetic UI clicks. Parameter values and wiring are changed through node APIs. Node creation/deletion, freehand strokes, application settings and device activation are not recorded in this first version.
+
+Recorded references include a persistent `ref` saved in node properties plus `nodeId` and `nodeType`. This resolves duplicate node types in the supplied workflow. If references cannot resolve and several nodes share a type, playback reports the ambiguity rather than editing a random node.
+
+A step may include `hint` and `actions`:
+
+```json
+{
+  "title": "Change the synth level",
+  "text": "Lower the level to 0.25.",
+  "hint": "Use the level parameter on mod.synth.",
+  "target": {"nodeType": "GeneretiAudioSynth", "nodeId": 4, "part": "parameter", "widget": "level"},
+  "actions": [
+    {"kind": "pointer", "target": {"nodeType": "GeneretiAudioSynth", "nodeId": 4}, "gesture": "drag", "from": [0.3, 0.2], "to": [0.7, 0.2]},
+    {"kind": "set-widget", "target": {"nodeType": "GeneretiAudioSynth", "nodeId": 4, "widget": "level"}, "value": 0.25}
+  ]
+}
+```
+
+**Hint** reveals the authored hint. **Do it** plays the current step and leaves advancement to the learner. `type-text` visibly types a string into a named widget; `set-widget` commits a scalar value; `select` selects a node; `connect` uses `source`, `output` and `input` names; `disconnect` removes a named input link; `view` sets a supported preview toggle; `pointer` shows a click or drag; `run-code` runs a non-audio Livecode sketch after typing. Source auto-update is paused during typing. Audio/Strudel, camera, screen capture, MIDI permissions and workflow queue remain explicit tool actions. The structured action schema accepts no arbitrary selectors, scripts or commands.
+
+A Do it attempt is grouped with the graph change hooks for Comfy undo. Closing the guide, changing steps or switching workflows interrupts playback; already-applied edits stay. Run failure is shown in the guide, so the learner can correct a missing tool or socket. Exports retain hints and actions in editable JSON; static Markdown/HTML/PDF include hints and action summaries, not an executable player.
+
+Open **ꘇ-Tutorial-Authoring** for the expanded “Make a tutorial with Genereti” walkthrough and runnable typing/Hint/Do it examples.

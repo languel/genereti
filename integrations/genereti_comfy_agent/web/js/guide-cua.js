@@ -1,0 +1,41 @@
+import {nodeReference,resolveNode,coalesceAction,validateActions} from './guide-actions.js';
+const scalar=v=>['string','number','boolean'].includes(typeof v)&&(!(typeof v==='number')||Number.isFinite(v));
+const host=n=>document.querySelector(`.lg-node[data-node-id="${CSS.escape(String(n.id))}"]`);
+function surface(n,t){const h=host(n);if(!h)return null;if(t.part==='code')return h.querySelector('.cm-editor')??h;return h;}
+const point=(el,x,y)=>{const r=el.getBoundingClientRect();return [Math.max(0,Math.min(1,(x-r.left)/r.width)),Math.max(0,Math.min(1,(y-r.top)/r.height))];};
+export function createRecorder(app,owner,onStatus){
+ let running=false,timer,steps=[],actions=[],target,before,down;
+ const nodes=()=>app.graph._nodes.filter(n=>n!==owner);
+ const snapshot=()=>new Map(nodes().map(n=>[String(n.id),{widgets:new Map((n.widgets??[]).filter(w=>w.options?.serialize!==false&&scalar(w.value)).map(w=>[w.name,w.value])),links:(n.inputs??[]).map(i=>i.link)}]));
+ const add=a=>{if(actions.length<100)coalesceAction(actions,a);target??=a.target;onStatus?.(`${steps.length+1} · ${actions.length} recorded actions`);};
+ function scan(){if(!running)return;const next=snapshot();for(const n of nodes()){const prev=before?.get(String(n.id)),now=next.get(String(n.id));if(!prev)continue;
+  for(const [name,value] of now.widgets)if(prev.widgets.has(name)&&prev.widgets.get(name)!==value)add({kind:typeof value==='string'?'type-text':'set-widget',target:{...nodeReference(n),widget:name,part:typeof value==='string'?'code':'parameter'},value});
+  now.links.forEach((link,i)=>{if(link===prev.links[i])return;const input=n.inputs[i].name;if(link==null)add({kind:'disconnect',target:nodeReference(n),input});else{const l=app.graph.links?.[link]??app.graph.links?.get?.(link),from=l&&app.graph.getNodeById(l.origin_id);if(from)add({kind:'connect',target:nodeReference(n),input,source:nodeReference(from),output:from.outputs[l.origin_slot].name});}});
+ }before=next;}
+ function commit(){scan();if(!actions.length)return;steps.push({title:`Step ${steps.length+1}`,text:'Describe what the learner should do.',hint:'',target:{...target,part:target.part??'node'},actions:validateActions(actions)});actions=[];target=null;onStatus?.(`${steps.length} steps recorded`);}
+ function pointerDown(e){if(!running||e.button!==0)return;const h=e.target.closest?.('.lg-node');if(!h)return;const n=app.graph.getNodeById(h.dataset.nodeId);if(!n||n===owner)return;const t=nodeReference(n);add({kind:'select',target:t});down={target:t,el:h,from:point(h,e.clientX,e.clientY)};}
+ function pointerUp(e){if(!running||!down)return;const to=point(down.el,e.clientX,e.clientY),distance=Math.hypot(to[0]-down.from[0],to[1]-down.from[1]);add({kind:'pointer',target:down.target,gesture:distance>.025?'drag':'click',from:down.from,to});down=null;scan();}
+ function click(e){if(!running)return;const b=e.target.closest?.('button'),h=b?.closest('.lg-node'),n=h&&app.graph.getNodeById(h.dataset.nodeId);if(!n||n===owner)return;if(n.comfyClass==='GeneretiLivecode'&&b.closest('.genereti-livecode-toolbar')&&b.getAttribute('aria-label')==='Run'){scan();add({kind:'run-code',target:nodeReference(n)});return;}const label=(b.getAttribute('aria-label')??'').toLowerCase(),view=label.includes('output overlay')?'overlay':label.includes('output backdrop')?'backdrop':label.includes('freeze')?'freeze':label.includes('node preview')?'minimize':null;if(view)add({kind:'view',target:nodeReference(n),view,enabled:b.getAttribute('aria-pressed')==='true'});}
+ function clean(){clearInterval(timer);window.removeEventListener('click',click,false);window.removeEventListener('pointerdown',pointerDown,true);window.removeEventListener('pointerup',pointerUp,true);down=null;}
+ return {get running(){return running;},start(){if(running)return;steps=[];actions=[];target=null;before=snapshot();running=true;timer=setInterval(scan,120);window.addEventListener('pointerdown',pointerDown,true);window.addEventListener('pointerup',pointerUp,true);window.addEventListener('click',click,false);onStatus?.('Recording · select tools and change values');},next:commit,stop(){if(!running)return [];commit();running=false;clean();return steps;},cancel(){running=false;clean();}};
+}
+function cueElement(){let el=document.querySelector('.genereti-tutorial-cursor');if(el)return el;el=document.createElement('div');el.className='genereti-tutorial-cursor';el.style.cssText='position:fixed;z-index:2147483001;pointer-events:none;width:18px;height:18px;border:2px solid var(--fg-color,#ddd);border-radius:50%;background:#8884;box-shadow:0 0 8px #0006;left:0;top:0;transform:translate(-100px,-100px)';document.body.append(el);return el;}
+function animate(duration,fn,signal){return new Promise((resolve,reject)=>{const start=performance.now();function tick(now){if(signal?.aborted){reject(Error('Tutorial playback stopped'));return;}const t=Math.min(1,(now-start)/duration);fn(t);if(t<1)requestAnimationFrame(tick);else resolve();}requestAnimationFrame(tick);});}
+export async function playActions(app,actions,{signal,instant=false}={}){
+ actions=validateActions(actions);const graph=app.graph;
+ const get=t=>resolveNode(graph,t);
+ const preflight=actions.map(a=>{const n=get(a.target),w=a.target.widget?n.widgets?.find(w=>w.name===a.target.widget):null;if(['type-text','set-widget'].includes(a.kind)&&!w)throw Error('Widget is missing: '+a.target.widget);if(w){const choices=typeof w.type==='object'?w.type:w.options?.values;if(Array.isArray(choices)&&!choices.includes(a.value))throw Error('Value is not in widget choices');if(typeof a.value==='number'&&(a.value<(w.options?.min??-Infinity)||a.value>(w.options?.max??Infinity)))throw Error('Value is outside widget limits');}if(a.kind==='run-code'&&(n.comfyClass!=='GeneretiLivecode'||n.widgets?.find(w=>w.name==='language')?.value==='strudel'))throw Error('Audio/code activation requires the tool’s explicit Run control');if(a.kind==='connect'){get(a.source);if(!n.inputs?.some(i=>i.name===a.input))throw Error('Input is missing');}return {a,n,w};});
+ const cursor=cueElement();graph.beforeChange?.();try{for(const {a,n,w} of preflight){if(signal?.aborted||app.graph!==graph||!graph._nodes.includes(n))throw Error('Tutorial playback stopped or workflow changed');
+  if(a.kind==='select'){app.canvas.deselectAllNodes?.();app.canvas.selectNode?.(n);continue;}
+  if(a.kind==='pointer'){const el=surface(n,a.target);if(!el)throw Error('Target view is not visible');if(!instant)await animate(a.gesture==='drag'?650:250,t=>{const r=el.getBoundingClientRect(),x=(a.from[0]+(a.to[0]-a.from[0])*t)*r.width+r.left,y=(a.from[1]+(a.to[1]-a.from[1])*t)*r.height+r.top;cursor.style.transform=`translate(${x-9}px,${y-9}px) scale(${a.gesture==='click'?1+Math.sin(t*Math.PI)*.6:1})`;},signal);continue;}
+  if(a.kind==='set-widget'||a.kind==='type-text'){
+   // Source stays paused while visibly typing; Run remains a separate action.
+   const auto=n.widgets.find(w=>w.name==='auto_update');if(a.kind==='type-text'&&auto){auto.value=false;auto.callback?.(false);}
+   const set=value=>{if(w.options?.setValue)w.options.setValue(value);else w.value=value;n.setDirtyCanvas?.(true,true);};
+   if(a.kind==='type-text'&&!instant)await animate(Math.min(2500,Math.max(250,a.value.length*12)),t=>set(a.value.slice(0,Math.ceil(a.value.length*t))),signal);set(a.value);w.callback?.(a.value);
+  }else if(a.kind==='connect'){const from=get(a.source),out=from.outputs?.findIndex(o=>o.name===a.output),input=n.inputs.findIndex(i=>i.name===a.input);if(typeof out!=='number'||out<0||!from.connect(out,n,input))throw Error('Could not connect tutorial sockets');}
+  else if(a.kind==='disconnect'){const i=n.inputs?.findIndex(i=>i.name===a.input);if(i<0)throw Error('Input is missing');n.disconnectInput(i);}
+  else if(a.kind==='run-code'){await n._generetiLivecode.evaluate(undefined,undefined,true);}
+  else if(a.kind==='view'){const labels={overlay:'output overlay',backdrop:'output backdrop',freeze:'Freeze',minimize:'node preview'},buttons=[...(host(n)?.querySelectorAll('button[aria-pressed]')??[])],b=buttons.find(b=>b.getAttribute('aria-label')?.includes(labels[a.view]));if(!b)throw Error('Preview control is unavailable');if((b.getAttribute('aria-pressed')==='true')!==a.enabled)b.click();}
+ }}finally{cursor.remove();graph.afterChange?.();graph.setDirtyCanvas?.(true,true);}
+}
