@@ -9,6 +9,9 @@ const snapLevelFromPointer = event => event.metaKey ? (event.shiftKey ? "minor" 
 const TransportTimeline = memo(function TransportTimeline({
   duration,
   currentTime,
+  clock,
+  visible,
+  revision,
   displayMode,
   fps,
   tempo,
@@ -110,7 +113,7 @@ const TransportTimeline = memo(function TransportTimeline({
     .map(track => ({ ...track, clips: timelineClips
       .filter(clip => clip.trackId === track.id)
       .sort((left, right) => (Number(left.timing?.start) || 0) - (Number(right.timing?.start) || 0) || left.id.localeCompare(right.id)) }))
-    .filter(track => track.clips.length || timelineMode === "clips"), [timelineClips, timelineMode, timelineTracks]);
+    .filter(track => track.clips.length || timelineMode === "clips"), [timelineClips, timelineMode, timelineTracks, revision]);
 
   const clipSelectionIndex = useMemo(() => {
     const order = [];
@@ -580,15 +583,24 @@ const TransportTimeline = memo(function TransportTimeline({
     const rawTime = timeFromPointer(event.clientX);
     beginDrag(event, {
       kind: "playhead",
-      time: currentTime,
+      time: livePositionRef.current,
       // The hit target intentionally extends over the frame label, which is
       // offset to the right of the line. Holding this offset keeps a label
       // drag anchored to the current playhead until it is moved.
-      playheadOffset: currentTime - rawTime,
+      playheadOffset: livePositionRef.current - rawTime,
     });
   };
 
   const percentInView = time => (time - viewStart) / viewDuration * 100;
+  // The continuously moving playhead does not need to reconcile clip/ruler DOM.
+  // React handles edits/follow-range updates; rAF touches only these two elements.
+  const livePositionRef=useRef(currentTime);livePositionRef.current=currentTime;
+  useEffect(()=>{
+    if(!clock)return;
+    let frame=0;
+    const paint=()=>{if(!visible||visible()){const t=clock.read().seconds;livePositionRef.current=t;const percent=(t-viewStart)/viewDuration*100,show=t>=viewStart&&t<=viewEnd;for(const el of trackRef.current?.querySelectorAll('.iannix-timeline-playhead,.iannix-timeline-playhead-hitbox')??[]){el.style.left=`${percent}%`;el.style.visibility=show?'visible':'hidden';}const label=trackRef.current?.querySelector('.iannix-timeline-playhead span');if(label){const next=formatTimelinePosition(t,'frame',options);if(label.textContent!==next)label.textContent=next;}}frame=requestAnimationFrame(paint);};
+    frame=requestAnimationFrame(paint);return()=>cancelAnimationFrame(frame);
+  },[clock,viewStart,viewDuration,viewEnd,options,visible]);
   const playheadVisible = currentTime >= viewStart && currentTime <= viewEnd;
   const playheadPercent = percentInView(currentTime);
   const visibleLoopStart = clamp(loopStart, viewStart, viewEnd);
@@ -844,7 +856,7 @@ const TransportTimeline = memo(function TransportTimeline({
               /> : null}
           </>
         ) : null}
-        {playheadVisible ? <>
+        {(playheadVisible||clock) ? <>
           <div className="iannix-timeline-playhead" style={{ left: `${playheadPercent}%` }} aria-hidden="true">
             <span>{formatTimelinePosition(currentTime, "frame", options)}</span>
           </div>

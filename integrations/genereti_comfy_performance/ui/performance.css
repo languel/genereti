@@ -10,3 +10,20 @@
 .genereti-import{position:relative;cursor:pointer;padding:5px}.genereti-import input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
 .genereti-keys{display:flex;gap:10px;flex-wrap:wrap;padding:8px}.genereti-keys label{display:flex;gap:3px}
 .genereti-performance .iannix-timeline{min-height:110px}.genereti-performance .iannix-arrangement-track{min-height:32px}
+
+/* Scoped to the active Timeline tab; Logs keeps the host's own layout. */
+.bottom-panel.genereti-timeline-dock:has([role="tab"][id$="_tab_genereti-timeline"][aria-selected="true"]) .p-tablist-tab-list{padding-block:2px;min-height:32px}
+.bottom-panel.genereti-timeline-dock:has([role="tab"][id$="_tab_genereti-timeline"][aria-selected="true"]) [role="tablist"]>.flex.w-full.justify-between{align-items:center;flex-wrap:wrap;gap:2px 8px;padding-inline:4px}
+.bottom-panel.genereti-timeline-dock:has([role="tab"][id$="_tab_genereti-timeline"][aria-selected="true"]) .tabs-container{display:flex;flex-shrink:0;align-items:center}
+.bottom-panel.genereti-timeline-dock:has([role="tab"][id$="_tab_genereti-timeline"][aria-selected="true"]) [role="tab"]{margin:0 2px;padding:4px 8px;min-height:28px;font-size:12px;line-height:20px;border-radius:5px}
+.genereti-dock-transport{display:none;flex:1 1 680px;min-width:0}
+.genereti-performance.genereti-performance-header{height:auto;min-height:0;padding:0;overflow:visible;background:transparent}
+.genereti-performance-header .genereti-performance-toolbar{margin:0;gap:4px}
+.genereti-performance-header button,.genereti-performance-header select{min-height:28px;padding:4px 6px}
+.genereti-performance-header input{width:58px}
+.genereti-performance-header input[aria-label="Meter numerator"]{width:35px}
+.genereti-performance-header input[aria-label="Score duration"]{width:45px}
+.genereti-performance-header output{min-width:62px}
+@media(max-width:900px){.genereti-dock-transport{flex-basis:100%;order:2}}
+
+.bottom-panel.genereti-timeline-dock:has([role="tab"][id$="_tab_genereti-timeline"][aria-selected="true"]) .genereti-dock-transport{display:block}

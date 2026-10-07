@@ -12,8 +12,8 @@ app.registerExtension({name:'Genereti.Inspect',nodeCreated(node){
  let frozen=false,text='',queued='',sourceKey='',disposed=false;
  const freeze=document.createElement('button');freeze.textContent='❄';freeze.title='Freeze display only · upstream keeps running';freeze.setAttribute('aria-label',freeze.title);freeze.setAttribute('aria-pressed','false');freeze.onclick=()=>{frozen=!frozen;freeze.setAttribute('aria-pressed',String(frozen));};tools.append(freeze);
  tools.append(documentExportControls(()=>({title:node.title,source:text,mode:'markdown'}),e=>status.textContent=e.message));
- const set=(next,label)=>{status.textContent=frozen?'Frozen display':label;if(frozen||next===text)return;const scroll=editor.scrollDOM.scrollTop;text=next;editor.replaceDocument(next);editor.scrollDOM.scrollTop=scroll;};
- const tick=()=>{if(disposed)return;try{
+ const set=(next,label)=>{status.textContent=frozen?'Frozen display':label;if(frozen||next===text)return;const previous=editor.state.doc.toString();text=next;let from=0,end=previous.length,to=next.length;while(from<end&&from<to&&previous[from]===next[from])from++;while(end>from&&to>from&&previous[end-1]===next[to-1]){end--;to--;}editor.dispatch({changes:{from,to:end,insert:next.slice(from,to)}});};
+ const tick=()=>{if(disposed||frozen||document.hidden)return;try{
   let link;try{link=node.getInputLink?.(0);}catch{return;}const upstream=node.graph?.getNodeById(link?.origin_id);const key=link?`${link.origin_id}:${link.origin_slot}`:'';if(key!==sourceKey){sourceKey=key;queued='';}
   if(!upstream){set('Connect an input to inspect its value.','No input');return;}
   const slot=link.origin_slot??0,type=upstream.outputs?.[slot]?.type;
@@ -27,7 +27,7 @@ app.registerExtension({name:'Genereti.Inspect',nodeCreated(node){
  }catch(e){status.textContent=e.message;}};
  body.addEventListener('wheel',e=>{e.stopPropagation();if(e.ctrlKey)e.preventDefault();},{passive:false});surface.addEventListener('pointerdown',e=>e.stopPropagation());
  const unsub=subscribeEditorAppearance(()=>editor.setAppearance(appearance())),font=captureFontShortcut(node,body,()=>editor.setAppearance(appearance()));
- const timer=setInterval(tick,100);const executed=node.onExecuted;node.onExecuted=function(data){const result=executed?.apply(this,arguments);queued=data.genereti_inspect?.[0]??'';set(queued,'Queued value');return result;};
+ const timer=setInterval(tick,200);const executed=node.onExecuted;node.onExecuted=function(data){const result=executed?.apply(this,arguments);queued=data.genereti_inspect?.[0]??'';set(queued,'Queued value');return result;};
  node._generetiLiveValue=slot=>slot===0?text:undefined;
  node.addDOMWidget('inspect_display','GENERETI_INSPECT',surface,{serialize:false,hideOnZoom:false}).computeSize=w=>[w,260];
  const removed=node.onRemoved;node.onRemoved=function(){disposed=true;clearInterval(timer);unsub();font();editor.destroy();return removed?.apply(this,arguments);};

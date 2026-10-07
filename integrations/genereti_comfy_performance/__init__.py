@@ -50,6 +50,15 @@ class Quantize(io.ComfyNode):
         out={**input,'channels':{}}
         for name,data in input['channels'].items():out['channels'][name]=np.asarray([quantize(float(x)) for x in data],dtype=np.float32) if name=='note' or name.startswith('note') or len(input['channels'])==1 else np.asarray(data).copy()
         return io.NodeOutput(out,float(next(iter(out['channels'].values()))[-1]))
+class Monitor(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):return schema('Monitor','dat.monitor',[io.String.Input('report',default='{}',optional=True)], [io.Float.Output(display_name='browser fps'),CHOP.Output(display_name='metrics'),io.String.Output(display_name='JSON')])
+    @classmethod
+    def execute(cls,report='{}'):
+        value=json.loads(report)
+        metrics={k:float(value.get(k,0)) for k in ['fps','meanMs','p95Ms','worstMs','slowFrames','longTasks']}
+        if not all(math.isfinite(x) for x in metrics.values()):raise ValueError('Monitor metrics must be finite')
+        return io.NodeOutput(metrics['fps'],{'channels':{k:np.asarray([v],dtype=np.float32) for k,v in metrics.items()},'sample_rate':1.,'start':0.},json.dumps(value))
 class PerformanceExtension(ComfyExtension):
-    async def get_node_list(self):return [Time,Timeline,Scale,Quantize]
+    async def get_node_list(self):return [Time,Timeline,Scale,Quantize,Monitor]
 async def comfy_entrypoint():return PerformanceExtension()

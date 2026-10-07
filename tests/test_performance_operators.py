@@ -1,19 +1,23 @@
 import unittest
 import json
 import numpy as np
-from integrations.genereti_comfy_performance import Time,Timeline,Scale,Quantize
+from integrations.genereti_comfy_performance import Time,Timeline,Scale,Quantize,Monitor
 from integrations.genereti_comfy_chop.modular import Transport
 from integrations.genereti_comfy_texture import Expression,Noise
 from integrations.genereti_comfy_texture.expression import evaluate
 class PerformanceTests(unittest.TestCase):
  def test_ports_keep_transport_clock_at_zero(self):
-  for node in (Time,Timeline,Scale,Quantize,Transport):node.GET_SCHEMA()
+  for node in (Time,Timeline,Scale,Quantize,Monitor,Transport):node.GET_SCHEMA()
   self.assertEqual(Transport.RETURN_TYPES[0],'GENERETI_AUDIO_CLOCK')
   self.assertEqual(len(Transport.execute().result),5)
   out=Transport.execute(performance=json.dumps(dict(seconds=2,quarterNotes=4,bpm=120))).result
   self.assertEqual(out[1]['sample_rate'],25)
   self.assertEqual(out[1]['start'],2)
   self.assertEqual(float(out[1]['channels']['ticks'][0]),1920)
+ def test_monitor_queue_uses_measured_report_without_claiming_queue_fps(self):
+  out=Monitor.execute(report=json.dumps(dict(fps=59.8,p95Ms=17.2,slowFrames=2))).result
+  self.assertEqual(out[0],59.8);self.assertAlmostEqual(float(out[1]['channels']['p95Ms'][0]),17.2,places=4)
+  self.assertEqual(Monitor.execute().result[0],0)
  def test_queue_uses_frozen_clock_in_six_eight(self):
   snap=json.dumps(dict(seconds=2,quarterNotes=4,bpm=120,signature=dict(numerator=6,denominator=8)))
   out=Time.execute(unit='beat',performance=snap).result

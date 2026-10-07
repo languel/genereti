@@ -1,4 +1,3 @@
-import {noiseExpression} from './noise.js';
 import { app } from '../../scripts/app.js';
 import { attachExecutionMode, subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
 import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
@@ -67,11 +66,12 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
     history=1-history;
   }
   if(kind==='Expression'||kind==='Noise'){
-   if(kind==='Noise')values.expression=noiseExpression(values);
-   if(state.expression!==values.expression){state.expression=values.expression;state.expressionPipeline=null;const source=values.expression;gpu.expressionPipeline(source).then(pipeline=>{if(state.dead||state.expression!==source)return;state.expressionPipeline=pipeline;schedule(state);}).catch(error=>{if(state.expression===source)status.textContent=error.message;});}
+   if(kind==='Noise')values.expression=`noise:${values.algorithm}:${values.dimensions}`;
+   if(state.expression!==values.expression){state.expression=values.expression;state.expressionPipeline=null;const source=values.expression;(kind==='Noise'?gpu.noisePipeline(values.algorithm,values.dimensions):gpu.expressionPipeline(source)).then(pipeline=>{if(state.dead||state.expression!==source)return;state.expressionPipeline=pipeline;schedule(state);}).catch(error=>{if(state.expression===source)status.textContent=error.message;});}
    if(!state.expressionPipeline)return;
    p.set([(window.generetiPerformance?.timeFor(node,now)??now/1000)+Number(values.time)+Number(values.offset_t??0),a.width,a.height,state.inputs[0]?1:0]);
    const global=window.generetiPerformance?.expressionValues()??{};p.set(['g_time','g_beat','g_bar','g_bpm','g_ticks','g_phase','g_playing','g_rate','g_root','g_tuning'].map(k=>Number(global[k]??(k==='g_bpm'?120:k==='g_tuning'?440:k==='g_rate'?1:0))),4);p[14]=Number(values.offset_x??0);p[15]=Number(values.offset_y??0);p[16]=Number(values.offset_z??0);
+   if(kind==='Noise')p.set([Number(values.scale),Number(values.seed),Number(values.z),Number(values.speed),Number(values.octaves),Number(values.lacunarity),Number(values.gain),+(values.color==='RGB')],20);
    frame=gpu.expression(a,p,prefix+'output',a.width,a.height,state.expressionPipeline);
   }else if(kind==='Bloom'){
    const stage=state.bloomParams??=new Float32Array(48);stage[0]=9;stage[2]=values.threshold;

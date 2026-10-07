@@ -76,3 +76,12 @@ test('bloom, displacement and channel routing pack GPU controls',()=>{
  const p=parameters('Channels',{red:'b',green:'bg',blue:'zero',alpha:'ba',channels:'RGB'});
  assert.equal(p[3],3);assert.deepEqual([...p.slice(4,8)],[2,8,5,10]);
 });
+
+test('noise animation reuses one uniform-driven pipeline per algorithm/domain',async()=>{
+ const {TextureGPU}=await import('../integrations/genereti_comfy_texture/web/texture-gpu.js');
+ let compiled=0;const modules=[];
+ const engine=Object.create(TextureGPU.prototype);engine.format='rgba8unorm';engine.layout={};engine.stats={};engine.device={createShaderModule({code}){modules.push(code);return {async getCompilationInfo(){return {messages:[]};}};},async createRenderPipelineAsync(){return {id:++compiled};}};
+ const a=await engine.noisePipeline('simplex',4),b=await engine.noisePipeline('simplex',4);assert.equal(a,b);assert.equal(compiled,1);
+ assert.match(modules[0],/frequency=p\.v\[5\]\.x/);assert.match(modules[0],/count=u32\(clamp\(p\.v\[6\]\.x/);
+ const c=await engine.noisePipeline('perlin',3);assert.notEqual(a,c);assert.equal(compiled,2);
+});

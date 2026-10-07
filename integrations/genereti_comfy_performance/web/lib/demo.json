@@ -1,5 +1,5 @@
 {
-  "last_node_id": 12,
+  "last_node_id": 13,
   "last_link_id": 6,
   "nodes": [
     {
@@ -560,6 +560,49 @@
       },
       "widgets_values": [
         "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"performance-time\",\n  \"title\": \"Shared time and a first performance timeline\",\n  \"summary\": \"A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition. Shared visuals and sound with editable automation.\",\n  \"steps\": [\n    {\n      \"title\": \"Open the shared timeline\",\n      \"text\": \"Press Alt+Shift+T or use the timeline node. Play advances project time even while the dock is hidden. Opening a view never starts sound.\",\n      \"hint\": \"Use \\u25a5 on mod.timeline. The floating view uses the same clock.\",\n      \"target\": {\n        \"ref\": \"0caf0c16-fbb6-59cc-b359-fe157dead80a\",\n        \"part\": \"node\",\n        \"nodeType\": \"GeneretiPerformanceTimeline\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"select\",\n          \"target\": {\n            \"ref\": \"0caf0c16-fbb6-59cc-b359-fe157dead80a\",\n            \"part\": \"node\",\n            \"nodeType\": \"GeneretiPerformanceTimeline\"\n          }\n        }\n      ]\n    },\n    {\n      \"title\": \"Inspect clock units\",\n      \"text\": \"chop.time selects seconds, quarter notes, meter beats, bars, 480-PPQ ticks or phase. Its JSON is visible in dat.inspect.\",\n      \"hint\": \"Choose beat in the unit menu; 6/8 has six eighth-note meter beats per bar.\",\n      \"target\": {\n        \"ref\": \"96bc3167-6fe9-5761-b6fb-ddf15985175d\",\n        \"part\": \"node\",\n        \"nodeType\": \"GeneretiPerformanceTime\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"select\",\n          \"target\": {\n            \"ref\": \"96bc3167-6fe9-5761-b6fb-ddf15985175d\",\n            \"part\": \"node\",\n            \"nodeType\": \"GeneretiPerformanceTime\"\n          }\n        }\n      ]\n    },\n    {\n      \"title\": \"Use global time in expressions\",\n      \"text\": \"Both visuals use linked project time. The colorful expression reads __.beat and __.time directly. x/y are normalized and c is the output RGB channel.\",\n      \"hint\": \"Try 0.5+0.5*sin(__.time+x*8+c*2). Offsets x/y/z/t can be wired.\",\n      \"target\": {\n        \"ref\": \"098060d5-74dc-5752-8a69-d81b5527a312\",\n        \"part\": \"node\",\n        \"nodeType\": \"GeneretiTextureExpression\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"select\",\n          \"target\": {\n            \"ref\": \"098060d5-74dc-5752-8a69-d81b5527a312\",\n            \"part\": \"node\",\n            \"nodeType\": \"GeneretiTextureExpression\"\n          }\n        }\n      ]\n    },\n    {\n      \"title\": \"Play sound deliberately\",\n      \"text\": \"Press Start on mod.output, then Play the project clock. Sequence notes follow score beats; tempo edits retain phase. Panic stops all browser outputs.\",\n      \"hint\": \"Sound is silent until mod.output Start, even if the timeline plays.\",\n      \"target\": {\n        \"ref\": \"93dd7748-cf4e-5c8c-902e-6f921125d788\",\n        \"part\": \"node\",\n        \"nodeType\": \"GeneretiAudioOutput\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"select\",\n          \"target\": {\n            \"ref\": \"93dd7748-cf4e-5c8c-902e-6f921125d788\",\n            \"part\": \"node\",\n            \"nodeType\": \"GeneretiAudioOutput\"\n          }\n        }\n      ]\n    },\n    {\n      \"title\": \"Record and edit a parameter\",\n      \"text\": \"Select top.noise, choose scale in the timeline parameter menu and press \\u25cf. Change its scale parameter, then press \\u25cf again. A numeric curve clip appears.\",\n      \"hint\": \"Drag the clip or its ends; Option-drag an edge stretches, double click loops. \\u25c7 adds a key. Keys expand below the ruler.\",\n      \"target\": {\n        \"ref\": \"88125035-ca48-5818-a069-8d99c55d117f\",\n        \"part\": \"node\",\n        \"nodeType\": \"GeneretiTextureNoise\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"select\",\n          \"target\": {\n            \"ref\": \"88125035-ca48-5818-a069-8d99c55d117f\",\n            \"part\": \"node\",\n            \"nodeType\": \"GeneretiTextureNoise\"\n          }\n        }\n      ]\n    },\n    {\n      \"title\": \"Scrub, reset and export\",\n      \"text\": \"Drag the ruler or playhead. Seeking pauses sound scheduling, updates linked stateless visuals and clears linked feedback. JSON export includes clock, musical context, tracks and clips.\",\n      \"hint\": \"Scrubbing is silent. Arbitrary p5 simulation state is not reconstructed by seeking. Replay from zero for stateful sketches.\",\n      \"target\": {\n        \"ref\": \"0caf0c16-fbb6-59cc-b359-fe157dead80a\",\n        \"part\": \"node\",\n        \"nodeType\": \"GeneretiPerformanceTimeline\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"select\",\n          \"target\": {\n            \"ref\": \"0caf0c16-fbb6-59cc-b359-fe157dead80a\",\n            \"part\": \"node\",\n            \"nodeType\": \"GeneretiPerformanceTimeline\"\n          }\n        }\n      ]\n    }\n  ]\n}"
+      ]
+    },
+    {
+      "id": 13,
+      "type": "GeneretiPerformanceMonitor",
+      "pos": [
+        1730,
+        810
+      ],
+      "size": [
+        410,
+        280
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "browser fps",
+          "type": "FLOAT",
+          "links": null,
+          "slot_index": 0
+        },
+        {
+          "name": "metrics",
+          "type": "GENERETI_CHOP",
+          "links": null,
+          "slot_index": 1
+        },
+        {
+          "name": "JSON",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerformanceMonitor",
+        "generetiPerformanceVersion": 1
+      },
+      "widgets_values": [
+        "{}"
       ]
     }
   ],

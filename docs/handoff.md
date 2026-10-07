@@ -2,6 +2,38 @@
 
 Review checkpoint: **2026-10-06**, `main`, including the first performance timeline below. Earlier sections retain their dated validation results. This document is the review map, not a claim that every device or performance configuration has been tested.
 
+## Timeline compact header and performance pass · 2026-10-06
+
+The Timeline tab places transport controls beside compact native Logs/Timeline
+tabs, wrapping at narrow widths. Logs keeps its own header. The native close
+control, splitter, keyboard commands and floating timeline are retained.
+
+The new `ꘇdat.monitor` reports a rolling five-second browser frame window, source
+frame-delivery rates, long tasks and transport/UI costs; it exports JSON and has
+FLOAT/CHOP/JSON outputs. The demo includes it. These are browser/delivery
+measurements, not GPU execution time or a backend Queue FPS benchmark.
+
+A playing demo initially averaged about 66 ms between browser frames (about
+15 FPS), with p95 116 ms. Profiling identified inspector document replacement;
+the monitor then exposed TOP noise repeatedly recompiling shaders as automation
+changed scale. Numeric noise controls now use uniforms, and pipelines compile
+asynchronously. The same 512×320 RGB/noise demo subsequently measured 60 FPS,
+p95 17–18 ms and zero >50 ms frames in a five-second window. Before the separate
+pixel-equivalence checks, shader compilation stayed at two while scale animated.
+Actual GPU comparisons matched byte-for-byte for Perlin/simplex/value in 1–4D,
+including XYZ offsets, seed, time and two octaves. This is an isolated local check,
+not a guarantee for larger graphs or other browsers/devices.
+
+Timeline controls reconcile at 5 Hz while the playhead moves independently at
+browser frame cadence; hidden views skip reconciliation. Control/scheduling
+cadence remains unchanged. Automation retains transient value banks, expression
+globals avoid cloning project data per frame, and the JSON inspector applies
+incremental CodeMirror updates without synchronous scroll layout reads.
+
+Validation: 157 JavaScript tests and 6 focused Python performance operator tests;
+all 40 canonical workflow files parse. A model-free Queue run and native
+pointer/keyboard playback also passed. Model/capture/audio-start boundaries remain.
+
 ## First performance timeline · 2026-10-06
 
 Review **ꘇ-Performance-Timeline** and the [performance guide](performance-time.md).

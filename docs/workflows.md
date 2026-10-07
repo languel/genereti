@@ -186,6 +186,7 @@ Demo filenames use `ꘇ-…`. Stable node IDs and the **Genereti** folder remain
 
 Open **ꘇ-Performance-Timeline** in the Genereti workflow folder. Its six-step
 lesson connects a project transport, readable time, global expression color,
-noise automation, scale context and an explicitly started modular synth.
+noise automation, scale context, `dat.monitor` frame timing and an explicitly
+started modular synth.
 **Alt+Shift+T** opens the dock. See [performance time](performance-time.md) for
 recording parameter takes, offsets, `__` variables and seek limitations.

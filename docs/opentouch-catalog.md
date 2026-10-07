@@ -3,7 +3,7 @@
 TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs retain saved workflow compatibility. [Report](opentouch-report.md) explains transport, conversion and device boundaries. [Lessons](opentouch-lessons.md) covers authoring and exports.
 
 49 original OpenTouch TOP/CHOP/DAT operators, plus 14 modular audio/analysis
-operators and four performance controllers/converters.
+operators and five performance controllers/converters.
 
 ## TOP
 
@@ -122,6 +122,7 @@ inspectors. Restart Comfy and reload once to discover the new schema.
 | Operator | Inputs | Outputs | Stable node ID |
 | --- | --- | --- | --- |
 | `ꘇchop.time` | unit, optional CLOCK | FLOAT, CHOP, JSON, CLOCK | `GeneretiPerformanceTime` |
+| `ꘇdat.monitor` | browser frame/delivery timing | FLOAT FPS, CHOP metrics, JSON | `GeneretiPerformanceMonitor` |
 | `ꘇmod.timeline` | dock/floating controls | description STRING | `GeneretiPerformanceTimeline` |
 | `ꘇmod.scale` | root, scale, tuning | music JSON | `GeneretiPerformanceScale` |
 | `ꘇchop.quantize` | CHOP, optional music JSON | quantized CHOP, first-channel FLOAT | `GeneretiPerformanceQuantize` |

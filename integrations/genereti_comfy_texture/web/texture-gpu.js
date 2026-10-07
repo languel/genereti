@@ -152,9 +152,34 @@ fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {let 
     const pending=(async()=>{const module=this.device.createShaderModule({label:'top.expression',code});
       const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');
       if(errors.length)throw Error(errors.map(m=>m.message).join('; '));
-      return this.device.createRenderPipeline({layout:this.layout,vertex:{module,entryPoint:'vertex'},fragment:{module,entryPoint:'fragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list'}});
+      this.stats.shaderCompiles=(this.stats.shaderCompiles??0)+1;return this.device.createRenderPipelineAsync({layout:this.layout,vertex:{module,entryPoint:'vertex'},fragment:{module,entryPoint:'fragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list'}});
     })();
     this.expressions.set(source,pending);if(this.expressions.size>64)this.expressions.delete(this.expressions.keys().next().value);return pending;
+  }
+  async noisePipeline(kind,dimensions){
+    const n=Math.max(1,Math.min(4,Number(dimensions)||2)),algorithm={perlin:0,value:1,simplex:2}[kind]??0,key=`noise:${algorithm}:${n}`;
+    this.expressions??=new Map();if(this.expressions.has(key))return this.expressions.get(key);
+    const code=SHADER.slice(0,SHADER.indexOf('@fragment'))+`
+${NOISE_WGSL}
+fn pigment(t:f32,x:f32,y:f32,c:f32)->f32 {
+ var frequency=p.v[5].x;var weight=1.;var total=0.;var sum=0.;
+ let count=u32(clamp(p.v[6].x,1.,8.));
+ for(var o=0u;o<count;o++){
+  let shift=p.v[5].y*.123+f32(o)*19.19+select(0.,c*31.7,p.v[6].w>0.);
+  var q=vec4f(x*frequency+shift,y*frequency,p.v[5].z+p.v[4].x,t*p.v[5].w);
+  ${n<3?'q.x+=t*p.v[5].w;':''}${n===3?'q.z+=t*p.v[5].w;':''}
+  sum+=weight*gn_noise(q,${n}u,${algorithm}u);total+=weight;weight*=p.v[6].z;frequency*=p.v[6].y;
+ }
+ return clamp(.5+.5*sum/max(total,.000001),0.,1.);
+}
+@fragment fn fragment(in:Vertex)->@location(0) vec4f {
+ let t=p.v[0].x;let x=in.uv.x+p.v[3].z;let y=in.uv.y+p.v[3].w;
+ let r=pigment(t,x,y,0.);var rgb=vec3f(r);
+ if(p.v[6].w>0.){rgb=vec3f(r,pigment(t,x,y,1.),pigment(t,x,y,2.));}
+ return vec4f(rgb,select(1.,sample(a,in.uv).a,p.v[0].w>0.));
+}`;
+    const pending=(async()=>{const module=this.device.createShaderModule({label:key,code});const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(m=>m.message).join('; '));this.stats.shaderCompiles=(this.stats.shaderCompiles??0)+1;return this.device.createRenderPipelineAsync({layout:this.layout,vertex:{module,entryPoint:'vertex'},fragment:{module,entryPoint:'fragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list'}});})();
+    this.expressions.set(key,pending);return pending;
   }
   expression(a,params,key,width,height,pipeline){const frame=this.target(key,width,height);this.pass(a,null,params,frame.texture,this.format,frame.texture,pipeline);return frame;}
   present(frame,canvas){

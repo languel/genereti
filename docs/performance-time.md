@@ -17,6 +17,10 @@ parameter recording and seeking. The example needs no models or capture devices.
 time outside text editors. These are editable in Comfy's native Keybinding panel.
 `ꘇmod.timeline` opens the same dock or a draggable, resizable floating view.
 
+The active Timeline tab uses a compact native header: transport controls occupy
+the space beside Logs/Timeline, wrapping below them in narrow windows. Logs
+retains its own header, and the native close control and panel resizing remain.
+
 The dock includes play/pause/stop, tempo, meter, loop handles, seconds/BBU/frame
 rulers, zoom/follow, numeric automation tracks, clip editing, global scale/tuning
 and JSON import/export. Time is derived from a monotonic anchor, so a stalled
@@ -148,3 +152,31 @@ historical feedback images, and has no audio audition. The musical ruler uses
 current BPM; accurate tempo-map ruler editing, shared Strudel/Orca phase, media
 and action clips, multi-parameter takes, audio recording, MIDI clock sync and
 Ableton/TouchDesigner/Bespoke interchange remain subsequent work.
+
+## Performance monitoring
+
+`ꘇdat.monitor` samples the browser's animation-frame cadence over a rolling five
+seconds and separately counts each live texture source's frame deliveries. It
+shows average FPS, average/p95/worst frame interval, frames slower than 50 ms,
+Long Tasks where the browser supports them, and transport-tick/UI-commit costs.
+Its outputs are FLOAT FPS, a named CHOP metrics block and JSON. Queue preserves
+a captured monitor report; it does not turn backend execution time into FPS.
+The snowflake holds the display, reset clears the window, and download exports
+JSON. Measurements reset when the page changes visibility. The monitor uses
+bounded histories and updates its own display once per second.
+
+Browser FPS is neither measured GPU execution time nor audio/Comfy Queue rate.
+Source deliveries can continue while a local preview is frozen. Other tabs,
+background throttling and the browser compositor can affect these readings.
+
+The clock still advances continuously from its monotonic anchor. Musical cue
+quantization does not step or quantize TOP animation. This pass keeps control
+updates at 25 Hz, reduces timeline reconciliation to 5 Hz, and moves its playhead
+at browser frame cadence independently of clip/ruler rebuilding. Hidden timeline
+views skip reconciliation; live JSON inspection uses incremental CodeMirror
+updates at 5 Hz without forcing synchronous scroll layout.
+
+Noise scale, seed, speed, Z, octave count, lacunarity and gain are GPU uniforms;
+animation/automation reuses the existing pipeline. Only changing algorithm or
+dimension requires another noise pipeline. Monochrome computes one noise value
+per pixel; RGB computes three independently shifted channels.
