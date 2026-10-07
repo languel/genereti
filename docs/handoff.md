@@ -2,6 +2,16 @@
 
 Review checkpoint: **2026-10-04**, `main`, functional changes through **17b0adc**. These changes are pushed to `origin/main`. This document is the review map, not a claim that every device or performance configuration has been tested.
 
+## Performance time planning · 2026-10-06
+
+The pre-timeline baseline is **4780395**, tagged and pushed as
+**checkpoint/pre-timeline-2026-10-06**. The [performance time plan](performance-time-plan.md)
+reviews Underscores' transport, timeline, time values, grid, recording and shared
+API against the current Comfy integration. It recommends a shared headless
+performance engine with a native bottom-panel timeline and compact node controls.
+Focused Underscores timing/clip/history/grid/Strudel tests passed 110/110; no new
+clock or timeline is implemented by this planning checkpoint.
+
 ## Modular audio follow-up · 2026-10-06
 
 The independent `ꘇmod.*` family adds ten Web Audio routing nodes with OpenTouch CHOP note/scalar interoperability. Review **ꘇ-Modular-Audio** and its embedded walkthrough: Start on `mod.output`, edit both grids, mute/solo the mixer, adjust delay, then Stop/Panic. The [audio guide](modular-audio.md) records contracts and current limits. Legacy `chop.synth` endpoints are preserved. Backend restart and frontend refresh are needed for the new schemas/modules. Verification used an owned 8001 instance; the user's 8000 workflow was preserved. Validated 81 JavaScript tests, 14 Python operator tests and 6 installer tests; all 30 canonical workflows parse. Browser checks covered grid edits/save/reload, explicit start, mute/solo, Panic and real OfflineAudioContext rendering (audible RMS 0.0169, muted RMS 0). No hardware MIDI or speaker latency claim is made.
