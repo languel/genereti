@@ -86,7 +86,9 @@ class PackageTests(unittest.TestCase):
         tracked = subprocess.check_output(['git', '-C', str(ROOT), 'ls-files', '-z']).decode().split('\0')
         registry = {name for name in filter(None, tracked) if not ignore.match_file(name)}
         self.assertEqual(selected, registry)
-        self.assertIn('integrations/genereti_comfy_p5/web/lib/@strudel-web-LICENSE', selected)
+        self.assertIn('licensing/browser/livecode/inventory.json', selected)
+        self.assertIn('licensing/source/p5-1.11.11.tar.gz', selected)
+        self.assertNotIn('integrations/genereti_comfy_p5/web/lib/@strudel-web-LICENSE', selected)
         self.assertIn('web/vendor/excalidraw/editor.js', selected)
         self.assertNotIn('requirements-macos.txt', selected)
 
