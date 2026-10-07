@@ -2,9 +2,37 @@
 
 **Realtime creative coding and performance tools for ComfyUI**, plus an optional local image generator. The Comfy package includes Livecode, drawing, OpenTouch operators, Web Audio, lessons and timeline automation. The separate Core ML generator requires **macOS 14+ on Apple silicon** (M-series Macs).
 
-> A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition
+## Student getting started
 
-For class, start with the [Comfy package quickstart](docs/comfy-distribution.md) and **ꘇ-Performance-Timeline**; no models or generator server are needed. The [student quickstart](docs/student-quickstart.md) also covers the optional Mac generator. The [platform guide](docs/platform-support.md) explains the separate platform requirements.
+Use an existing ComfyUI installation. The realtime classroom tools need no model
+downloads, npm or separate Genereti server.
+
+1. Stop ComfyUI. From your **ComfyUI directory**, install the package:
+
+   ```sh
+   git clone https://github.com/languel/genereti.git custom_nodes/genereti
+   ```
+
+2. Install `custom_nodes/genereti/requirements.txt` using **ComfyUI's Python**.
+   For a macOS/Linux checkout with a `.venv`:
+
+   ```sh
+   ./.venv/bin/python -m pip install -r custom_nodes/genereti/requirements.txt
+   ```
+
+   See the [installation guide](docs/comfy-distribution.md#git-install-now) for
+   Windows, Portable, Desktop and existing split-pack installs.
+3. Restart ComfyUI and refresh the browser.
+4. Open `custom_nodes/genereti/integrations/comfyui_genereti/workflows/ꘇ-Performance-Timeline.json`
+   by dragging it onto the canvas or using **Open workflow**. Run its `dat.lesson`
+   guide; **Alt+Shift+T** opens the timeline. Sound starts explicitly on `mod.output`.
+
+Next, try the [shader, p5 and audiovisual tutorials](docs/livecode-tutorials.md),
+[workflow examples](docs/workflows.md) and [node catalog](docs/opentouch-catalog.md).
+The [student quickstart](docs/student-quickstart.md) covers the optional Mac
+generator; see [platform support](docs/platform-support.md) before setting it up.
+
+> A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition
 
 ## Other app interfaces
 
