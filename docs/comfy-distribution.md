@@ -170,7 +170,7 @@ and [metadata specification](https://docs.comfy.org/registry/specifications):
    can install the published ID through Comfy's registry/Manager.
 
 The publisher account and GitHub secret have been configured by the maintainer.
-No Registry publication has been performed. The initial classroom install remains Git/ZIP. [Challenge preparation](comfy-challenge.md)
+Registry version 0.1.0 was uploaded on October 7, 2026; 0.1.1 adds explicit super-alpha labeling. Registry scanning and node extraction must finish before Manager availability is confirmed. Git/ZIP installation remains available. [Challenge preparation](comfy-challenge.md)
 records the separate submission requirements.
 
 ```sh
