@@ -1,0 +1,9 @@
+{
+  "radix": {
+    "url": "https://github.com/radix-ui/primitives/blob/main/LICENSE",
+    "licenseBlob": "a18858fb7b014098cba85703e66609be66a26ef5"
+  },
+  "fastdom": {
+    "source": "fastdom@1.0.12/README.md#license"
+  }
+}

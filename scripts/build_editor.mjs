@@ -1,4 +1,7 @@
-import {build} from 'esbuild';
+import {build as esbuild} from 'esbuild';
+import {recordBrowserLicenses} from './browser_licenses.mjs';
+const licenseMetas=[];
+async function build(options){const result=await esbuild({...options,metafile:true});licenseMetas.push(result.metafile);return result;}
 import {cp,mkdir,rm,readFile} from 'node:fs/promises';
 const out='web/vendor/excalidraw';
 await rm(out,{recursive:true,force:true});
@@ -16,5 +19,9 @@ const desktopDrawing={name:'desktop-comfy-drawing',setup(builder){
 }};
 await build({plugins:[desktopDrawing],entryPoints:{editor:'editor/index.jsx'},outdir:out,bundle:true,minify:true,splitting:true,format:'esm',target:'es2022',conditions:['production'],define:{'process.env.NODE_ENV':'"production"'},loader:{'.woff2':'file','.woff':'file','.ttf':'file'},assetNames:'assets/[name]-[hash]',legalComments:'linked'});
 await cp('node_modules/@excalidraw/excalidraw/dist/prod/fonts',`${out}/fonts`,{recursive:true});
+// Replace the legacy Ascender font with the OFL-1.1 Liberation 2.1.5 build.
+await cp('licensing/fonts/liberation-2.1.5/LiberationSans-Regular.woff2',`${out}/fonts/Liberation/LiberationSans-Regular.woff2`);
 await cp('editor/LICENSE-EXCALIDRAW.txt',`${out}/LICENSE-EXCALIDRAW.txt`);
 console.log('Built local Excalidraw editor and fonts.');
+
+await recordBrowserLicenses(licenseMetas,'drawing');

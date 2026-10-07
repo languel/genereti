@@ -1,4 +1,7 @@
-import {build} from 'esbuild';
+import {build as esbuild} from 'esbuild';
+import {recordBrowserLicenses} from './browser_licenses.mjs';
+const licenseMetas=[];
+async function build(options){const result=await esbuild({...options,metafile:true});licenseMetas.push(result.metafile);return result;}
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 const out='integrations/genereti_comfy_performance/web/lib';await mkdir(out,{recursive:true});
@@ -9,3 +12,5 @@ const demo=await readFile('integrations/comfyui_genereti/workflows/ꘇ-Performan
 await writeFile(`${out}/demo.json`,demo);
 await writeFile(`${out}/guide.json`,JSON.parse(demo).nodes.find(n=>n.type==='GeneretiDatLesson').widgets_values[0]);
 await writeFile(`${out}/React-LICENSE`,await readFile('node_modules/react/LICENSE'));
+
+await recordBrowserLicenses(licenseMetas,'timeline');

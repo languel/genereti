@@ -11,7 +11,7 @@ import {minifySource} from '../integrations/genereti_comfy_p5/livecode/formatter
 import {parseParameters} from '../integrations/genereti_comfy_p5/web/js/code-parameters.js';
 import {glslSource} from '../integrations/genereti_comfy_p5/livecode/glsl-source.js';
 
-test('every registered language has a runnable starter',async()=>{
+test('every registered language preserves editable starter source',async()=>{
  const languages=JSON.parse(await readFile(new URL('../integrations/genereti_comfy_p5/web/js/livecode-languages.json',import.meta.url)));
  assert.deepEqual([...languages].sort(),Object.keys(examples).sort());
  assert.match(examples.manim,/latex: "e\^\{i\\\\pi\}/);

@@ -10,7 +10,6 @@ import {StreamLanguage,HighlightStyle,syntaxHighlighting} from '@codemirror/lang
 import {tags} from '@lezer/highlight';
 import {shader} from '@codemirror/legacy-modes/mode/clike';
 import {stex} from '@codemirror/legacy-modes/mode/stex';
-import {highlightExtension,widgetPlugin,sliderPlugin,updateMiniLocations,highlightMiniLocations,updateWidgets,updateSliderWidgets} from '@strudel/codemirror';
 import {semanticCompletion,semanticHover,glslCompletion} from './language-service.js';
 import {examples} from './examples.js';
 export const palettes={dark:{background:'#12121280',foreground:'#dedede',keyword:'#b6aac8',string:'#a7b7a9',number:'#c2b49d',comment:'#929292',selection:'#35383d'},light:{background:'#fafafa',foreground:'#24292f',keyword:'#6639ba',string:'#136c35',number:'#934400',comment:'#637080',selection:'#d5e5f5'},midnight:{background:'#0c1420',foreground:'#dceafa',keyword:'#bca5ed',string:'#8bd5ca',number:'#efc88b',comment:'#93a8bf',selection:'#304661'},paper:{background:'#f4efe4',foreground:'#352f27',keyword:'#684780',string:'#46633b',number:'#895222',comment:'#776c5e',selection:'#dfd4bb'}};
@@ -39,7 +38,7 @@ export function createEditor(parent,source,mode,onChange,onRun,settings={}){
  // Completion source identity must stay stable across state lookups, or
  // CodeMirror treats every update as a new source and discards its result.
  const semantic=['p5','three'].includes(mode);const completionControl=new Compartment(),hoverControl=new Compartment();const completionConfig=s=>autocompletion({activateOnTyping:s.autocomplete!==false,...(s.autocomplete===false?{override:[]}:mode==='glsl'?{override:[glslCompletion]}:{}) });const hoverConfig=s=>semantic&&s.hoverDocs!==false?semanticHover(mode):[];const completionData=semantic?[{autocomplete:semanticCompletion(mode)}]:mode==='glsl'?[{autocomplete:glslCompletion}]:completions(mode);
- const view=new EditorView({doc:source,parent,extensions:[EditorState.readOnly.of(Boolean(settings.readOnly)),EditorView.editable.of(!settings.readOnly),basicSetup,lang,glyphField,hoverControl.of(hoverConfig(settings)),completionControl.of(completionConfig(settings)),EditorState.languageData.of(()=>completionData),mode==='strudel'?[highlightExtension,widgetPlugin,sliderPlugin]:[],appearance.of(styling(settings)),Prec.highest(keymap.of([{key:'Mod-Enter',run(){onRun();return true;}},{key:'Ctrl-Enter',run(){onRun();return true;}}])),EditorView.updateListener.of(update=>{if(update.docChanged)onChange(update.state.doc.toString());})]});
+ const view=new EditorView({doc:source,parent,extensions:[EditorState.readOnly.of(Boolean(settings.readOnly)),EditorView.editable.of(!settings.readOnly),basicSetup,lang,glyphField,hoverControl.of(hoverConfig(settings)),completionControl.of(completionConfig(settings)),EditorState.languageData.of(()=>completionData),appearance.of(styling(settings)),Prec.highest(keymap.of([{key:'Mod-Enter',run(){onRun();return true;}},{key:'Ctrl-Enter',run(){onRun();return true;}}])),EditorView.updateListener.of(update=>{if(update.docChanged)onChange(update.state.doc.toString());})]});
  // Comfy's older ChangeTracker schedules graph undo from a window capture
  // listener, ignoring preventDefault and contentEditable. Its text-input
  // exclusion also recognizes this textarea type marker.
@@ -49,7 +48,6 @@ export function createEditor(parent,source,mode,onChange,onRun,settings={}){
  view.replaceDocument=source=>view.dispatch({changes:{from:0,to:view.state.doc.length,insert:source},selection:{anchor:0},annotations:[Transaction.userEvent.of('input.format'),isolateHistory.of('full')]});
  view.reindent=()=>{if(view.state.selection.ranges.every(range=>range.empty))view.dispatch({selection:{anchor:0,head:view.state.doc.length}});return indentSelection(view);};
  view.setAppearance=next=>{settings=next;view.dispatch({effects:[appearance.reconfigure(styling(next)),completionControl.reconfigure(completionConfig(next)),hoverControl.reconfigure(hoverConfig(next))]});};
- view.setStrudelVisuals=(meta,haps,time)=>{if(meta){updateMiniLocations(view,meta.miniLocations||[]);updateWidgets(view,(meta.widgets||[]).filter(w=>w.type!=='slider'));updateSliderWidgets(view,(meta.widgets||[]).filter(w=>w.type==='slider'));}if(haps)highlightMiniLocations(view,time,haps);};
  view.dom.addEventListener('keydown',event=>{if((event.ctrlKey||event.metaKey)&&event.shiftKey&&event.key.toLowerCase()==='f'){event.preventDefault();view.formatDocument?.();}event.stopPropagation();});view.dom.addEventListener('pointerdown',event=>event.stopPropagation());return view;
 }
 export {examples};

@@ -28,12 +28,14 @@
     "scripts/build_editor.mjs",
     "scripts/build_livecode.mjs",
     "scripts/build_performance.mjs",
-    "scripts/build_livecode_lessons.py"
+    "scripts/build_livecode_lessons.py",
+    "scripts/browser_licenses.mjs"
   ],
   "directories": [
     "docs",
     "editor",
     "web/vendor/excalidraw",
-    "integrations/comfyui_genereti/workflows"
+    "integrations/comfyui_genereti/workflows",
+    "licensing"
   ]
 }

@@ -50,7 +50,7 @@ The local app opens directly into a full-screen Excalidraw workspace. **Genereti
 - Guide generation with sketches, camera or shared-window captures, and optional Canny, depth, and pose controls. The experimental composite runs SDXS sketch and SD-Turbo Canny as separate image branches, then blends them.
 - Experiment with a separate Canny shape source, palette-reference transfer, emboss-first color/tone controls, recursive learned-upscaler feedback, sharpening, and output sizing.
 - Use the output as a live image stream in p5.js or TouchDesigner.
-- Build ComfyUI graphs with Genereti generation, live input capture, the existing p5.js sketch node, or **ꘇ livecode** with p5, GLSL, Three.js, Strudel, HTML and Markdown.
+- Build ComfyUI graphs with Genereti generation, live input capture, the existing p5.js sketch node, or **ꘇ livecode** with p5, GLSL, Three.js, HTML and Markdown.
 - Preview browser sources independently of Comfy’s queue and open a direct canvas output window; queued IMAGE results can also feed the projector.
 - Teach standard diffusion with an SD 1.5 bottle graph, then compare a fast direct-prompt Qwen Image 2.1 graph.
 - Run the optional SD-Turbo, anime, and control model downloads when you want those modes.
@@ -90,10 +90,16 @@ Model weights, Core ML packages, compiled models, and generated outputs are not 
 
 ## Contributing and licensing
 
-Issues and improvements are welcome. The repository does not yet declare a project-wide code license; model licenses are separate and apply to their respective downloads. Contact the maintainer before redistributing code or bundling any model files.
+Issues and improvements are welcome. Genereti-authored code is MIT licensed. Third-party code and model downloads retain their own licenses; see [licensing](licensing/README.md) and [model notes](docs/models.md) before redistribution.
 
 The experimental **SDXS guide mixer** combines weighted guide residuals before one SDXS denoiser pass. It reuses the released sketch controller for image, edges, depth and explicit pose maps; it does not claim dedicated SDXS Canny/depth/pose weights. See [art experiments](docs/experiments.md#mix-guides-inside-sdxs) and the [model-size catalog](docs/models.md#resolution-and-model-size-catalog) for setup, supported resolutions and measured timings.
 
 **Editable input:** choose **Shapes · Excalidraw** for locally bundled vector drawing, with a fixed guide artboard, an expanded editor, local autosave, `.excalidraw` save/load and editable source in scene exports. See [the drawing editor guide](docs/drawing-editor.md). Shape/model keyframe interpolation is a planned next layer, not yet implemented.
 
 **Alt+Shift+R** toggles the right properties sidebar independently, including a temporary reveal in Satori. Satori hides that sidebar and its resize gutter without changing the saved open/closed preference. Escape hides temporarily revealed panels.
+
+## License
+
+Genereti-authored code is MIT. Third-party components retain their licenses;
+p5.js LGPL source/build materials ship alongside the runtime. Embedded Strudel
+is omitted from the public build. See [licensing](licensing/README.md).

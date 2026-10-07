@@ -1,0 +1,10 @@
+{
+  "p5SourceURL": "https://codeload.github.com/processing/p5.js/tar.gz/refs/tags/v1.11.11",
+  "liberationSourceURL": "https://github.com/liberationfonts/liberation-fonts/releases/tag/2.1.5",
+  "sha256": {
+    "licensing/source/p5-1.11.11.tar.gz": "ac704ae6e5fc29e81a641e4a01f3016e789246457d92729d06e4b1a2fac5bdb0",
+    "integrations/genereti_comfy_p5/web/p5.min.js": "1343f616bf9914da8253faae00201ea5f72772916998bc6add4c2a07e00a662c",
+    "licensing/fonts/liberation-2.1.5/LiberationSans-Regular.ttf": "76d04c18ea243f426b7de1f3ad208e927008f961dc5945e5aad352d0dfde8ee8",
+    "licensing/fonts/liberation-2.1.5/LiberationSans-Regular.woff2": "fe3c4b0817b07b9822b4224c56257ba8be5e406419560cc851a1c90a0e07258e"
+  }
+}

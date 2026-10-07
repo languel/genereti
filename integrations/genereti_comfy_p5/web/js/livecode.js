@@ -13,8 +13,8 @@ import {publishLive} from './live-runtime.js';
 import {routePreviewShortcut} from '../../genereti_comfy_stream/js/preview-shortcuts.js';
 import {previewControls} from '../../genereti_comfy_stream/js/preview-controls.js';
 import {SETTINGS_GLYPH,ensureControlStyle} from './control-style.js';
-import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=dcd1a516d19e50e7';
-const LIBRARY_VERSION='dcd1a516d19e50e7';
+import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=b6ff352abf50e6b1';
+const LIBRARY_VERSION='b6ff352abf50e6b1';
 ensureControlStyle();
 if(!document.getElementById('genereti-livecode-style')){const style=document.createElement('style');style.id='genereti-livecode-style';style.textContent=`
 .genereti-livecode-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:4px;position:relative;flex-shrink:0}

@@ -14,3 +14,7 @@ See [installation and distribution instructions](https://github.com/languel/gene
 for Desktop/Portable paths, upgrades, example installation and current limitations.
 
 Three guided Livecode examples cover connected shader buffers/history, a two-sketch p5 image pipeline and sound analysis driving an interactive p5 display. Each includes Hint/Do it and exportable lesson source.
+
+- MIT for Genereti-authored code, full browser dependency notices and p5 LGPL source delivery.
+- Public build omits embedded Strudel; saved patterns remain editable for external use.
+- Publisher `liuboto` configured; Registry publication remains manual.

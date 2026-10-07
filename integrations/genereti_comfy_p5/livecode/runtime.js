@@ -3,11 +3,7 @@ import {resizeP5} from './render-sizing.js';
 import {firstPaintFallback} from './first-paint.js';
 import {parseParameters,parameterValues,prepareParameterSource} from '../web/js/code-parameters.js';
 import * as THREE from 'three';
-import {initStrudel,hush} from '@strudel/web';
-import {evalScope,Pattern,pure,isPattern} from '@strudel/core';
-import {Drawer,cleanupDraw} from '@strudel/draw';
-import {slider,sliderWithID} from '@strudel/codemirror';
-import {createEditor,appearanceValues} from './editor.js';
+import {appearanceValues} from './editor.js';
 import {domSurface} from './dom-capture.js';
 import {markdownWithMath,formula,katex,ensureMathStyle,renderHtmlMath} from './math.js';
 import mathCss from 'genereti:math-css';
@@ -16,12 +12,11 @@ import {manimRuntime} from './manim-runtime.js';
 import {compositionClock} from './composition-clock.js';
 import DOMPurify from 'dompurify';
 import {glslSource} from './glsl-source.js';
-import {getAudioContext} from 'superdough';
 
 const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
 const send=(type,extra={})=>parent.postMessage({type,...extra},'*',extra.bitmap?[extra.bitmap]:[]);
-let appearance={},strudelEditor=null,strudelRoot=null,strudelDrawer=null,strudelCanvas=null,strudelRepl=null,strudelMeta=null,strudelDrawerRunning=false;
-let strudelInit=null,newestRevision=0,compileQueue=Promise.resolve();
+let appearance={};
+let newestRevision=0,compileQueue=Promise.resolve();
 let responsiveDisplay=false;
 let render={width:512,height:512},lastSize='';
 let active=null,candidate=null,users=false,pending=false,raf=0,startTime=performance.now();
@@ -104,31 +99,7 @@ async function compile(mode,source,revision,values={}){
    if(mode==='html'||mode==='hyperframes'){renderHtmlMath(root);const background=getComputedStyle(document.body).backgroundColor;if(getComputedStyle(root).backgroundColor==='rgba(0, 0, 0, 0)'&&background!=='rgba(0, 0, 0, 0)')root.style.backgroundColor=background;}
    fitDom();applyAppearance();runtime.canvas=await runtime.surface(true);send('ready',{source:originalSource,revision,width:active.canvas.width,height:active.canvas.height});
   }else if(mode==='strudel'){
-   if(!strudelInit){
-    strudelRoot=document.createElement('main');strudelRoot.style.cssText=`width:${render.width}px;height:${render.height}px;overflow:auto;flex-shrink:0`;
-    strudelCanvas=canvas.cloneNode();strudelCanvas.width=render.width;strudelCanvas.height=200;strudelCanvas.id='test-canvas';strudelCanvas.style.cssText=`width:${render.width}px;height:200px`;
-    const editorHost=document.createElement('div');strudelRoot.append(editorHost,strudelCanvas);
-    strudelEditor=createEditor(editorHost,source,'strudel',code=>send('draft',{source:code}),()=>{const code=strudelEditor.state.doc.toString();newestRevision++;compileQueue=compileQueue.then(()=>compile('strudel',code,newestRevision));},appearance);
-    strudelEditor.dom.style.height=Math.max(64,render.height-200)+'px';
-    strudelInit=initStrudel({onEvalError:error=>{throw error;},afterEval:({meta})=>{strudelMeta=meta;strudelEditor.setStrudelVisuals(meta);},onToggle:started=>{if(started&&!strudelDrawerRunning&&strudelDrawer){strudelDrawer.start(strudelRepl.scheduler);strudelDrawerRunning=true;}else if(!started){strudelDrawer?.stop();strudelDrawerRunning=false;}}}).then(async repl=>{
-     strudelRepl=repl;
-     // Preserve raw CSS instead of interpreting it as mini notation (Underscores).
-     const markcss=(value,pattern)=>{const control=pure({markcss:String(value??'')});return isPattern(pattern)?pattern.set(control):control;};
-     Pattern.prototype.markcss=function(value){return markcss(value,this);};
-     await evalScope({slider,sliderWithID,markcss,__:bridge,inputImage:inputCanvas});
-     strudelDrawer=new Drawer((haps,time,_,painters)=>{strudelEditor?.setStrudelVisuals(null,haps.filter(h=>h.isActive(time)),time);const ctx=strudelCanvas.getContext('2d');const p=appearanceValues(appearance);ctx.fillStyle=p.background;ctx.fillRect(0,0,strudelCanvas.width,strudelCanvas.height);painters?.forEach(paint=>paint(ctx,time,haps,[-2,2]));},[-2,2]);
-     return repl;
-    });
-   }
-   await strudelInit;if(revision!==newestRevision)return;
-   // Native REPL compiles labels/all/each before replacing the scheduler pattern.
-   await strudelRepl.evaluate(source);if(revision!==newestRevision)return;
-   if(strudelEditor.state.doc.toString()!==source)strudelEditor.dispatch({changes:{from:0,to:strudelEditor.state.doc.length,insert:source}});
-   if(!strudelDrawerRunning){strudelDrawer.start(strudelRepl.scheduler);strudelDrawerRunning=true;}
-   const old=active;active={audio:true,root:strudelRoot,canvas:old?.canvas||canvas.cloneNode(),surface:domSurface(strudelRoot,render),dispose(){strudelDrawer?.stop();strudelDrawerRunning=false;strudelRepl?.stop();try{cleanupDraw(false);}catch{}strudelEditor?.destroy();}};
-   document.body.replaceChildren(strudelRoot);fitDom();applyAppearance();if(getAudioContext().state!=='running')document.body.append(audioButton);
-   active.canvas=await active.surface(true);send('ready',{source:originalSource,revision,width:active.canvas.width,height:active.canvas.height});send('audio-state',{state:getAudioContext().state});
-
+   throw Error('Embedded Strudel is not included in the MIT distribution. Your code is preserved: copy it to strudel.cc or a separately installed Strudel REPL. See docs/strudel-external.md.');
   }else throw Error(`Unsupported Livecode language: ${mode}`);
  }catch(error){diagnostic(error);}
 }
@@ -157,8 +128,7 @@ window.addEventListener('message',async e=>{if(e.source!==parent)return;const d=
  if(d.type==='dispose'){users=false;cancelAnimationFrame(raf);dispose(active);dispose(candidate);active=null;candidate=null;}
  if(d.type==='stop')stopRuntime();
 });
-const audioButton=document.createElement('button');audioButton.textContent='Enable audio';audioButton.onclick=async()=>{try{await getAudioContext().resume();audioButton.remove();send('audio-state',{state:getAudioContext().state});}catch(error){diagnostic(error);}};
-function stopRuntime(){users=false;cancelAnimationFrame(raf);const frozen=document.createElement('canvas');if(active?.canvas){frozen.width=active.canvas.width;frozen.height=active.canvas.height;frozen.getContext('2d').drawImage(active.canvas,0,0);}dispose(active);active={canvas:frozen};strudelInit=null;strudelEditor=null;strudelRoot=null;document.body.replaceChildren(frozen);send('stopped');}
+function stopRuntime(){users=false;cancelAnimationFrame(raf);const frozen=document.createElement('canvas');if(active?.canvas){frozen.width=active.canvas.width;frozen.height=active.canvas.height;frozen.getContext('2d').drawImage(active.canvas,0,0);}dispose(active);active={canvas:frozen};document.body.replaceChildren(frozen);send('stopped');}
 window.addEventListener('keydown',event=>{if(event.isComposing)return;if(parent!==window&&!event.repeat&&(event.metaKey||event.ctrlKey)&&!event.altKey&&['BracketLeft','BracketRight'].includes(event.code)&&!event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')){event.preventDefault();event.stopImmediatePropagation();send('preview-shortcut',{code:event.code,key:event.key,metaKey:event.metaKey,ctrlKey:event.ctrlKey,shiftKey:event.shiftKey});return;}if(parent!==window&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&!event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')&&event.altKey&&((!event.shiftKey&&event.code==='KeyP')||(event.shiftKey&&['KeyZ','KeyI','KeyO'].includes(event.code)))){send('preview-shortcut',{code:event.code,key:event.key,altKey:event.altKey,shiftKey:event.shiftKey});return;}if(parent!==window&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&!event.shiftKey&&!event.target?.closest?.('input,textarea,select,[contenteditable],.cm-editor,.monaco-editor')&&((!event.altKey&&event.code==='KeyD')||(event.altKey&&(event.code==='KeyW'||event.code==='KeyF'||event.code==='KeyO'))||(!event.altKey&&event.key==='Escape'))){send('preview-shortcut',{code:event.code,key:event.key,altKey:event.altKey});return;}if(event.altKey&&event.shiftKey&&event.key==='ArrowRight'){event.preventDefault();active?.next?.();return;}if((event.ctrlKey||event.metaKey)&&event.key==='Enter'){event.preventDefault();event.stopImmediatePropagation();if(parent!==window)send('request-run');else{const d=window.__GENERETI_STANDALONE__;newestRevision++;raf=requestAnimationFrame(tick);compile(d.mode,d.source,newestRevision);}}else if((event.ctrlKey||event.metaKey)&&(event.key==='.'||event.code==='Period')){event.preventDefault();event.stopImmediatePropagation();stopRuntime();}},true);
 // Embedded preview pinches belong to Comfy's graph. Ordinary wheel scrolling
 // remains available to HTML/Markdown/interactive renderers and standalone exports.
@@ -171,6 +141,6 @@ function fitDom(){if(active?.root){const root=active.root;root.style.transform=r
 function resizeRender(size){render={...render,...size};bridge.render=render;window.windowWidth=render.width;window.windowHeight=render.height;try{active?.resize?.(render);}catch(error){diagnostic(error);}fitDom();}
 let standaloneResize;
 window.addEventListener('resize',()=>{const d=window.__GENERETI_STANDALONE__;if(d?.render?.sizing==='output'){const size={width:innerWidth,height:innerHeight};if(active?.resize)resizeRender(size);else{clearTimeout(standaloneResize);standaloneResize=setTimeout(()=>{render={...render,...size};compile(d.mode,d.source,++newestRevision,bridge.params);},150);}}else fitDom();});
-function applyAppearance(){const p=appearanceValues(appearance);strudelEditor?.setAppearance(appearance);if(strudelRoot){strudelRoot.style.background=p.background;strudelRoot.style.color=p.foreground;}let style=document.getElementById('custom-style');if(!style){style=document.createElement('style');style.id='custom-style';document.head.append(style);}style.textContent=appearance.css||'';}
+function applyAppearance(){let style=document.getElementById('custom-style');if(!style){style=document.createElement('style');style.id='custom-style';document.head.append(style);}style.textContent=appearance.css||'';}
 requestAnimationFrame(tick);send('boot');
 if(window.__GENERETI_STANDALONE__){const d=window.__GENERETI_STANDALONE__;appearance=d.appearance||{};render={width:512,height:512,...d.render};if(d.render?.sizing==='output'){render.width=innerWidth;render.height=innerHeight;}newestRevision=1;compile(d.mode,d.source,1,d.parameters);}

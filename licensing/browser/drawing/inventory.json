@@ -1,0 +1,1916 @@
+[
+  {
+    "name": "@babel/runtime",
+    "version": "7.29.7",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@babel-runtime-7.29.7/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/babel/babel.git",
+      "directory": "packages/babel-runtime"
+    }
+  },
+  {
+    "name": "@braintree/sanitize-url",
+    "version": "6.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@braintree-sanitize-url-6.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/braintree/sanitize-url.git"
+    }
+  },
+  {
+    "name": "@braintree/sanitize-url",
+    "version": "7.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@braintree-sanitize-url-7.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/braintree/sanitize-url.git"
+    }
+  },
+  {
+    "name": "@excalidraw/excalidraw",
+    "version": "0.18.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@excalidraw-excalidraw-0.18.1/LICENSE"
+    ],
+    "repository": "https://github.com/excalidraw/excalidraw"
+  },
+  {
+    "name": "@excalidraw/laser-pointer",
+    "version": "1.3.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@excalidraw-laser-pointer-1.3.1/LICENSE"
+    ],
+    "repository": null
+  },
+  {
+    "name": "@excalidraw/markdown-to-text",
+    "version": "0.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@excalidraw-markdown-to-text-0.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/danestves/markdown-to-text.git"
+    }
+  },
+  {
+    "name": "@excalidraw/mermaid-to-excalidraw",
+    "version": "2.2.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@excalidraw-mermaid-to-excalidraw-2.2.2/LICENSE"
+    ],
+    "repository": null
+  },
+  {
+    "name": "@floating-ui/core",
+    "version": "1.8.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@floating-ui-core-1.8.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/floating-ui/floating-ui.git",
+      "directory": "packages/core"
+    }
+  },
+  {
+    "name": "@floating-ui/dom",
+    "version": "1.8.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@floating-ui-dom-1.8.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/floating-ui/floating-ui.git",
+      "directory": "packages/dom"
+    }
+  },
+  {
+    "name": "@floating-ui/react-dom",
+    "version": "2.1.9",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@floating-ui-react-dom-2.1.9/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/floating-ui/floating-ui.git",
+      "directory": "packages/react-dom"
+    }
+  },
+  {
+    "name": "@floating-ui/utils",
+    "version": "0.2.12",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@floating-ui-utils-0.2.12/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/floating-ui/floating-ui.git",
+      "directory": "packages/utils"
+    }
+  },
+  {
+    "name": "@iconify/utils",
+    "version": "3.1.7",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@iconify-utils-3.1.7/license.txt"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/iconify/iconify.git",
+      "directory": "packages/utils"
+    }
+  },
+  {
+    "name": "@mermaid-js/parser",
+    "version": "1.2.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@mermaid-js-parser-1.2.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mermaid-js/mermaid.git",
+      "directory": "packages/parser"
+    }
+  },
+  {
+    "name": "@radix-ui/primitive",
+    "version": "1.1.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-primitive-1.1.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/primitive",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-primitive-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/primitive",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-primitive-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-arrow",
+    "version": "1.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-arrow-1.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-collection",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-collection-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-compose-refs",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-compose-refs-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-compose-refs",
+    "version": "1.1.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-compose-refs-1.1.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-compose-refs",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-compose-refs-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-compose-refs",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-compose-refs-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-context",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-context-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-context",
+    "version": "1.1.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-context-1.1.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-context",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-context-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-context",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-context-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-direction",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-direction-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-dismissable-layer",
+    "version": "1.1.5",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-dismissable-layer-1.1.5/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-focus-guards",
+    "version": "1.1.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-focus-guards-1.1.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-focus-scope",
+    "version": "1.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-focus-scope-1.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-id",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-id-1.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-id",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-id-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-id",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-id-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-popover",
+    "version": "1.1.6",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-popover-1.1.6/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-popper",
+    "version": "1.2.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-popper-1.2.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-portal",
+    "version": "1.1.4",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-portal-1.1.4/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-presence",
+    "version": "1.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-presence-1.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-presence",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-presence-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-primitive",
+    "version": "2.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-primitive-2.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-primitive",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-primitive-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-primitive",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-primitive-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-roving-focus",
+    "version": "1.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-roving-focus-1.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-slot",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-slot-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-slot",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-slot-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-slot",
+    "version": "1.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-slot-1.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-slot",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-slot-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-tabs",
+    "version": "1.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-tabs-1.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-callback-ref",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-callback-ref-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-callback-ref",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-callback-ref-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-callback-ref",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-callback-ref-1.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-controllable-state",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-controllable-state-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-controllable-state",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-controllable-state-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-controllable-state",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-controllable-state-1.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-escape-keydown",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-escape-keydown-1.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-layout-effect",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-layout-effect-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-layout-effect",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-layout-effect-1.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-layout-effect",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-layout-effect-1.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@radix-ui/react-use-size",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@radix-ui-react-use-size-1.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/radix-ui/primitives.git"
+    }
+  },
+  {
+    "name": "@upsetjs/venn.js",
+    "version": "2.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/@upsetjs-venn.js-2.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/upsetjs/venn.js.git"
+    }
+  },
+  {
+    "name": "aria-hidden",
+    "version": "1.2.6",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/aria-hidden-1.2.6/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/theKashey/aria-hidden.git"
+    }
+  },
+  {
+    "name": "browser-fs-access",
+    "version": "0.29.1",
+    "license": "Apache-2.0",
+    "notices": [
+      "licensing/browser/drawing/browser-fs-access-0.29.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/GoogleChromeLabs/browser-fs-access.git"
+    }
+  },
+  {
+    "name": "canvas-roundrect-polyfill",
+    "version": "0.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/canvas-roundrect-polyfill-0.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/Kaiido/roundRect.git"
+    }
+  },
+  {
+    "name": "clsx",
+    "version": "1.1.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/clsx-1.1.1/license"
+    ],
+    "repository": "lukeed/clsx"
+  },
+  {
+    "name": "cose-base",
+    "version": "1.0.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/cose-base-1.0.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/cose-base.git"
+    }
+  },
+  {
+    "name": "cose-base",
+    "version": "2.2.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/cose-base-2.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/cose-base.git"
+    }
+  },
+  {
+    "name": "crc-32",
+    "version": "0.3.0",
+    "license": "Apache-2.0",
+    "notices": [
+      "licensing/browser/drawing/crc-32-0.3.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/SheetJS/js-crc32.git"
+    }
+  },
+  {
+    "name": "cytoscape",
+    "version": "3.34.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/cytoscape-3.34.3/LICENSE",
+      "licensing/browser/drawing/cytoscape-3.34.3/license-update.mjs"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/cytoscape/cytoscape.js.git"
+    }
+  },
+  {
+    "name": "cytoscape-cose-bilkent",
+    "version": "4.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/cytoscape-cose-bilkent-4.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/cytoscape/cytoscape.js-cose-bilkent.git"
+    }
+  },
+  {
+    "name": "cytoscape-fcose",
+    "version": "2.2.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/cytoscape-fcose-2.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/iVis-at-Bilkent/cytoscape.js-fcose.git"
+    }
+  },
+  {
+    "name": "d3",
+    "version": "7.9.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-7.9.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3.git"
+    }
+  },
+  {
+    "name": "d3-array",
+    "version": "3.2.4",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-array-3.2.4/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-array.git"
+    }
+  },
+  {
+    "name": "d3-array",
+    "version": "2.12.1",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/drawing/d3-array-2.12.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-array.git"
+    }
+  },
+  {
+    "name": "d3-axis",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-axis-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-axis.git"
+    }
+  },
+  {
+    "name": "d3-brush",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-brush-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-brush.git"
+    }
+  },
+  {
+    "name": "d3-chord",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-chord-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-chord.git"
+    }
+  },
+  {
+    "name": "d3-color",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-color-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-color.git"
+    }
+  },
+  {
+    "name": "d3-contour",
+    "version": "4.0.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-contour-4.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-contour.git"
+    }
+  },
+  {
+    "name": "d3-delaunay",
+    "version": "6.0.4",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-delaunay-6.0.4/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-delaunay.git"
+    }
+  },
+  {
+    "name": "d3-dispatch",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-dispatch-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-dispatch.git"
+    }
+  },
+  {
+    "name": "d3-drag",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-drag-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-drag.git"
+    }
+  },
+  {
+    "name": "d3-dsv",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-dsv-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-dsv.git"
+    }
+  },
+  {
+    "name": "d3-ease",
+    "version": "3.0.1",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/drawing/d3-ease-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-ease.git"
+    }
+  },
+  {
+    "name": "d3-fetch",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-fetch-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-fetch.git"
+    }
+  },
+  {
+    "name": "d3-force",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-force-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-force.git"
+    }
+  },
+  {
+    "name": "d3-format",
+    "version": "3.1.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-format-3.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-format.git"
+    }
+  },
+  {
+    "name": "d3-geo",
+    "version": "3.1.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-geo-3.1.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-geo.git"
+    }
+  },
+  {
+    "name": "d3-hierarchy",
+    "version": "3.1.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-hierarchy-3.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-hierarchy.git"
+    }
+  },
+  {
+    "name": "d3-interpolate",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-interpolate-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-interpolate.git"
+    }
+  },
+  {
+    "name": "d3-path",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-path-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-path.git"
+    }
+  },
+  {
+    "name": "d3-path",
+    "version": "1.0.9",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/drawing/d3-path-1.0.9/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-path.git"
+    }
+  },
+  {
+    "name": "d3-polygon",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-polygon-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-polygon.git"
+    }
+  },
+  {
+    "name": "d3-quadtree",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-quadtree-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-quadtree.git"
+    }
+  },
+  {
+    "name": "d3-random",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-random-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-random.git"
+    }
+  },
+  {
+    "name": "d3-sankey",
+    "version": "0.12.3",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/drawing/d3-sankey-0.12.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-sankey.git"
+    }
+  },
+  {
+    "name": "d3-scale",
+    "version": "4.0.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-scale-4.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-scale.git"
+    }
+  },
+  {
+    "name": "d3-scale-chromatic",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-scale-chromatic-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-scale-chromatic.git"
+    }
+  },
+  {
+    "name": "d3-selection",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-selection-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-selection.git"
+    }
+  },
+  {
+    "name": "d3-shape",
+    "version": "1.3.7",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/drawing/d3-shape-1.3.7/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-shape.git"
+    }
+  },
+  {
+    "name": "d3-shape",
+    "version": "3.2.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-shape-3.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-shape.git"
+    }
+  },
+  {
+    "name": "d3-time",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-time-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-time.git"
+    }
+  },
+  {
+    "name": "d3-time-format",
+    "version": "4.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-time-format-4.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-time-format.git"
+    }
+  },
+  {
+    "name": "d3-timer",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-timer-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-timer.git"
+    }
+  },
+  {
+    "name": "d3-transition",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-transition-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-transition.git"
+    }
+  },
+  {
+    "name": "d3-zoom",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/d3-zoom-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-zoom.git"
+    }
+  },
+  {
+    "name": "dagre-d3-es",
+    "version": "7.0.14",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/dagre-d3-es-7.0.14/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/tbo47/dagre-es.git"
+    }
+  },
+  {
+    "name": "dayjs",
+    "version": "1.11.23",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/dayjs-1.11.23/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/iamkun/dayjs.git"
+    }
+  },
+  {
+    "name": "delaunator",
+    "version": "5.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/delaunator-5.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mapbox/delaunator.git"
+    }
+  },
+  {
+    "name": "detect-node-es",
+    "version": "1.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/detect-node-es-1.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/thekashey/detect-node"
+    }
+  },
+  {
+    "name": "dompurify",
+    "version": "3.3.3",
+    "license": "(MPL-2.0 OR Apache-2.0)",
+    "notices": [
+      "licensing/browser/drawing/dompurify-3.3.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/cure53/DOMPurify.git"
+    }
+  },
+  {
+    "name": "es-toolkit",
+    "version": "1.52.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/es-toolkit-1.52.0/LICENSE",
+      "licensing/browser/drawing/es-toolkit-1.52.0/NOTICE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/toss/es-toolkit.git"
+    }
+  },
+  {
+    "name": "es6-promise-pool",
+    "version": "2.5.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/es6-promise-pool-2.5.0/LICENSE"
+    ],
+    "repository": "timdp/es6-promise-pool"
+  },
+  {
+    "name": "fastdom",
+    "version": "1.0.12",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/fastdom-1.0.12/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/wilsonpage/fastdom.git"
+    }
+  },
+  {
+    "name": "fractional-indexing",
+    "version": "3.2.0",
+    "license": "CC0-1.0",
+    "notices": [
+      "licensing/browser/drawing/fractional-indexing-3.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/rocicorp/fractional-indexing.git"
+    }
+  },
+  {
+    "name": "fuzzy",
+    "version": "0.1.3",
+    "license": [
+      {
+        "type": "MIT",
+        "url": "https://github.com/mattyork/fuzzy/blob/master/LICENSE-MIT"
+      }
+    ],
+    "notices": [
+      "licensing/browser/drawing/fuzzy-0.1.3/LICENSE-MIT"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/mattyork/fuzzy.git"
+    }
+  },
+  {
+    "name": "get-nonce",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/get-nonce-1.0.1/LICENSE"
+    ],
+    "repository": "git@github.com:theKashey/get-nonce.git"
+  },
+  {
+    "name": "hachure-fill",
+    "version": "0.5.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/hachure-fill-0.5.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/hachure-fill.git"
+    }
+  },
+  {
+    "name": "image-blob-reduce",
+    "version": "3.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/image-blob-reduce-3.0.1/LICENSE"
+    ],
+    "repository": "nodeca/image-blob-reduce"
+  },
+  {
+    "name": "internmap",
+    "version": "1.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/internmap-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mbostock/internmap.git"
+    }
+  },
+  {
+    "name": "internmap",
+    "version": "2.0.3",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/drawing/internmap-2.0.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mbostock/internmap.git"
+    }
+  },
+  {
+    "name": "jotai",
+    "version": "2.11.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/jotai-2.11.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pmndrs/jotai.git"
+    }
+  },
+  {
+    "name": "jotai-scope",
+    "version": "0.7.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/jotai-scope-0.7.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jotaijs/jotai-scope.git"
+    }
+  },
+  {
+    "name": "katex",
+    "version": "0.16.47",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/katex-0.16.47/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/KaTeX/KaTeX.git"
+    }
+  },
+  {
+    "name": "khroma",
+    "version": "2.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/khroma-2.1.0/license"
+    ],
+    "repository": "github:fabiospampinato/khroma"
+  },
+  {
+    "name": "layout-base",
+    "version": "2.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/layout-base-2.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/layout-base.git"
+    }
+  },
+  {
+    "name": "layout-base",
+    "version": "1.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/layout-base-1.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/layout-base.git"
+    }
+  },
+  {
+    "name": "lodash-es",
+    "version": "4.18.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/lodash-es-4.18.1/LICENSE"
+    ],
+    "repository": "lodash/lodash"
+  },
+  {
+    "name": "lodash.debounce",
+    "version": "4.0.8",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/lodash.debounce-4.0.8/LICENSE"
+    ],
+    "repository": "lodash/lodash"
+  },
+  {
+    "name": "lodash.throttle",
+    "version": "4.1.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/lodash.throttle-4.1.1/LICENSE"
+    ],
+    "repository": "lodash/lodash"
+  },
+  {
+    "name": "marked",
+    "version": "16.4.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/marked-16.4.2/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/markedjs/marked.git"
+    }
+  },
+  {
+    "name": "mermaid",
+    "version": "11.17.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/mermaid-11.17.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mermaid-js/mermaid"
+    }
+  },
+  {
+    "name": "nanoid",
+    "version": "5.1.16",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/nanoid-5.1.16/LICENSE"
+    ],
+    "repository": "ai/nanoid"
+  },
+  {
+    "name": "nanoid",
+    "version": "3.3.18",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/nanoid-3.3.18/LICENSE"
+    ],
+    "repository": "ai/nanoid"
+  },
+  {
+    "name": "open-color",
+    "version": "1.9.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/open-color-1.9.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/yeun/open-color.git"
+    }
+  },
+  {
+    "name": "pako",
+    "version": "2.0.3",
+    "license": "(MIT AND Zlib)",
+    "notices": [
+      "licensing/browser/drawing/pako-2.0.3/LICENSE"
+    ],
+    "repository": "nodeca/pako"
+  },
+  {
+    "name": "path-data-parser",
+    "version": "0.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/path-data-parser-0.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/path-data-parser.git"
+    }
+  },
+  {
+    "name": "perfect-freehand",
+    "version": "1.2.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/perfect-freehand-1.2.0/LICENSE"
+    ],
+    "repository": "https://github.com/steveruizok/perfect-freehand"
+  },
+  {
+    "name": "pica",
+    "version": "7.1.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/pica-7.1.1/LICENSE"
+    ],
+    "repository": "nodeca/pica"
+  },
+  {
+    "name": "png-chunk-text",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/png-chunk-text-1.0.0/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/hughsk/png-chunk-text.git"
+    }
+  },
+  {
+    "name": "png-chunks-encode",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/png-chunks-encode-1.0.0/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/hughsk/png-chunks-encode.git"
+    }
+  },
+  {
+    "name": "png-chunks-extract",
+    "version": "1.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/png-chunks-extract-1.0.0/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/hughsk/png-chunks-extract.git"
+    }
+  },
+  {
+    "name": "points-on-curve",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/points-on-curve-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/bezier-points.git"
+    }
+  },
+  {
+    "name": "points-on-curve",
+    "version": "0.2.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/points-on-curve-0.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/bezier-points.git"
+    }
+  },
+  {
+    "name": "points-on-curve",
+    "version": "0.2.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/points-on-curve-0.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/bezier-points.git"
+    }
+  },
+  {
+    "name": "points-on-path",
+    "version": "0.2.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/points-on-path-0.2.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/points-on-path.git"
+    }
+  },
+  {
+    "name": "react",
+    "version": "18.3.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/react-18.3.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/react"
+    }
+  },
+  {
+    "name": "react-dom",
+    "version": "18.3.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/react-dom-18.3.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/react-dom"
+    }
+  },
+  {
+    "name": "react-remove-scroll",
+    "version": "2.7.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/react-remove-scroll-2.7.2/LICENSE"
+    ],
+    "repository": "https://github.com/theKashey/react-remove-scroll"
+  },
+  {
+    "name": "react-remove-scroll-bar",
+    "version": "2.3.8",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/react-remove-scroll-bar-2.3.8/LICENSE"
+    ],
+    "repository": "https://github.com/theKashey/react-remove-scroll-bar"
+  },
+  {
+    "name": "react-style-singleton",
+    "version": "2.2.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/react-style-singleton-2.2.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/theKashey/react-style-singleton"
+    }
+  },
+  {
+    "name": "robust-predicates",
+    "version": "3.0.3",
+    "license": "Unlicense",
+    "notices": [
+      "licensing/browser/drawing/robust-predicates-3.0.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mourner/robust-predicates.git"
+    }
+  },
+  {
+    "name": "roughjs",
+    "version": "4.6.6",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/roughjs-4.6.6/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/rough.git"
+    }
+  },
+  {
+    "name": "roughjs",
+    "version": "4.6.4",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/roughjs-4.6.4/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/rough.git"
+    }
+  },
+  {
+    "name": "scheduler",
+    "version": "0.23.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/scheduler-0.23.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/scheduler"
+    }
+  },
+  {
+    "name": "sliced",
+    "version": "1.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/sliced-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/aheckmann/sliced"
+    }
+  },
+  {
+    "name": "stylis",
+    "version": "4.4.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/stylis-4.4.0/LICENSE"
+    ],
+    "repository": "https://github.com/thysultan/stylis.js"
+  },
+  {
+    "name": "ts-dedent",
+    "version": "2.3.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/ts-dedent-2.3.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/tamino-martinius/node-ts-dedent.git"
+    }
+  },
+  {
+    "name": "tslib",
+    "version": "2.8.1",
+    "license": "0BSD",
+    "notices": [
+      "licensing/browser/drawing/tslib-2.8.1/LICENSE.txt"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Microsoft/tslib.git"
+    }
+  },
+  {
+    "name": "tunnel-rat",
+    "version": "0.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/tunnel-rat-0.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pmndrs/tunnel-rat.git"
+    }
+  },
+  {
+    "name": "use-callback-ref",
+    "version": "1.3.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/use-callback-ref-1.3.3/LICENSE"
+    ],
+    "repository": "https://github.com/theKashey/use-callback-ref/"
+  },
+  {
+    "name": "use-sidecar",
+    "version": "1.1.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/use-sidecar-1.1.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/theKashey/use-sidecar"
+    }
+  },
+  {
+    "name": "use-sync-external-store",
+    "version": "1.7.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/use-sync-external-store-1.7.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/react/react.git",
+      "directory": "packages/use-sync-external-store"
+    }
+  },
+  {
+    "name": "uuid",
+    "version": "14.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/uuid-14.0.2/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/uuidjs/uuid.git"
+    }
+  },
+  {
+    "name": "zustand",
+    "version": "4.5.7",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/drawing/zustand-4.5.7/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pmndrs/zustand.git"
+    }
+  }
+]

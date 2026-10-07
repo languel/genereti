@@ -20,6 +20,8 @@
 !/scripts/build_livecode.mjs
 !/scripts/build_performance.mjs
 !/scripts/build_livecode_lessons.py
+!/licensing/
+!/scripts/browser_licenses.mjs
 !/docs/
 !/editor/
 !/web/

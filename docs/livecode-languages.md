@@ -13,7 +13,7 @@ code parameters create typed sockets beside their local default widgets.
 | `three` | `THREE`, `scene`, `camera`, `renderer`, `tick(seconds)`, `inputTexture` | Three.js canvas |
 | `tixy` | Expression, function, or body over `(t,i,x,y,__)`; Math names such as `sin` are available | Positive/negative circles; transparent by default |
 | `playcore` | Export `settings`, `main(coord,context,cursor,buffer,__)`; optional `boot`, `pre`, `post`, pointer callbacks | Canvas character grid |
-| `strudel` | Native browser REPL, patterns and inline visual widgets | Browser sound and visual IMAGE; no Comfy AUDIO tensor |
+| `strudel` | Legacy editable source; external runtime only | Embedded engine omitted from MIT distribution; see [external Strudel](strudel-external.md) |
 | `manim` | JavaScript `manim-web`: `scene`, API classes, `__`, async animations and `cue(label)` | Transparent animated canvas |
 | `markdown` | Markdown with inline/display math; sanitized HTML; `![Input](inputImage)` | Document snapshot |
 | `latex` | A bare LaTeX formula, without `$` wrappers | Centered KaTeX formula on transparency |

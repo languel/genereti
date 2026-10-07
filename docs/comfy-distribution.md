@@ -115,8 +115,7 @@ is still an alternative for work on the full source checkout.
 
 `pyproject.toml` holds the metadata: initial version **0.1.0**, registry ID candidate
 **genereti**, display name **ꘇ Genereti · OpenTouch**. Registry name availability
-has not been claimed or verified. The publisher ID is deliberately blank until
-the actual account is created.
+has not been claimed or verified. The registered publisher ID is **liuboto**.
 
 `distribution/manifest.json` is the student archive allowlist. `.comfyignore`
 selects the same files for registry archives; a test compares both selections.
@@ -134,8 +133,9 @@ python scripts/build_comfy_package.py        # local preview; no upload
 This writes a ZIP, SHA256 checksum and manifest under ignored
 `artifacts/comfy-package/`. Preview builds record uncommitted changes with
 `sourceDirty`. Release builds require a chosen license and committed sources.
-Choose/commit the license before a public release; bundled libraries retain their
-licenses, including Strudel's AGPL notices.
+Genereti-authored code is MIT; bundled libraries retain their licenses. See
+[licensing](../licensing/README.md) for p5 source delivery, dependency notices and
+external Strudel use.
 
 | GitHub Actions workflow | Result |
 | --- | --- |
@@ -155,10 +155,10 @@ Comfy backend.
 Follow the [official publishing guide](https://docs.comfy.org/registry/publishing)
 and [metadata specification](https://docs.comfy.org/registry/specifications):
 
-1. Confirm the project license and package name before first publication. Registry
-   ID and publisher ID are permanent identities.
-2. Create a publisher at **registry.comfy.org**. Set its actual ID in
-   `[tool.comfy].PublisherId` and commit; do not assume it matches your GitHub name.
+1. The MIT license and publisher `liuboto` are configured. Confirm package name
+   availability before first publication; registry identities are permanent.
+2. Publisher **liuboto** is configured in `[tool.comfy].PublisherId`. Keep that
+   immutable ID when updating the package.
 3. Add its API key as repository secret **REGISTRY_ACCESS_TOKEN**. Never commit it
    or put it in an example. Icon/banner metadata can be added later.
 4. Run `python scripts/build_comfy_package.py --check-registry`. This validates
@@ -169,8 +169,8 @@ and [metadata specification](https://docs.comfy.org/registry/specifications):
 5. Run the manual **Publish to Comfy Registry** action. After acceptance, students
    can install the published ID through Comfy's registry/Manager.
 
-No registry account, token or publication is created by this setup. The initial
-classroom install remains Git/ZIP. [Challenge preparation](comfy-challenge.md)
+The publisher account and GitHub secret have been configured by the maintainer.
+No Registry publication has been performed. The initial classroom install remains Git/ZIP. [Challenge preparation](comfy-challenge.md)
 records the separate submission requirements.
 
 ```sh

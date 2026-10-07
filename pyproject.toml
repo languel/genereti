@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Live creative tools for ComfyUI: code, drawing, OpenTouch TOP/CHOP/DAT operators, Web Audio, lessons and performance timelines."
 requires-python = ">=3.11"
 dependencies = ["comfyui-frontend-package>=1.53.6"]
-# Add the chosen project license before public release. Bundled notices remain.
+license = { file = "LICENSE" }
 
 [project.urls]
 Repository = "https://github.com/languel/genereti"
@@ -12,7 +12,6 @@ Documentation = "https://github.com/languel/genereti/blob/main/docs/comfy-distri
 "Bug Tracker" = "https://github.com/languel/genereti/issues"
 
 [tool.comfy]
-# Fill in the actual immutable ID after creating a publisher at registry.comfy.org.
-PublisherId = ""
+PublisherId = "liuboto"
 DisplayName = "ꘇ Genereti · OpenTouch"
 requires-comfyui = ">=0.38.2"

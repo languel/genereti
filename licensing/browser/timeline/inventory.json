@@ -1,0 +1,41 @@
+[
+  {
+    "name": "react",
+    "version": "18.3.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/timeline/react-18.3.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/react"
+    }
+  },
+  {
+    "name": "react-dom",
+    "version": "18.3.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/timeline/react-dom-18.3.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/react-dom"
+    }
+  },
+  {
+    "name": "scheduler",
+    "version": "0.23.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/timeline/scheduler-0.23.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/facebook/react.git",
+      "directory": "packages/scheduler"
+    }
+  }
+]
