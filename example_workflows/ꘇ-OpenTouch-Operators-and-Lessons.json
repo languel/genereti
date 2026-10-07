@@ -1,0 +1,4593 @@
+{
+  "revision": 0,
+  "last_node_id": 49,
+  "last_link_id": 38,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiTextureExpression",
+      "pos": [
+        -150.18194580078125,
+        -146.90162658691406
+      ],
+      "size": [
+        380,
+        614
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            1,
+            8,
+            10,
+            32,
+            34
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureExpression",
+        "genereti_widget_values": {
+          "expression": "0.5 + 0.5*sin(t + x*8)*cos(y*12)",
+          "width": 256,
+          "height": 256,
+          "time": 0
+        }
+      },
+      "widgets_values": [
+        "0.5 + 0.5*sin(t + x*8)*cos(y*12)",
+        256,
+        256,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "expression": "0.5 + 0.5*sin(t + x*8)*cos(y*12)",
+        "width": 256,
+        "height": 256,
+        "time": 0,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiTextureMath",
+      "pos": [
+        440,
+        0
+      ],
+      "size": [
+        380,
+        408
+      ],
+      "flags": {},
+      "order": 41,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "localized_name": "operand",
+          "name": "operand",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "widget": {
+            "name": "value"
+          },
+          "link": 14
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureMath",
+        "genereti_widget_values": {
+          "operation": "multiply",
+          "value": 1
+        }
+      },
+      "widgets_values": [
+        "multiply",
+        1,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "operation": "multiply",
+        "value": 1,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiTextureFilter",
+      "pos": [
+        880,
+        0
+      ],
+      "size": [
+        380,
+        388
+      ],
+      "flags": {},
+      "order": 42,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "amount",
+          "name": "amount",
+          "type": "FLOAT",
+          "widget": {
+            "name": "amount"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureFilter",
+        "genereti_widget_values": {
+          "operation": "opacity",
+          "amount": 0.18
+        }
+      },
+      "widgets_values": [
+        "opacity",
+        0.18,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "operation": "opacity",
+        "amount": 0.18,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiTextureFeedback",
+      "pos": [
+        1320,
+        0
+      ],
+      "size": [
+        380,
+        460
+      ],
+      "flags": {},
+      "order": 43,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        },
+        {
+          "localized_name": "decay",
+          "name": "decay",
+          "type": "FLOAT",
+          "widget": {
+            "name": "decay"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "translate_x",
+          "name": "translate_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "translate_y",
+          "name": "translate_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_y"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "scale",
+          "name": "scale",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "rotate",
+          "name": "rotate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "rotate"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureFeedback",
+        "genereti_widget_values": {
+          "decay": 0.96,
+          "translate_x": 0,
+          "translate_y": 0,
+          "scale": 1,
+          "rotate": 0.2
+        }
+      },
+      "widgets_values": [
+        0.96,
+        0,
+        0,
+        1,
+        0.2,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "decay": 0.96,
+        "translate_x": 0,
+        "translate_y": 0,
+        "scale": 1,
+        "rotate": 0.2,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 5,
+      "type": "GeneretiTextureTransform",
+      "pos": [
+        0,
+        740
+      ],
+      "size": [
+        380,
+        484
+      ],
+      "flags": {},
+      "order": 44,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 4
+        },
+        {
+          "localized_name": "translate_x",
+          "name": "translate_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "translate_y",
+          "name": "translate_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_y"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "scale",
+          "name": "scale",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "rotate",
+          "name": "rotate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "rotate"
+          },
+          "link": 12
+        },
+        {
+          "localized_name": "flip_x",
+          "name": "flip_x",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "flip_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "flip_y",
+          "name": "flip_y",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "flip_y"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureTransform",
+        "genereti_widget_values": {
+          "translate_x": 0,
+          "translate_y": 0,
+          "scale": 1,
+          "rotate": 0,
+          "flip_x": false,
+          "flip_y": false
+        }
+      },
+      "widgets_values": [
+        0,
+        0,
+        1,
+        0,
+        false,
+        false,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "translate_x": 0,
+        "translate_y": 0,
+        "scale": 1,
+        "rotate": 0,
+        "flip_x": false,
+        "flip_y": false,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 6,
+      "type": "GeneretiTextureCrop",
+      "pos": [
+        440,
+        740
+      ],
+      "size": [
+        380,
+        436
+      ],
+      "flags": {},
+      "order": 45,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 5
+        },
+        {
+          "localized_name": "left",
+          "name": "left",
+          "type": "FLOAT",
+          "widget": {
+            "name": "left"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "top",
+          "name": "top",
+          "type": "FLOAT",
+          "widget": {
+            "name": "top"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "right",
+          "name": "right",
+          "type": "FLOAT",
+          "widget": {
+            "name": "right"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bottom",
+          "name": "bottom",
+          "type": "FLOAT",
+          "widget": {
+            "name": "bottom"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureCrop",
+        "genereti_widget_values": {
+          "left": 0,
+          "top": 0,
+          "right": 1,
+          "bottom": 1
+        }
+      },
+      "widgets_values": [
+        0,
+        0,
+        1,
+        1,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "left": 0,
+        "top": 0,
+        "right": 1,
+        "bottom": 1,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 7,
+      "type": "GeneretiTextureCornerPin",
+      "pos": [
+        880,
+        740
+      ],
+      "size": [
+        380,
+        532
+      ],
+      "flags": {},
+      "order": 46,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 6
+        },
+        {
+          "localized_name": "tl_x",
+          "name": "tl_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "tl_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tl_y",
+          "name": "tl_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "tl_y"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tr_x",
+          "name": "tr_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "tr_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tr_y",
+          "name": "tr_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "tr_y"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "br_x",
+          "name": "br_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "br_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "br_y",
+          "name": "br_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "br_y"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bl_x",
+          "name": "bl_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "bl_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bl_y",
+          "name": "bl_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "bl_y"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureCornerPin",
+        "genereti_widget_values": {
+          "tl_x": 0.1,
+          "tl_y": 0,
+          "tr_x": 1,
+          "tr_y": 0,
+          "br_x": 0.9,
+          "br_y": 1,
+          "bl_x": 0,
+          "bl_y": 1
+        }
+      },
+      "widgets_values": [
+        0.1,
+        0,
+        1,
+        0,
+        0.9,
+        1,
+        0,
+        1,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "tl_x": 0.1,
+        "tl_y": 0,
+        "tr_x": 1,
+        "tr_y": 0,
+        "br_x": 0.9,
+        "br_y": 1,
+        "bl_x": 0,
+        "bl_y": 1,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 8,
+      "type": "GeneretiTextureComposite",
+      "pos": [
+        1320,
+        740
+      ],
+      "size": [
+        380,
+        408
+      ],
+      "flags": {},
+      "order": 47,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 7
+        },
+        {
+          "localized_name": "background",
+          "name": "background",
+          "type": "IMAGE",
+          "link": 8
+        },
+        {
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "opacity",
+          "name": "opacity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "opacity"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureComposite",
+        "genereti_widget_values": {
+          "operation": "over",
+          "opacity": 1
+        }
+      },
+      "widgets_values": [
+        "over",
+        1,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "operation": "over",
+        "opacity": 1,
+        "texture_preview": ""
+      }
+    },
+    {
+      "id": 9,
+      "type": "GeneretiChopOscillator",
+      "pos": [
+        1850,
+        0
+      ],
+      "size": [
+        380,
+        413.875
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "wave",
+          "name": "wave",
+          "type": "COMBO",
+          "widget": {
+            "name": "wave"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "frequency",
+          "name": "frequency",
+          "type": "FLOAT",
+          "widget": {
+            "name": "frequency"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "amplitude",
+          "name": "amplitude",
+          "type": "FLOAT",
+          "widget": {
+            "name": "amplitude"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "offset",
+          "name": "offset",
+          "type": "FLOAT",
+          "widget": {
+            "name": "offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "phase",
+          "name": "phase",
+          "type": "FLOAT",
+          "widget": {
+            "name": "phase"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "INT",
+          "widget": {
+            "name": "channels"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            11,
+            15,
+            19,
+            20,
+            25
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopOscillator",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        "sine",
+        0.2,
+        25,
+        0,
+        0,
+        1,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "wave": "sine",
+        "frequency": 0.2,
+        "amplitude": 25,
+        "offset": 0,
+        "phase": 0,
+        "channels": 1,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 10,
+      "type": "GeneretiChopLag",
+      "pos": [
+        2270,
+        0
+      ],
+      "size": [
+        380,
+        221.875
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 11
+        },
+        {
+          "localized_name": "seconds",
+          "name": "seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "seconds"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopLag",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        0.1,
+        ""
+      ],
+      "widgets_values_named": {
+        "seconds": 0.1,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 11,
+      "type": "GeneretiChopMath",
+      "pos": [
+        2690,
+        0
+      ],
+      "size": [
+        380,
+        293.875
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 15
+        },
+        {
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "widget": {
+            "name": "value"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "low",
+          "name": "low",
+          "type": "FLOAT",
+          "widget": {
+            "name": "low"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "high",
+          "name": "high",
+          "type": "FLOAT",
+          "widget": {
+            "name": "high"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopMath",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        "fit",
+        1,
+        0,
+        1,
+        ""
+      ],
+      "widgets_values_named": {
+        "operation": "fit",
+        "value": 1,
+        "low": 0,
+        "high": 1,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 12,
+      "type": "GeneretiChopExpression",
+      "pos": [
+        3110,
+        0
+      ],
+      "size": [
+        380,
+        495.875
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "shape": 7,
+          "type": "GENERETI_CHOP",
+          "link": null
+        },
+        {
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "INT",
+          "widget": {
+            "name": "channels"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            16,
+            21,
+            23
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopExpression",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        "sin(t*tau)*0.5+0.5",
+        1,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "expression": "sin(t*tau)*0.5+0.5",
+        "channels": 1,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 13,
+      "type": "GeneretiChopConstant",
+      "pos": [
+        1850,
+        650
+      ],
+      "size": [
+        380,
+        317.875
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "widget": {
+            "name": "value"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "INT",
+          "widget": {
+            "name": "channels"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            17,
+            22
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopConstant",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        1,
+        1,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "value": 1,
+        "channels": 1,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 14,
+      "type": "GeneretiChopNoise",
+      "pos": [
+        2270,
+        650
+      ],
+      "size": [
+        380,
+        389.875
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "amplitude",
+          "name": "amplitude",
+          "type": "FLOAT",
+          "widget": {
+            "name": "amplitude"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "offset",
+          "name": "offset",
+          "type": "FLOAT",
+          "widget": {
+            "name": "offset"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "INT",
+          "widget": {
+            "name": "channels"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            18
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopNoise",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        0,
+        "randomize",
+        1,
+        0,
+        1,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "seed": 0,
+        "control_after_generate": "randomize",
+        "amplitude": 1,
+        "offset": 0,
+        "channels": 1,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 15,
+      "type": "GeneretiChopLogic",
+      "pos": [
+        2690,
+        650
+      ],
+      "size": [
+        380,
+        221.875
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 16
+        },
+        {
+          "localized_name": "threshold",
+          "name": "threshold",
+          "type": "FLOAT",
+          "widget": {
+            "name": "threshold"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopLogic",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        0.5,
+        ""
+      ],
+      "widgets_values_named": {
+        "threshold": 0.5,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 16,
+      "type": "GeneretiChopSpeed",
+      "pos": [
+        3110,
+        650
+      ],
+      "size": [
+        380,
+        197.875
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 17
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopSpeed",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 17,
+      "type": "GeneretiChopSlope",
+      "pos": [
+        1850,
+        1100
+      ],
+      "size": [
+        380,
+        197.875
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopSlope",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 18,
+      "type": "GeneretiChopSelect",
+      "pos": [
+        2270,
+        1100
+      ],
+      "size": [
+        380,
+        221.875
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 19
+        },
+        {
+          "localized_name": "pattern",
+          "name": "pattern",
+          "type": "STRING",
+          "widget": {
+            "name": "pattern"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopSelect",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        "*",
+        ""
+      ],
+      "widgets_values_named": {
+        "pattern": "*",
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 19,
+      "type": "GeneretiChopMerge",
+      "pos": [
+        2690,
+        1100
+      ],
+      "size": [
+        380,
+        197.875
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 20
+        },
+        {
+          "localized_name": "other",
+          "name": "other",
+          "type": "GENERETI_CHOP",
+          "link": 21
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopMerge",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 20,
+      "type": "GeneretiDatTable",
+      "pos": [
+        3550,
+        0
+      ],
+      "size": [
+        380,
+        372
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "delimiter",
+          "name": "delimiter",
+          "type": "COMBO",
+          "widget": {
+            "name": "delimiter"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": [
+            13,
+            24,
+            27,
+            28,
+            30,
+            31
+          ]
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatTable"
+      },
+      "widgets_values": [
+        "gain,speed\n0.65,0.25\n0.9,0.6",
+        ",",
+        ""
+      ],
+      "widgets_values_named": {
+        "text": "gain,speed\n0.65,0.25\n0.9,0.6",
+        "delimiter": ",",
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 21,
+      "type": "GeneretiDatCell",
+      "pos": [
+        3970,
+        0
+      ],
+      "size": [
+        380,
+        194
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 13
+        },
+        {
+          "localized_name": "row",
+          "name": "row",
+          "type": "INT",
+          "widget": {
+            "name": "row"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "column",
+          "name": "column",
+          "type": "INT",
+          "widget": {
+            "name": "column"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            14
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatCell"
+      },
+      "widgets_values": [
+        1,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "row": 1,
+        "column": 0,
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 22,
+      "type": "GeneretiDatToChop",
+      "pos": [
+        4390,
+        0
+      ],
+      "size": [
+        380,
+        194
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 24
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "header",
+          "name": "header",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "header"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatToChop"
+      },
+      "widgets_values": [
+        60,
+        true,
+        ""
+      ],
+      "widgets_values_named": {
+        "sample_rate": 60,
+        "header": true,
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 23,
+      "type": "GeneretiDatFromChop",
+      "pos": [
+        3550,
+        620
+      ],
+      "size": [
+        380,
+        146
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 25
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatFromChop"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 24,
+      "type": "GeneretiDatJSON",
+      "pos": [
+        3970,
+        620
+      ],
+      "size": [
+        380,
+        348
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": [
+            26,
+            29
+          ]
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatJSON"
+      },
+      "widgets_values": [
+        "[{\"gain\":0.65,\"speed\":0.25},{\"gain\":0.9,\"speed\":0.6}]",
+        ""
+      ],
+      "widgets_values_named": {
+        "text": "[{\"gain\":0.65,\"speed\":0.25},{\"gain\":0.9,\"speed\":0.6}]",
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 25,
+      "type": "GeneretiDatTranspose",
+      "pos": [
+        4390,
+        620
+      ],
+      "size": [
+        380,
+        146
+      ],
+      "flags": {},
+      "order": 35,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 26
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatTranspose"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 26,
+      "type": "GeneretiDatSelect",
+      "pos": [
+        3550,
+        1080
+      ],
+      "size": [
+        380,
+        218
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 27
+        },
+        {
+          "localized_name": "start",
+          "name": "start",
+          "type": "INT",
+          "widget": {
+            "name": "start"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "count",
+          "name": "count",
+          "type": "INT",
+          "widget": {
+            "name": "count"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "columns",
+          "name": "columns",
+          "type": "STRING",
+          "widget": {
+            "name": "columns"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatSelect"
+      },
+      "widgets_values": [
+        0,
+        100000,
+        "",
+        ""
+      ],
+      "widgets_values_named": {
+        "start": 0,
+        "count": 100000,
+        "columns": "",
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 27,
+      "type": "GeneretiDatMerge",
+      "pos": [
+        3970,
+        1080
+      ],
+      "size": [
+        380,
+        146
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 28
+        },
+        {
+          "localized_name": "other",
+          "name": "other",
+          "type": "GENERETI_DAT",
+          "link": 29
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatMerge"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "widgets_values_named": {
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 28,
+      "type": "GeneretiDatReplace",
+      "pos": [
+        4390,
+        1080
+      ],
+      "size": [
+        380,
+        194
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 30
+        },
+        {
+          "localized_name": "find",
+          "name": "find",
+          "type": "STRING",
+          "widget": {
+            "name": "find"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "replace",
+          "name": "replace",
+          "type": "STRING",
+          "widget": {
+            "name": "replace"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatReplace"
+      },
+      "widgets_values": [
+        "speed",
+        "frequency",
+        ""
+      ],
+      "widgets_values_named": {
+        "find": "speed",
+        "replace": "frequency",
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 29,
+      "type": "GeneretiDatExpression",
+      "pos": [
+        3970,
+        1560
+      ],
+      "size": [
+        380,
+        348
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 31
+        },
+        {
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatExpression"
+      },
+      "widgets_values": [
+        "v*0.5",
+        ""
+      ],
+      "widgets_values_named": {
+        "expression": "v*0.5",
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 30,
+      "type": "GeneretiChopMidiIn",
+      "pos": [
+        1850,
+        1700
+      ],
+      "size": [
+        380,
+        252.89866943359374
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "device",
+          "name": "device",
+          "type": "STRING",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "channel",
+          "name": "channel",
+          "type": "INT",
+          "widget": {
+            "name": "channel"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "title": "ꘇchop.midiin · Connect manually",
+      "properties": {
+        "Node name for S&R": "GeneretiChopMidiIn",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        "",
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "device": "",
+        "channel": 0,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 31,
+      "type": "GeneretiChopMidiOut",
+      "pos": [
+        2270,
+        1700
+      ],
+      "size": [
+        380,
+        302.6969482421875
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 22
+        },
+        {
+          "localized_name": "device",
+          "name": "device",
+          "type": "STRING",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "message",
+          "name": "message",
+          "type": "COMBO",
+          "widget": {
+            "name": "message"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "channel",
+          "name": "channel",
+          "type": "INT",
+          "widget": {
+            "name": "channel"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "number",
+          "name": "number",
+          "type": "INT",
+          "widget": {
+            "name": "number"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "title": "ꘇchop.midiout · Connect manually",
+      "properties": {
+        "Node name for S&R": "GeneretiChopMidiOut",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        "",
+        "cc",
+        1,
+        1,
+        ""
+      ],
+      "widgets_values_named": {
+        "device": "",
+        "message": "cc",
+        "channel": 1,
+        "number": 1,
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 32,
+      "type": "GeneretiChopOscIn",
+      "pos": [
+        2690,
+        1700
+      ],
+      "size": [
+        380,
+        252.1796142578125
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "port",
+          "name": "port",
+          "type": "INT",
+          "widget": {
+            "name": "port"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "address",
+          "name": "address",
+          "type": "STRING",
+          "widget": {
+            "name": "address"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "title": "ꘇchop.oscin · Connect manually",
+      "properties": {
+        "Node name for S&R": "GeneretiChopOscIn",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        9000,
+        "*",
+        ""
+      ],
+      "widgets_values_named": {
+        "port": 9000,
+        "address": "*",
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 33,
+      "type": "GeneretiChopOscOut",
+      "pos": [
+        3110,
+        1700
+      ],
+      "size": [
+        380,
+        253.97789306640624
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 23
+        },
+        {
+          "localized_name": "port",
+          "name": "port",
+          "type": "INT",
+          "widget": {
+            "name": "port"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "address",
+          "name": "address",
+          "type": "STRING",
+          "widget": {
+            "name": "address"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "title": "ꘇchop.oscout · Connect manually",
+      "properties": {
+        "Node name for S&R": "GeneretiChopOscOut",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        9001,
+        "/genereti",
+        ""
+      ],
+      "widgets_values_named": {
+        "port": 9001,
+        "address": "/genereti",
+        "signal_preview": ""
+      }
+    },
+    {
+      "id": 34,
+      "type": "GeneretiLiveImagePreview",
+      "pos": [
+        0,
+        1550
+      ],
+      "size": [
+        380,
+        364
+      ],
+      "flags": {},
+      "order": 48,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 9
+        },
+        {
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "ꘇ final image · D / Alt+W",
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "preview_size": 512,
+        "live_image_preview": ""
+      }
+    },
+    {
+      "id": 35,
+      "type": "GeneretiLivecode",
+      "pos": [
+        480,
+        1550
+      ],
+      "size": [
+        380,
+        700
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 10
+        },
+        {
+          "localized_name": "language",
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "auto_update",
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "code",
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "parameters",
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        },
+        {
+          "label": "speed",
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "widget": {
+            "name": "controls.value0"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "ꘇ Three.js · 3D stays here",
+      "properties": {
+        "generetiLivecodeParameters": {
+          "values": {},
+          "slots": {
+            "speed": 0
+          }
+        },
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "three",
+          "source": "// @param speed = 1 (0..4)\nconst mesh=new THREE.Mesh(new THREE.TorusKnotGeometry(1,.3,96,16),new THREE.MeshNormalMaterial());\nscene.add(mesh);\ntick(t=>{mesh.rotation.x=t*__.params.speed*.3;mesh.rotation.y=t*__.params.speed*.5;});"
+        },
+        "genereti_widget_values": {
+          "language": "three",
+          "width": 256,
+          "height": 256,
+          "auto_update": true,
+          "code": "// @param speed = 1 (0..4)\nconst mesh=new THREE.Mesh(new THREE.TorusKnotGeometry(1,.3,96,16),new THREE.MeshNormalMaterial());\nscene.add(mesh);\ntick(t=>{mesh.rotation.x=t*__.params.speed*.3;mesh.rotation.y=t*__.params.speed*.5;});",
+          "parameters": "{\"speed\":1}"
+        }
+      },
+      "widgets_values": [
+        "three",
+        256,
+        256,
+        true,
+        "// @param speed = 1 (0..4)\nconst mesh=new THREE.Mesh(new THREE.TorusKnotGeometry(1,.3,96,16),new THREE.MeshNormalMaterial());\nscene.add(mesh);\ntick(t=>{mesh.rotation.x=t*__.params.speed*.3;mesh.rotation.y=t*__.params.speed*.5;});",
+        "{\"speed\":1}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "language": "three",
+        "width": 256,
+        "height": 256,
+        "auto_update": true,
+        "controls.value0": 1,
+        "code": "// @param speed = 1 (0..4)\nconst mesh=new THREE.Mesh(new THREE.TorusKnotGeometry(1,.3,96,16),new THREE.MeshNormalMaterial());\nscene.add(mesh);\ntick(t=>{mesh.rotation.x=t*__.params.speed*.3;mesh.rotation.y=t*__.params.speed*.5;});",
+        "parameters": "{\"speed\":1}"
+      }
+    },
+    {
+      "id": 36,
+      "type": "GeneretiDatText",
+      "pos": [
+        1000,
+        1550
+      ],
+      "size": [
+        380,
+        348
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "title": "ꘇ OpenTouch library report · export documents",
+      "properties": {
+        "Node name for S&R": "GeneretiDatText"
+      },
+      "widgets_values": [
+        "# OpenTouch: a creative stage inside ComfyUI\n\nOpenTouch is our working name for a TouchDesigner-inspired operator library inside Genereti. It combines Comfy's graph and model ecosystem with the interactive programming surfaces from Underscores and Artist–Model Studio. Familiar operator names describe functionality; the interface follows our compact Livecode controls.\n\n## Three interfaces, one creative graph\n\n- **TOP** carries images and textures. Composite, feedback, arithmetic, transforms and filters run in our browser WebGPU renderer.\n- **CHOP** carries named sampled channels. Oscillators, noise, expressions and processors drive ordinary FLOAT input sockets, including declared Livecode parameters.\n- **DAT** carries string tables and documents. CodeMirror provides the editing surface; CSV, JSON, selection and expressions turn documents into usable data.\n- **Three.js** remains the 3D renderer inside Livecode. TOP can process its IMAGE output, CHOP can control declared parameters, and DAT can supply text and numbers. There is no new SOP/POP/MAT engine in this milestone.\n\nThe node families are interfaces to the existing creative tools, rather than three separate applications. A Three.js sketch can take a texture as `inputTexture`, read `__.params.speed`, and emit IMAGE to a TOP chain. The same image can reach an overlay, graph backdrop, or a generator.\n\n## Try the connected lesson\n\nOpen **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. It is model-free and includes:\n\n1. A `top.expression` texture, with familiar compact CodeMirror editing.\n2. A CHOP oscillator, smoothing, and a FLOAT wire controlling texture arithmetic.\n3. CSV → DAT cell → FLOAT controlling the texture chain.\n4. Crop, corner pin, feedback and compositing, finishing in Image Preview.\n5. A Three.js Livecode source and document/report nodes.\n6. User-started MIDI and OSC nodes. They are disconnected from devices until you press Connect.\n\nOpen **Settings → Genereti → Learning → Interactive lessons**, or search **ꘇ OpenTouch lessons** in the command palette. A `dat.lesson` node holds editable guide JSON in CodeMirror. Its toolbar runs/stops the learner dialogue and exports the authored lesson; the dialogue itself only navigates/checks steps. The guides highlight actual tools and check learner actions. They never queue inference or open device permissions. “Open lesson workflow” creates a separate temporary Comfy workflow tab.\n\n## Arithmetic expressions\n\nTOP, CHOP and DAT expressions share a small arithmetic language, rather than arbitrary JavaScript or Python. It accepts numbers, `+ - * / % ^`, parentheses, `pi`, `tau`, and `sin`, `cos`, `tan`, `abs`, `sqrt`, `floor`, `ceil`, `exp`, `log`, `fract`, `min`, `max`, `pow`, `clamp`, `mix`, `step`.\n\n```text\n0.5 + 0.5*sin(t + x*12)*cos(y*12)\n```\n\nFor TOP, `x` and `y` are normalized pixel centers, `i` is the pixel index, `c` is the RGB channel, `v`/`a` is its source value, and `w`/`h` are texture dimensions. Alpha is preserved; absent IMAGE generates an opaque texture. Live time is graph time plus the time control; Queue uses the explicit time control.\n\n```text\nsin(t*tau) * 0.5 + 0.5\n```\n\nFor CHOP, `t` is sample time in seconds, `i` is sample index, `x` is normalized sample position, `c` is channel index, `v`/`a` is the input sample, `w` is sample count and `h` is channel count. `y` and `b` are zero. Without an input, the expression generates channels.\n\nDAT expressions use row/column indices for `y`/`x`, column index for `c`, numeric cell content for `v`/`a`, and row/column counts for `h`/`w`. Non-numeric cells become zero. Device access, property access, loops and global execution are excluded.\n\n## Connections and useful glue\n\nEvery CHOP has a named-channel output and a normal FLOAT output: the last sample of its first channel. Connect that FLOAT to a converted Comfy numeric input or a declared Livecode FLOAT parameter. Use `chop.select` first to choose a named channel.\n\nDAT → CHOP conversion treats columns as channels and rows as samples, with an optional header row. `dat.cell` exposes one cell as STRING and FLOAT. `chop.todat` exposes sampled channels as a table. The six conversion directions are explicit: `dat.tochop`, `chop.todat`, `top.tochop`, `top.todat`, `chop.totop` and `dat.totop`.\n\nTOP → CHOP samples RGBA into named row-major channels. TOP → DAT samples x/y/RGBA into rows. Both resize on the GPU before a bounded readback (1..64 pixels per axis, configurable rate, one in-flight read). Queue selects one IMAGE batch frame. CHOP → TOP packs channel rows as grayscale, or four channels as RGBA pixels using a configurable width. DAT → TOP maps numeric columns/rows to a grayscale matrix, with optional header skipping. These are data conversion boundaries, not lossless arbitrary document/image round trips; values clamp to 0..1, invalid numeric cells become zero. The lesson samples 8×8 at 2 Hz so conversions do not slow the full-rate stage.\n\nArbitrary Python nodes still run through Comfy Queue. They do not become realtime merely because their sockets connect to a live operator. Livecode supports changing numeric/string parameter sockets; connecting a DAT document to the Livecode source-code socket does not automatically compile that document in Live mode.\n\n## Rendering and performance boundaries\n\nA page shares one WebGPU device for TOP operators. Intermediate images use reusable GPU textures; no PNG/JPEG, HTTP upload or CPU readback occurs between TOPs. Expressions parse and compile once per source revision. Source canvas/bitmap ingress is uploaded once per dispatch. Existing Livecode and model inputs remain compatibility boundaries, with their own copies or encoding. TOP-to-data converters deliberately perform bounded readback; data-to-TOP converters upload a canvas and update at up to 10 Hz.\n\nCHOP processing uses Float32Array blocks in the browser. Sample rate describes the signal timeline, not graph redraw FPS. Live scheduling is limited by browser animation frames: a one-sample 240 Hz configuration cannot deliver 240 updates on a 60 Hz display. Use a larger sample block for high-rate signal generation; MIDI/OSC outputs send the latest control values, not sample-accurate audio. Lag, Speed and Slope retain state across live blocks; their queued equivalents process one explicit block without persistent history.\n\nSignal traces paint at up to 10 Hz while samples and downstream controls keep flowing. Freeze/minimize affect only the local view. TOP/Livecode scalar changes are coalesced to animation frames; ordinary Primitive controls also have a low-rate fallback poll. DAT recalculates changed tables at up to 10 Hz. Keep DAT documents out of per-pixel paths.\n\nThis is shared browser GPU resources and typed arrays. It is not OS shared memory, SharedArrayBuffer transport, a native shared Metal texture, or an end-to-end zero-copy Core ML pipeline. WebGPU requires a capable secure-context host. Queue uses installed Python/PyTorch/NumPy. Full Core ML generation remains macOS 14+ on Apple silicon.\n\n## MIDI and OSC\n\nMIDI uses user-started Web MIDI without SysEx. An empty device name selects the first available port; a device ID or exact name selects a particular one. Input channels are named `ch1.cc7`, `ch1.note60`, `ch1.pitch`, etc. Values normalize to 0..1. Output supports CC, note velocity/gate and pitch bend, with changed-value suppression and note-off on disconnect. Channel 0 on MIDI In means any channel. Browser/desktop Web MIDI availability varies; a browser without Web MIDI reports that limitation.\n\nOSC uses a small Comfy Python UDP bridge bound to **127.0.0.1**. Input listens only after Connect, leases expire after 90 seconds without renewal, and the last disconnect closes its port. Outputs also require Connect. Numeric/boolean OSC messages and immediate bundles are supported; scheduled timetags, strings, blobs and remote-network destinations are outside this first pass. Receive events coalesce to 60 Hz; output sends latest values at up to 30 Hz with one request in flight. A reusable UDP sender avoids creating a socket per update.\n\nOpening or queuing a workflow never performs MIDI or OSC I/O. Queued input device nodes return a zero placeholder; output device nodes pass their input through without sending. Physical MIDI hardware needs a separate device test; the browser protocol has been exercised with virtual ports. OSC has been exercised over real loopback UDP.\n\n## Lessons and document export\n\nA guide is a local `genereti-guide` JSON document with semantic node targets, narration, and allowlisted learner checks. It cannot supply arbitrary DOM selectors or execute code. Guides can be imported, registered through `window.generetiGuides`, or authored in the bundled catalog. Local playback keeps learner edits and restores the initial viewport when it ends. It does not capture the full graph for undo/recovery, record teacher actions, synchronize classrooms or upload learner activity.\n\nDAT documents/tables and the `dat.lesson` authoring toolbar export Markdown/source and standalone static HTML. Lesson JSON can also be exported and re-imported for editing. Learner dialogues and the lesson chooser contain no document-export controls. Livecode's export menu now includes static Document HTML and Print / Save as PDF for Markdown, HTML and LaTeX, alongside its existing runtime HTML and source-script exports. KaTeX fonts are local and embedded in static HTML. Authored external image links remain links; they are not silently downloaded or embedded.\n\nPDF opens the printable static document and uses the host's print dialog: choose Save as PDF. This preserves selectable text, tables and math instead of a screenshot. It is distinct from exporting the interactive graph itself. In hosts without printing, export HTML and print it from a regular browser.\n\n## Barebones modular music\n\n`chop.note`, `chop.sequencer` and `chop.arpeggiator` produce named `note`, `gate`, `velocity` and `step` controls. Pitch is raw MIDI 0..127, velocity/gate are 0..1. Sequence text accepts numeric pitches and `-` / `.` rests. BPM, division, gate fraction and velocity are regular Comfy controls. Arpeggiator supports up/down/updown and octave expansion; optional MIDI In uses held `chN.noteNN` channels. Without held input it uses its authored fallback notes.\n\nRoute a musical CHOP to `chop.midiout` in note mode, or to `chop.synth` / `chop.drumkit`. MIDI Out uses named note/gate/velocity channels when present and turns off the previous note on pitch changes, pause or disconnect. Synth and drums are user-started browser Web Audio endpoints. They pass CHOP through for further control routing, rather than introducing an audio-buffer wire type. Queue passes their data without playing sound. Each endpoint has its own level; voices release/clean up on stop/removal. One shared AudioContext runs all active endpoints.\n\nSynth provides sine, subtractive, FM and reed voices with ADSR, cutoff/resonance, glide and vibrato. Drum kit procedurally generates kick (35/36), snare (38/40), closed hat (42/default) and open hat (46), without samples or downloads. Patterns and gates run on the browser control clock; this is not sample-accurate sequencing, a DAW, a VST host, a full Expressive Synth port, or a complete modular DSP/audio graph. Browser background throttling can affect rhythm. Three.js remains our 3D surface.\n\n[BespokeSynth](https://github.com/BespokeSynth/BespokeSynth) informs the live-patchable control/module idea. The oscillator/filter/ADSR/expression structure draws on our Underscores Expressive Synth; this implementation is a small browser adapter, not copied Bespoke C++ or a new synth engine dependency.\n\nA simple feedback relationship for the visual lesson is:\n\n$$C_t = S_t + (1-\\alpha_t)\\,d\\,T(C_{t-1})$$\n\nThe report and lesson exports use our local KaTeX renderer for these formulas.\n\n## Next useful work\n\nPrioritize a transport/clock interface, channel resampling/interpolation controls, trigger/envelope/event processors, and parameter mapping presets. A future DAT language bridge should explicitly distinguish editable source, data and evaluated code. A future shader node can expose multiple IMAGE inputs and familiar uniforms while remaining in our render system.\n\nKeep geometry creation, cameras, lights and materials in Three.js for now. Defer NDI, OAK, Syphon/Spout and other device integrations. Before claiming performance improvements, measure the exact connected chain, its source rate, view costs, model round trip, and delivery FPS separately.\n",
+        ""
+      ],
+      "widgets_values_named": {
+        "text": "# OpenTouch: a creative stage inside ComfyUI\n\nOpenTouch is our working name for a TouchDesigner-inspired operator library inside Genereti. It combines Comfy's graph and model ecosystem with the interactive programming surfaces from Underscores and Artist–Model Studio. Familiar operator names describe functionality; the interface follows our compact Livecode controls.\n\n## Three interfaces, one creative graph\n\n- **TOP** carries images and textures. Composite, feedback, arithmetic, transforms and filters run in our browser WebGPU renderer.\n- **CHOP** carries named sampled channels. Oscillators, noise, expressions and processors drive ordinary FLOAT input sockets, including declared Livecode parameters.\n- **DAT** carries string tables and documents. CodeMirror provides the editing surface; CSV, JSON, selection and expressions turn documents into usable data.\n- **Three.js** remains the 3D renderer inside Livecode. TOP can process its IMAGE output, CHOP can control declared parameters, and DAT can supply text and numbers. There is no new SOP/POP/MAT engine in this milestone.\n\nThe node families are interfaces to the existing creative tools, rather than three separate applications. A Three.js sketch can take a texture as `inputTexture`, read `__.params.speed`, and emit IMAGE to a TOP chain. The same image can reach an overlay, graph backdrop, or a generator.\n\n## Try the connected lesson\n\nOpen **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. It is model-free and includes:\n\n1. A `top.expression` texture, with familiar compact CodeMirror editing.\n2. A CHOP oscillator, smoothing, and a FLOAT wire controlling texture arithmetic.\n3. CSV → DAT cell → FLOAT controlling the texture chain.\n4. Crop, corner pin, feedback and compositing, finishing in Image Preview.\n5. A Three.js Livecode source and document/report nodes.\n6. User-started MIDI and OSC nodes. They are disconnected from devices until you press Connect.\n\nOpen **Settings → Genereti → Learning → Interactive lessons**, or search **ꘇ OpenTouch lessons** in the command palette. A `dat.lesson` node holds editable guide JSON in CodeMirror. Its toolbar runs/stops the learner dialogue and exports the authored lesson; the dialogue itself only navigates/checks steps. The guides highlight actual tools and check learner actions. They never queue inference or open device permissions. “Open lesson workflow” creates a separate temporary Comfy workflow tab.\n\n## Arithmetic expressions\n\nTOP, CHOP and DAT expressions share a small arithmetic language, rather than arbitrary JavaScript or Python. It accepts numbers, `+ - * / % ^`, parentheses, `pi`, `tau`, and `sin`, `cos`, `tan`, `abs`, `sqrt`, `floor`, `ceil`, `exp`, `log`, `fract`, `min`, `max`, `pow`, `clamp`, `mix`, `step`.\n\n```text\n0.5 + 0.5*sin(t + x*12)*cos(y*12)\n```\n\nFor TOP, `x` and `y` are normalized pixel centers, `i` is the pixel index, `c` is the RGB channel, `v`/`a` is its source value, and `w`/`h` are texture dimensions. Alpha is preserved; absent IMAGE generates an opaque texture. Live time is graph time plus the time control; Queue uses the explicit time control.\n\n```text\nsin(t*tau) * 0.5 + 0.5\n```\n\nFor CHOP, `t` is sample time in seconds, `i` is sample index, `x` is normalized sample position, `c` is channel index, `v`/`a` is the input sample, `w` is sample count and `h` is channel count. `y` and `b` are zero. Without an input, the expression generates channels.\n\nDAT expressions use row/column indices for `y`/`x`, column index for `c`, numeric cell content for `v`/`a`, and row/column counts for `h`/`w`. Non-numeric cells become zero. Device access, property access, loops and global execution are excluded.\n\n## Connections and useful glue\n\nEvery CHOP has a named-channel output and a normal FLOAT output: the last sample of its first channel. Connect that FLOAT to a converted Comfy numeric input or a declared Livecode FLOAT parameter. Use `chop.select` first to choose a named channel.\n\nDAT → CHOP conversion treats columns as channels and rows as samples, with an optional header row. `dat.cell` exposes one cell as STRING and FLOAT. `chop.todat` exposes sampled channels as a table. The six conversion directions are explicit: `dat.tochop`, `chop.todat`, `top.tochop`, `top.todat`, `chop.totop` and `dat.totop`.\n\nTOP → CHOP samples RGBA into named row-major channels. TOP → DAT samples x/y/RGBA into rows. Both resize on the GPU before a bounded readback (1..64 pixels per axis, configurable rate, one in-flight read). Queue selects one IMAGE batch frame. CHOP → TOP packs channel rows as grayscale, or four channels as RGBA pixels using a configurable width. DAT → TOP maps numeric columns/rows to a grayscale matrix, with optional header skipping. These are data conversion boundaries, not lossless arbitrary document/image round trips; values clamp to 0..1, invalid numeric cells become zero. The lesson samples 8×8 at 2 Hz so conversions do not slow the full-rate stage.\n\nArbitrary Python nodes still run through Comfy Queue. They do not become realtime merely because their sockets connect to a live operator. Livecode supports changing numeric/string parameter sockets; connecting a DAT document to the Livecode source-code socket does not automatically compile that document in Live mode.\n\n## Rendering and performance boundaries\n\nA page shares one WebGPU device for TOP operators. Intermediate images use reusable GPU textures; no PNG/JPEG, HTTP upload or CPU readback occurs between TOPs. Expressions parse and compile once per source revision. Source canvas/bitmap ingress is uploaded once per dispatch. Existing Livecode and model inputs remain compatibility boundaries, with their own copies or encoding. TOP-to-data converters deliberately perform bounded readback; data-to-TOP converters upload a canvas and update at up to 10 Hz.\n\nCHOP processing uses Float32Array blocks in the browser. Sample rate describes the signal timeline, not graph redraw FPS. Live scheduling is limited by browser animation frames: a one-sample 240 Hz configuration cannot deliver 240 updates on a 60 Hz display. Use a larger sample block for high-rate signal generation; MIDI/OSC outputs send the latest control values, not sample-accurate audio. Lag, Speed and Slope retain state across live blocks; their queued equivalents process one explicit block without persistent history.\n\nSignal traces paint at up to 10 Hz while samples and downstream controls keep flowing. Freeze/minimize affect only the local view. TOP/Livecode scalar changes are coalesced to animation frames; ordinary Primitive controls also have a low-rate fallback poll. DAT recalculates changed tables at up to 10 Hz. Keep DAT documents out of per-pixel paths.\n\nThis is shared browser GPU resources and typed arrays. It is not OS shared memory, SharedArrayBuffer transport, a native shared Metal texture, or an end-to-end zero-copy Core ML pipeline. WebGPU requires a capable secure-context host. Queue uses installed Python/PyTorch/NumPy. Full Core ML generation remains macOS 14+ on Apple silicon.\n\n## MIDI and OSC\n\nMIDI uses user-started Web MIDI without SysEx. An empty device name selects the first available port; a device ID or exact name selects a particular one. Input channels are named `ch1.cc7`, `ch1.note60`, `ch1.pitch`, etc. Values normalize to 0..1. Output supports CC, note velocity/gate and pitch bend, with changed-value suppression and note-off on disconnect. Channel 0 on MIDI In means any channel. Browser/desktop Web MIDI availability varies; a browser without Web MIDI reports that limitation.\n\nOSC uses a small Comfy Python UDP bridge bound to **127.0.0.1**. Input listens only after Connect, leases expire after 90 seconds without renewal, and the last disconnect closes its port. Outputs also require Connect. Numeric/boolean OSC messages and immediate bundles are supported; scheduled timetags, strings, blobs and remote-network destinations are outside this first pass. Receive events coalesce to 60 Hz; output sends latest values at up to 30 Hz with one request in flight. A reusable UDP sender avoids creating a socket per update.\n\nOpening or queuing a workflow never performs MIDI or OSC I/O. Queued input device nodes return a zero placeholder; output device nodes pass their input through without sending. Physical MIDI hardware needs a separate device test; the browser protocol has been exercised with virtual ports. OSC has been exercised over real loopback UDP.\n\n## Lessons and document export\n\nA guide is a local `genereti-guide` JSON document with semantic node targets, narration, and allowlisted learner checks. It cannot supply arbitrary DOM selectors or execute code. Guides can be imported, registered through `window.generetiGuides`, or authored in the bundled catalog. Local playback keeps learner edits and restores the initial viewport when it ends. It does not capture the full graph for undo/recovery, record teacher actions, synchronize classrooms or upload learner activity.\n\nDAT documents/tables and the `dat.lesson` authoring toolbar export Markdown/source and standalone static HTML. Lesson JSON can also be exported and re-imported for editing. Learner dialogues and the lesson chooser contain no document-export controls. Livecode's export menu now includes static Document HTML and Print / Save as PDF for Markdown, HTML and LaTeX, alongside its existing runtime HTML and source-script exports. KaTeX fonts are local and embedded in static HTML. Authored external image links remain links; they are not silently downloaded or embedded.\n\nPDF opens the printable static document and uses the host's print dialog: choose Save as PDF. This preserves selectable text, tables and math instead of a screenshot. It is distinct from exporting the interactive graph itself. In hosts without printing, export HTML and print it from a regular browser.\n\n## Barebones modular music\n\n`chop.note`, `chop.sequencer` and `chop.arpeggiator` produce named `note`, `gate`, `velocity` and `step` controls. Pitch is raw MIDI 0..127, velocity/gate are 0..1. Sequence text accepts numeric pitches and `-` / `.` rests. BPM, division, gate fraction and velocity are regular Comfy controls. Arpeggiator supports up/down/updown and octave expansion; optional MIDI In uses held `chN.noteNN` channels. Without held input it uses its authored fallback notes.\n\nRoute a musical CHOP to `chop.midiout` in note mode, or to `chop.synth` / `chop.drumkit`. MIDI Out uses named note/gate/velocity channels when present and turns off the previous note on pitch changes, pause or disconnect. Synth and drums are user-started browser Web Audio endpoints. They pass CHOP through for further control routing, rather than introducing an audio-buffer wire type. Queue passes their data without playing sound. Each endpoint has its own level; voices release/clean up on stop/removal. One shared AudioContext runs all active endpoints.\n\nSynth provides sine, subtractive, FM and reed voices with ADSR, cutoff/resonance, glide and vibrato. Drum kit procedurally generates kick (35/36), snare (38/40), closed hat (42/default) and open hat (46), without samples or downloads. Patterns and gates run on the browser control clock; this is not sample-accurate sequencing, a DAW, a VST host, a full Expressive Synth port, or a complete modular DSP/audio graph. Browser background throttling can affect rhythm. Three.js remains our 3D surface.\n\n[BespokeSynth](https://github.com/BespokeSynth/BespokeSynth) informs the live-patchable control/module idea. The oscillator/filter/ADSR/expression structure draws on our Underscores Expressive Synth; this implementation is a small browser adapter, not copied Bespoke C++ or a new synth engine dependency.\n\nA simple feedback relationship for the visual lesson is:\n\n$$C_t = S_t + (1-\\alpha_t)\\,d\\,T(C_{t-1})$$\n\nThe report and lesson exports use our local KaTeX renderer for these formulas.\n\n## Next useful work\n\nPrioritize a transport/clock interface, channel resampling/interpolation controls, trigger/envelope/event processors, and parameter mapping presets. A future DAT language bridge should explicitly distinguish editable source, data and evaluated code. A future shader node can expose multiple IMAGE inputs and familiar uniforms while remaining in our render system.\n\nKeep geometry creation, cameras, lights and materials in Three.js for now. Defer NDI, OAK, Syphon/Spout and other device integrations. Before claiming performance improvements, measure the exact connected chain, its source rate, view costs, model round trip, and delivery FPS separately.\n",
+        "table_preview": ""
+      }
+    },
+    {
+      "id": 37,
+      "type": "GeneretiLivecode",
+      "pos": [
+        0,
+        2300
+      ],
+      "size": [
+        380,
+        700
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "language",
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "auto_update",
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "code",
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "parameters",
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "ꘇ lesson notes + math",
+      "properties": {
+        "generetiLivecodeParameters": {
+          "values": {},
+          "slots": {}
+        },
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "markdown",
+          "source": "# OpenTouch\n\nTOP: textures. CHOP: signals. DAT: documents and tables.\n\n3D stays in **Three.js**.\n\nSignal: $s(t)=\\sin(2\\pi f t)$\n\nFeedback: $$C_t=S_t+(1-\\alpha_t)dT(C_{t-1})$$\n\nOpen **Settings → Genereti → Learning** to start a mini guide.\n\nRead the report node, then export Markdown, standalone HTML, or Print / Save as PDF."
+        },
+        "genereti_widget_values": {
+          "language": "markdown",
+          "width": 512,
+          "height": 384,
+          "auto_update": true,
+          "code": "# OpenTouch\n\nTOP: textures. CHOP: signals. DAT: documents and tables.\n\n3D stays in **Three.js**.\n\nSignal: $s(t)=\\sin(2\\pi f t)$\n\nFeedback: $$C_t=S_t+(1-\\alpha_t)dT(C_{t-1})$$\n\nOpen **Settings → Genereti → Learning** to start a mini guide.\n\nRead the report node, then export Markdown, standalone HTML, or Print / Save as PDF.",
+          "parameters": "{}"
+        }
+      },
+      "widgets_values": [
+        "markdown",
+        512,
+        384,
+        true,
+        "# OpenTouch\n\nTOP: textures. CHOP: signals. DAT: documents and tables.\n\n3D stays in **Three.js**.\n\nSignal: $s(t)=\\sin(2\\pi f t)$\n\nFeedback: $$C_t=S_t+(1-\\alpha_t)dT(C_{t-1})$$\n\nOpen **Settings → Genereti → Learning** to start a mini guide.\n\nRead the report node, then export Markdown, standalone HTML, or Print / Save as PDF.",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "language": "markdown",
+        "width": 512,
+        "height": 384,
+        "auto_update": true,
+        "code": "# OpenTouch\n\nTOP: textures. CHOP: signals. DAT: documents and tables.\n\n3D stays in **Three.js**.\n\nSignal: $s(t)=\\sin(2\\pi f t)$\n\nFeedback: $$C_t=S_t+(1-\\alpha_t)dT(C_{t-1})$$\n\nOpen **Settings → Genereti → Learning** to start a mini guide.\n\nRead the report node, then export Markdown, standalone HTML, or Print / Save as PDF.",
+        "parameters": "{}"
+      }
+    },
+    {
+      "id": 38,
+      "type": "GeneretiConvertTopToChop",
+      "pos": [
+        0,
+        3150
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 32
+        },
+        {
+          "localized_name": "sample_width",
+          "name": "sample_width",
+          "type": "INT",
+          "widget": {
+            "name": "sample_width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_height",
+          "name": "sample_height",
+          "type": "INT",
+          "widget": {
+            "name": "sample_height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "batch_index",
+          "name": "batch_index",
+          "type": "INT",
+          "widget": {
+            "name": "batch_index"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            33
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiConvertTopToChop",
+        "genereti_widget_values": {
+          "sample_width": 8,
+          "sample_height": 8,
+          "sample_rate": 2,
+          "batch_index": 0
+        }
+      },
+      "widgets_values": [
+        8,
+        8,
+        2,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "sample_width": 8,
+        "sample_height": 8,
+        "sample_rate": 2,
+        "batch_index": 0,
+        "conversion_preview": ""
+      }
+    },
+    {
+      "id": 39,
+      "type": "GeneretiConvertChopToTop",
+      "pos": [
+        440,
+        3150
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 39,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 33
+        },
+        {
+          "localized_name": "layout",
+          "name": "layout",
+          "type": "COMBO",
+          "widget": {
+            "name": "layout"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiConvertChopToTop",
+        "genereti_widget_values": {
+          "layout": "rgba",
+          "width": 8
+        }
+      },
+      "widgets_values": [
+        "rgba",
+        8,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "layout": "rgba",
+        "width": 8,
+        "conversion_preview": ""
+      }
+    },
+    {
+      "id": 40,
+      "type": "GeneretiConvertTopToDat",
+      "pos": [
+        880,
+        3150
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 34
+        },
+        {
+          "localized_name": "sample_width",
+          "name": "sample_width",
+          "type": "INT",
+          "widget": {
+            "name": "sample_width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_height",
+          "name": "sample_height",
+          "type": "INT",
+          "widget": {
+            "name": "sample_height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "batch_index",
+          "name": "batch_index",
+          "type": "INT",
+          "widget": {
+            "name": "batch_index"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": [
+            35
+          ]
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiConvertTopToDat",
+        "genereti_widget_values": {
+          "sample_width": 8,
+          "sample_height": 8,
+          "sample_rate": 2,
+          "batch_index": 0
+        }
+      },
+      "widgets_values": [
+        8,
+        8,
+        2,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "sample_width": 8,
+        "sample_height": 8,
+        "sample_rate": 2,
+        "batch_index": 0,
+        "conversion_preview": ""
+      }
+    },
+    {
+      "id": 41,
+      "type": "GeneretiConvertDatToTop",
+      "pos": [
+        1320,
+        3150
+      ],
+      "size": [
+        380,
+        420
+      ],
+      "flags": {},
+      "order": 40,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_DAT",
+          "link": 35
+        },
+        {
+          "localized_name": "header",
+          "name": "header",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "header"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiConvertDatToTop",
+        "genereti_widget_values": {
+          "header": true
+        }
+      },
+      "widgets_values": [
+        true,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "header": true,
+        "conversion_preview": ""
+      }
+    },
+    {
+      "id": 42,
+      "type": "GeneretiDatLesson",
+      "pos": [
+        1850,
+        3150
+      ],
+      "size": [
+        380,
+        500
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": null
+        },
+        {
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson"
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"opentouch-basics\",\n  \"title\": \"Textures, signals and tables\",\n  \"summary\": \"Edit an expression, connect a control signal, and use a table as a parameter source.\",\n  \"steps\": [\n    {\n      \"title\": \"One graph, three interfaces\",\n      \"text\": \"TOP carries images, CHOP carries sampled channels, and DAT carries documents and tables. The lesson workflow uses real nodes you can keep editing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Write a texture expression\",\n      \"text\": \"Change the expression, for example change x*12 to x*8. CodeMirror applies it while typing. The GPU program recompiles only when its source changes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"Change a signal\",\n      \"text\": \"Adjust oscillator frequency. The FLOAT output is the last sample of its first channel; the channel output carries the whole named block.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopOscillator\",\n        \"part\": \"parameter\",\n        \"widget\": \"frequency\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"A FLOAT becomes a texture control\",\n      \"text\": \"Follow the wire from chop.lag to top.transform rotate. These are regular Comfy input sockets; signals update the live shader without a Python queue.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\"\n      },\n      \"check\": {\n        \"kind\": \"connected-input\",\n        \"input\": \"rotate\"\n      }\n    },\n    {\n      \"title\": \"A table becomes a parameter\",\n      \"text\": \"Edit a number in the table. dat.cell selects one cell and exposes it as STRING and FLOAT. The lesson wires its FLOAT into top.math value.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatTable\",\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"GPU composition and history\",\n      \"text\": \"Inspect feedback, corner pin and compositing. Feedback keeps two GPU textures and avoids cyclic graph wires. Its history exists in Live mode; Queue returns the current input.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedback\",\n        \"part\": \"preview\"\n      }\n    },\n    {\n      \"title\": \"Keep 3D in Three.js\",\n      \"text\": \"The Three.js Livecode source uses the same IMAGE path. Its code can read inputTexture and declared CHOP-driven parameters; no separate geometry engine is needed.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"code\"\n      }\n    },\n    {\n      \"title\": \"Read and export the report\",\n      \"text\": \"The DAT document contains the library report. Use its export controls for Markdown, standalone HTML, or Print / Save as PDF. The report describes performance and device boundaries.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"part\": \"toolbar\"\n      }\n    }\n  ]\n}",
+        ""
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"opentouch-basics\",\n  \"title\": \"Textures, signals and tables\",\n  \"summary\": \"Edit an expression, connect a control signal, and use a table as a parameter source.\",\n  \"steps\": [\n    {\n      \"title\": \"One graph, three interfaces\",\n      \"text\": \"TOP carries images, CHOP carries sampled channels, and DAT carries documents and tables. The lesson workflow uses real nodes you can keep editing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Write a texture expression\",\n      \"text\": \"Change the expression, for example change x*12 to x*8. CodeMirror applies it while typing. The GPU program recompiles only when its source changes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"Change a signal\",\n      \"text\": \"Adjust oscillator frequency. The FLOAT output is the last sample of its first channel; the channel output carries the whole named block.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopOscillator\",\n        \"part\": \"parameter\",\n        \"widget\": \"frequency\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"A FLOAT becomes a texture control\",\n      \"text\": \"Follow the wire from chop.lag to top.transform rotate. These are regular Comfy input sockets; signals update the live shader without a Python queue.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\"\n      },\n      \"check\": {\n        \"kind\": \"connected-input\",\n        \"input\": \"rotate\"\n      }\n    },\n    {\n      \"title\": \"A table becomes a parameter\",\n      \"text\": \"Edit a number in the table. dat.cell selects one cell and exposes it as STRING and FLOAT. The lesson wires its FLOAT into top.math value.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatTable\",\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"GPU composition and history\",\n      \"text\": \"Inspect feedback, corner pin and compositing. Feedback keeps two GPU textures and avoids cyclic graph wires. Its history exists in Live mode; Queue returns the current input.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedback\",\n        \"part\": \"preview\"\n      }\n    },\n    {\n      \"title\": \"Keep 3D in Three.js\",\n      \"text\": \"The Three.js Livecode source uses the same IMAGE path. Its code can read inputTexture and declared CHOP-driven parameters; no separate geometry engine is needed.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"code\"\n      }\n    },\n    {\n      \"title\": \"Read and export the report\",\n      \"text\": \"The DAT document contains the library report. Use its export controls for Markdown, standalone HTML, or Print / Save as PDF. The report describes performance and device boundaries.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"part\": \"toolbar\"\n      }\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      }
+    },
+    {
+      "id": 43,
+      "type": "GeneretiMusicSequencer",
+      "pos": [
+        0,
+        3800
+      ],
+      "size": [
+        380,
+        510
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "STRING",
+          "widget": {
+            "name": "notes"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bpm",
+          "name": "bpm",
+          "type": "FLOAT",
+          "widget": {
+            "name": "bpm"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "division",
+          "name": "division",
+          "type": "INT",
+          "widget": {
+            "name": "division"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "gate",
+          "name": "gate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "gate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "velocity",
+          "name": "velocity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "velocity"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            36
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiMusicSequencer"
+      },
+      "widgets_values": [
+        "60 64 67 72 67 64 - 60",
+        120,
+        2,
+        0.5,
+        0.7,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "notes": "60 64 67 72 67 64 - 60",
+        "bpm": 120,
+        "division": 2,
+        "gate": 0.5,
+        "velocity": 0.7,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "music_preview": ""
+      }
+    },
+    {
+      "id": 44,
+      "type": "GeneretiMusicArpeggiator",
+      "pos": [
+        440,
+        3800
+      ],
+      "size": [
+        380,
+        380
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "shape": 7,
+          "type": "GENERETI_CHOP",
+          "link": null
+        },
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "STRING",
+          "widget": {
+            "name": "notes"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "octaves",
+          "name": "octaves",
+          "type": "INT",
+          "widget": {
+            "name": "octaves"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "mode",
+          "name": "mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "mode"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bpm",
+          "name": "bpm",
+          "type": "FLOAT",
+          "widget": {
+            "name": "bpm"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "division",
+          "name": "division",
+          "type": "INT",
+          "widget": {
+            "name": "division"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "gate",
+          "name": "gate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "gate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "velocity",
+          "name": "velocity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "velocity"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            38
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiMusicArpeggiator"
+      },
+      "widgets_values": [
+        "60 64 67",
+        1,
+        "up",
+        120,
+        2,
+        0.5,
+        0.7,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "notes": "60 64 67",
+        "octaves": 1,
+        "mode": "up",
+        "bpm": 120,
+        "division": 2,
+        "gate": 0.5,
+        "velocity": 0.7,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "music_preview": ""
+      }
+    },
+    {
+      "id": 45,
+      "type": "GeneretiMusicNote",
+      "pos": [
+        880,
+        3800
+      ],
+      "size": [
+        380,
+        284
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "note",
+          "name": "note",
+          "type": "INT",
+          "widget": {
+            "name": "note"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "gate",
+          "name": "gate",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "gate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "velocity",
+          "name": "velocity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "velocity"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiMusicNote"
+      },
+      "widgets_values": [
+        60,
+        true,
+        0.7,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "note": 60,
+        "gate": true,
+        "velocity": 0.7,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "music_preview": ""
+      }
+    },
+    {
+      "id": 46,
+      "type": "GeneretiMusicSequencer",
+      "pos": [
+        1320,
+        3800
+      ],
+      "size": [
+        380,
+        510
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "STRING",
+          "widget": {
+            "name": "notes"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bpm",
+          "name": "bpm",
+          "type": "FLOAT",
+          "widget": {
+            "name": "bpm"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "division",
+          "name": "division",
+          "type": "INT",
+          "widget": {
+            "name": "division"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "gate",
+          "name": "gate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "gate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "velocity",
+          "name": "velocity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "velocity"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            37
+          ]
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiMusicSequencer"
+      },
+      "widgets_values": [
+        "36 42 38 42 36 42 38 46",
+        120,
+        2,
+        0.5,
+        0.7,
+        1,
+        60,
+        0,
+        ""
+      ],
+      "widgets_values_named": {
+        "notes": "36 42 38 42 36 42 38 46",
+        "bpm": 120,
+        "division": 2,
+        "gate": 0.5,
+        "velocity": 0.7,
+        "samples": 1,
+        "sample_rate": 60,
+        "time": 0,
+        "music_preview": ""
+      }
+    },
+    {
+      "id": 47,
+      "type": "GeneretiMusicSynth",
+      "pos": [
+        0,
+        4450
+      ],
+      "size": [
+        380,
+        404
+      ],
+      "flags": {},
+      "order": 37,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 36
+        },
+        {
+          "localized_name": "voice",
+          "name": "voice",
+          "type": "COMBO",
+          "widget": {
+            "name": "voice"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "level",
+          "name": "level",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "attack",
+          "name": "attack",
+          "type": "FLOAT",
+          "widget": {
+            "name": "attack"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "decay",
+          "name": "decay",
+          "type": "FLOAT",
+          "widget": {
+            "name": "decay"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sustain",
+          "name": "sustain",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sustain"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "release",
+          "name": "release",
+          "type": "FLOAT",
+          "widget": {
+            "name": "release"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "cutoff",
+          "name": "cutoff",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cutoff"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "resonance",
+          "name": "resonance",
+          "type": "FLOAT",
+          "widget": {
+            "name": "resonance"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "glide",
+          "name": "glide",
+          "type": "FLOAT",
+          "widget": {
+            "name": "glide"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "vibrato",
+          "name": "vibrato",
+          "type": "FLOAT",
+          "widget": {
+            "name": "vibrato"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "vibrato_rate",
+          "name": "vibrato_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "vibrato_rate"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiMusicSynth"
+      },
+      "widgets_values": [
+        "sine",
+        0.15,
+        0.02,
+        0.15,
+        0.7,
+        0.25,
+        1800,
+        0.7,
+        0.02,
+        0,
+        5,
+        ""
+      ],
+      "widgets_values_named": {
+        "voice": "sine",
+        "level": 0.15,
+        "attack": 0.02,
+        "decay": 0.15,
+        "sustain": 0.7,
+        "release": 0.25,
+        "cutoff": 1800,
+        "resonance": 0.7,
+        "glide": 0.02,
+        "vibrato": 0,
+        "vibrato_rate": 5,
+        "music_preview": ""
+      }
+    },
+    {
+      "id": 48,
+      "type": "GeneretiMusicDrumKit",
+      "pos": [
+        1320,
+        4450
+      ],
+      "size": [
+        380,
+        212
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 37
+        },
+        {
+          "localized_name": "level",
+          "name": "level",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "decay",
+          "name": "decay",
+          "type": "FLOAT",
+          "widget": {
+            "name": "decay"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "tone",
+          "name": "tone",
+          "type": "FLOAT",
+          "widget": {
+            "name": "tone"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiMusicDrumKit"
+      },
+      "widgets_values": [
+        0.15,
+        0.2,
+        1,
+        ""
+      ],
+      "widgets_values_named": {
+        "level": 0.15,
+        "decay": 0.2,
+        "tone": 1,
+        "music_preview": ""
+      }
+    },
+    {
+      "id": 49,
+      "type": "GeneretiChopMidiOut",
+      "pos": [
+        440,
+        4450
+      ],
+      "size": [
+        380,
+        325.19658203125
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 38
+        },
+        {
+          "localized_name": "device",
+          "name": "device",
+          "type": "STRING",
+          "widget": {
+            "name": "device"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "message",
+          "name": "message",
+          "type": "COMBO",
+          "widget": {
+            "name": "message"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "channel",
+          "name": "channel",
+          "type": "INT",
+          "widget": {
+            "name": "channel"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "number",
+          "name": "number",
+          "type": "INT",
+          "widget": {
+            "name": "number"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "title": "ꘇchop.midiout · generated notes · Connect manually",
+      "properties": {
+        "Node name for S&R": "GeneretiChopMidiOut",
+        "generetiDeviceConnected": false
+      },
+      "widgets_values": [
+        "",
+        "note",
+        1,
+        1,
+        ""
+      ],
+      "widgets_values_named": {
+        "device": "",
+        "message": "note",
+        "channel": 1,
+        "number": 1,
+        "signal_preview": ""
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      5,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ],
+    [
+      6,
+      6,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      7,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      8,
+      1,
+      0,
+      8,
+      1,
+      "IMAGE"
+    ],
+    [
+      9,
+      8,
+      0,
+      34,
+      0,
+      "IMAGE"
+    ],
+    [
+      10,
+      1,
+      0,
+      35,
+      0,
+      "IMAGE"
+    ],
+    [
+      11,
+      9,
+      0,
+      10,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      12,
+      10,
+      1,
+      5,
+      4,
+      "FLOAT"
+    ],
+    [
+      13,
+      20,
+      0,
+      21,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      14,
+      21,
+      1,
+      2,
+      3,
+      "FLOAT"
+    ],
+    [
+      15,
+      9,
+      0,
+      11,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      16,
+      12,
+      0,
+      15,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      17,
+      13,
+      0,
+      16,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      18,
+      14,
+      0,
+      17,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      19,
+      9,
+      0,
+      18,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      20,
+      9,
+      0,
+      19,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      21,
+      12,
+      0,
+      19,
+      1,
+      "GENERETI_CHOP"
+    ],
+    [
+      22,
+      13,
+      0,
+      31,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      23,
+      12,
+      0,
+      33,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      24,
+      20,
+      0,
+      22,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      25,
+      9,
+      0,
+      23,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      26,
+      24,
+      0,
+      25,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      27,
+      20,
+      0,
+      26,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      28,
+      20,
+      0,
+      27,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      29,
+      24,
+      0,
+      27,
+      1,
+      "GENERETI_DAT"
+    ],
+    [
+      30,
+      20,
+      0,
+      28,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      31,
+      20,
+      0,
+      29,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      32,
+      1,
+      0,
+      38,
+      0,
+      "IMAGE"
+    ],
+    [
+      33,
+      38,
+      0,
+      39,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      34,
+      1,
+      0,
+      40,
+      0,
+      "IMAGE"
+    ],
+    [
+      35,
+      40,
+      0,
+      41,
+      0,
+      "GENERETI_DAT"
+    ],
+    [
+      36,
+      43,
+      0,
+      47,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      37,
+      46,
+      0,
+      48,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      38,
+      44,
+      0,
+      49,
+      0,
+      "GENERETI_CHOP"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "01 · GPU textures, feedback and compositing",
+      "bounding": [
+        -40,
+        -80,
+        1800,
+        1600
+      ],
+      "color": "#39483f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "02 · Sampled channels and control processors",
+      "bounding": [
+        1810,
+        -80,
+        1710,
+        1700
+      ],
+      "color": "#39483f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "03 · Documents, tables and parameter glue",
+      "bounding": [
+        3510,
+        -80,
+        1300,
+        2390
+      ],
+      "color": "#39483f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "04 · Device endpoints · Connect manually",
+      "bounding": [
+        1810,
+        1620,
+        1710,
+        1100
+      ],
+      "color": "#39483f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "05 · Output, Three.js and report",
+      "bounding": [
+        -40,
+        1530,
+        1800,
+        1470
+      ],
+      "color": "#39483f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "06 · Explicit conversions and tutorial author",
+      "bounding": [
+        -40,
+        3070,
+        2310,
+        650
+      ],
+      "color": "#39483f",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 7,
+      "title": "07 · Musical controls and browser audio · Start manually",
+      "bounding": [
+        -40,
+        3730,
+        1800,
+        1500
+      ],
+      "color": "#39483f",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.55,
+      "offset": [
+        70,
+        150
+      ]
+    }
+  },
+  "version": 0.4
+}

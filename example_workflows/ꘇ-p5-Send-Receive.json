@@ -1,0 +1,242 @@
+{
+  "version": 0.4,
+  "config": {},
+  "groups": [],
+  "extra": {
+    "ds": {
+      "scale": 0.78,
+      "offset": [
+        50,
+        100
+      ]
+    },
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti p5 Send + Receive"
+  },
+  "last_node_id": 4,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiP5Sketch",
+      "pos": [
+        0,
+        80
+      ],
+      "size": [
+        510,
+        620
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "sketch",
+          "name": "sketch",
+          "type": "STRING",
+          "widget": {
+            "name": "sketch"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "canvas_revision",
+          "name": "canvas_revision",
+          "type": "INT",
+          "widget": {
+            "name": "canvas_revision"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiP5Sketch",
+        "cnr_id": "genereti_comfy_p5",
+        "ver": "0.1.0"
+      },
+      "widgets_values": [
+        "function setup(){createCanvas(windowWidth,windowHeight);background(245)}function draw(){stroke(random(255));line(random(width),random(height),random(width),random(height));if(mouseIsPressed){noStroke();fill(random(255));circle(mouseX,mouseY,dist(mouseX,mouseY,pmouseX,pmouseY))}}",
+        0
+      ],
+      "widgets_values_named": {
+        "sketch": "// Draw with the mouse. Press C to clear and change the palette with keys 1\u20135.\nlet hueShift = 0;\n\nfunction setup() {\n  createCanvas(512, 512);\n  colorMode(HSB, 360, 100, 100, 100);\n  background(225, 28, 12);\n}\n\nfunction draw() {\n  noStroke();\n  if (mouseIsPressed) {\n    fill((hueShift + frameCount * 0.8) % 360, 78, 100, 62);\n    circle(mouseX, mouseY, 34 + 18 * sin(frameCount * 0.12));\n  }\n  if (keyIsPressed) {\n    fill((hueShift + 180) % 360, 70, 100, 55);\n    circle(mouseX, mouseY, 14);\n  }\n}\n\nfunction keyPressed() {\n  if (key === 'c' || key === 'C') background(225, 28, 12);\n  if (key >= '1' && key <= '5') hueShift = (Number(key) - 1) * 72;\n  return false;\n}\n",
+        "canvas_revision": 0
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiSendFrame",
+      "pos": [
+        540,
+        80
+      ],
+      "size": [
+        300,
+        370
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "frame_id",
+          "type": "INT",
+          "links": [
+            2
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "metadata",
+          "type": "STRING",
+          "links": null,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiSendFrame"
+      },
+      "widgets_values": [
+        "http://127.0.0.1:8765",
+        "ink wash \u6c34\u58a8\u753b",
+        "sketch",
+        "auto",
+        42,
+        "fixed",
+        1.0,
+        "{}"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "GeneretiReceiveFrame",
+      "pos": [
+        870,
+        80
+      ],
+      "size": [
+        260,
+        130
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "after_frame",
+          "type": "INT",
+          "link": 2,
+          "widget": {
+            "name": "after_frame"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            3
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "frame_id",
+          "type": "INT",
+          "links": null,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiReceiveFrame"
+      },
+      "widgets_values": [
+        "http://127.0.0.1:8765",
+        0
+      ]
+    },
+    {
+      "id": 4,
+      "type": "PreviewImage",
+      "pos": [
+        1060,
+        80
+      ],
+      "size": [
+        300,
+        280
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.14.1"
+      },
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "INT"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ]
+  ]
+}

@@ -67,8 +67,8 @@ browser paths are preserved.
 
 ### Open the realtime class demo
 
-Drag `custom_nodes/genereti/integrations/comfyui_genereti/workflows/ꘇ-Performance-Timeline.json`
-onto Comfy's canvas, or import it through **Open workflow**.
+Open **Workflows → Genereti → ꘇ-Performance-Timeline**. Examples install
+automatically when the package starts. They also appear in **Templates → genereti**.
 
 1. Open **ꘇ Timeline** with **Alt+Shift+T**. Play advances continuous project time.
 2. Watch `top.noise` and `top.expression`. Automation changes noise scale;
@@ -88,7 +88,13 @@ The three [guided Livecode pipelines](livecode-tutorials.md)—shader buffers,
 connected p5 sketches and audio-reactive analysis—also ship with the package.
 Bundled lessons also open through **Settings → Genereti → Learning**.
 
-To put all examples in **Workflows → Genereti**, run the preserving installer
+On startup, Genereti installs demos in each existing Comfy user profile using
+Comfy's configured user directory. New profiles receive demos after restarting
+Comfy. Customized copies are preserved; untouched managed examples update with
+the package, and previous versions are backed up. Bundled templates always show
+the package's current examples. No model downloads or audio playback occur.
+
+For an explicit destination or recovery, run the same preserving installer
 with Comfy's Python, from the `custom_nodes/genereti` folder:
 
 ```sh
@@ -104,7 +110,7 @@ copies it replaces. Installation never silently edits students' workflows.
 For a Git install, stop Comfy, run `git -C custom_nodes/genereti pull --ff-only`,
 install requirements again if changed, restart and refresh. For a ZIP install,
 move the old folder outside `custom_nodes` and extract the new one; keep the old
-copy for rollback. Re-run the example installer to update unmodified examples.
+copy for rollback. Startup automatically updates unmodified examples.
 Never replace the Comfy `user` directory.
 
 To disable the package, stop Comfy and move `custom_nodes/genereti` outside
@@ -176,3 +182,13 @@ records the separate submission requirements.
 ```sh
 GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=core.quotepath GIT_CONFIG_VALUE_0=false comfy node pack
 ```
+
+
+### Maintaining bundled templates
+
+Keep canonical workflows in `integrations/comfyui_genereti/workflows/`. After
+editing them, run `python scripts/sync_comfy_templates.py` and commit the generated
+`example_workflows/` copies too. CI and publishing check that both folders match.
+This top-level folder supports Comfy's native template discovery in Git, ZIP and
+Registry installs. Releases up to 0.1.1 predate automatic template/demo installation;
+they require the manual installer above or an updated package.

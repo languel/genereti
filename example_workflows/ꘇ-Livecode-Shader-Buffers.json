@@ -1,0 +1,708 @@
+{
+  "last_node_id": 7,
+  "last_link_id": 6,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "title": "ꘇ fresh ink · GLSL",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        410,
+        620
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "language",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "language"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "auto_update"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "speed",
+          "link": null,
+          "widget": {
+            "name": "controls.value0"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1,
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLessonRef": "2d8ba61b-2075-59a0-ac0b-0c1c895cb38a",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "language": "glsl",
+          "width": 384,
+          "height": 256,
+          "auto_update": true,
+          "code": "// Fresh source: mainImage aliases map to u_time/u_resolution.\nfloat speed = 1.0; /* 0.1..3 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv - 0.5) * vec2(iResolution.x/iResolution.y, 1.0);\n    vec2 center = 0.25 * vec2(cos(iTime*speed), sin(iTime*speed*1.3));\n    float ink = 1.0 - smoothstep(0.035, 0.055, length(p-center));\n    vec3 palette = 0.5 + 0.5*cos(iTime*0.5 + vec3(0.0, 2.1, 4.2));\n    color = vec4(palette*ink, 1.0);\n}",
+          "parameters": "{\"speed\": 1.0}",
+          "performance": "{}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "speed": 1.0
+          },
+          "slots": {
+            "speed": 0
+          }
+        },
+        "generetiLivecodeLastGood": {
+          "mode": "glsl",
+          "source": "// Fresh source: mainImage aliases map to u_time/u_resolution.\nfloat speed = 1.0; /* 0.1..3 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv - 0.5) * vec2(iResolution.x/iResolution.y, 1.0);\n    vec2 center = 0.25 * vec2(cos(iTime*speed), sin(iTime*speed*1.3));\n    float ink = 1.0 - smoothstep(0.035, 0.055, length(p-center));\n    vec3 palette = 0.5 + 0.5*cos(iTime*0.5 + vec3(0.0, 2.1, 4.2));\n    color = vec4(palette*ink, 1.0);\n}"
+        }
+      },
+      "widgets_values": [
+        "glsl",
+        384,
+        256,
+        true,
+        "// Fresh source: mainImage aliases map to u_time/u_resolution.\nfloat speed = 1.0; /* 0.1..3 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv - 0.5) * vec2(iResolution.x/iResolution.y, 1.0);\n    vec2 center = 0.25 * vec2(cos(iTime*speed), sin(iTime*speed*1.3));\n    float ink = 1.0 - smoothstep(0.035, 0.055, length(p-center));\n    vec3 palette = 0.5 + 0.5*cos(iTime*0.5 + vec3(0.0, 2.1, 4.2));\n    color = vec4(palette*ink, 1.0);\n}",
+        "{\"speed\": 1.0}",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "language": "glsl",
+        "width": 384,
+        "height": 256,
+        "auto_update": true,
+        "code": "// Fresh source: mainImage aliases map to u_time/u_resolution.\nfloat speed = 1.0; /* 0.1..3 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv - 0.5) * vec2(iResolution.x/iResolution.y, 1.0);\n    vec2 center = 0.25 * vec2(cos(iTime*speed), sin(iTime*speed*1.3));\n    float ink = 1.0 - smoothstep(0.035, 0.055, length(p-center));\n    vec3 palette = 0.5 + 0.5*cos(iTime*0.5 + vec3(0.0, 2.1, 4.2));\n    color = vec4(palette*ink, 1.0);\n}",
+        "parameters": "{\"speed\": 1.0}",
+        "performance": "{}",
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiTextureFeedbackRef",
+      "title": "ꘇ previous composite · Buffer A",
+      "pos": [
+        0,
+        720
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "reference",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "reference"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureFeedbackRef",
+        "generetiLessonRef": "bd44969b-52fe-5e13-9d83-d40d4d0e5156",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "reference": "{\"ref\":\"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\"outputSlot\":0}",
+          "width": 384,
+          "height": 256
+        }
+      },
+      "widgets_values": [
+        "{\"ref\":\"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\"outputSlot\":0}",
+        384,
+        256,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "reference": "{\"ref\":\"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\"outputSlot\":0}",
+        "width": 384,
+        "height": 256,
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiLivecode",
+      "title": "ꘇ Buffer A · warp / fade",
+      "pos": [
+        470,
+        720
+      ],
+      "size": [
+        410,
+        620
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "language",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "language"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "auto_update"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "decay",
+          "link": null,
+          "widget": {
+            "name": "controls.value0"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLessonRef": "a7f55850-adf1-5de0-ba67-7f6407613f1e",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "language": "glsl",
+          "width": 384,
+          "height": 256,
+          "auto_update": true,
+          "code": "// Buffer A: transform and fade the previous composite.\nfloat decay = 0.96; /* 0..0.99 step:0.01 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv-0.5)*0.992;\n    float angle = 0.012;\n    p = mat2(cos(angle),-sin(angle),sin(angle),cos(angle))*p;\n    vec2 sampleUV = p+0.5;\n    float inside = step(0.0,sampleUV.x)*step(sampleUV.x,1.0)\n                 * step(0.0,sampleUV.y)*step(sampleUV.y,1.0);\n    color = vec4(texture2D(iChannel0,sampleUV).rgb * decay * inside,1.0);\n}",
+          "parameters": "{\"decay\": 0.96}",
+          "performance": "{}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "decay": 0.96
+          },
+          "slots": {
+            "decay": 0
+          }
+        },
+        "generetiLivecodeLastGood": {
+          "mode": "glsl",
+          "source": "// Buffer A: transform and fade the previous composite.\nfloat decay = 0.96; /* 0..0.99 step:0.01 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv-0.5)*0.992;\n    float angle = 0.012;\n    p = mat2(cos(angle),-sin(angle),sin(angle),cos(angle))*p;\n    vec2 sampleUV = p+0.5;\n    float inside = step(0.0,sampleUV.x)*step(sampleUV.x,1.0)\n                 * step(0.0,sampleUV.y)*step(sampleUV.y,1.0);\n    color = vec4(texture2D(iChannel0,sampleUV).rgb * decay * inside,1.0);\n}"
+        }
+      },
+      "widgets_values": [
+        "glsl",
+        384,
+        256,
+        true,
+        "// Buffer A: transform and fade the previous composite.\nfloat decay = 0.96; /* 0..0.99 step:0.01 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv-0.5)*0.992;\n    float angle = 0.012;\n    p = mat2(cos(angle),-sin(angle),sin(angle),cos(angle))*p;\n    vec2 sampleUV = p+0.5;\n    float inside = step(0.0,sampleUV.x)*step(sampleUV.x,1.0)\n                 * step(0.0,sampleUV.y)*step(sampleUV.y,1.0);\n    color = vec4(texture2D(iChannel0,sampleUV).rgb * decay * inside,1.0);\n}",
+        "{\"decay\": 0.96}",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "language": "glsl",
+        "width": 384,
+        "height": 256,
+        "auto_update": true,
+        "code": "// Buffer A: transform and fade the previous composite.\nfloat decay = 0.96; /* 0..0.99 step:0.01 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec2 p = (uv-0.5)*0.992;\n    float angle = 0.012;\n    p = mat2(cos(angle),-sin(angle),sin(angle),cos(angle))*p;\n    vec2 sampleUV = p+0.5;\n    float inside = step(0.0,sampleUV.x)*step(sampleUV.x,1.0)\n                 * step(0.0,sampleUV.y)*step(sampleUV.y,1.0);\n    color = vec4(texture2D(iChannel0,sampleUV).rgb * decay * inside,1.0);\n}",
+        "parameters": "{\"decay\": 0.96}",
+        "performance": "{}",
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiTextureComposite",
+      "title": "ꘇ combine fresh ink + history",
+      "pos": [
+        940,
+        0
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        },
+        {
+          "name": "background",
+          "type": "IMAGE",
+          "link": 4
+        },
+        {
+          "name": "operation",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "name": "opacity",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "opacity"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureComposite",
+        "generetiLessonRef": "7c1d94b6-8bb6-5f37-ac14-c7902efee786",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "operation": "add",
+          "opacity": 1.0
+        }
+      },
+      "widgets_values": [
+        "add",
+        1.0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "operation": "add",
+        "opacity": 1.0,
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 5,
+      "type": "GeneretiLivecode",
+      "title": "ꘇ Image · final color pass",
+      "pos": [
+        1350,
+        0
+      ],
+      "size": [
+        410,
+        620
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "language",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "language"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "auto_update"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 5
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "contrast",
+          "link": null,
+          "widget": {
+            "name": "controls.value0"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLessonRef": "70f0113e-c398-50f4-84a2-0767426c824c",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "language": "glsl",
+          "width": 384,
+          "height": 256,
+          "auto_update": true,
+          "code": "// Image pass: color-grade the composite, outside its history loop.\nfloat contrast = 1.2; /* 0.5..2 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec3 ink = texture2D(iChannel0,uv).rgb;\n    color = vec4(pow(max(ink,vec3(0.0)),vec3(1.0/contrast)),1.0);\n}",
+          "parameters": "{\"contrast\": 1.2}",
+          "performance": "{}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "contrast": 1.2
+          },
+          "slots": {
+            "contrast": 0
+          }
+        },
+        "generetiLivecodeLastGood": {
+          "mode": "glsl",
+          "source": "// Image pass: color-grade the composite, outside its history loop.\nfloat contrast = 1.2; /* 0.5..2 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec3 ink = texture2D(iChannel0,uv).rgb;\n    color = vec4(pow(max(ink,vec3(0.0)),vec3(1.0/contrast)),1.0);\n}"
+        }
+      },
+      "widgets_values": [
+        "glsl",
+        384,
+        256,
+        true,
+        "// Image pass: color-grade the composite, outside its history loop.\nfloat contrast = 1.2; /* 0.5..2 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec3 ink = texture2D(iChannel0,uv).rgb;\n    color = vec4(pow(max(ink,vec3(0.0)),vec3(1.0/contrast)),1.0);\n}",
+        "{\"contrast\": 1.2}",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "language": "glsl",
+        "width": 384,
+        "height": 256,
+        "auto_update": true,
+        "code": "// Image pass: color-grade the composite, outside its history loop.\nfloat contrast = 1.2; /* 0.5..2 step:0.05 */\nvoid mainImage(out vec4 color, in vec2 fragCoord) {\n    vec2 uv = fragCoord / iResolution.xy;\n    vec3 ink = texture2D(iChannel0,uv).rgb;\n    color = vec4(pow(max(ink,vec3(0.0)),vec3(1.0/contrast)),1.0);\n}",
+        "parameters": "{\"contrast\": 1.2}",
+        "performance": "{}",
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 6,
+      "type": "GeneretiLiveImagePreview",
+      "title": "ꘇ final image",
+      "pos": [
+        1830,
+        0
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 6
+        },
+        {
+          "name": "preview_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "557d899f-ebd1-5abc-b43a-f2b43b6174de",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "preview_size": 384
+        }
+      },
+      "widgets_values": [
+        384,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "preview_size": 384,
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 7,
+      "type": "GeneretiDatLesson",
+      "title": "ꘇ walkthrough · start here",
+      "pos": [
+        1350,
+        730
+      ],
+      "size": [
+        630,
+        590
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "guide",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiLessonRef": "dffbda06-165f-578a-8ba9-dd659d3f27ce",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"shader-buffers\",\n  \"title\": \"Livecode: shader buffers and history\",\n  \"summary\": \"Connected GLSL passes, one-frame history and an explicit fresh/history composite.\",\n  \"steps\": [\n    {\n      \"title\": \"Make fresh ink\",\n      \"text\": \"The first GLSL node paints moving RGB ink. Each Livecode node is a separate render pass. Change speed without rebuilding the shader.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"mainImage, iTime, iResolution and iChannel0 aliases are supported. Annotated float speed becomes a regular parameter and controls.value0 socket.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.6\n        }\n      ]\n    },\n    {\n      \"title\": \"Reference the end of the loop\",\n      \"text\": \"Buffer A reads the previous composite. Its optional IMAGE input seeds frame one; it does not choose the history target. Pick the combine node in reference.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Fresh → composite; previous composite → warp/fade → composite. The reference closes the loop with a one-tick delay, so there is no cyclic IMAGE wire.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedbackRef\",\n            \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\",\n            \"widget\": \"reference\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"{\\\"ref\\\":\\\"7c1d94b6-8bb6-5f37-ac14-c7902efee786\\\",\\\"outputSlot\\\":0}\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Process the history buffer\",\n      \"text\": \"The warp pass samples its IMAGE input as iChannel0 / u_image. It rotates, expands and fades yesterday’s pixels before they reach the composite.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Lower decay shortens trails. Here one input is one external buffer; internal Shadertoy A–D/Common tabs and four channel inputs are not implemented.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.9\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureFeedbackRef\",\n            \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\"\n          },\n          \"input\": \"image\",\n          \"output\": \"image\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Combine fresh and old frames\",\n      \"text\": \"Add fresh RGB ink to faded history. Display grading comes after the composite so it cannot amplify history each tick.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Screen is another useful blend. Over with an opaque black source would hide history. Do it restores additive routing.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\n            \"widget\": \"operation\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"add\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"input\": \"background\",\n          \"output\": \"IMAGE\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Finish and interact\",\n      \"text\": \"Increase contrast in the Image pass. Alt+W opens the actual interactive preview; Shift-click its overlay button or Alt+O keeps only the node output.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"IMAGE between Livecode nodes crosses separate browser runtimes. TOP operators keep their own GPU chain. Use dat.monitor on your actual patch rather than assuming a fixed frame rate.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 1.6\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\"\n          },\n          \"input\": \"image\",\n          \"output\": \"image\"\n        }\n      ]\n    }\n  ]\n}"
+        }
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"shader-buffers\",\n  \"title\": \"Livecode: shader buffers and history\",\n  \"summary\": \"Connected GLSL passes, one-frame history and an explicit fresh/history composite.\",\n  \"steps\": [\n    {\n      \"title\": \"Make fresh ink\",\n      \"text\": \"The first GLSL node paints moving RGB ink. Each Livecode node is a separate render pass. Change speed without rebuilding the shader.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"mainImage, iTime, iResolution and iChannel0 aliases are supported. Annotated float speed becomes a regular parameter and controls.value0 socket.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.6\n        }\n      ]\n    },\n    {\n      \"title\": \"Reference the end of the loop\",\n      \"text\": \"Buffer A reads the previous composite. Its optional IMAGE input seeds frame one; it does not choose the history target. Pick the combine node in reference.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Fresh → composite; previous composite → warp/fade → composite. The reference closes the loop with a one-tick delay, so there is no cyclic IMAGE wire.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedbackRef\",\n            \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\",\n            \"widget\": \"reference\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"{\\\"ref\\\":\\\"7c1d94b6-8bb6-5f37-ac14-c7902efee786\\\",\\\"outputSlot\\\":0}\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Process the history buffer\",\n      \"text\": \"The warp pass samples its IMAGE input as iChannel0 / u_image. It rotates, expands and fades yesterday’s pixels before they reach the composite.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Lower decay shortens trails. Here one input is one external buffer; internal Shadertoy A–D/Common tabs and four channel inputs are not implemented.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.9\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureFeedbackRef\",\n            \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\"\n          },\n          \"input\": \"image\",\n          \"output\": \"image\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Combine fresh and old frames\",\n      \"text\": \"Add fresh RGB ink to faded history. Display grading comes after the composite so it cannot amplify history each tick.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Screen is another useful blend. Over with an opaque black source would hide history. Do it restores additive routing.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\n            \"widget\": \"operation\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"add\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"input\": \"background\",\n          \"output\": \"IMAGE\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Finish and interact\",\n      \"text\": \"Increase contrast in the Image pass. Alt+W opens the actual interactive preview; Shift-click its overlay button or Alt+O keeps only the node output.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"IMAGE between Livecode nodes crosses separate browser runtimes. TOP operators keep their own GPU chain. Use dat.monitor on your actual patch rather than assuming a fixed frame rate.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 1.6\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\"\n          },\n          \"input\": \"image\",\n          \"output\": \"image\"\n        }\n      ]\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"shader-buffers\",\n  \"title\": \"Livecode: shader buffers and history\",\n  \"summary\": \"Connected GLSL passes, one-frame history and an explicit fresh/history composite.\",\n  \"steps\": [\n    {\n      \"title\": \"Make fresh ink\",\n      \"text\": \"The first GLSL node paints moving RGB ink. Each Livecode node is a separate render pass. Change speed without rebuilding the shader.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"mainImage, iTime, iResolution and iChannel0 aliases are supported. Annotated float speed becomes a regular parameter and controls.value0 socket.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.6\n        }\n      ]\n    },\n    {\n      \"title\": \"Reference the end of the loop\",\n      \"text\": \"Buffer A reads the previous composite. Its optional IMAGE input seeds frame one; it does not choose the history target. Pick the combine node in reference.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedbackRef\",\n        \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Fresh → composite; previous composite → warp/fade → composite. The reference closes the loop with a one-tick delay, so there is no cyclic IMAGE wire.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedbackRef\",\n            \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\",\n            \"widget\": \"reference\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"{\\\"ref\\\":\\\"7c1d94b6-8bb6-5f37-ac14-c7902efee786\\\",\\\"outputSlot\\\":0}\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Process the history buffer\",\n      \"text\": \"The warp pass samples its IMAGE input as iChannel0 / u_image. It rotates, expands and fades yesterday’s pixels before they reach the composite.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Lower decay shortens trails. Here one input is one external buffer; internal Shadertoy A–D/Common tabs and four channel inputs are not implemented.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.9\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureFeedbackRef\",\n            \"ref\": \"bd44969b-52fe-5e13-9d83-d40d4d0e5156\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\"\n          },\n          \"input\": \"image\",\n          \"output\": \"image\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Combine fresh and old frames\",\n      \"text\": \"Add fresh RGB ink to faded history. Display grading comes after the composite so it cannot amplify history each tick.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureComposite\",\n        \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Screen is another useful blend. Over with an opaque black source would hide history. Do it restores additive routing.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\",\n            \"widget\": \"operation\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"add\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"2d8ba61b-2075-59a0-ac0b-0c1c895cb38a\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a7f55850-adf1-5de0-ba67-7f6407613f1e\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"input\": \"background\",\n          \"output\": \"IMAGE\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Finish and interact\",\n      \"text\": \"Increase contrast in the Image pass. Alt+W opens the actual interactive preview; Shift-click its overlay button or Alt+O keeps only the node output.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"IMAGE between Livecode nodes crosses separate browser runtimes. TOP operators keep their own GPU chain. Use dat.monitor on your actual patch rather than assuming a fixed frame rate.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 1.6\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureComposite\",\n            \"ref\": \"7c1d94b6-8bb6-5f37-ac14-c7902efee786\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"70f0113e-c398-50f4-84a2-0767426c824c\"\n          },\n          \"input\": \"image\",\n          \"output\": \"image\"\n        }\n      ]\n    }\n  ]\n}",
+        "genereti_delivery": "Live"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      3,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      4,
+      "IMAGE"
+    ],
+    [
+      3,
+      1,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      3,
+      0,
+      4,
+      1,
+      "IMAGE"
+    ],
+    [
+      5,
+      4,
+      0,
+      5,
+      4,
+      "IMAGE"
+    ],
+    [
+      6,
+      5,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.42,
+      "offset": [
+        70,
+        90
+      ]
+    }
+  },
+  "version": 0.4
+}

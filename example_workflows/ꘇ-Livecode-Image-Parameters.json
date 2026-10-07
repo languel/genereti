@@ -1,0 +1,284 @@
+{
+  "version": 0.4,
+  "config": {},
+  "groups": [],
+  "extra": {
+    "ds": {
+      "scale": 0.72,
+      "offset": [
+        50,
+        20
+      ]
+    },
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti Livecode Image Parameters"
+  },
+  "last_node_id": 4,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "pos": [
+        400,
+        100
+      ],
+      "size": [
+        580,
+        780
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "influence",
+          "link": 2,
+          "widget": {
+            "name": "controls.value0"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeParameters": {
+          "values": {},
+          "slots": {
+            "influence": 0
+          }
+        }
+      },
+      "widgets_values": [
+        "glsl",
+        384,
+        256,
+        true,
+        "precision highp float;\nuniform vec2 u_resolution;\nfloat influence = 0.5; /* 0..1 */\nvoid main(){\n vec2 uv=gl_FragCoord.xy/u_resolution;\n gl_FragColor=texture2D(u_image,uv)*vec4(vec3(influence),1.0);\n}",
+        "{\"influence\":0.5}",
+        "Live"
+      ]
+    },
+    {
+      "flags": {},
+      "mode": 0,
+      "properties": {},
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "id": 2,
+      "type": "EmptyImage",
+      "title": "Image input",
+      "order": 0,
+      "pos": [
+        30,
+        100
+      ],
+      "size": [
+        300,
+        240
+      ],
+      "inputs": [
+        {
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "name": "batch_size",
+          "type": "INT",
+          "widget": {
+            "name": "batch_size"
+          },
+          "link": null
+        },
+        {
+          "name": "color",
+          "type": "INT",
+          "widget": {
+            "name": "color"
+          },
+          "link": null
+        }
+      ],
+      "widgets_values": [
+        512,
+        512,
+        1,
+        16711680
+      ]
+    },
+    {
+      "id": 3,
+      "type": "PrimitiveFloat",
+      "title": "Wired influence",
+      "order": 1,
+      "pos": [
+        30,
+        400
+      ],
+      "size": [
+        300,
+        100
+      ],
+      "flags": {},
+      "mode": 0,
+      "properties": {},
+      "inputs": [
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "widget": {
+            "name": "value"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "FLOAT",
+          "type": "FLOAT",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "widgets_values": [
+        0.5
+      ]
+    },
+    {
+      "id": 4,
+      "type": "PreviewImage",
+      "order": 3,
+      "pos": [
+        1020,
+        100
+      ],
+      "size": [
+        400,
+        400
+      ],
+      "flags": {},
+      "mode": 0,
+      "properties": {},
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [],
+      "widgets_values": []
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      1,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      3,
+      0,
+      1,
+      7,
+      "FLOAT"
+    ],
+    [
+      3,
+      1,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ]
+  ]
+}

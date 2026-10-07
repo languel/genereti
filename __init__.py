@@ -1,6 +1,7 @@
 """Single-folder ComfyUI distribution of the independent Genereti tools."""
 import importlib
 import json
+import logging
 from pathlib import Path
 
 import folder_paths
@@ -30,9 +31,29 @@ def check_legacy_install():
         )
 
 
+def install_bundled_workflows():
+    """Install demos for current Comfy profiles without replacing edited copies."""
+    from server import PromptServer
+    from .scripts.install_comfy_workflows import install
+
+    users = PromptServer.instance.user_manager.users
+    for user_id in users:
+        # Use Comfy's configured user directory, including Desktop layouts.
+        user_root = folder_paths.get_public_user_directory(user_id)
+        if user_root is None:
+            continue
+        try:
+            install(ROOT / 'example_workflows', Path(user_root) / 'workflows')
+        except (OSError, ValueError) as error:
+            # A read-only profile must not prevent the nodes from loading.
+            logging.warning('Genereti could not install demos for %s: %s. '
+                            'Bundled examples remain available in Templates.', user_id, error)
+
+
 class GeneretiExtension(ComfyExtension):
     async def on_load(self):
         check_legacy_install()
+        install_bundled_workflows()
         self.extensions = []
         for name in PACKS:
             module = importlib.import_module(f'.integrations.{name}', __name__)

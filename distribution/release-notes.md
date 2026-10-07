@@ -1,3 +1,10 @@
+## Unreleased installation fix
+
+- Bundled demos appear in Comfy's Templates browser under genereti.
+- Startup installs demos into Workflows → Genereti for existing user profiles,
+  preserving edited copies and backing up replaced managed examples.
+- Uses Comfy's configured paths, including Desktop installations.
+
 # Super alpha classroom release
 
 Version 0.1.1 is an early test release for classroom experimentation and feedback.

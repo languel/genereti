@@ -1,0 +1,1191 @@
+{
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.3,
+      "offset": [
+        60,
+        100
+      ]
+    }
+  },
+  "groups": [],
+  "last_link_id": 9,
+  "last_node_id": 12,
+  "links": [
+    [
+      1,
+      2,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      3,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      5,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      6,
+      0,
+      7,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      6,
+      7,
+      0,
+      8,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      7,
+      8,
+      0,
+      9,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      8,
+      9,
+      0,
+      10,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      9,
+      10,
+      0,
+      11,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ]
+  ],
+  "nodes": [
+    {
+      "flags": {},
+      "id": 1,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 0,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT"
+        },
+        {
+          "links": null,
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING"
+        }
+      ],
+      "pos": [
+        0,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiOperatorHeights": {
+          "guide": 160
+        },
+        "generetiOperatorText": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"id\": \"feedback-av-build\",\n  \"steps\": [\n    {\n      \"actions\": [\n        {\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            318\n          ],\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"title\": \"ꘇtop.expression\",\n          \"widgets\": {\n            \"expression\": \"0.5 + 0.5*sin(t + x*12)*cos(y*12)\",\n            \"genereti_delivery\": \"Live\",\n            \"height\": 512,\n            \"time\": 0,\n            \"width\": 512\n          }\n        },\n        {\n          \"delayMs\": 5,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            154\n          ],\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"title\": \"ꘇtop.feedback\",\n          \"widgets\": {\n            \"decay\": 0.96,\n            \"genereti_delivery\": \"Live\",\n            \"rotate\": 0,\n            \"scale\": 1,\n            \"translate_x\": 0,\n            \"translate_y\": 0\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"part\": \"code\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"widget\": \"expression\"\n          },\n          \"value\": \"step(0.92,sin(t*1.5+x*24)*cos(y*24-t))\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"part\": \"parameter\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"widget\": \"height\"\n          },\n          \"value\": 384\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            760,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"title\": \"ꘇtop.expression\"\n        },\n        {\n          \"delayMs\": 33,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"scale\"\n          },\n          \"value\": 1.01\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"rotate\"\n          },\n          \"value\": 0.8\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1170,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"title\": \"ꘇtop.feedback\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          }\n        },\n        {\n          \"delayMs\": 31,\n          \"kind\": \"layout\",\n          \"position\": [\n            760,\n            0\n          ],\n          \"size\": [\n            330,\n            563.5\n          ],\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"title\": \"ꘇtop.expression\"\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"2\",\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\",\n        \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n      },\n      \"text\": \"Create a texture expression and connect it to temporal feedback. No cyclic cable is needed: top.feedback stores the preceding frame internally. Screen blending is the default so opaque black lets older trails show through; over requires transparent source frames.\",\n      \"title\": \"Create the moving texture and feedback\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 2000,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            58\n          ],\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          },\n          \"title\": \"ꘇ image preview\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"preview_size\": 512\n          }\n        },\n        {\n          \"delayMs\": 4,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          },\n          \"title\": \"ꘇtop.filter\",\n          \"widgets\": {\n            \"amount\": 1,\n            \"genereti_delivery\": \"Live\",\n            \"operation\": \"level\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"decay\"\n          },\n          \"value\": 0.97\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"rotate\"\n          },\n          \"value\": 1.2\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1580,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          },\n          \"title\": \"ꘇ image preview\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          }\n        },\n        {\n          \"delayMs\": 50,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          },\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"part\": \"code\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"widget\": \"operation\"\n          },\n          \"value\": \"invert\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"part\": \"parameter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"widget\": \"amount\"\n          },\n          \"value\": 0.35\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1170,\n            700\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          },\n          \"title\": \"ꘇtop.filter\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          }\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"4\",\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\",\n        \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n      },\n      \"text\": \"Add the image viewer, tune decay/rotation and insert an invert filter. Edit decay gently to balance fresh shapes with trails.\",\n      \"title\": \"Filter and preview the trails\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 239,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n          },\n          \"title\": \"ꘇmod.transport\",\n          \"widgets\": {\n            \"bpm\": 110,\n            \"swing\": 0\n          }\n        },\n        {\n          \"delayMs\": 4,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            130\n          ],\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          },\n          \"title\": \"ꘇmod.sequence\",\n          \"widgets\": {\n            \"division\": 4,\n            \"gate\": 0.55,\n            \"pattern\": \"60 64 67 72 67 64 - 55 60 - 67 - 72 67 64 -\",\n            \"velocity\": 0.65\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"part\": \"parameter\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"widget\": \"bpm\"\n          },\n          \"value\": 96\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"part\": \"parameter\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"widget\": \"swing\"\n          },\n          \"value\": 0.1\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            760,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n          },\n          \"title\": \"ꘇmod.transport\"\n        },\n        {\n          \"delayMs\": 5,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            322\n          ],\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          },\n          \"title\": \"ꘇmod.synth\",\n          \"widgets\": {\n            \"attack\": 0.02,\n            \"cutoff\": 2200,\n            \"decay\": 0.15,\n            \"glide\": 0.015,\n            \"level\": 0.35,\n            \"polyphony\": 8,\n            \"release\": 0.3,\n            \"resonance\": 0.7,\n            \"sustain\": 0.6,\n            \"vibrato\": 0,\n            \"vibrato_rate\": 5,\n            \"voice\": \"sine\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"part\": \"code\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"widget\": \"pattern\"\n          },\n          \"value\": \"48 55 60 63 67 - 63 60 48 - 55 60 - 67 63 -\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"part\": \"parameter\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"widget\": \"velocity\"\n          },\n          \"value\": 0.5\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1170,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          },\n          \"title\": \"ꘇmod.sequence\"\n        },\n        {\n          \"delayMs\": 62,\n          \"input\": \"clock\",\n          \"kind\": \"connect\",\n          \"output\": \"clock\",\n          \"source\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n          },\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"part\": \"code\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"voice\"\n          },\n          \"value\": \"fm\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"level\"\n          },\n          \"value\": 0.25\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"cutoff\"\n          },\n          \"value\": 1600\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1580,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          },\n          \"title\": \"ꘇmod.synth\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"notes\",\n          \"kind\": \"connect\",\n          \"output\": \"notes\",\n          \"source\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          },\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          }\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"6\",\n        \"nodeType\": \"GeneretiAudioTransport\",\n        \"part\": \"node\",\n        \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n      },\n      \"text\": \"Build a 96 BPM transport, melodic note sequence and FM voice. Audio remains stopped while the patch is assembled.\",\n      \"title\": \"Build the sequencer and FM synth\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 2000,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            106\n          ],\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          },\n          \"title\": \"ꘇmod.delay\",\n          \"widgets\": {\n            \"feedback\": 0.25,\n            \"mix\": 0.25,\n            \"seconds\": 0.25\n          }\n        },\n        {\n          \"delayMs\": 6,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            502\n          ],\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          },\n          \"title\": \"ꘇmod.mixer\",\n          \"widgets\": {\n            \"level_1\": 0.7,\n            \"level_2\": 0.7,\n            \"level_3\": 0.7,\n            \"level_4\": 0.7,\n            \"master\": 0.7,\n            \"mute_1\": false,\n            \"mute_2\": false,\n            \"mute_3\": false,\n            \"mute_4\": false,\n            \"pan_1\": 0,\n            \"pan_2\": 0,\n            \"pan_3\": 0,\n            \"pan_4\": 0,\n            \"solo_1\": false,\n            \"solo_2\": false,\n            \"solo_3\": false,\n            \"solo_4\": false\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"part\": \"parameter\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"seconds\"\n          },\n          \"value\": 0.31\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"part\": \"parameter\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"feedback\"\n          },\n          \"value\": 0.35\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"part\": \"parameter\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"mix\"\n          },\n          \"value\": 0.3\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1990,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          },\n          \"title\": \"ꘇmod.delay\"\n        },\n        {\n          \"delayMs\": 3,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          },\n          \"title\": \"ꘇmod.output\",\n          \"widgets\": {\n            \"level\": 0.65,\n            \"mute\": false\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"part\": \"parameter\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\",\n            \"widget\": \"master\"\n          },\n          \"value\": 0.6\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            2400,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          },\n          \"title\": \"ꘇmod.mixer\"\n        },\n        {\n          \"delayMs\": 41,\n          \"input\": \"input\",\n          \"kind\": \"connect\",\n          \"output\": \"audio\",\n          \"source\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          },\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"input_1\",\n          \"kind\": \"connect\",\n          \"output\": \"audio\",\n          \"source\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          },\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"part\": \"parameter\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n            \"widget\": \"level\"\n          },\n          \"value\": 0.25\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            2810,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          },\n          \"title\": \"ꘇmod.output\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"input\",\n          \"kind\": \"connect\",\n          \"output\": \"audio\",\n          \"source\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          },\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          }\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"9\",\n        \"nodeType\": \"GeneretiAudioDelay\",\n        \"part\": \"node\",\n        \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n      },\n      \"text\": \"Route the synth through a tempo-matched delay, into mixer channel 1 and a low-level output.\",\n      \"title\": \"Patch delay, mixer and output\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 260,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            102\n          ],\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n          },\n          \"title\": \"ꘇtop.math\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"operation\": \"multiply\",\n            \"value\": 1\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"part\": \"parameter\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\",\n            \"widget\": \"value\"\n          },\n          \"value\": 0.5\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1990,\n            700\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n          },\n          \"title\": \"ꘇtop.math\"\n        },\n        {\n          \"delayMs\": 1,\n          \"kind\": \"delete-node\",\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n          }\n        },\n        {\n          \"delayMs\": 51,\n          \"kind\": \"layout\",\n          \"position\": [\n            2810,\n            1600\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          },\n          \"title\": \"ꘇmod.output\"\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"12\",\n        \"nodeType\": \"GeneretiTextureMath\",\n        \"part\": \"node\",\n        \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n      },\n      \"text\": \"Create an arithmetic processor to experiment, remove it, and arrange the output. Deletion and layout are recorded too.\",\n      \"title\": \"Test a processor and tidy the patch\"\n    },\n    {\n      \"hint\": \"This step is manual because device and audio activation are explicit gestures.\",\n      \"target\": {\n        \"nodeId\": \"11\",\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"part\": \"node\",\n        \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n      },\n      \"text\": \"Playback pauses here. Press Start on mod.output explicitly, then listen and adjust the melody, cutoff and mixer. Watch the feedback viewer; Alt-W opens its overlay, Alt-F fills the window. Stop/Panic ends the audio. Save the patch and record another variation with the lesson toolbar.\",\n      \"title\": \"Start and test the performance\"\n    }\n  ],\n  \"summary\": \"A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition. A recorded, model-free patch-building session.\",\n  \"title\": \"Build a feedback AV synth\",\n  \"version\": 1\n}"
+        }
+      },
+      "size": [
+        650,
+        760
+      ],
+      "title": "ꘇ build a feedback AV patch · record / play",
+      "type": "GeneretiDatLesson",
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"id\": \"feedback-av-build\",\n  \"steps\": [\n    {\n      \"actions\": [\n        {\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            318\n          ],\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"title\": \"ꘇtop.expression\",\n          \"widgets\": {\n            \"expression\": \"0.5 + 0.5*sin(t + x*12)*cos(y*12)\",\n            \"genereti_delivery\": \"Live\",\n            \"height\": 512,\n            \"time\": 0,\n            \"width\": 512\n          }\n        },\n        {\n          \"delayMs\": 5,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            154\n          ],\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"title\": \"ꘇtop.feedback\",\n          \"widgets\": {\n            \"decay\": 0.96,\n            \"genereti_delivery\": \"Live\",\n            \"rotate\": 0,\n            \"scale\": 1,\n            \"translate_x\": 0,\n            \"translate_y\": 0\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"part\": \"code\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"widget\": \"expression\"\n          },\n          \"value\": \"step(0.92,sin(t*1.5+x*24)*cos(y*24-t))\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"part\": \"parameter\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"widget\": \"height\"\n          },\n          \"value\": 384\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            760,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"title\": \"ꘇtop.expression\"\n        },\n        {\n          \"delayMs\": 33,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"scale\"\n          },\n          \"value\": 1.01\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"rotate\"\n          },\n          \"value\": 0.8\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1170,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"title\": \"ꘇtop.feedback\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          }\n        },\n        {\n          \"delayMs\": 31,\n          \"kind\": \"layout\",\n          \"position\": [\n            760,\n            0\n          ],\n          \"size\": [\n            330,\n            563.5\n          ],\n          \"target\": {\n            \"nodeId\": \"2\",\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n          },\n          \"title\": \"ꘇtop.expression\"\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"2\",\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\",\n        \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\"\n      },\n      \"text\": \"Create a texture expression and connect it to temporal feedback. No cyclic cable is needed: top.feedback stores the preceding frame internally. Screen blending is the default so opaque black lets older trails show through; over requires transparent source frames.\",\n      \"title\": \"Create the moving texture and feedback\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 2000,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            58\n          ],\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          },\n          \"title\": \"ꘇ image preview\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"preview_size\": 512\n          }\n        },\n        {\n          \"delayMs\": 4,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          },\n          \"title\": \"ꘇtop.filter\",\n          \"widgets\": {\n            \"amount\": 1,\n            \"genereti_delivery\": \"Live\",\n            \"operation\": \"level\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"decay\"\n          },\n          \"value\": 0.97\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"rotate\"\n          },\n          \"value\": 1.2\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1580,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          },\n          \"title\": \"ꘇ image preview\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          }\n        },\n        {\n          \"delayMs\": 50,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          },\n          \"target\": {\n            \"nodeId\": \"4\",\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"part\": \"code\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"widget\": \"operation\"\n          },\n          \"value\": \"invert\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"part\": \"parameter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"widget\": \"amount\"\n          },\n          \"value\": 0.35\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1170,\n            700\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          },\n          \"title\": \"ꘇtop.filter\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"image\",\n          \"kind\": \"connect\",\n          \"output\": \"image\",\n          \"source\": {\n            \"nodeId\": \"3\",\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\"\n          },\n          \"target\": {\n            \"nodeId\": \"5\",\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\"\n          }\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"4\",\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"node\",\n        \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\"\n      },\n      \"text\": \"Add the image viewer, tune decay/rotation and insert an invert filter. Edit decay gently to balance fresh shapes with trails.\",\n      \"title\": \"Filter and preview the trails\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 239,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n          },\n          \"title\": \"ꘇmod.transport\",\n          \"widgets\": {\n            \"bpm\": 110,\n            \"swing\": 0\n          }\n        },\n        {\n          \"delayMs\": 4,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            130\n          ],\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          },\n          \"title\": \"ꘇmod.sequence\",\n          \"widgets\": {\n            \"division\": 4,\n            \"gate\": 0.55,\n            \"pattern\": \"60 64 67 72 67 64 - 55 60 - 67 - 72 67 64 -\",\n            \"velocity\": 0.65\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"part\": \"parameter\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"widget\": \"bpm\"\n          },\n          \"value\": 96\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"part\": \"parameter\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"widget\": \"swing\"\n          },\n          \"value\": 0.1\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            760,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n          },\n          \"title\": \"ꘇmod.transport\"\n        },\n        {\n          \"delayMs\": 5,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            322\n          ],\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          },\n          \"title\": \"ꘇmod.synth\",\n          \"widgets\": {\n            \"attack\": 0.02,\n            \"cutoff\": 2200,\n            \"decay\": 0.15,\n            \"glide\": 0.015,\n            \"level\": 0.35,\n            \"polyphony\": 8,\n            \"release\": 0.3,\n            \"resonance\": 0.7,\n            \"sustain\": 0.6,\n            \"vibrato\": 0,\n            \"vibrato_rate\": 5,\n            \"voice\": \"sine\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"part\": \"code\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"widget\": \"pattern\"\n          },\n          \"value\": \"48 55 60 63 67 - 63 60 48 - 55 60 - 67 63 -\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"part\": \"parameter\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"widget\": \"velocity\"\n          },\n          \"value\": 0.5\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1170,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          },\n          \"title\": \"ꘇmod.sequence\"\n        },\n        {\n          \"delayMs\": 62,\n          \"input\": \"clock\",\n          \"kind\": \"connect\",\n          \"output\": \"clock\",\n          \"source\": {\n            \"nodeId\": \"6\",\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n          },\n          \"target\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"part\": \"code\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"voice\"\n          },\n          \"value\": \"fm\"\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"level\"\n          },\n          \"value\": 0.25\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"part\": \"parameter\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"cutoff\"\n          },\n          \"value\": 1600\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1580,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          },\n          \"title\": \"ꘇmod.synth\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"notes\",\n          \"kind\": \"connect\",\n          \"output\": \"notes\",\n          \"source\": {\n            \"nodeId\": \"7\",\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\"\n          },\n          \"target\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          }\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"6\",\n        \"nodeType\": \"GeneretiAudioTransport\",\n        \"part\": \"node\",\n        \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\"\n      },\n      \"text\": \"Build a 96 BPM transport, melodic note sequence and FM voice. Audio remains stopped while the patch is assembled.\",\n      \"title\": \"Build the sequencer and FM synth\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 2000,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            106\n          ],\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          },\n          \"title\": \"ꘇmod.delay\",\n          \"widgets\": {\n            \"feedback\": 0.25,\n            \"mix\": 0.25,\n            \"seconds\": 0.25\n          }\n        },\n        {\n          \"delayMs\": 6,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            502\n          ],\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          },\n          \"title\": \"ꘇmod.mixer\",\n          \"widgets\": {\n            \"level_1\": 0.7,\n            \"level_2\": 0.7,\n            \"level_3\": 0.7,\n            \"level_4\": 0.7,\n            \"master\": 0.7,\n            \"mute_1\": false,\n            \"mute_2\": false,\n            \"mute_3\": false,\n            \"mute_4\": false,\n            \"pan_1\": 0,\n            \"pan_2\": 0,\n            \"pan_3\": 0,\n            \"pan_4\": 0,\n            \"solo_1\": false,\n            \"solo_2\": false,\n            \"solo_3\": false,\n            \"solo_4\": false\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"part\": \"parameter\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"seconds\"\n          },\n          \"value\": 0.31\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"part\": \"parameter\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"feedback\"\n          },\n          \"value\": 0.35\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"part\": \"parameter\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"mix\"\n          },\n          \"value\": 0.3\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1990,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          },\n          \"title\": \"ꘇmod.delay\"\n        },\n        {\n          \"delayMs\": 3,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          },\n          \"title\": \"ꘇmod.output\",\n          \"widgets\": {\n            \"level\": 0.65,\n            \"mute\": false\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"part\": \"parameter\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\",\n            \"widget\": \"master\"\n          },\n          \"value\": 0.6\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            2400,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          },\n          \"title\": \"ꘇmod.mixer\"\n        },\n        {\n          \"delayMs\": 41,\n          \"input\": \"input\",\n          \"kind\": \"connect\",\n          \"output\": \"audio\",\n          \"source\": {\n            \"nodeId\": \"8\",\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\"\n          },\n          \"target\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"input_1\",\n          \"kind\": \"connect\",\n          \"output\": \"audio\",\n          \"source\": {\n            \"nodeId\": \"9\",\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n          },\n          \"target\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"part\": \"parameter\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n            \"widget\": \"level\"\n          },\n          \"value\": 0.25\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            2810,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          },\n          \"title\": \"ꘇmod.output\"\n        },\n        {\n          \"delayMs\": 0,\n          \"input\": \"input\",\n          \"kind\": \"connect\",\n          \"output\": \"audio\",\n          \"source\": {\n            \"nodeId\": \"10\",\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\"\n          },\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          }\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"9\",\n        \"nodeType\": \"GeneretiAudioDelay\",\n        \"part\": \"node\",\n        \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\"\n      },\n      \"text\": \"Route the synth through a tempo-matched delay, into mixer channel 1 and a low-level output.\",\n      \"title\": \"Patch delay, mixer and output\"\n    },\n    {\n      \"actions\": [\n        {\n          \"delayMs\": 260,\n          \"kind\": \"create-node\",\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            102\n          ],\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n          },\n          \"title\": \"ꘇtop.math\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"operation\": \"multiply\",\n            \"value\": 1\n          }\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"part\": \"parameter\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\",\n            \"widget\": \"value\"\n          },\n          \"value\": 0.5\n        },\n        {\n          \"delayMs\": 0,\n          \"kind\": \"layout\",\n          \"position\": [\n            1990,\n            700\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n          },\n          \"title\": \"ꘇtop.math\"\n        },\n        {\n          \"delayMs\": 1,\n          \"kind\": \"delete-node\",\n          \"target\": {\n            \"nodeId\": \"12\",\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n          }\n        },\n        {\n          \"delayMs\": 51,\n          \"kind\": \"layout\",\n          \"position\": [\n            2810,\n            1600\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"target\": {\n            \"nodeId\": \"11\",\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n          },\n          \"title\": \"ꘇmod.output\"\n        }\n      ],\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"target\": {\n        \"nodeId\": \"12\",\n        \"nodeType\": \"GeneretiTextureMath\",\n        \"part\": \"node\",\n        \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\"\n      },\n      \"text\": \"Create an arithmetic processor to experiment, remove it, and arrange the output. Deletion and layout are recorded too.\",\n      \"title\": \"Test a processor and tidy the patch\"\n    },\n    {\n      \"hint\": \"This step is manual because device and audio activation are explicit gestures.\",\n      \"target\": {\n        \"nodeId\": \"11\",\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"part\": \"node\",\n        \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\"\n      },\n      \"text\": \"Playback pauses here. Press Start on mod.output explicitly, then listen and adjust the melody, cutoff and mixer. Watch the feedback viewer; Alt-W opens its overlay, Alt-F fills the window. Stop/Panic ends the audio. Save the patch and record another variation with the lesson toolbar.\",\n      \"title\": \"Start and test the performance\"\n    }\n  ],\n  \"summary\": \"A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition. A recorded, model-free patch-building session.\",\n  \"title\": \"Build a feedback AV synth\",\n  \"version\": 1\n}",
+        ""
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"feedback-av-build\",\n  \"title\": \"Build a feedback AV synth\",\n  \"summary\": \"A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition. A recorded, model-free patch-building session.\",\n  \"steps\": [\n    {\n      \"title\": \"Create the moving texture and feedback\",\n      \"text\": \"Create a texture expression and connect it to temporal feedback. No cyclic cable is needed: top.feedback stores the preceding frame internally.\",\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"actions\": [\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"nodeId\": \"2\"\n          },\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            318\n          ],\n          \"title\": \"ꘇtop.expression\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"expression\": \"0.5 + 0.5*sin(t + x*12)*cos(y*12)\",\n            \"width\": 512,\n            \"height\": 512,\n            \"time\": 0\n          }\n        },\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"nodeId\": \"3\"\n          },\n          \"delayMs\": 5,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            154\n          ],\n          \"title\": \"ꘇtop.feedback\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"decay\": 0.96,\n            \"translate_x\": 0,\n            \"translate_y\": 0,\n            \"scale\": 1,\n            \"rotate\": 0\n          }\n        },\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"widget\": \"expression\",\n            \"part\": \"code\",\n            \"nodeId\": \"2\"\n          },\n          \"delayMs\": 0,\n          \"value\": \"step(0.92,sin(t*1.5+x*24)*cos(y*24-t))\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"widget\": \"height\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"2\"\n          },\n          \"delayMs\": 0,\n          \"value\": 384\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"nodeId\": \"2\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            760,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇtop.expression\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"scale\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"3\"\n          },\n          \"delayMs\": 33,\n          \"value\": 1.01\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"rotate\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"3\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.8\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"nodeId\": \"3\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            1170,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇtop.feedback\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"nodeId\": \"3\"\n          },\n          \"delayMs\": 0,\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"nodeId\": \"2\"\n          },\n          \"output\": \"image\",\n          \"input\": \"image\"\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n            \"nodeId\": \"2\"\n          },\n          \"delayMs\": 31,\n          \"position\": [\n            760,\n            0\n          ],\n          \"size\": [\n            330,\n            563.5\n          ],\n          \"title\": \"ꘇtop.expression\"\n        }\n      ],\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"ref\": \"8230f677-42f7-4cd1-84fb-69fe8fa4d6f1\",\n        \"part\": \"node\",\n        \"nodeId\": \"2\"\n      }\n    },\n    {\n      \"title\": \"Filter and preview the trails\",\n      \"text\": \"Add the image viewer, tune decay/rotation and insert an invert filter. Edit decay gently to balance fresh shapes with trails.\",\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"actions\": [\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\",\n            \"nodeId\": \"4\"\n          },\n          \"delayMs\": 2000,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            58\n          ],\n          \"title\": \"ꘇ image preview\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"preview_size\": 512\n          }\n        },\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"nodeId\": \"5\"\n          },\n          \"delayMs\": 4,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"title\": \"ꘇtop.filter\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"operation\": \"level\",\n            \"amount\": 1\n          }\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"decay\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"3\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.97\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"widget\": \"rotate\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"3\"\n          },\n          \"delayMs\": 0,\n          \"value\": 1.2\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\",\n            \"nodeId\": \"4\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            1580,\n            0\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇ image preview\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\",\n            \"nodeId\": \"4\"\n          },\n          \"delayMs\": 0,\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"nodeId\": \"3\"\n          },\n          \"output\": \"image\",\n          \"input\": \"image\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\",\n            \"nodeId\": \"4\"\n          },\n          \"delayMs\": 50,\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"nodeId\": \"5\"\n          },\n          \"output\": \"image\",\n          \"input\": \"image\"\n        },\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"widget\": \"operation\",\n            \"part\": \"code\",\n            \"nodeId\": \"5\"\n          },\n          \"delayMs\": 0,\n          \"value\": \"invert\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"widget\": \"amount\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"5\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.35\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"nodeId\": \"5\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            1170,\n            700\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇtop.filter\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureFilter\",\n            \"ref\": \"33b9d971-a93c-4fdc-a2fb-fb1189d725d8\",\n            \"nodeId\": \"5\"\n          },\n          \"delayMs\": 0,\n          \"source\": {\n            \"nodeType\": \"GeneretiTextureFeedback\",\n            \"ref\": \"1f0675e5-3f26-4e73-ad06-7408ae8906c4\",\n            \"nodeId\": \"3\"\n          },\n          \"output\": \"image\",\n          \"input\": \"image\"\n        }\n      ],\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"ref\": \"f76e200f-632f-4207-ab2b-c0aff132d2d3\",\n        \"part\": \"node\",\n        \"nodeId\": \"4\"\n      }\n    },\n    {\n      \"title\": \"Build the sequencer and FM synth\",\n      \"text\": \"Build a 96 BPM transport, melodic note sequence and FM voice. Audio remains stopped while the patch is assembled.\",\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"actions\": [\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"nodeId\": \"6\"\n          },\n          \"delayMs\": 239,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"title\": \"ꘇmod.transport\",\n          \"widgets\": {\n            \"bpm\": 110,\n            \"swing\": 0\n          }\n        },\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"nodeId\": \"7\"\n          },\n          \"delayMs\": 4,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            130\n          ],\n          \"title\": \"ꘇmod.sequence\",\n          \"widgets\": {\n            \"pattern\": \"60 64 67 72 67 64 - 55 60 - 67 - 72 67 64 -\",\n            \"division\": 4,\n            \"gate\": 0.55,\n            \"velocity\": 0.65\n          }\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"widget\": \"bpm\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"6\"\n          },\n          \"delayMs\": 0,\n          \"value\": 96\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"widget\": \"swing\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"6\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.1\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"nodeId\": \"6\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            760,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇmod.transport\"\n        },\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"nodeId\": \"8\"\n          },\n          \"delayMs\": 5,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            322\n          ],\n          \"title\": \"ꘇmod.synth\",\n          \"widgets\": {\n            \"voice\": \"sine\",\n            \"level\": 0.35,\n            \"attack\": 0.02,\n            \"decay\": 0.15,\n            \"sustain\": 0.6,\n            \"release\": 0.3,\n            \"cutoff\": 2200,\n            \"resonance\": 0.7,\n            \"glide\": 0.015,\n            \"vibrato\": 0,\n            \"vibrato_rate\": 5,\n            \"polyphony\": 8\n          }\n        },\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"widget\": \"pattern\",\n            \"part\": \"code\",\n            \"nodeId\": \"7\"\n          },\n          \"delayMs\": 0,\n          \"value\": \"48 55 60 63 67 - 63 60 48 - 55 60 - 67 63 -\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"widget\": \"velocity\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"7\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.5\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"nodeId\": \"7\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            1170,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇmod.sequence\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"nodeId\": \"7\"\n          },\n          \"delayMs\": 62,\n          \"source\": {\n            \"nodeType\": \"GeneretiAudioTransport\",\n            \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n            \"nodeId\": \"6\"\n          },\n          \"output\": \"clock\",\n          \"input\": \"clock\"\n        },\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"voice\",\n            \"part\": \"code\",\n            \"nodeId\": \"8\"\n          },\n          \"delayMs\": 0,\n          \"value\": \"fm\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"level\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"8\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.25\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"widget\": \"cutoff\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"8\"\n          },\n          \"delayMs\": 0,\n          \"value\": 1600\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"nodeId\": \"8\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            1580,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇmod.synth\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"nodeId\": \"8\"\n          },\n          \"delayMs\": 0,\n          \"source\": {\n            \"nodeType\": \"GeneretiAudioSequence\",\n            \"ref\": \"4d984d82-1f22-4ef5-b8d4-ddbd919d2e61\",\n            \"nodeId\": \"7\"\n          },\n          \"output\": \"notes\",\n          \"input\": \"notes\"\n        }\n      ],\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioTransport\",\n        \"ref\": \"5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13\",\n        \"part\": \"node\",\n        \"nodeId\": \"6\"\n      }\n    },\n    {\n      \"title\": \"Patch delay, mixer and output\",\n      \"text\": \"Route the synth through a tempo-matched delay, into mixer channel 1 and a low-level output.\",\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"actions\": [\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"nodeId\": \"9\"\n          },\n          \"delayMs\": 2000,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            106\n          ],\n          \"title\": \"ꘇmod.delay\",\n          \"widgets\": {\n            \"seconds\": 0.25,\n            \"feedback\": 0.25,\n            \"mix\": 0.25\n          }\n        },\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\",\n            \"nodeId\": \"10\"\n          },\n          \"delayMs\": 6,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            502\n          ],\n          \"title\": \"ꘇmod.mixer\",\n          \"widgets\": {\n            \"level_1\": 0.7,\n            \"pan_1\": 0,\n            \"mute_1\": false,\n            \"solo_1\": false,\n            \"level_2\": 0.7,\n            \"pan_2\": 0,\n            \"mute_2\": false,\n            \"solo_2\": false,\n            \"level_3\": 0.7,\n            \"pan_3\": 0,\n            \"mute_3\": false,\n            \"solo_3\": false,\n            \"level_4\": 0.7,\n            \"pan_4\": 0,\n            \"mute_4\": false,\n            \"solo_4\": false,\n            \"master\": 0.7\n          }\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"seconds\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"9\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.31\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"feedback\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"9\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.35\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"widget\": \"mix\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"9\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.3\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"nodeId\": \"9\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            1990,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇmod.delay\"\n        },\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n            \"nodeId\": \"11\"\n          },\n          \"delayMs\": 3,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            82\n          ],\n          \"title\": \"ꘇmod.output\",\n          \"widgets\": {\n            \"level\": 0.65,\n            \"mute\": false\n          }\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\",\n            \"widget\": \"master\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"10\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.6\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\",\n            \"nodeId\": \"10\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            2400,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇmod.mixer\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"nodeId\": \"9\"\n          },\n          \"delayMs\": 41,\n          \"source\": {\n            \"nodeType\": \"GeneretiAudioSynth\",\n            \"ref\": \"1f245b32-9b99-42f9-8fba-460b75e8ee0c\",\n            \"nodeId\": \"8\"\n          },\n          \"output\": \"audio\",\n          \"input\": \"input\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\",\n            \"nodeId\": \"10\"\n          },\n          \"delayMs\": 0,\n          \"source\": {\n            \"nodeType\": \"GeneretiAudioDelay\",\n            \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n            \"nodeId\": \"9\"\n          },\n          \"output\": \"audio\",\n          \"input\": \"input_1\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n            \"widget\": \"level\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"11\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.25\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n            \"nodeId\": \"11\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            2810,\n            1420\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇmod.output\"\n        },\n        {\n          \"kind\": \"connect\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n            \"nodeId\": \"11\"\n          },\n          \"delayMs\": 0,\n          \"source\": {\n            \"nodeType\": \"GeneretiAudioMixer\",\n            \"ref\": \"e5702b31-6b8e-4cd4-a2e3-2b0f95794e11\",\n            \"nodeId\": \"10\"\n          },\n          \"output\": \"audio\",\n          \"input\": \"input\"\n        }\n      ],\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioDelay\",\n        \"ref\": \"d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c\",\n        \"part\": \"node\",\n        \"nodeId\": \"9\"\n      }\n    },\n    {\n      \"title\": \"Test a processor and tidy the patch\",\n      \"text\": \"Create an arithmetic processor to experiment, remove it, and arrange the output. Deletion and layout are recorded too.\",\n      \"hint\": \"Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.\",\n      \"actions\": [\n        {\n          \"kind\": \"create-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\",\n            \"nodeId\": \"12\"\n          },\n          \"delayMs\": 260,\n          \"position\": [\n            10,\n            10\n          ],\n          \"size\": [\n            270,\n            102\n          ],\n          \"title\": \"ꘇtop.math\",\n          \"widgets\": {\n            \"genereti_delivery\": \"Live\",\n            \"operation\": \"multiply\",\n            \"value\": 1\n          }\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\",\n            \"widget\": \"value\",\n            \"part\": \"parameter\",\n            \"nodeId\": \"12\"\n          },\n          \"delayMs\": 0,\n          \"value\": 0.5\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\",\n            \"nodeId\": \"12\"\n          },\n          \"delayMs\": 0,\n          \"position\": [\n            1990,\n            700\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇtop.math\"\n        },\n        {\n          \"kind\": \"delete-node\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureMath\",\n            \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\",\n            \"nodeId\": \"12\"\n          },\n          \"delayMs\": 1\n        },\n        {\n          \"kind\": \"layout\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioOutput\",\n            \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n            \"nodeId\": \"11\"\n          },\n          \"delayMs\": 51,\n          \"position\": [\n            2810,\n            1600\n          ],\n          \"size\": [\n            330,\n            500\n          ],\n          \"title\": \"ꘇmod.output\"\n        }\n      ],\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureMath\",\n        \"ref\": \"fe8f8a27-eee5-49ab-abba-e36e06818e1f\",\n        \"part\": \"node\",\n        \"nodeId\": \"12\"\n      }\n    },\n    {\n      \"title\": \"Start and test the performance\",\n      \"text\": \"Playback pauses here. Press Start on mod.output explicitly, then listen and adjust the melody, cutoff and mixer. Watch the feedback viewer; Alt-W opens its overlay, Alt-F fills the window. Stop/Panic ends the audio. Save the patch and record another variation with the lesson toolbar.\",\n      \"hint\": \"This step is manual because device and audio activation are explicit gestures.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"d188116c-9322-4467-b3ec-f7aa60a1a27f\",\n        \"nodeId\": \"11\",\n        \"part\": \"node\"\n      }\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      }
+    },
+    {
+      "flags": {},
+      "id": 2,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 1,
+      "outputs": [
+        {
+          "links": [
+            1
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        760,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureExpression",
+        "generetiLessonRef": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1",
+        "generetiOperatorHeights": {
+          "expression": 160
+        },
+        "generetiOperatorText": {
+          "expression": "step(0.92,sin(t*1.5+x*24)*cos(y*24-t))"
+        },
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "expression": "step(0.92,sin(t*1.5+x*24)*cos(y*24-t))",
+          "height": 384,
+          "time": 0,
+          "width": 512
+        }
+      },
+      "size": [
+        330,
+        563.5
+      ],
+      "type": "GeneretiTextureExpression",
+      "widgets_values": [
+        "step(0.92,sin(t*1.5+x*24)*cos(y*24-t))",
+        512,
+        384,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "expression": "step(0.92,sin(t*1.5+x*24)*cos(y*24-t))",
+        "genereti_delivery": "Live",
+        "height": 384,
+        "texture_preview": "",
+        "time": 0,
+        "width": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 3,
+      "inputs": [
+        {
+          "link": 1,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "decay",
+          "name": "decay",
+          "type": "FLOAT",
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "translate_x",
+          "name": "translate_x",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_x"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "translate_y",
+          "name": "translate_y",
+          "type": "FLOAT",
+          "widget": {
+            "name": "translate_y"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "scale",
+          "name": "scale",
+          "type": "FLOAT",
+          "widget": {
+            "name": "scale"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "rotate",
+          "name": "rotate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "rotate"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 3,
+      "outputs": [
+        {
+          "links": [
+            3
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        1170,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureFeedback",
+        "generetiLessonRef": "1f0675e5-3f26-4e73-ad06-7408ae8906c4",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "decay": 0.97,
+          "rotate": 1.2,
+          "scale": 1.01,
+          "translate_x": 0,
+          "translate_y": 0
+        }
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiTextureFeedback",
+      "widgets_values": [
+        0.97,
+        0,
+        0,
+        1.01,
+        1.2,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "decay": 0.97,
+        "genereti_delivery": "Live",
+        "rotate": 1.2,
+        "scale": 1.01,
+        "texture_preview": "",
+        "translate_x": 0,
+        "translate_y": 0
+      }
+    },
+    {
+      "flags": {},
+      "id": 4,
+      "inputs": [
+        {
+          "link": 4,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 7,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        1580,
+        0
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "f76e200f-632f-4207-ab2b-c0aff132d2d3",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiLiveImagePreview",
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "live_image_preview": "",
+        "preview_size": 512
+      }
+    },
+    {
+      "flags": {},
+      "id": 5,
+      "inputs": [
+        {
+          "link": 3,
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        },
+        {
+          "link": null,
+          "localized_name": "operation",
+          "name": "operation",
+          "type": "COMBO",
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "amount",
+          "name": "amount",
+          "type": "FLOAT",
+          "widget": {
+            "name": "amount"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 5,
+      "outputs": [
+        {
+          "links": [
+            4
+          ],
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE"
+        }
+      ],
+      "pos": [
+        1170,
+        700
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureFilter",
+        "generetiLessonRef": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8",
+        "genereti_output_layout": {},
+        "genereti_widget_values": {
+          "amount": 0.35,
+          "operation": "invert"
+        }
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiTextureFilter",
+      "widgets_values": [
+        "invert",
+        0.35,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "amount": 0.35,
+        "genereti_delivery": "Live",
+        "operation": "invert",
+        "texture_preview": ""
+      }
+    },
+    {
+      "flags": {},
+      "id": 6,
+      "inputs": [
+        {
+          "link": null,
+          "localized_name": "bpm",
+          "name": "bpm",
+          "type": "FLOAT",
+          "widget": {
+            "name": "bpm"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "swing",
+          "name": "swing",
+          "type": "FLOAT",
+          "widget": {
+            "name": "swing"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 2,
+      "outputs": [
+        {
+          "links": [
+            5
+          ],
+          "localized_name": "clock",
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK"
+        }
+      ],
+      "pos": [
+        760,
+        1420
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioTransport",
+        "generetiLessonRef": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13"
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiAudioTransport",
+      "widgets_values": [
+        96,
+        0.1,
+        ""
+      ],
+      "widgets_values_named": {
+        "audio_controls": "",
+        "bpm": 96,
+        "swing": 0.1
+      }
+    },
+    {
+      "flags": {},
+      "id": 7,
+      "inputs": [
+        {
+          "link": 5,
+          "localized_name": "clock",
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK"
+        },
+        {
+          "link": null,
+          "localized_name": "pattern",
+          "name": "pattern",
+          "type": "STRING",
+          "widget": {
+            "name": "pattern"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "division",
+          "name": "division",
+          "type": "INT",
+          "widget": {
+            "name": "division"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "gate",
+          "name": "gate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "gate"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "velocity",
+          "name": "velocity",
+          "type": "FLOAT",
+          "widget": {
+            "name": "velocity"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 4,
+      "outputs": [
+        {
+          "links": [
+            6
+          ],
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP"
+        }
+      ],
+      "pos": [
+        1170,
+        1420
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSequence",
+        "generetiLessonRef": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61"
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiAudioSequence",
+      "widgets_values": [
+        "48 55 60 63 67 - 63 60 48 - 55 60 - 67 63 -",
+        4,
+        0.55,
+        0.5,
+        ""
+      ],
+      "widgets_values_named": {
+        "audio_controls": "",
+        "division": 4,
+        "gate": 0.55,
+        "pattern": "48 55 60 63 67 - 63 60 48 - 55 60 - 67 63 -",
+        "velocity": 0.5
+      }
+    },
+    {
+      "flags": {},
+      "id": 8,
+      "inputs": [
+        {
+          "link": 6,
+          "localized_name": "notes",
+          "name": "notes",
+          "type": "GENERETI_CHOP"
+        },
+        {
+          "link": null,
+          "localized_name": "voice",
+          "name": "voice",
+          "type": "COMBO",
+          "widget": {
+            "name": "voice"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "level",
+          "name": "level",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "attack",
+          "name": "attack",
+          "type": "FLOAT",
+          "widget": {
+            "name": "attack"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "decay",
+          "name": "decay",
+          "type": "FLOAT",
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "sustain",
+          "name": "sustain",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sustain"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "release",
+          "name": "release",
+          "type": "FLOAT",
+          "widget": {
+            "name": "release"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "cutoff",
+          "name": "cutoff",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cutoff"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "resonance",
+          "name": "resonance",
+          "type": "FLOAT",
+          "widget": {
+            "name": "resonance"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "glide",
+          "name": "glide",
+          "type": "FLOAT",
+          "widget": {
+            "name": "glide"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "vibrato",
+          "name": "vibrato",
+          "type": "FLOAT",
+          "widget": {
+            "name": "vibrato"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "vibrato_rate",
+          "name": "vibrato_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "vibrato_rate"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "polyphony",
+          "name": "polyphony",
+          "type": "INT",
+          "widget": {
+            "name": "polyphony"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 6,
+      "outputs": [
+        {
+          "links": [
+            7
+          ],
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS"
+        }
+      ],
+      "pos": [
+        1580,
+        1420
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSynth",
+        "generetiLessonRef": "1f245b32-9b99-42f9-8fba-460b75e8ee0c"
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiAudioSynth",
+      "widgets_values": [
+        "fm",
+        0.25,
+        0.02,
+        0.15,
+        0.6,
+        0.3,
+        1600,
+        0.7,
+        0.015,
+        0,
+        5,
+        8,
+        ""
+      ],
+      "widgets_values_named": {
+        "attack": 0.02,
+        "audio_controls": "",
+        "cutoff": 1600,
+        "decay": 0.15,
+        "glide": 0.015,
+        "level": 0.25,
+        "polyphony": 8,
+        "release": 0.3,
+        "resonance": 0.7,
+        "sustain": 0.6,
+        "vibrato": 0,
+        "vibrato_rate": 5,
+        "voice": "fm"
+      }
+    },
+    {
+      "flags": {},
+      "id": 9,
+      "inputs": [
+        {
+          "link": 7,
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS"
+        },
+        {
+          "link": null,
+          "localized_name": "seconds",
+          "name": "seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "seconds"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "feedback",
+          "name": "feedback",
+          "type": "FLOAT",
+          "widget": {
+            "name": "feedback"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "mix",
+          "name": "mix",
+          "type": "FLOAT",
+          "widget": {
+            "name": "mix"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 8,
+      "outputs": [
+        {
+          "links": [
+            8
+          ],
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS"
+        }
+      ],
+      "pos": [
+        1990,
+        1420
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDelay",
+        "generetiLessonRef": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiAudioDelay",
+      "widgets_values": [
+        0.31,
+        0.35,
+        0.3,
+        ""
+      ],
+      "widgets_values_named": {
+        "audio_controls": "",
+        "feedback": 0.35,
+        "mix": 0.3,
+        "seconds": 0.31
+      }
+    },
+    {
+      "flags": {},
+      "id": 10,
+      "inputs": [
+        {
+          "link": 8,
+          "localized_name": "input_1",
+          "name": "input_1",
+          "shape": 7,
+          "type": "GENERETI_AUDIO_BUS"
+        },
+        {
+          "link": null,
+          "localized_name": "input_2",
+          "name": "input_2",
+          "shape": 7,
+          "type": "GENERETI_AUDIO_BUS"
+        },
+        {
+          "link": null,
+          "localized_name": "input_3",
+          "name": "input_3",
+          "shape": 7,
+          "type": "GENERETI_AUDIO_BUS"
+        },
+        {
+          "link": null,
+          "localized_name": "input_4",
+          "name": "input_4",
+          "shape": 7,
+          "type": "GENERETI_AUDIO_BUS"
+        },
+        {
+          "link": null,
+          "localized_name": "level_1",
+          "name": "level_1",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level_1"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "pan_1",
+          "name": "pan_1",
+          "type": "FLOAT",
+          "widget": {
+            "name": "pan_1"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "mute_1",
+          "name": "mute_1",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "mute_1"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "solo_1",
+          "name": "solo_1",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "solo_1"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "level_2",
+          "name": "level_2",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level_2"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "pan_2",
+          "name": "pan_2",
+          "type": "FLOAT",
+          "widget": {
+            "name": "pan_2"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "mute_2",
+          "name": "mute_2",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "mute_2"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "solo_2",
+          "name": "solo_2",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "solo_2"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "level_3",
+          "name": "level_3",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level_3"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "pan_3",
+          "name": "pan_3",
+          "type": "FLOAT",
+          "widget": {
+            "name": "pan_3"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "mute_3",
+          "name": "mute_3",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "mute_3"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "solo_3",
+          "name": "solo_3",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "solo_3"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "level_4",
+          "name": "level_4",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level_4"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "pan_4",
+          "name": "pan_4",
+          "type": "FLOAT",
+          "widget": {
+            "name": "pan_4"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "mute_4",
+          "name": "mute_4",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "mute_4"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "solo_4",
+          "name": "solo_4",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "solo_4"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "master",
+          "name": "master",
+          "type": "FLOAT",
+          "widget": {
+            "name": "master"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 9,
+      "outputs": [
+        {
+          "links": [
+            9
+          ],
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS"
+        }
+      ],
+      "pos": [
+        2400,
+        1420
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioMixer",
+        "generetiLessonRef": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11"
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiAudioMixer",
+      "widgets_values": [
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.6,
+        ""
+      ],
+      "widgets_values_named": {
+        "audio_controls": "",
+        "level_1": 0.7,
+        "level_2": 0.7,
+        "level_3": 0.7,
+        "level_4": 0.7,
+        "master": 0.6,
+        "mute_1": false,
+        "mute_2": false,
+        "mute_3": false,
+        "mute_4": false,
+        "pan_1": 0,
+        "pan_2": 0,
+        "pan_3": 0,
+        "pan_4": 0,
+        "solo_1": false,
+        "solo_2": false,
+        "solo_3": false,
+        "solo_4": false
+      }
+    },
+    {
+      "flags": {},
+      "id": 11,
+      "inputs": [
+        {
+          "link": 9,
+          "localized_name": "input",
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS"
+        },
+        {
+          "link": null,
+          "localized_name": "level",
+          "name": "level",
+          "type": "FLOAT",
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "link": null,
+          "localized_name": "mute",
+          "name": "mute",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "mute"
+          }
+        }
+      ],
+      "mode": 0,
+      "order": 10,
+      "outputs": [
+        {
+          "links": null,
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS"
+        }
+      ],
+      "pos": [
+        2810,
+        1600
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioOutput",
+        "generetiLessonRef": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
+      },
+      "size": [
+        330,
+        500
+      ],
+      "type": "GeneretiAudioOutput",
+      "widgets_values": [
+        0.25,
+        false,
+        ""
+      ],
+      "widgets_values_named": {
+        "audio_controls": "",
+        "level": 0.25,
+        "mute": false
+      }
+    }
+  ],
+  "version": 0.4
+}

@@ -1,0 +1,378 @@
+{
+  "last_node_id": 4,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        430,
+        620
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "language",
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "auto_update",
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "code",
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "parameters",
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "title": "ꘇ interactive p5 · Alt+O / Alt+W",
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "p5",
+          "source": "let clicks = 0;\nfunction setup(){ createCanvas(windowWidth, windowHeight); }\nfunction draw(){\n  clear(); fill(235); noStroke(); textSize(24);\n  text(\"Clicks: \" + clicks, 24, 40);\n  circle(mouseX, mouseY, 30);\n}\nfunction mousePressed(){ clicks++; }\n"
+        },
+        "generetiLivecodeParameters": {
+          "values": {},
+          "slots": {}
+        },
+        "genereti_widget_values": {
+          "language": "p5",
+          "width": 512,
+          "height": 384,
+          "auto_update": true,
+          "code": "let clicks = 0;\nfunction setup(){ createCanvas(windowWidth, windowHeight); }\nfunction draw(){\n  clear(); fill(235); noStroke(); textSize(24);\n  text(\"Clicks: \" + clicks, 24, 40);\n  circle(mouseX, mouseY, 30);\n}\nfunction mousePressed(){ clicks++; }\n",
+          "parameters": "{}"
+        }
+      },
+      "widgets_values": [
+        "p5",
+        512,
+        384,
+        true,
+        "let clicks = 0;\nfunction setup(){ createCanvas(windowWidth, windowHeight); }\nfunction draw(){\n  clear(); fill(235); noStroke(); textSize(24);\n  text(\"Clicks: \" + clicks, 24, 40);\n  circle(mouseX, mouseY, 30);\n}\nfunction mousePressed(){ clicks++; }\n",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "language": "three",
+        "width": 256,
+        "height": 256,
+        "auto_update": true,
+        "controls.value0": 1,
+        "code": "// @param speed = 1 (0..4)\nconst mesh=new THREE.Mesh(new THREE.TorusKnotGeometry(1,.3,96,16),new THREE.MeshNormalMaterial());\nscene.add(mesh);\ntick(t=>{mesh.rotation.x=t*__.params.speed*.3;mesh.rotation.y=t*__.params.speed*.5;});",
+        "parameters": "{\"speed\":1}"
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiLivecode",
+      "pos": [
+        500,
+        0
+      ],
+      "size": [
+        430,
+        620
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "language",
+          "name": "language",
+          "type": "COMBO",
+          "widget": {
+            "name": "language"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "auto_update",
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "auto_update"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "code",
+          "name": "code",
+          "type": "STRING",
+          "widget": {
+            "name": "code"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "parameters",
+          "name": "parameters",
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "title": "ꘇ scrollable document · Alt+W",
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLivecodeLastGood": {
+          "mode": "markdown",
+          "source": "# Interactive document\n\nOpen an overlay with **Alt+W**. Select text and scroll inside the document.\n\nMath stays sharp: $E=mc^2$.\n\n## Section 1\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 2\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 3\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 4\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 5\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 6\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 7\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 8\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 9\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 10\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 11\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 12\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution."
+        },
+        "generetiLivecodeParameters": {
+          "values": {},
+          "slots": {}
+        },
+        "genereti_widget_values": {
+          "language": "markdown",
+          "width": 512,
+          "height": 384,
+          "auto_update": true,
+          "code": "# Interactive document\n\nOpen an overlay with **Alt+W**. Select text and scroll inside the document.\n\nMath stays sharp: $E=mc^2$.\n\n## Section 1\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 2\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 3\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 4\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 5\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 6\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 7\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 8\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 9\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 10\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 11\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 12\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.",
+          "parameters": "{}"
+        }
+      },
+      "widgets_values": [
+        "markdown",
+        512,
+        384,
+        true,
+        "# Interactive document\n\nOpen an overlay with **Alt+W**. Select text and scroll inside the document.\n\nMath stays sharp: $E=mc^2$.\n\n## Section 1\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 2\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 3\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 4\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 5\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 6\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 7\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 8\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 9\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 10\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 11\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.\n\n## Section 12\n\nA native document view, rather than a bitmap. Texture capture still uses the configured resolution.",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "language": "three",
+        "width": 256,
+        "height": 256,
+        "auto_update": true,
+        "controls.value0": 1,
+        "code": "// @param speed = 1 (0..4)\nconst mesh=new THREE.Mesh(new THREE.TorusKnotGeometry(1,.3,96,16),new THREE.MeshNormalMaterial());\nscene.add(mesh);\ntick(t=>{mesh.rotation.x=t*__.params.speed*.3;mesh.rotation.y=t*__.params.speed*.5;});",
+        "parameters": "{\"speed\":1}"
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiDrawing",
+      "pos": [
+        1000,
+        0
+      ],
+      "size": [
+        540,
+        650
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": []
+        },
+        {
+          "name": "SVG",
+          "type": "STRING",
+          "slot_index": 2,
+          "links": []
+        },
+        {
+          "name": "JSON",
+          "type": "STRING",
+          "slot_index": 3,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDrawing"
+      },
+      "widgets_values": [
+        "",
+        "",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "drawing": "",
+        "capture": "",
+        "genereti_delivery": "Live"
+      },
+      "title": "ꘇ draw over the graph · Shift-click overlay"
+    },
+    {
+      "id": 4,
+      "type": "GeneretiDatLesson",
+      "pos": [
+        0,
+        740
+      ],
+      "size": [
+        700,
+        540
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson"
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"interactive-output-views\",\n  \"title\": \"Interactive output views\",\n  \"summary\": \"Present a working sketch or document without losing interaction.\",\n  \"steps\": [\n    {\n      \"title\": \"Use the sketch\",\n      \"text\": \"Click the p5 output; its click counter changes. The moving circle follows your pointer.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"preview\"\n      }\n    },\n    {\n      \"title\": \"Hide just the node chrome\",\n      \"text\": \"Select p5 and press Alt+O, or Shift-click its overlay button. Only output remains. Hover just outside an edge to reveal its opacity and stacking controls. The restore glyph brings the chrome back.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Move it into an overlay\",\n      \"text\": \"Restore the node, then press Alt+W or click the overlay button normally. The same sketch moves into an interactive overlay.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"toolbar\"\n      },\n      \"check\": {\n        \"kind\": \"overlay-open\"\n      }\n    },\n    {\n      \"title\": \"Arrange two views\",\n      \"text\": \"Open the scrollable document overlay too. Hover a view and use Cmd+[ / ] for backward/forward, or Cmd+Shift+[ / ] for back/front. The bar has the same controls; Shift-click a stacking arrow for back/front. Code editors keep their own bracket shortcuts.\"\n    },\n    {\n      \"title\": \"Annotate and present\",\n      \"text\": \"The drawing node keeps the active editor in both views. Alt+Shift+O toggles click-through. Alt+F fills an overlay inside Comfy; Alt+P hides graph/code and Alt+Shift+Z hides the outer Comfy shell. Native browser fullscreen remains separate.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDrawing\",\n        \"part\": \"preview\"\n      }\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"opentouch-basics\",\n  \"title\": \"Textures, signals and tables\",\n  \"summary\": \"Edit an expression, connect a control signal, and use a table as a parameter source.\",\n  \"steps\": [\n    {\n      \"title\": \"One graph, three interfaces\",\n      \"text\": \"TOP carries images, CHOP carries sampled channels, and DAT carries documents and tables. The lesson workflow uses real nodes you can keep editing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Write a texture expression\",\n      \"text\": \"Change the expression, for example change x*12 to x*8. CodeMirror applies it while typing. The GPU program recompiles only when its source changes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"Change a signal\",\n      \"text\": \"Adjust oscillator frequency. The FLOAT output is the last sample of its first channel; the channel output carries the whole named block.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopOscillator\",\n        \"part\": \"parameter\",\n        \"widget\": \"frequency\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"A FLOAT becomes a texture control\",\n      \"text\": \"Follow the wire from chop.lag to top.transform rotate. These are regular Comfy input sockets; signals update the live shader without a Python queue.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\"\n      },\n      \"check\": {\n        \"kind\": \"connected-input\",\n        \"input\": \"rotate\"\n      }\n    },\n    {\n      \"title\": \"A table becomes a parameter\",\n      \"text\": \"Edit a number in the table. dat.cell selects one cell and exposes it as STRING and FLOAT. The lesson wires its FLOAT into top.math value.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatTable\",\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"GPU composition and history\",\n      \"text\": \"Inspect feedback, corner pin and compositing. Feedback keeps two GPU textures and avoids cyclic graph wires. Its history exists in Live mode; Queue returns the current input.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedback\",\n        \"part\": \"preview\"\n      }\n    },\n    {\n      \"title\": \"Keep 3D in Three.js\",\n      \"text\": \"The Three.js Livecode source uses the same IMAGE path. Its code can read inputTexture and declared CHOP-driven parameters; no separate geometry engine is needed.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"code\"\n      }\n    },\n    {\n      \"title\": \"Read and export the report\",\n      \"text\": \"The DAT document contains the library report. Use its export controls for Markdown, standalone HTML, or Print / Save as PDF. The report describes performance and device boundaries.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"part\": \"toolbar\"\n      }\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      },
+      "title": "ꘇ run this mini guide"
+    }
+  ],
+  "links": [],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        30,
+        70
+      ]
+    }
+  },
+  "version": 0.4
+}

@@ -1,0 +1,742 @@
+{
+  "last_node_id": 13,
+  "last_link_id": 12,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiAudioTransport",
+      "title": "ꘇmod.transport",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        300,
+        180
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioTransport"
+      },
+      "widgets_values": [
+        95,
+        0
+      ]
+    },
+    {
+      "id": 2,
+      "type": "GeneretiAudioSequence",
+      "title": "ꘇmod.sequence",
+      "pos": [
+        0,
+        230
+      ],
+      "size": [
+        460,
+        240
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSequence"
+      },
+      "widgets_values": [
+        "60 64 67 72 67 64 - 55",
+        4,
+        0.55,
+        0.65
+      ]
+    },
+    {
+      "id": 3,
+      "type": "GeneretiAudioSynth",
+      "title": "ꘇmod.synth",
+      "pos": [
+        520,
+        0
+      ],
+      "size": [
+        340,
+        650
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSynth"
+      },
+      "widgets_values": [
+        "fm",
+        0.2,
+        0.02,
+        0.15,
+        0.6,
+        0.3,
+        2200,
+        0.7,
+        0.015,
+        0,
+        5,
+        8
+      ]
+    },
+    {
+      "id": 4,
+      "type": "GeneretiAudioGain",
+      "title": "ꘇmod.gain",
+      "pos": [
+        930,
+        0
+      ],
+      "size": [
+        300,
+        210
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioGain"
+      },
+      "widgets_values": [
+        0.8,
+        0.25,
+        false
+      ]
+    },
+    {
+      "id": 5,
+      "type": "GeneretiAudioOutput",
+      "title": "ꘇmod.output",
+      "pos": [
+        1280,
+        0
+      ],
+      "size": [
+        320,
+        240
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioOutput"
+      },
+      "widgets_values": [
+        0.15,
+        false
+      ]
+    },
+    {
+      "id": 6,
+      "type": "GeneretiAudioScope",
+      "title": "ꘇmod.scope",
+      "pos": [
+        930,
+        310
+      ],
+      "size": [
+        340,
+        420
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioScope"
+      },
+      "widgets_values": [
+        1024,
+        0.5,
+        12
+      ]
+    },
+    {
+      "id": 7,
+      "type": "GeneretiAudioSpectrum",
+      "title": "ꘇmod.spectrum",
+      "pos": [
+        1320,
+        310
+      ],
+      "size": [
+        340,
+        420
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSpectrum"
+      },
+      "widgets_values": [
+        2048,
+        0.5,
+        1
+      ]
+    },
+    {
+      "id": 8,
+      "type": "GeneretiAudioLissajous",
+      "title": "ꘇmod.lissajous",
+      "pos": [
+        1710,
+        480
+      ],
+      "size": [
+        360,
+        570
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioLissajous"
+      },
+      "widgets_values": [
+        1024,
+        0.5,
+        20
+      ]
+    },
+    {
+      "id": 9,
+      "type": "GeneretiAudioAnalyze",
+      "title": "ꘇmod.analyze",
+      "pos": [
+        1710,
+        0
+      ],
+      "size": [
+        360,
+        380
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioAnalyze"
+      },
+      "widgets_values": [
+        1024,
+        0.5,
+        12
+      ]
+    },
+    {
+      "id": 10,
+      "type": "GeneretiChopSelect",
+      "title": "ꘇchop.select",
+      "pos": [
+        0,
+        560
+      ],
+      "size": [
+        340,
+        240
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 9
+        }
+      ],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopSelect"
+      },
+      "widgets_values": [
+        "rms"
+      ]
+    },
+    {
+      "id": 11,
+      "type": "GeneretiChopMath",
+      "title": "ꘇchop.math",
+      "pos": [
+        0,
+        850
+      ],
+      "size": [
+        340,
+        320
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 10
+        }
+      ],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopMath"
+      },
+      "widgets_values": [
+        "multiply",
+        12,
+        0,
+        1
+      ]
+    },
+    {
+      "id": 12,
+      "type": "GeneretiTextureFilter",
+      "title": "ꘇtop.filter",
+      "pos": [
+        440,
+        850
+      ],
+      "size": [
+        390,
+        400
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 12
+        },
+        {
+          "name": "amount",
+          "type": "FLOAT",
+          "link": 11,
+          "widget": {
+            "name": "amount"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureFilter"
+      },
+      "widgets_values": [
+        "opacity",
+        1
+      ]
+    },
+    {
+      "id": 13,
+      "type": "GeneretiDatLesson",
+      "pos": [
+        930,
+        940
+      ],
+      "size": [
+        740,
+        620
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson"
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"audio-analysis\",\n  \"title\": \"See sound, use sound\",\n  \"summary\": \"Scopes, spectral analysis, stereo geometry and audio-driven visual controls.\",\n  \"steps\": [\n    {\n      \"title\": \"Start the patch\",\n      \"text\": \"Press ▷ on mod.output. Sound starts explicitly at a low level. The analysis taps remain silent until their source is part of a running output patch.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Use Start on the output, not Queue or the lesson Play button.\"\n    },\n    {\n      \"title\": \"Read the waveform\",\n      \"text\": \"mod.scope draws left and right waveforms. Its channels output carries sampled stereo data; image carries the drawing. RMS and peak sockets are scalar controls.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioScope\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Increase display_gain to enlarge the drawing without changing sound.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioScope\",\n            \"widget\": \"display_gain\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 12\n        }\n      ]\n    },\n    {\n      \"title\": \"Read the spectrum\",\n      \"text\": \"mod.spectrum draws decibels on a linear-frequency axis. Channels are magnitude and frequency in Hz. fft_size trades frequency detail for a longer analysis window; smoothing affects spectral bins only.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSpectrum\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The frequency of bin i is i × sampleRate / fft_size.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSpectrum\",\n            \"widget\": \"fft_size\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 2048\n        }\n      ]\n    },\n    {\n      \"title\": \"See stereo relationships\",\n      \"text\": \"mod.lissajous plots left versus right. A centered mono signal forms a diagonal. Change pan to stretch it; richer stereo effects can create loops. Correlation is +1 for identical signals, -1 for opposite phase.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioLissajous\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Pan changes balance, not phase; it will tilt a line rather than generate a loop.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioGain\",\n            \"widget\": \"pan\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.5\n        }\n      ]\n    },\n    {\n      \"title\": \"Use analysis as controls\",\n      \"text\": \"mod.analyze exposes rms, peak, correlation and low/mid/high spectral band amplitudes. chop.select chooses rms, chop.math multiplies it by 12, and its FLOAT output drives the opacity of the scope image in top.filter.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopMath\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Follow channels → select rms → math → FLOAT amount. These are control-rate measurements, not an audio-rate CHOP DSP engine.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiChopMath\",\n            \"widget\": \"value\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 20\n        }\n      ]\n    },\n    {\n      \"title\": \"Stop and save\",\n      \"text\": \"Press ■ Panic on mod.output. Analysis and scalar controls return to zero. Save retains wiring and settings, never a playing AudioContext.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Queue returns silent analysis data and placeholder IMAGEs; the browser owns live analysis.\"\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"opentouch-basics\",\n  \"title\": \"Textures, signals and tables\",\n  \"summary\": \"Edit an expression, connect a control signal, and use a table as a parameter source.\",\n  \"steps\": [\n    {\n      \"title\": \"One graph, three interfaces\",\n      \"text\": \"TOP carries images, CHOP carries sampled channels, and DAT carries documents and tables. The lesson workflow uses real nodes you can keep editing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Write a texture expression\",\n      \"text\": \"Change the expression, for example change x*12 to x*8. CodeMirror applies it while typing. The GPU program recompiles only when its source changes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"Change a signal\",\n      \"text\": \"Adjust oscillator frequency. The FLOAT output is the last sample of its first channel; the channel output carries the whole named block.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopOscillator\",\n        \"part\": \"parameter\",\n        \"widget\": \"frequency\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"A FLOAT becomes a texture control\",\n      \"text\": \"Follow the wire from chop.lag to top.transform rotate. These are regular Comfy input sockets; signals update the live shader without a Python queue.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\"\n      },\n      \"check\": {\n        \"kind\": \"connected-input\",\n        \"input\": \"rotate\"\n      }\n    },\n    {\n      \"title\": \"A table becomes a parameter\",\n      \"text\": \"Edit a number in the table. dat.cell selects one cell and exposes it as STRING and FLOAT. The lesson wires its FLOAT into top.math value.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatTable\",\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"GPU composition and history\",\n      \"text\": \"Inspect feedback, corner pin and compositing. Feedback keeps two GPU textures and avoids cyclic graph wires. Its history exists in Live mode; Queue returns the current input.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedback\",\n        \"part\": \"preview\"\n      }\n    },\n    {\n      \"title\": \"Keep 3D in Three.js\",\n      \"text\": \"The Three.js Livecode source uses the same IMAGE path. Its code can read inputTexture and declared CHOP-driven parameters; no separate geometry engine is needed.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"code\"\n      }\n    },\n    {\n      \"title\": \"Read and export the report\",\n      \"text\": \"The DAT document contains the library report. Use its export controls for Markdown, standalone HTML, or Print / Save as PDF. The report describes performance and device boundaries.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"part\": \"toolbar\"\n      }\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      },
+      "title": "ꘇ sound analysis · start here"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      5,
+      4,
+      0,
+      6,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      6,
+      4,
+      0,
+      7,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      7,
+      4,
+      0,
+      8,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      8,
+      4,
+      0,
+      9,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      9,
+      9,
+      1,
+      10,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      10,
+      10,
+      0,
+      11,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      11,
+      11,
+      1,
+      12,
+      1,
+      "FLOAT"
+    ],
+    [
+      12,
+      6,
+      4,
+      12,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.4,
+      "offset": [
+        90,
+        100
+      ]
+    }
+  },
+  "version": 0.4
+}

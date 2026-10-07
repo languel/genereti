@@ -1,0 +1,398 @@
+{
+  "last_node_id": 4,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "title": "ꘇ p5 · interactive source",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        410,
+        620
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "language",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "language"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "auto_update"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "speed",
+          "link": null,
+          "widget": {
+            "name": "controls.value0"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLessonRef": "a8a634c3-4268-5e02-97c3-56c6061a0c9e",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "language": "p5",
+          "width": 384,
+          "height": 256,
+          "auto_update": true,
+          "code": "let speed = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(225,45,8); noStroke();\n  for(let i=0;i<18;i++){\n    let a=frameCount*0.018*speed+i*TWO_PI/18;\n    fill((i*20+frameCount)%360,80,95);\n    circle(width/2+cos(a)*width*.3,height/2+sin(a*1.3)*height*.3,12+i*.7);\n  }\n  if(mouseIsPressed){ fill(40,30,100); circle(mouseX,mouseY,45); }\n}",
+          "parameters": "{\"speed\": 1.0}",
+          "performance": "{}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "speed": 1.0
+          },
+          "slots": {
+            "speed": 0
+          }
+        },
+        "generetiLivecodeLastGood": {
+          "mode": "p5",
+          "source": "let speed = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(225,45,8); noStroke();\n  for(let i=0;i<18;i++){\n    let a=frameCount*0.018*speed+i*TWO_PI/18;\n    fill((i*20+frameCount)%360,80,95);\n    circle(width/2+cos(a)*width*.3,height/2+sin(a*1.3)*height*.3,12+i*.7);\n  }\n  if(mouseIsPressed){ fill(40,30,100); circle(mouseX,mouseY,45); }\n}"
+        }
+      },
+      "widgets_values": [
+        "p5",
+        384,
+        256,
+        true,
+        "let speed = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(225,45,8); noStroke();\n  for(let i=0;i<18;i++){\n    let a=frameCount*0.018*speed+i*TWO_PI/18;\n    fill((i*20+frameCount)%360,80,95);\n    circle(width/2+cos(a)*width*.3,height/2+sin(a*1.3)*height*.3,12+i*.7);\n  }\n  if(mouseIsPressed){ fill(40,30,100); circle(mouseX,mouseY,45); }\n}",
+        "{\"speed\": 1.0}",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "language": "p5",
+        "width": 384,
+        "height": 256,
+        "auto_update": true,
+        "code": "let speed = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(225,45,8); noStroke();\n  for(let i=0;i<18;i++){\n    let a=frameCount*0.018*speed+i*TWO_PI/18;\n    fill((i*20+frameCount)%360,80,95);\n    circle(width/2+cos(a)*width*.3,height/2+sin(a*1.3)*height*.3,12+i*.7);\n  }\n  if(mouseIsPressed){ fill(40,30,100); circle(mouseX,mouseY,45); }\n}",
+        "parameters": "{\"speed\": 1.0}",
+        "performance": "{}",
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiLivecode",
+      "title": "ꘇ p5 · mirrored tiles",
+      "pos": [
+        490,
+        0
+      ],
+      "size": [
+        410,
+        620
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "language",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "language"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "auto_update"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "tiles",
+          "link": null,
+          "widget": {
+            "name": "controls.value0"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLessonRef": "19e95292-7538-558f-b689-9503a56cb644",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "language": "p5",
+          "width": 384,
+          "height": 256,
+          "auto_update": true,
+          "code": "let tiles = 3; /* 1..6 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); }\nfunction draw(){\n  background(8);\n  if(!inputImage) return; // upstream has not delivered a frame yet\n  let count=max(1,round(tiles)), w=width/count, h=height/count;\n  for(let y=0;y<count;y++) for(let x=0;x<count;x++){\n    push(); translate((x+.5)*w,(y+.5)*h);\n    if((x+y)%2) scale(-1,1);\n    imageMode(CENTER); image(inputImage,0,0,w,h); pop();\n  }\n}",
+          "parameters": "{\"tiles\": 3.0}",
+          "performance": "{}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "tiles": 3.0
+          },
+          "slots": {
+            "tiles": 0
+          }
+        },
+        "generetiLivecodeLastGood": {
+          "mode": "p5",
+          "source": "let tiles = 3; /* 1..6 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); }\nfunction draw(){\n  background(8);\n  if(!inputImage) return; // upstream has not delivered a frame yet\n  let count=max(1,round(tiles)), w=width/count, h=height/count;\n  for(let y=0;y<count;y++) for(let x=0;x<count;x++){\n    push(); translate((x+.5)*w,(y+.5)*h);\n    if((x+y)%2) scale(-1,1);\n    imageMode(CENTER); image(inputImage,0,0,w,h); pop();\n  }\n}"
+        }
+      },
+      "widgets_values": [
+        "p5",
+        384,
+        256,
+        true,
+        "let tiles = 3; /* 1..6 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); }\nfunction draw(){\n  background(8);\n  if(!inputImage) return; // upstream has not delivered a frame yet\n  let count=max(1,round(tiles)), w=width/count, h=height/count;\n  for(let y=0;y<count;y++) for(let x=0;x<count;x++){\n    push(); translate((x+.5)*w,(y+.5)*h);\n    if((x+y)%2) scale(-1,1);\n    imageMode(CENTER); image(inputImage,0,0,w,h); pop();\n  }\n}",
+        "{\"tiles\": 3.0}",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "language": "p5",
+        "width": 384,
+        "height": 256,
+        "auto_update": true,
+        "code": "let tiles = 3; /* 1..6 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); }\nfunction draw(){\n  background(8);\n  if(!inputImage) return; // upstream has not delivered a frame yet\n  let count=max(1,round(tiles)), w=width/count, h=height/count;\n  for(let y=0;y<count;y++) for(let x=0;x<count;x++){\n    push(); translate((x+.5)*w,(y+.5)*h);\n    if((x+y)%2) scale(-1,1);\n    imageMode(CENTER); image(inputImage,0,0,w,h); pop();\n  }\n}",
+        "parameters": "{\"tiles\": 3.0}",
+        "performance": "{}",
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiLiveImagePreview",
+      "title": "ꘇ tiled output",
+      "pos": [
+        980,
+        0
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "name": "preview_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "preview_size": 384
+        }
+      },
+      "widgets_values": [
+        384,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "preview_size": 384,
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiDatLesson",
+      "title": "ꘇ walkthrough · start here",
+      "pos": [
+        1470,
+        0
+      ],
+      "size": [
+        630,
+        590
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "guide",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiLessonRef": "e1416de2-6db5-5bc7-b2f2-4cd64076cdae",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"p5-pipeline\",\n  \"title\": \"Livecode: two p5 sketches, one image stream\",\n  \"summary\": \"An interactive source feeds a mirrored tile processor using inputImage.\",\n  \"steps\": [\n    {\n      \"title\": \"Draw in the source\",\n      \"text\": \"The left sketch paints animated colored dots. Press and move inside its output to paint a larger light spot. Its mouse is local to this source runtime.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n        \"part\": \"preview\"\n      },\n      \"hint\": \"Use the output below the editor, Alt+W or Alt+O. Enable interaction in the overlay if you turned click-through on. Do it slows the animation, then try the mouse yourself.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.5\n        }\n      ]\n    },\n    {\n      \"title\": \"Pass pixels to another sketch\",\n      \"text\": \"Connect the source IMAGE to the processor image input. The processor receives inputImage, a p5.Image refreshed as frames arrive.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"inputImage is null before the first frame. It is an image, not the other sketch’s variables or canvas DOM. Do it reconnects the two sketches.\",\n      \"actions\": [\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Tile without recompiling\",\n      \"text\": \"tiles is an annotated number. Change its regular control to resize the grid; the same image is drawn into alternating mirrored cells.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The code rounds tiles to an integer. controls.value0 is the stable socket ID; tiles is its friendly label.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 5.0\n        }\n      ]\n    },\n    {\n      \"title\": \"Edit independent runtimes\",\n      \"text\": \"Each sketch has its own setup, draw, frameCount and pointer. The downstream node receives images, not source code. Save keeps source text and wiring.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Do it restores a leisurely source speed. You can add another Livecode p5 node and keep extending this image pipeline.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.8\n        }\n      ]\n    },\n    {\n      \"title\": \"Present the processed output\",\n      \"text\": \"Open the viewer or processor as an overlay. Source interaction continues to appear in the tiled output; keep the source preview accessible when performing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"ref\": \"3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Alt+W makes a floating view; Alt+O hides node chrome. Each node’s Queue capture freezes its current output; neither creates a shared p5 runtime.\",\n      \"actions\": [\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 3.0\n        }\n      ]\n    }\n  ]\n}"
+        }
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"p5-pipeline\",\n  \"title\": \"Livecode: two p5 sketches, one image stream\",\n  \"summary\": \"An interactive source feeds a mirrored tile processor using inputImage.\",\n  \"steps\": [\n    {\n      \"title\": \"Draw in the source\",\n      \"text\": \"The left sketch paints animated colored dots. Press and move inside its output to paint a larger light spot. Its mouse is local to this source runtime.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n        \"part\": \"preview\"\n      },\n      \"hint\": \"Use the output below the editor, Alt+W or Alt+O. Enable interaction in the overlay if you turned click-through on. Do it slows the animation, then try the mouse yourself.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.5\n        }\n      ]\n    },\n    {\n      \"title\": \"Pass pixels to another sketch\",\n      \"text\": \"Connect the source IMAGE to the processor image input. The processor receives inputImage, a p5.Image refreshed as frames arrive.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"inputImage is null before the first frame. It is an image, not the other sketch’s variables or canvas DOM. Do it reconnects the two sketches.\",\n      \"actions\": [\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Tile without recompiling\",\n      \"text\": \"tiles is an annotated number. Change its regular control to resize the grid; the same image is drawn into alternating mirrored cells.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The code rounds tiles to an integer. controls.value0 is the stable socket ID; tiles is its friendly label.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 5.0\n        }\n      ]\n    },\n    {\n      \"title\": \"Edit independent runtimes\",\n      \"text\": \"Each sketch has its own setup, draw, frameCount and pointer. The downstream node receives images, not source code. Save keeps source text and wiring.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Do it restores a leisurely source speed. You can add another Livecode p5 node and keep extending this image pipeline.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.8\n        }\n      ]\n    },\n    {\n      \"title\": \"Present the processed output\",\n      \"text\": \"Open the viewer or processor as an overlay. Source interaction continues to appear in the tiled output; keep the source preview accessible when performing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"ref\": \"3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Alt+W makes a floating view; Alt+O hides node chrome. Each node’s Queue capture freezes its current output; neither creates a shared p5 runtime.\",\n      \"actions\": [\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 3.0\n        }\n      ]\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"p5-pipeline\",\n  \"title\": \"Livecode: two p5 sketches, one image stream\",\n  \"summary\": \"An interactive source feeds a mirrored tile processor using inputImage.\",\n  \"steps\": [\n    {\n      \"title\": \"Draw in the source\",\n      \"text\": \"The left sketch paints animated colored dots. Press and move inside its output to paint a larger light spot. Its mouse is local to this source runtime.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n        \"part\": \"preview\"\n      },\n      \"hint\": \"Use the output below the editor, Alt+W or Alt+O. Enable interaction in the overlay if you turned click-through on. Do it slows the animation, then try the mouse yourself.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.5\n        }\n      ]\n    },\n    {\n      \"title\": \"Pass pixels to another sketch\",\n      \"text\": \"Connect the source IMAGE to the processor image input. The processor receives inputImage, a p5.Image refreshed as frames arrive.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"inputImage is null before the first frame. It is an image, not the other sketch’s variables or canvas DOM. Do it reconnects the two sketches.\",\n      \"actions\": [\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Tile without recompiling\",\n      \"text\": \"tiles is an annotated number. Change its regular control to resize the grid; the same image is drawn into alternating mirrored cells.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The code rounds tiles to an integer. controls.value0 is the stable socket ID; tiles is its friendly label.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 5.0\n        }\n      ]\n    },\n    {\n      \"title\": \"Edit independent runtimes\",\n      \"text\": \"Each sketch has its own setup, draw, frameCount and pointer. The downstream node receives images, not source code. Save keeps source text and wiring.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Do it restores a leisurely source speed. You can add another Livecode p5 node and keep extending this image pipeline.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"a8a634c3-4268-5e02-97c3-56c6061a0c9e\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 0.8\n        }\n      ]\n    },\n    {\n      \"title\": \"Present the processed output\",\n      \"text\": \"Open the viewer or processor as an overlay. Source interaction continues to appear in the tiled output; keep the source preview accessible when performing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"ref\": \"3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Alt+W makes a floating view; Alt+O hides node chrome. Each node’s Queue capture freezes its current output; neither creates a shared p5 runtime.\",\n      \"actions\": [\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLiveImagePreview\",\n            \"ref\": \"3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066\"\n          },\n          \"input\": \"image\",\n          \"output\": \"IMAGE\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"19e95292-7538-558f-b689-9503a56cb644\",\n            \"widget\": \"controls.value0\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 3.0\n        }\n      ]\n    }\n  ]\n}",
+        "genereti_delivery": "Live"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      4,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.42,
+      "offset": [
+        70,
+        90
+      ]
+    }
+  },
+  "version": 0.4
+}

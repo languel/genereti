@@ -1,0 +1,111 @@
+{
+  "version": 0.4,
+  "config": {},
+  "groups": [],
+  "extra": {
+    "ds": {
+      "scale": 0.78,
+      "offset": [
+        50,
+        100
+      ]
+    },
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti Livecode Realtime"
+  },
+  "last_node_id": 2,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "pos": [
+        0,
+        80
+      ],
+      "size": [
+        510,
+        780
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode"
+      },
+      "widgets_values": [
+        "p5",
+        512,
+        512,
+        true,
+        "function setup(){createCanvas(windowWidth,windowHeight);background(245)}function draw(){stroke(random(255));line(random(width),random(height),random(width),random(height));if(mouseIsPressed){noStroke();fill(random(255));circle(mouseX,mouseY,dist(mouseX,mouseY,pmouseX,pmouseY))}}",
+        "{}",
+        "Live"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "GeneretiLiveImagePreview",
+      "pos": [
+        520,
+        60
+      ],
+      "size": [
+        510,
+        670
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview"
+      },
+      "widgets_values": [
+        512
+      ],
+      "title": "\ua607 image preview"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ]
+  ]
+}

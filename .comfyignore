@@ -16,6 +16,7 @@
 !/scripts/install_comfy_workflows.py
 !/scripts/comfy_agent_cli.py
 !/scripts/build_comfy_package.py
+!/scripts/sync_comfy_templates.py
 !/scripts/build_editor.mjs
 !/scripts/build_livecode.mjs
 !/scripts/build_performance.mjs
@@ -23,6 +24,7 @@
 !/licensing/
 !/scripts/browser_licenses.mjs
 !/docs/
+!/example_workflows/
 !/editor/
 !/web/
 /web/*

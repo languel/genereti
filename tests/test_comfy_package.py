@@ -90,6 +90,14 @@ class PackageTests(unittest.TestCase):
         self.assertIn('licensing/source/p5-1.11.11.tar.gz', selected)
         self.assertNotIn('integrations/genereti_comfy_p5/web/lib/@strudel-web-LICENSE', selected)
         self.assertIn('web/vendor/excalidraw/editor.js', selected)
+        sources = list((ROOT / 'integrations/comfyui_genereti/workflows').glob('*.json'))
+        self.assertTrue(sources)
+        templates = {p.name for p in (ROOT / 'example_workflows').glob('*.json')}
+        self.assertEqual(templates, {p.name for p in sources})
+        for source in sources:
+            template = ROOT / 'example_workflows' / source.name
+            self.assertIn('example_workflows/' + source.name, selected)
+            self.assertEqual(template.read_bytes(), source.read_bytes())
         self.assertNotIn('requirements-macos.txt', selected)
 
 

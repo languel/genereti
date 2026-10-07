@@ -22,6 +22,7 @@ jobs:
         run: npm ci --ignore-scripts
       - name: Browser and distribution tests
         run: |
+          python scripts/sync_comfy_templates.py --check
           python -m pip install pathspec
           node --test tests/*.mjs
           python -m unittest discover -s tests -p test_comfy_package.py

@@ -1,0 +1,238 @@
+{
+  "version": 0.4,
+  "config": {},
+  "groups": [],
+  "extra": {
+    "ds": {
+      "scale": 0.78,
+      "offset": [
+        50,
+        100
+      ]
+    },
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti p5 Source"
+  },
+  "last_node_id": 6,
+  "last_link_id": 4,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "pos": [
+        0,
+        80
+      ],
+      "size": [
+        510,
+        780
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            1,
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode"
+      },
+      "widgets_values": [
+        "p5",
+        512,
+        512,
+        true,
+        "function setup(){createCanvas(windowWidth,windowHeight);background(245)}function draw(){stroke(random(255));line(random(width),random(height),random(width),random(height));if(mouseIsPressed){noStroke();fill(random(255));circle(mouseX,mouseY,dist(mouseX,mouseY,pmouseX,pmouseY))}}",
+        "{}",
+        "Live"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "PreviewImage",
+      "pos": [
+        610,
+        90
+      ],
+      "size": [
+        300,
+        280
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.14.1"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 4,
+      "type": "PreviewImage",
+      "pos": [
+        1050,
+        420
+      ],
+      "size": [
+        300,
+        280
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.14.1"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "SaveImage",
+      "pos": [
+        1050,
+        750
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 4
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.14.1"
+      },
+      "widgets_values": [
+        "ꘇ-p5-Sketch/Generated"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "ꘇ-p5-Sketch/Generated"
+      }
+    },
+    {
+      "id": 6,
+      "type": "Note",
+      "pos": [
+        0,
+        750
+      ],
+      "size": [
+        500,
+        150
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "Interactive p5 source: edit the sketch in \ua607 livecode, evaluate with Run or Cmd/Ctrl+Enter, draw with mouse and keyboard, then queue to preview/save the canvas. This workflow does not call Genereti or require the Core ML server."
+      ],
+      "widgets_values_named": {
+        "text": "Interactive p5 source: edit the sketch in \ua607 livecode, evaluate with Run or Cmd/Ctrl+Enter, draw with mouse and keyboard, then queue to preview/save the canvas. This workflow does not call Genereti or require the Core ML server."
+      },
+      "color": "#243",
+      "bgcolor": "#365"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      1,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ]
+  ]
+}

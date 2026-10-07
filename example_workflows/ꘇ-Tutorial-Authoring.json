@@ -1,0 +1,288 @@
+{
+  "last_node_id": 4,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiDatLesson",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        510,
+        790
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "guide",
+          "name": "guide",
+          "type": "STRING",
+          "widget": {
+            "name": "guide"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "document",
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "localized_name": "markdown",
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiOperatorText": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"my-first-texture-lesson\",\n  \"title\": \"My first texture lesson\",\n  \"summary\": \"A short lesson with hints, recorded typing and playback you can customize.\",\n  \"steps\": [\n    {\n      \"title\": \"Make a different pattern\",\n      \"text\": \"Change x*8 to x*4 and watch the image.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      },\n      \"hint\": \"Edit the expression yourself, or use Do it to watch an example appear.\",\n      \"actions\": [\n        {\n          \"kind\": \"pointer\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"nodeId\": 2,\n            \"part\": \"code\"\n          },\n          \"gesture\": \"click\",\n          \"from\": [\n            0.5,\n            0.4\n          ]\n        },\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"nodeId\": 2,\n            \"part\": \"code\",\n            \"widget\": \"expression\"\n          },\n          \"value\": \"(sin(x * 12 + t) + cos(y * 12 - t)) / 2\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Present your texture\",\n      \"text\": \"Select the image preview and press Alt+W to open its overlay. Hover outside an edge to reveal the controls.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"toolbar\"\n      },\n      \"check\": {\n        \"kind\": \"overlay-open\"\n      }\n    },\n    {\n      \"title\": \"Type a teaching note\",\n      \"text\": \"Do it types into a real DAT field. Try writing your own note afterward.\",\n      \"hint\": \"The dat.text editor stores ordinary workflow text.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"nodeId\": 4,\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiDatText\",\n            \"nodeId\": 4,\n            \"part\": \"code\",\n            \"widget\": \"text\"\n          },\n          \"value\": \"# A recorded lesson\\n\\nSelections focus tools. Actions demonstrate changes.\\n\\nTry it yourself, ask for a hint, or use Do it.\"\n        }\n      ]\n    }\n  ]\n}"
+        }
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"my-first-texture-lesson\",\n  \"title\": \"My first texture lesson\",\n  \"summary\": \"A short lesson with hints, recorded typing and playback you can customize.\",\n  \"steps\": [\n    {\n      \"title\": \"Make a different pattern\",\n      \"text\": \"Change x*8 to x*4 and watch the image.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      },\n      \"hint\": \"Edit the expression yourself, or use Do it to watch an example appear.\",\n      \"actions\": [\n        {\n          \"kind\": \"pointer\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"nodeId\": 2,\n            \"part\": \"code\"\n          },\n          \"gesture\": \"click\",\n          \"from\": [\n            0.5,\n            0.4\n          ]\n        },\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiTextureExpression\",\n            \"nodeId\": 2,\n            \"part\": \"code\",\n            \"widget\": \"expression\"\n          },\n          \"value\": \"(sin(x * 12 + t) + cos(y * 12 - t)) / 2\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Present your texture\",\n      \"text\": \"Select the image preview and press Alt+W to open its overlay. Hover outside an edge to reveal the controls.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLiveImagePreview\",\n        \"part\": \"toolbar\"\n      },\n      \"check\": {\n        \"kind\": \"overlay-open\"\n      }\n    },\n    {\n      \"title\": \"Type a teaching note\",\n      \"text\": \"Do it types into a real DAT field. Try writing your own note afterward.\",\n      \"hint\": \"The dat.text editor stores ordinary workflow text.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"nodeId\": 4,\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"actions\": [\n        {\n          \"kind\": \"type-text\",\n          \"target\": {\n            \"nodeType\": \"GeneretiDatText\",\n            \"nodeId\": 4,\n            \"part\": \"code\",\n            \"widget\": \"text\"\n          },\n          \"value\": \"# A recorded lesson\\n\\nSelections focus tools. Actions demonstrate changes.\\n\\nTry it yourself, ask for a hint, or use Do it.\"\n        }\n      ]\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"opentouch-basics\",\n  \"title\": \"Textures, signals and tables\",\n  \"summary\": \"Edit an expression, connect a control signal, and use a table as a parameter source.\",\n  \"steps\": [\n    {\n      \"title\": \"One graph, three interfaces\",\n      \"text\": \"TOP carries images, CHOP carries sampled channels, and DAT carries documents and tables. The lesson workflow uses real nodes you can keep editing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"node\"\n      }\n    },\n    {\n      \"title\": \"Write a texture expression\",\n      \"text\": \"Change the expression, for example change x*12 to x*8. CodeMirror applies it while typing. The GPU program recompiles only when its source changes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureExpression\",\n        \"part\": \"code\",\n        \"widget\": \"expression\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"Change a signal\",\n      \"text\": \"Adjust oscillator frequency. The FLOAT output is the last sample of its first channel; the channel output carries the whole named block.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopOscillator\",\n        \"part\": \"parameter\",\n        \"widget\": \"frequency\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"A FLOAT becomes a texture control\",\n      \"text\": \"Follow the wire from chop.lag to top.transform rotate. These are regular Comfy input sockets; signals update the live shader without a Python queue.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureTransform\",\n        \"part\": \"node\"\n      },\n      \"check\": {\n        \"kind\": \"connected-input\",\n        \"input\": \"rotate\"\n      }\n    },\n    {\n      \"title\": \"A table becomes a parameter\",\n      \"text\": \"Edit a number in the table. dat.cell selects one cell and exposes it as STRING and FLOAT. The lesson wires its FLOAT into top.math value.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatTable\",\n        \"part\": \"code\",\n        \"widget\": \"text\"\n      },\n      \"check\": {\n        \"kind\": \"changed-widget\"\n      }\n    },\n    {\n      \"title\": \"GPU composition and history\",\n      \"text\": \"Inspect feedback, corner pin and compositing. Feedback keeps two GPU textures and avoids cyclic graph wires. Its history exists in Live mode; Queue returns the current input.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiTextureFeedback\",\n        \"part\": \"preview\"\n      }\n    },\n    {\n      \"title\": \"Keep 3D in Three.js\",\n      \"text\": \"The Three.js Livecode source uses the same IMAGE path. Its code can read inputTexture and declared CHOP-driven parameters; no separate geometry engine is needed.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"part\": \"code\"\n      }\n    },\n    {\n      \"title\": \"Read and export the report\",\n      \"text\": \"The DAT document contains the library report. Use its export controls for Markdown, standalone HTML, or Print / Save as PDF. The report describes performance and device boundaries.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiDatText\",\n        \"part\": \"toolbar\"\n      }\n    }\n  ]\n}",
+        "lesson_toolbar": ""
+      },
+      "title": "ꘇ author your lesson"
+    },
+    {
+      "id": 2,
+      "type": "GeneretiTextureExpression",
+      "pos": [
+        580,
+        0
+      ],
+      "size": [
+        430,
+        620
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiTextureExpression",
+        "genereti_widget_values": {
+          "expression": "0.5 + 0.5*sin(t + x*8)*cos(y*12)",
+          "width": 256,
+          "height": 256,
+          "time": 0
+        }
+      },
+      "widgets_values": [
+        "0.5 + 0.5*sin(t + x*8)*cos(y*12)",
+        256,
+        256,
+        0,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "expression": "0.5 + 0.5*sin(t + x*8)*cos(y*12)",
+        "width": 256,
+        "height": 256,
+        "time": 0,
+        "texture_preview": ""
+      },
+      "title": "ꘇ learner exercise"
+    },
+    {
+      "id": 3,
+      "type": "GeneretiLiveImagePreview",
+      "pos": [
+        1100,
+        0
+      ],
+      "size": [
+        410,
+        620
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "title": "ꘇ learner output",
+      "properties": {
+        "genereti_output_layout": {},
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "preview_size": 512,
+        "live_image_preview": ""
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiDatText",
+      "pos": [
+        0,
+        870
+      ],
+      "size": [
+        700,
+        540
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "table",
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "title": "ꘇ authoring notes · export here too",
+      "properties": {
+        "Node name for S&R": "GeneretiDatText"
+      },
+      "widgets_values": [
+        "# Authoring OpenTouch lessons\n\nInstall the DAT, CHOP, texture, p5, stream and agent packs with `scripts/install_comfy.sh`, then restart Comfy and refresh. Open **Workflows → Genereti → ꘇ-OpenTouch-Operators-and-Lessons**. The model-free project includes real operators, the report and a `dat.lesson` authoring node. Camera, device I/O, audio and model inference never start automatically.\n\n## Authoring node\n\nAdd **dat.lesson**. Its shared CodeMirror editor holds the lesson JSON. Its toolbar provides:\n\n- **▷ Run**: validate/register the document and start its learner guide. The editor’s play button and **Cmd/Ctrl+Enter** do the same, applying the current draft first. **Apply while typing** updates the JSON without starting the guide.\n- **■ Stop**: end the guide; learner edits stay and the prior viewport returns.\n- **Document export**: Markdown, standalone static HTML, or Print / Save as PDF.\n- **{}**: export editable lesson JSON for reuse or Import guide.\n- **⌄ / ›**: collapse or expand the outline.\n- **Tutorial startup**: Manual start (default), Start on open, or Start if not played. Startup is saved with the lesson node; first-time tracking is local to this browser and keyed by lesson ID. Starting a guide never starts audio, capture or inference. If several lessons request startup, the first one in the workflow opens.\n\nDrag the learner panel by its title bar to reposition it; its position stays through steps and reopening during the session. **Settings → Genereti → Learning** provides **Guide highlight color** (outline, faint background tint and glow; blank follows the theme), **Pulse guide highlight**, **Guide panel background** (Theme, Soft contrast, Custom), and a custom CSS background color. Theme preserves the existing default. The three-second glow cycle respects reduced-motion preferences. Highlight corners follow the target’s radius and graph zoom; guide focus does not change node selection. Highlight tracking follows graph panning every animation frame while a guide is active.\n\nThe learner dialogue only contains narration, focus, previous/next, action checks and skip. It has no document exports. **Settings → Genereti → Learning → Interactive lessons** or **ꘇ OpenTouch lessons** in the command palette opens the bundled lesson chooser. “Open lesson workflow” creates a separate temporary Comfy workflow tab, preserving the current workflow.\n\nThe JSON is an authored lesson, not executable JavaScript:\n\n```json\n{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"my-texture-lesson\",\n  \"title\": \"Make a moving texture\",\n  \"summary\": \"Learn by editing a real expression.\",\n  \"steps\": [{\n    \"title\": \"Change the expression\",\n    \"text\": \"Try x*8 instead of x*12. Continue when the image changes.\",\n    \"target\": {\n      \"nodeType\": \"GeneretiTextureExpression\",\n      \"part\": \"code\",\n      \"widget\": \"expression\"\n    },\n    \"check\": {\"kind\": \"changed-widget\"}\n  }]\n}\n```\n\nSemantic parts are `node`, `code`, `preview`, `toolbar` and `parameter`. The first matching node type is selected/focused; absent targets show guidance to add the node or open the lesson workflow. Current parameter focus highlights the containing node. Checks are `changed-widget`, `connected-input` (optional input name), `overlay-open`, `backdrop-open` and `preview-frozen`. A changed-widget check compares against the value at step entry. Checks do not assess artistic correctness.\n\nUse stable internal node IDs from the [catalog](opentouch-catalog.md), not their visible labels. Guides may have 1..100 steps. Imported files are bounded to 512 KB; narration and semantic fields have length limits. Arbitrary script/selector fields are discarded. Guides cannot execute code, start devices or queue inference. Imports/register calls last for the current browser page; save authored JSON in the workflow or export it to retain it.\n\nBundled catalog: `integrations/genereti_comfy_agent/web/lessons/catalog.json`. Browser API: `window.generetiGuides.list()`, `.register(document)`, `.start(id)`, `.stop()`, `.open()`. Agent tools expose guide list/start/stop for the same registered guides.\n\n## Document export\n\nDAT text/table nodes and the lesson authoring node share the document export utility. Livecode Markdown/HTML/LaTeX adds **Document HTML** and **Print / Save as PDF** in its existing export menu. Static HTML sanitizes scripts, embeds local KaTeX fonts, preserves selectable text/tables/math, and remains independent of Comfy. External image links stay references.\n\nPDF uses the host print dialog. Choose Save as PDF; hosts without printing can export HTML and print in a regular browser. This exports the authored lesson/report document, not an interactive executable Comfy graph. Export the Comfy workflow JSON separately to preserve its nodes and links.\n\nThis first pass does not record teacher actions, snapshot/undo the full graph, grade students, synchronize classrooms or upload learner activity. The semantic focus/check pattern draws on the existing Underscores and Artist–Model Studio walkthroughs.\n\n## Learn to author a tutorial\n\nOpen **Settings → Genereti → Learning → Interactive lessons → Open authoring workflow**. This opens `ꘇ-Tutorial-Authoring.json` in a separate tab and starts **Make a tutorial with Genereti**. Its steps teach document identity, narration, semantic targets, learner checks, exports and playback. Edit the single `dat.lesson` node to make your own two-step texture lesson. The example includes the actual tools the learner will use.\n\nRunning your draft replaces the authoring walkthrough with your own guide. Export controls remain on the author node. Save workflow JSON for the working graph, editable guide JSON for reuse, and Markdown/HTML/PDF for static notes. The learner dialogue exports nothing.\n\n`ꘇ-Interactive-Output-Views.json` offers another small authoring example about interaction, overlays and presentation. Bundled chooser actions open either mini demo without replacing the current workflow. Rebuild these small fixtures with `python3 scripts/build_learning_examples.py`; they reuse canonical operator schemas and start no devices or model inference.\n\n## Guide appearance in JSON\n\nAn optional `style` on the guide supplies defaults. A step's `style` overrides only the fields it supplies. Settings remain the fallback; existing guide files need no changes.\n\n```json\n\"style\": {\n  \"panel\": {\n    \"backdrop\": \"#20262b\",\n    \"frame\": {\"color\": \"#65c9b5\", \"width\": 1, \"radius\": 10},\n    \"glow\": {\"enabled\": true, \"radius\": 12, \"spread\": 3, \"pulse\": true, \"duration\": 3}\n  },\n  \"target\": {\n    \"backdrop\": \"rgba(101, 201, 181, 0.06)\",\n    \"frame\": {\"color\": \"#65c9b5\", \"width\": 2},\n    \"glow\": {\"enabled\": true, \"radius\": 12, \"spread\": 3, \"pulse\": true, \"duration\": 3}\n  }\n}\n```\n\n`target` styles the active node or targeted code/toolbar/preview region. Its corner radius automatically follows the target and graph zoom unless explicitly supplied. `backdrop` is the surface fill, not a full-workspace veil; use `transparent` to remove it. Colors are CSS colors. The panel glow inherits the target frame color unless `glow.color` is supplied. Panel glow is steady by default; only the target pulses by default. Set panel `glow.pulse: true` explicitly to animate it. With no style, panel glow stays off and the target uses a tighter 12 px glow with a three-second cycle. Setting `pulse: false` keeps a steady glow; `enabled: false` removes it. Reduced-motion preferences always suppress animation.\n\nDimensions are screen pixels: frame width 0–8, radius 0–64, glow radius 0–64, spread 0–16; duration is 0.5–20 seconds. These structured fields are validated and retained when exporting editable guide JSON. Invalid CSS colors fall back to the theme. For example, a step can override just `\"style\": {\"target\": {\"glow\": {\"enabled\": false}}}` without losing the guide's other styles.\n\n## Record selections and actions\n\nThe authoring toolbar has **● Record tutorial actions**, **+ New recorded step**, and **✓ Stop recording and append steps**. Record starts a local session; perform a coherent task, press +, and repeat. Stop appends the draft steps to the lesson without replacing existing narration. Edit each draft's title, text and hint before sharing. Removing the author node cancels recording.\n\nRecording captures node clicks/selections, scalar parameter and text edits, input connection changes, and Genereti overlay/backdrop/freeze/minimize toggles. Slider revisions coalesce into their final value. Click/drag positions are normalized within a node and become visible pointer cues; these cues show the gesture rather than dispatching arbitrary synthetic UI clicks. Parameter values and wiring are changed through node APIs. Patch recording now also captures creation/deletion, node titles, position and size. Freehand strokes, arbitrary embedded-app controls, socket conversion, application settings and device activation are outside this recorder. It records semantic graph changes, not OS-level input or every intermediate keystroke.\n\nRecorded references include a persistent `ref` saved in node properties plus `nodeId` and `nodeType`. This resolves duplicate node types in the supplied workflow. If references cannot resolve and several nodes share a type, playback reports the ambiguity rather than editing a random node.\n\nA step may include `hint` and `actions`:\n\n```json\n{\n  \"title\": \"Change the synth level\",\n  \"text\": \"Lower the level to 0.25.\",\n  \"hint\": \"Use the level parameter on mod.synth.\",\n  \"target\": {\"nodeType\": \"GeneretiAudioSynth\", \"nodeId\": 4, \"part\": \"parameter\", \"widget\": \"level\"},\n  \"actions\": [\n    {\"kind\": \"pointer\", \"target\": {\"nodeType\": \"GeneretiAudioSynth\", \"nodeId\": 4}, \"gesture\": \"drag\", \"from\": [0.3, 0.2], \"to\": [0.7, 0.2]},\n    {\"kind\": \"set-widget\", \"target\": {\"nodeType\": \"GeneretiAudioSynth\", \"nodeId\": 4, \"widget\": \"level\"}, \"value\": 0.25}\n  ]\n}\n```\n\n**Hint** reveals the authored hint. **Do it** plays the current step and leaves advancement to the learner. `type-text` visibly types a string into a named widget; `set-widget` commits a scalar value; `select` selects a node; `connect` uses `source`, `output` and `input` names; `disconnect` removes a named input link; `view` sets a supported preview toggle; `pointer` shows a click or drag; `run-code` runs a non-audio Livecode sketch after typing. Source auto-update is paused during typing. Audio/Strudel, camera, screen capture, MIDI permissions and workflow queue remain explicit tool actions. The structured action schema accepts no arbitrary selectors, scripts or commands.\n\nA Do it attempt is grouped with the graph change hooks for Comfy undo. Closing the guide, changing steps or switching workflows interrupts playback; already-applied edits stay. Run failure is shown in the guide, so the learner can correct a missing tool or socket. Exports retain hints and actions in editable JSON; static Markdown/HTML/PDF include hints and action summaries, not an executable player.\n\nOpen **ꘇ-Tutorial-Authoring** for the expanded “Make a tutorial with Genereti” walkthrough and runnable typing/Hint/Do it examples.\n\n### Lesson outline playlist\n\nClick a step title in `ꘇdat.lesson` to open that step directly in the learner guide. The outline marks the current step as you move with the guide’s Previous/Next controls. Choosing a step opens its instructions and target; recorded actions still require **Do it**. Run starts from the beginning. The divider between the code and lesson toolbar resizes the code area; arrow keys adjust it, double-click resets it, and its height is saved with the workflow.\n\n## Record and replay a patch-building session\n\nOpen **ꘇ-Feedback-AV-Build-Tutorial.json** from the Genereti workflows folder. This starter contains only the lesson node. **▷▷ Play all recorded steps** creates and wires the recorded feedback and modular-synth patch, then pauses at a manual audio-start step. **ꘇ-Feedback-AV-Recorded-Patch.json** contains the completed patch and the same playlist. This is an actual browser recording made through the author-node Record controls, rather than only a static graph example.\n\nTo make another session, add `dat.lesson`, press **●**, build/edit/test your patch and press **+** at teaching boundaries. **✓** appends the recorded steps to its JSON. Recording saves a **Starting patch** step for existing nodes (excluding the author), then captures additions, removals, wiring, committed widget/code values, titles and geometry. Consecutive revisions coalesce; action gaps are capped at two seconds. Longer recordings split at 100 actions per step instead of silently losing actions. A guide supports at most 100 steps.\n\nEdit the titles, narration and hints. Use **▷** for learner-driven navigation / **Do it**, **▷▷** for sequential replay, and **■** to stop. Playback pauses at a step without actions for manual instructions. Press Next and Play remaining to continue. It groups each step through Comfy's undo hooks; cancellation leaves applied edits. A different workflow interrupts playback. Re-running a creation step updates its matching recorded instance and leaves unrelated nodes alone. To replay from scratch, open the starter in a separate workflow.\n\nPlayback recreates nodes with new graph IDs and links by named sockets, using persistent recording references. Missing packs/widgets stop with an error. Created nodes restore scalar widget values and layout; converted sockets, non-scalar custom UI state, groups and nested subgraphs are not yet reconstructed. This first milestone is a semantic patch recorder, not a universal UI macro recorder. Non-audio Livecode Run can be replayed; audio, camera/screen permission, MIDI and queued inference remain explicit controls.\n\nThe example creates a moving texture, temporal feedback, invert filter and viewer, then transport → sequence → FM synth → delay → mixer → output. Both paths are real-time and run independently; it does not claim audio-reactive modulation. Feedback history and audio playing state are runtime data and are never saved. Audio starts only by pressing Start on `mod.output`. Static Markdown/HTML/PDF exports describe the session; editable JSON and the workflow retain executable actions. `scripts/build_feedback_av_demo.py` packages the canonical browser-recorded session into both demo files and the lesson catalog.\n",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "text": "# OpenTouch: a creative stage inside ComfyUI\n\nOpenTouch is our working name for a TouchDesigner-inspired operator library inside Genereti. It combines Comfy's graph and model ecosystem with the interactive programming surfaces from Underscores and Artist–Model Studio. Familiar operator names describe functionality; the interface follows our compact Livecode controls.\n\n## Three interfaces, one creative graph\n\n- **TOP** carries images and textures. Composite, feedback, arithmetic, transforms and filters run in our browser WebGPU renderer.\n- **CHOP** carries named sampled channels. Oscillators, noise, expressions and processors drive ordinary FLOAT input sockets, including declared Livecode parameters.\n- **DAT** carries string tables and documents. CodeMirror provides the editing surface; CSV, JSON, selection and expressions turn documents into usable data.\n- **Three.js** remains the 3D renderer inside Livecode. TOP can process its IMAGE output, CHOP can control declared parameters, and DAT can supply text and numbers. There is no new SOP/POP/MAT engine in this milestone.\n\nThe node families are interfaces to the existing creative tools, rather than three separate applications. A Three.js sketch can take a texture as `inputTexture`, read `__.params.speed`, and emit IMAGE to a TOP chain. The same image can reach an overlay, graph backdrop, or a generator.\n\n## Try the connected lesson\n\nOpen **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. It is model-free and includes:\n\n1. A `top.expression` texture, with familiar compact CodeMirror editing.\n2. A CHOP oscillator, smoothing, and a FLOAT wire controlling texture arithmetic.\n3. CSV → DAT cell → FLOAT controlling the texture chain.\n4. Crop, corner pin, feedback and compositing, finishing in Image Preview.\n5. A Three.js Livecode source and document/report nodes.\n6. User-started MIDI and OSC nodes. They are disconnected from devices until you press Connect.\n\nOpen **Settings → Genereti → Learning → Interactive lessons**, or search **ꘇ OpenTouch lessons** in the command palette. A `dat.lesson` node holds editable guide JSON in CodeMirror. Its toolbar runs/stops the learner dialogue and exports the authored lesson; the dialogue itself only navigates/checks steps. The guides highlight actual tools and check learner actions. They never queue inference or open device permissions. “Open lesson workflow” creates a separate temporary Comfy workflow tab.\n\n## Arithmetic expressions\n\nTOP, CHOP and DAT expressions share a small arithmetic language, rather than arbitrary JavaScript or Python. It accepts numbers, `+ - * / % ^`, parentheses, `pi`, `tau`, and `sin`, `cos`, `tan`, `abs`, `sqrt`, `floor`, `ceil`, `exp`, `log`, `fract`, `min`, `max`, `pow`, `clamp`, `mix`, `step`.\n\n```text\n0.5 + 0.5*sin(t + x*12)*cos(y*12)\n```\n\nFor TOP, `x` and `y` are normalized pixel centers, `i` is the pixel index, `c` is the RGB channel, `v`/`a` is its source value, and `w`/`h` are texture dimensions. Alpha is preserved; absent IMAGE generates an opaque texture. Live time is graph time plus the time control; Queue uses the explicit time control.\n\n```text\nsin(t*tau) * 0.5 + 0.5\n```\n\nFor CHOP, `t` is sample time in seconds, `i` is sample index, `x` is normalized sample position, `c` is channel index, `v`/`a` is the input sample, `w` is sample count and `h` is channel count. `y` and `b` are zero. Without an input, the expression generates channels.\n\nDAT expressions use row/column indices for `y`/`x`, column index for `c`, numeric cell content for `v`/`a`, and row/column counts for `h`/`w`. Non-numeric cells become zero. Device access, property access, loops and global execution are excluded.\n\n## Connections and useful glue\n\nEvery CHOP has a named-channel output and a normal FLOAT output: the last sample of its first channel. Connect that FLOAT to a converted Comfy numeric input or a declared Livecode FLOAT parameter. Use `chop.select` first to choose a named channel.\n\nDAT → CHOP conversion treats columns as channels and rows as samples, with an optional header row. `dat.cell` exposes one cell as STRING and FLOAT. `chop.todat` exposes sampled channels as a table. The six conversion directions are explicit: `dat.tochop`, `chop.todat`, `top.tochop`, `top.todat`, `chop.totop` and `dat.totop`.\n\nTOP → CHOP samples RGBA into named row-major channels. TOP → DAT samples x/y/RGBA into rows. Both resize on the GPU before a bounded readback (1..64 pixels per axis, configurable rate, one in-flight read). Queue selects one IMAGE batch frame. CHOP → TOP packs channel rows as grayscale, or four channels as RGBA pixels using a configurable width. DAT → TOP maps numeric columns/rows to a grayscale matrix, with optional header skipping. These are data conversion boundaries, not lossless arbitrary document/image round trips; values clamp to 0..1, invalid numeric cells become zero. The lesson samples 8×8 at 2 Hz so conversions do not slow the full-rate stage.\n\nArbitrary Python nodes still run through Comfy Queue. They do not become realtime merely because their sockets connect to a live operator. Livecode supports changing numeric/string parameter sockets; connecting a DAT document to the Livecode source-code socket does not automatically compile that document in Live mode.\n\n## Rendering and performance boundaries\n\nA page shares one WebGPU device for TOP operators. Intermediate images use reusable GPU textures; no PNG/JPEG, HTTP upload or CPU readback occurs between TOPs. Expressions parse and compile once per source revision. Source canvas/bitmap ingress is uploaded once per dispatch. Existing Livecode and model inputs remain compatibility boundaries, with their own copies or encoding. TOP-to-data converters deliberately perform bounded readback; data-to-TOP converters upload a canvas and update at up to 10 Hz.\n\nCHOP processing uses Float32Array blocks in the browser. Sample rate describes the signal timeline, not graph redraw FPS. Live scheduling is limited by browser animation frames: a one-sample 240 Hz configuration cannot deliver 240 updates on a 60 Hz display. Use a larger sample block for high-rate signal generation; MIDI/OSC outputs send the latest control values, not sample-accurate audio. Lag, Speed and Slope retain state across live blocks; their queued equivalents process one explicit block without persistent history.\n\nSignal traces paint at up to 10 Hz while samples and downstream controls keep flowing. Freeze/minimize affect only the local view. TOP/Livecode scalar changes are coalesced to animation frames; ordinary Primitive controls also have a low-rate fallback poll. DAT recalculates changed tables at up to 10 Hz. Keep DAT documents out of per-pixel paths.\n\nThis is shared browser GPU resources and typed arrays. It is not OS shared memory, SharedArrayBuffer transport, a native shared Metal texture, or an end-to-end zero-copy Core ML pipeline. WebGPU requires a capable secure-context host. Queue uses installed Python/PyTorch/NumPy. Full Core ML generation remains macOS 14+ on Apple silicon.\n\n## MIDI and OSC\n\nMIDI uses user-started Web MIDI without SysEx. An empty device name selects the first available port; a device ID or exact name selects a particular one. Input channels are named `ch1.cc7`, `ch1.note60`, `ch1.pitch`, etc. Values normalize to 0..1. Output supports CC, note velocity/gate and pitch bend, with changed-value suppression and note-off on disconnect. Channel 0 on MIDI In means any channel. Browser/desktop Web MIDI availability varies; a browser without Web MIDI reports that limitation.\n\nOSC uses a small Comfy Python UDP bridge bound to **127.0.0.1**. Input listens only after Connect, leases expire after 90 seconds without renewal, and the last disconnect closes its port. Outputs also require Connect. Numeric/boolean OSC messages and immediate bundles are supported; scheduled timetags, strings, blobs and remote-network destinations are outside this first pass. Receive events coalesce to 60 Hz; output sends latest values at up to 30 Hz with one request in flight. A reusable UDP sender avoids creating a socket per update.\n\nOpening or queuing a workflow never performs MIDI or OSC I/O. Queued input device nodes return a zero placeholder; output device nodes pass their input through without sending. Physical MIDI hardware needs a separate device test; the browser protocol has been exercised with virtual ports. OSC has been exercised over real loopback UDP.\n\n## Lessons and document export\n\nA guide is a local `genereti-guide` JSON document with semantic node targets, narration, and allowlisted learner checks. It cannot supply arbitrary DOM selectors or execute code. Guides can be imported, registered through `window.generetiGuides`, or authored in the bundled catalog. Local playback keeps learner edits and restores the initial viewport when it ends. It does not capture the full graph for undo/recovery, record teacher actions, synchronize classrooms or upload learner activity.\n\nDAT documents/tables and the `dat.lesson` authoring toolbar export Markdown/source and standalone static HTML. Lesson JSON can also be exported and re-imported for editing. Learner dialogues and the lesson chooser contain no document-export controls. Livecode's export menu now includes static Document HTML and Print / Save as PDF for Markdown, HTML and LaTeX, alongside its existing runtime HTML and source-script exports. KaTeX fonts are local and embedded in static HTML. Authored external image links remain links; they are not silently downloaded or embedded.\n\nPDF opens the printable static document and uses the host's print dialog: choose Save as PDF. This preserves selectable text, tables and math instead of a screenshot. It is distinct from exporting the interactive graph itself. In hosts without printing, export HTML and print it from a regular browser.\n\n## Barebones modular music\n\n`chop.note`, `chop.sequencer` and `chop.arpeggiator` produce named `note`, `gate`, `velocity` and `step` controls. Pitch is raw MIDI 0..127, velocity/gate are 0..1. Sequence text accepts numeric pitches and `-` / `.` rests. BPM, division, gate fraction and velocity are regular Comfy controls. Arpeggiator supports up/down/updown and octave expansion; optional MIDI In uses held `chN.noteNN` channels. Without held input it uses its authored fallback notes.\n\nRoute a musical CHOP to `chop.midiout` in note mode, or to `chop.synth` / `chop.drumkit`. MIDI Out uses named note/gate/velocity channels when present and turns off the previous note on pitch changes, pause or disconnect. Synth and drums are user-started browser Web Audio endpoints. They pass CHOP through for further control routing, rather than introducing an audio-buffer wire type. Queue passes their data without playing sound. Each endpoint has its own level; voices release/clean up on stop/removal. One shared AudioContext runs all active endpoints.\n\nSynth provides sine, subtractive, FM and reed voices with ADSR, cutoff/resonance, glide and vibrato. Drum kit procedurally generates kick (35/36), snare (38/40), closed hat (42/default) and open hat (46), without samples or downloads. Patterns and gates run on the browser control clock; this is not sample-accurate sequencing, a DAW, a VST host, a full Expressive Synth port, or a complete modular DSP/audio graph. Browser background throttling can affect rhythm. Three.js remains our 3D surface.\n\n[BespokeSynth](https://github.com/BespokeSynth/BespokeSynth) informs the live-patchable control/module idea. The oscillator/filter/ADSR/expression structure draws on our Underscores Expressive Synth; this implementation is a small browser adapter, not copied Bespoke C++ or a new synth engine dependency.\n\nA simple feedback relationship for the visual lesson is:\n\n$$C_t = S_t + (1-\\alpha_t)\\,d\\,T(C_{t-1})$$\n\nThe report and lesson exports use our local KaTeX renderer for these formulas.\n\n## Next useful work\n\nPrioritize a transport/clock interface, channel resampling/interpolation controls, trigger/envelope/event processors, and parameter mapping presets. A future DAT language bridge should explicitly distinguish editable source, data and evaluated code. A future shader node can expose multiple IMAGE inputs and familiar uniforms while remaining in our render system.\n\nKeep geometry creation, cameras, lights and materials in Three.js for now. Defer NDI, OAK, Syphon/Spout and other device integrations. Before claiming performance improvements, measure the exact connected chain, its source rate, view costs, model round trip, and delivery FPS separately.\n",
+        "table_preview": ""
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      2,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        30,
+        70
+      ]
+    }
+  },
+  "version": 0.4
+}

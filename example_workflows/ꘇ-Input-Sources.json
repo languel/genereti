@@ -1,0 +1,435 @@
+{
+  "version": 0.4,
+  "config": {},
+  "groups": [],
+  "extra": {
+    "ds": {
+      "scale": 0.72,
+      "offset": [
+        80,
+        120
+      ]
+    },
+    "frontendVersion": "1.53.6",
+    "workflowName": "Genereti Live Input Sources"
+  },
+  "last_node_id": 8,
+  "last_link_id": 6,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "Painter",
+      "pos": [
+        0,
+        90
+      ],
+      "size": [
+        300,
+        285
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "mask",
+          "name": "mask",
+          "type": "STRING",
+          "widget": {
+            "name": "mask"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "bg_color",
+          "name": "bg_color",
+          "type": "COLOR",
+          "widget": {
+            "name": "bg_color"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            1
+          ]
+        },
+        {
+          "localized_name": "MASK",
+          "name": "MASK",
+          "type": "MASK",
+          "slot_index": 1,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Painter",
+        "cnr_id": "comfy-core",
+        "ver": "0.14.1"
+      },
+      "widgets_values": [
+        "",
+        512,
+        512,
+        "#ffffff"
+      ],
+      "widgets_values_named": {
+        "mask": "",
+        "width": 512,
+        "height": 512,
+        "bg_color": "#ffffff"
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiCameraCapture",
+      "pos": [
+        0,
+        450
+      ],
+      "size": [
+        330,
+        170
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "capture",
+          "name": "capture",
+          "type": "STRING",
+          "widget": {
+            "name": "capture"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiCameraCapture",
+        "cnr_id": "genereti_comfy_inputs",
+        "ver": "0.1.0"
+      },
+      "widgets_values": [
+        "GENERETI_OFF:Webcam"
+      ],
+      "widgets_values_named": {
+        "capture": ""
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiScreenCapture",
+      "pos": [
+        0,
+        690
+      ],
+      "size": [
+        330,
+        170
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "capture",
+          "name": "capture",
+          "type": "STRING",
+          "widget": {
+            "name": "capture"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiScreenCapture",
+        "cnr_id": "genereti_comfy_inputs",
+        "ver": "0.1.0"
+      },
+      "widgets_values": [
+        "GENERETI_OFF:Window / Screen"
+      ],
+      "widgets_values_named": {
+        "capture": ""
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiInputSelect",
+      "pos": [
+        430,
+        430
+      ],
+      "size": [
+        360,
+        190
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "source",
+          "name": "source",
+          "type": "COMBO",
+          "widget": {
+            "name": "source"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "doodle",
+          "name": "doodle",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "localized_name": "webcam",
+          "name": "webcam",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "localized_name": "screen",
+          "name": "screen",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            4,
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiInputSelect",
+        "cnr_id": "genereti_comfy_inputs",
+        "ver": "0.1.0"
+      },
+      "widgets_values": [
+        "Doodle"
+      ],
+      "widgets_values_named": {
+        "source": "Doodle"
+      }
+    },
+    {
+      "id": 6,
+      "type": "PreviewImage",
+      "pos": [
+        1320,
+        430
+      ],
+      "size": [
+        300,
+        280
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.14.1"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 7,
+      "type": "SaveImage",
+      "pos": [
+        1320,
+        760
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "link": 6
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "images",
+          "name": "images",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveImage",
+        "cnr_id": "comfy-core",
+        "ver": "0.14.1"
+      },
+      "widgets_values": [
+        "ꘇ-Live-Inputs/Generated"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "ꘇ-Live-Inputs/Generated"
+      }
+    },
+    {
+      "id": 8,
+      "type": "Note",
+      "pos": [
+        0,
+        910
+      ],
+      "size": [
+        430,
+        180
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "Choose Doodle, Webcam, or Window / Screen. Start camera or screen sharing only when you want that source, then queue to preview and save the captured image. This source-only workflow does not call Genereti or require the Core ML server."
+      ],
+      "widgets_values_named": {
+        "text": "Choose a source and connect it to Genereti Input Source.\n\nDoodle \u2192 leave mode on sketch. Webcam or Window / Screen \u2192 set mode to image.\n\nClick Start camera or Start sharing only when you want that source. Queue once for one generated frame; each frame also appears at http://127.0.0.1:8765/stream.mjpg for TouchDesigner and p5."
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      4,
+      1,
+      "IMAGE"
+    ],
+    [
+      2,
+      2,
+      0,
+      4,
+      2,
+      "IMAGE"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      3,
+      "IMAGE"
+    ],
+    [
+      4,
+      4,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      4,
+      0,
+      7,
+      0,
+      "IMAGE"
+    ]
+  ]
+}

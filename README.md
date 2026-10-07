@@ -29,8 +29,8 @@ downloads, npm or separate Genereti server.
    See the [installation guide](docs/comfy-distribution.md#git-install-now) for
    Windows, Portable, Desktop and existing split-pack installs.
 3. Restart ComfyUI and refresh the browser.
-4. Open `custom_nodes/genereti/integrations/comfyui_genereti/workflows/ꘇ-Performance-Timeline.json`
-   by dragging it onto the canvas or using **Open workflow**. Run its `dat.lesson`
+4. Demos are installed automatically under **Workflows → Genereti** on startup.
+   Open **ꘇ-Performance-Timeline** there, or choose it in **Templates → genereti**. Run its `dat.lesson`
    guide; **Alt+Shift+T** opens the timeline. Sound starts explicitly on `mod.output`.
 
 Next, try the [shader, p5 and audiovisual tutorials](docs/livecode-tutorials.md),

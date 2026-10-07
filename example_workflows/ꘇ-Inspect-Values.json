@@ -1,0 +1,192 @@
+{
+  "last_node_id": 4,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiChopOscillator",
+      "title": "ꘇchop.oscillator",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        460,
+        420
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopOscillator"
+      },
+      "widgets_values": [
+        "sine",
+        1,
+        1,
+        0,
+        0,
+        2,
+        8,
+        60,
+        0
+      ]
+    },
+    {
+      "id": 2,
+      "type": "GeneretiDatInspect",
+      "title": "ꘇdat.inspect",
+      "pos": [
+        520,
+        0
+      ],
+      "size": [
+        460,
+        420
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "*",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatInspect"
+      },
+      "widgets_values": [
+        "json",
+        32
+      ]
+    },
+    {
+      "id": 3,
+      "type": "GeneretiDatJSON",
+      "title": "ꘇdat.json",
+      "pos": [
+        0,
+        500
+      ],
+      "size": [
+        460,
+        420
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "table",
+          "type": "GENERETI_DAT",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatJSON"
+      },
+      "widgets_values": [
+        "{\n  \"title\": \"Live inspector\",\n  \"rgba\": [\n    0.8,\n    0.3,\n    0.1,\n    1\n  ],\n  \"enabled\": true,\n  \"parameters\": {\n    \"speed\": 0.5,\n    \"decay\": 0.94\n  }\n}"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "GeneretiDatInspect",
+      "title": "ꘇdat.inspect",
+      "pos": [
+        520,
+        500
+      ],
+      "size": [
+        460,
+        420
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "*",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatInspect"
+      },
+      "widgets_values": [
+        "json",
+        32
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      2,
+      3,
+      0,
+      4,
+      0,
+      "GENERETI_DAT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        100,
+        80
+      ]
+    }
+  },
+  "version": 0.4
+}
