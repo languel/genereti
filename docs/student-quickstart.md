@@ -1,5 +1,13 @@
 # Student quickstart
 
+## Realtime Comfy tools first
+
+For the performance class, start with the [Comfy package quickstart](comfy-distribution.md).
+Install the single `genereti` custom-node folder and open **ꘇ-Performance-Timeline**.
+Livecode, textures, signals, Web Audio, lessons, automation and `dat.monitor` work
+without Core ML models or the separate Genereti server. The model setup below is
+an optional Apple Silicon path for later experiments.
+
 ## Platform
 
 The complete Genereti image generator requires a **Mac with Apple silicon** (M1/M2/M3/M4/M5) and macOS 14 or later. Intel Macs and Windows/Linux PCs cannot run its Core ML generator. You can still use the ComfyUI p5 sketch and browser capture nodes on a PC; see [platform support](platform-support.md).

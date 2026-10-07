@@ -2,6 +2,60 @@
 
 Review checkpoint: **2026-10-06**, `main`, including the first performance timeline below. Earlier sections retain their dated validation results. This document is the review map, not a claim that every device or performance configuration has been tested.
 
+## Comfy distribution setup · 2026-10-06
+
+The root is now a single-folder V3 Comfy package with ten existing integration
+packs, stable node IDs/browser aliases, `pyproject.toml`, a tracked-file archive
+builder and GitHub Actions for checks, student prereleases and manual registry
+publishing. The [distribution guide](comfy-distribution.md) is the student and
+maintainer entry point. Core ML is excluded from the package loader/archive;
+its dependencies moved to `requirements-macos.txt`, consumed by the existing
+macOS setup script. The root requirements are the small Comfy path.
+
+The project license and actual registry publisher ID must be committed before a
+public release/registry publish; the publishing workflows check these fields.
+This checkpoint prepares distribution and does not claim registry acceptance,
+cross-platform classroom testing or a published GitHub release.
+
+Local validation extracted the 22.6 MB preview ZIP into an isolated Comfy base
+directory and booted it on port 8002: 81 Genereti nodes registered, no Core ML
+generator loaded, and the drawing editor, Livecode bundle, performance demo and
+lesson catalog served successfully. Packaging tests cover deterministic archives,
+hashes, tracked-only files, forbidden weights/symlinks, release gates and matching
+student/registry allowlists. The existing user instances remain untouched.
+The extracted-package browser demo delivered about 60 FPS; explicit audio reached
+peak 0.03 and Panic stopped it. Its frozen model-free Queue run succeeded. The
+official `comfy node pack` payload matched all 743 student-package source files.
+161 JavaScript tests, 4 packaging tests and 6 preserving-installer tests passed.
+
+## Guided Livecode pipelines · 2026-10-07
+
+Three new model-free examples ship with the package and Learning chooser:
+**ꘇ-Livecode-Shader-Buffers**, **ꘇ-Livecode-P5-Pipeline** and
+**ꘇ-Livecode-Audio-Visual**. Each has five clickable steps, semantic UUID targets,
+Hint/Do it actions and the existing Markdown/HTML/Print exports. Read the
+[Livecode tutorial guide](livecode-tutorials.md). The reproducible builder is
+`scripts/build_livecode_lessons.py --server http://127.0.0.1:8001`.
+
+Shaders use separate Livecode passes and a delayed composite reference; these
+are external buffers with one IMAGE input each, not full Shadertoy A–D/Sound
+support. Pixel captures confirmed fresh colored ink and larger accumulated
+history. Both p5 runtimes drew their connected source/tiled output; all tutorial
+actions replayed against real nodes. Explicit audio produced RMS about 0.014,
+which reached p5 energy (about 0.12 before increasing sensitivity). Panic stopped
+audio and returned energy to zero. Tests also validate annotated controls,
+portable targets, acyclic wiring and manual-only audio activation.
+
+Guide focus can move a p5 preview offscreen before its initial animation frame.
+A cancellable first-paint fallback now redraws a pending candidate after setup,
+preserving the first-frame acceptance check and last-good runtime. Setup also
+reapplies requested p5 dimensions before user code, avoiding zero-size viewport
+values during offscreen startup and frozen Queue capture. A fresh-page
+offscreen startup check passed. All three new workflows completed frozen Comfy
+Queue captures successfully without starting sound. All 43 canonical workflows
+parse. Reload/restart after updating browser bundles;
+existing open documents keep their loaded modules.
+
 ## Timeline compact header and performance pass · 2026-10-06
 
 The Timeline tab places transport controls beside compact native Logs/Timeline

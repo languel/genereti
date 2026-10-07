@@ -1,0 +1,47 @@
+name: Release Comfy student package
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Committed pyproject.toml version (X.Y.Z)'
+        required: true
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: comfy-student-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate requested version and license
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          python -m pip install pathspec
+          python - <<'PY'
+          import os, tomllib
+          with open('pyproject.toml', 'rb') as f:
+              version = tomllib.load(f)['project']['version']
+          if version != os.environ['RELEASE_VERSION']:
+              raise SystemExit('Requested version must match committed pyproject.toml')
+          PY
+          python -m unittest discover -s tests -p test_comfy_package.py
+          python scripts/build_comfy_package.py --release --output artifacts/comfy-package
+      - name: Publish student preview release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ inputs.version }}
+        run: |
+          gh release create "genereti-v${RELEASE_VERSION}" \
+            --target "$GITHUB_SHA" --prerelease \
+            --title "ꘇ Genereti ${RELEASE_VERSION} · student preview" \
+            --notes-file distribution/release-notes.md \
+            artifacts/comfy-package/genereti-*.zip \
+            artifacts/comfy-package/genereti-*.zip.sha256 \
+            artifacts/comfy-package/DISTRIBUTION.json

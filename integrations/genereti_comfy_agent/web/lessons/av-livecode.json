@@ -1,0 +1,1398 @@
+{
+  "last_node_id": 14,
+  "last_link_id": 12,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiAudioTransport",
+      "title": "ꘇ local music clock",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        300,
+        200
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bpm",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "bpm"
+          }
+        },
+        {
+          "name": "swing",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "swing"
+          }
+        },
+        {
+          "name": "clock_name",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "clock_name"
+          }
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "seconds",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "beat",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "JSON",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioTransport",
+        "generetiLessonRef": "06812648-40d1-5949-a208-45b7e08f0df4",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "bpm": 96,
+          "swing": 0,
+          "clock_name": "local",
+          "performance": "{}"
+        }
+      },
+      "widgets_values": [
+        96,
+        0,
+        "local",
+        "{}"
+      ],
+      "widgets_values_named": {
+        "bpm": 96,
+        "swing": 0,
+        "clock_name": "local",
+        "performance": "{}"
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiAudioSequence",
+      "title": "ꘇ notes",
+      "pos": [
+        0,
+        260
+      ],
+      "size": [
+        350,
+        270
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "link": 1
+        },
+        {
+          "name": "pattern",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "pattern"
+          }
+        },
+        {
+          "name": "division",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "division"
+          }
+        },
+        {
+          "name": "gate",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "gate"
+          }
+        },
+        {
+          "name": "velocity",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "velocity"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSequence",
+        "generetiLessonRef": "16d0095a-7cb3-5d6f-9b14-12a03f76bdc4",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "pattern": "60 64 67 72 - 67 64 -",
+          "division": 4,
+          "gate": 0.55,
+          "velocity": 0.65
+        }
+      },
+      "widgets_values": [
+        "60 64 67 72 - 67 64 -",
+        4,
+        0.55,
+        0.65
+      ],
+      "widgets_values_named": {
+        "pattern": "60 64 67 72 - 67 64 -",
+        "division": 4,
+        "gate": 0.55,
+        "velocity": 0.65
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiAudioSynth",
+      "title": "ꘇ voice",
+      "pos": [
+        410,
+        0
+      ],
+      "size": [
+        330,
+        640
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 2
+        },
+        {
+          "name": "voice",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "voice"
+          }
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "attack",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "attack"
+          }
+        },
+        {
+          "name": "decay",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "name": "sustain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "sustain"
+          }
+        },
+        {
+          "name": "release",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "release"
+          }
+        },
+        {
+          "name": "cutoff",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cutoff"
+          }
+        },
+        {
+          "name": "resonance",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "resonance"
+          }
+        },
+        {
+          "name": "glide",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "glide"
+          }
+        },
+        {
+          "name": "vibrato",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato"
+          }
+        },
+        {
+          "name": "vibrato_rate",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato_rate"
+          }
+        },
+        {
+          "name": "polyphony",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "polyphony"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSynth",
+        "generetiLessonRef": "e57aef69-5eff-522b-93c8-8c48bd53b888",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "voice": "fm",
+          "level": 0.18,
+          "attack": 0.02,
+          "decay": 0.15,
+          "sustain": 0.6,
+          "release": 0.3,
+          "cutoff": 2200,
+          "resonance": 0.7,
+          "glide": 0.015,
+          "vibrato": 0,
+          "vibrato_rate": 5,
+          "polyphony": 8
+        }
+      },
+      "widgets_values": [
+        "fm",
+        0.18,
+        0.02,
+        0.15,
+        0.6,
+        0.3,
+        2200,
+        0.7,
+        0.015,
+        0,
+        5,
+        8
+      ],
+      "widgets_values_named": {
+        "voice": "fm",
+        "level": 0.18,
+        "attack": 0.02,
+        "decay": 0.15,
+        "sustain": 0.6,
+        "release": 0.3,
+        "cutoff": 2200,
+        "resonance": 0.7,
+        "glide": 0.015,
+        "vibrato": 0,
+        "vibrato_rate": 5,
+        "polyphony": 8
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiAudioGain",
+      "title": "ꘇ balance / level",
+      "pos": [
+        820,
+        0
+      ],
+      "size": [
+        300,
+        220
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 3
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "pan",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan"
+          }
+        },
+        {
+          "name": "mute",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioGain",
+        "generetiLessonRef": "d5f37102-1fb6-5efd-b6fc-5eaf37637596",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level": 0.8,
+          "pan": 0.2,
+          "mute": false
+        }
+      },
+      "widgets_values": [
+        0.8,
+        0.2,
+        false
+      ],
+      "widgets_values_named": {
+        "level": 0.8,
+        "pan": 0.2,
+        "mute": false
+      }
+    },
+    {
+      "id": 5,
+      "type": "GeneretiAudioOutput",
+      "title": "ꘇ Start / Panic · sound",
+      "pos": [
+        1180,
+        0
+      ],
+      "size": [
+        320,
+        260
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 4
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "mute",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioOutput",
+        "generetiLessonRef": "7e66d584-d287-5e54-be4d-54f680cdb01e",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level": 0.12,
+          "mute": false
+        }
+      },
+      "widgets_values": [
+        0.12,
+        false
+      ],
+      "widgets_values_named": {
+        "level": 0.12,
+        "mute": false
+      }
+    },
+    {
+      "id": 6,
+      "type": "GeneretiAudioAnalyze",
+      "title": "ꘇ RMS / peak / bands",
+      "pos": [
+        820,
+        320
+      ],
+      "size": [
+        340,
+        340
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 5
+        },
+        {
+          "name": "fft_size",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "fft_size"
+          }
+        },
+        {
+          "name": "smoothing",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "smoothing"
+          }
+        },
+        {
+          "name": "display_gain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "display_gain"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioAnalyze",
+        "generetiLessonRef": "120fb28c-2d8a-5e0d-acd9-dcf7822ea80e",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "fft_size": 1024,
+          "smoothing": 0.5,
+          "display_gain": 10
+        }
+      },
+      "widgets_values": [
+        1024,
+        0.5,
+        10
+      ],
+      "widgets_values_named": {
+        "fft_size": 1024,
+        "smoothing": 0.5,
+        "display_gain": 10
+      }
+    },
+    {
+      "id": 7,
+      "type": "GeneretiAudioScope",
+      "title": "ꘇ waveform",
+      "pos": [
+        0,
+        780
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 6
+        },
+        {
+          "name": "fft_size",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "fft_size"
+          }
+        },
+        {
+          "name": "smoothing",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "smoothing"
+          }
+        },
+        {
+          "name": "display_gain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "display_gain"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioScope",
+        "generetiLessonRef": "6d8a5892-a32b-539c-ad2a-dbcb76dda3b3",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "fft_size": 1024,
+          "smoothing": 0.5,
+          "display_gain": 12
+        }
+      },
+      "widgets_values": [
+        1024,
+        0.5,
+        12
+      ],
+      "widgets_values_named": {
+        "fft_size": 1024,
+        "smoothing": 0.5,
+        "display_gain": 12
+      }
+    },
+    {
+      "id": 8,
+      "type": "GeneretiAudioSpectrum",
+      "title": "ꘇ spectrum",
+      "pos": [
+        400,
+        780
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 7
+        },
+        {
+          "name": "fft_size",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "fft_size"
+          }
+        },
+        {
+          "name": "smoothing",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "smoothing"
+          }
+        },
+        {
+          "name": "display_gain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "display_gain"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSpectrum",
+        "generetiLessonRef": "f85f6ff0-290a-5914-998c-ff2194d448c4",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "fft_size": 1024,
+          "smoothing": 0.5,
+          "display_gain": 1
+        }
+      },
+      "widgets_values": [
+        1024,
+        0.5,
+        1
+      ],
+      "widgets_values_named": {
+        "fft_size": 1024,
+        "smoothing": 0.5,
+        "display_gain": 1
+      }
+    },
+    {
+      "id": 9,
+      "type": "GeneretiAudioLissajous",
+      "title": "ꘇ stereo geometry",
+      "pos": [
+        800,
+        780
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 8
+        },
+        {
+          "name": "fft_size",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "fft_size"
+          }
+        },
+        {
+          "name": "smoothing",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "smoothing"
+          }
+        },
+        {
+          "name": "display_gain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "display_gain"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioLissajous",
+        "generetiLessonRef": "c692e22a-4ae9-5c23-996f-af3efe933de0",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "fft_size": 1024,
+          "smoothing": 0.5,
+          "display_gain": 16
+        }
+      },
+      "widgets_values": [
+        1024,
+        0.5,
+        16
+      ],
+      "widgets_values_named": {
+        "fft_size": 1024,
+        "smoothing": 0.5,
+        "display_gain": 16
+      }
+    },
+    {
+      "id": 10,
+      "type": "GeneretiChopSelect",
+      "title": "ꘇ select rms",
+      "pos": [
+        1180,
+        360
+      ],
+      "size": [
+        300,
+        240
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 9
+        },
+        {
+          "name": "pattern",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "pattern"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopSelect",
+        "generetiLessonRef": "1fc7df09-036c-5001-8b4b-dce14c820f45",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "pattern": "rms"
+        }
+      },
+      "widgets_values": [
+        "rms"
+      ],
+      "widgets_values_named": {
+        "pattern": "rms"
+      }
+    },
+    {
+      "id": 11,
+      "type": "GeneretiChopMath",
+      "title": "ꘇ sensitivity · RMS × 12",
+      "pos": [
+        1180,
+        710
+      ],
+      "size": [
+        300,
+        350
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 10
+        },
+        {
+          "name": "operation",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "operation"
+          }
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "value"
+          }
+        },
+        {
+          "name": "low",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "low"
+          }
+        },
+        {
+          "name": "high",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "high"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopMath",
+        "generetiLessonRef": "9d9d2e0f-2cc8-56cf-976e-5e1274b09610",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "operation": "multiply",
+          "value": 12,
+          "low": 0,
+          "high": 1
+        }
+      },
+      "widgets_values": [
+        "multiply",
+        12,
+        0,
+        1
+      ],
+      "widgets_values_named": {
+        "operation": "multiply",
+        "value": 12,
+        "low": 0,
+        "high": 1
+      }
+    },
+    {
+      "id": 12,
+      "type": "GeneretiLivecode",
+      "title": "ꘇ p5 · sound-reactive rings",
+      "pos": [
+        1570,
+        0
+      ],
+      "size": [
+        410,
+        620
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "language",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "language"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "auto_update"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "energy",
+          "link": 11,
+          "widget": {
+            "name": "controls.value0"
+          }
+        },
+        {
+          "name": "controls.value1",
+          "type": "FLOAT",
+          "label": "sensitivity",
+          "link": null,
+          "widget": {
+            "name": "controls.value1"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLessonRef": "635be1ab-b538-5c16-a74f-76aa7c2890b3",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "language": "p5",
+          "width": 384,
+          "height": 256,
+          "auto_update": true,
+          "code": "let energy = 0.0; /* 0..1 */\nlet sensitivity = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(230,45,9,22); noFill();\n  let e=constrain(energy*sensitivity,0,1);\n  for(let i=0;i<10;i++){\n    stroke((frameCount*.8+i*24)%360,80,95,70); strokeWeight(1+e*4);\n    let r=20+i*9+e*80;\n    circle(width/2+sin(frameCount*.02+i)*e*20,height/2,r*2);\n  }\n  if(mouseIsPressed){ noStroke(); fill(45,20,100); circle(mouseX,mouseY,12+e*100); }\n}",
+          "parameters": "{\"energy\": 0.0, \"sensitivity\": 1.0}",
+          "performance": "{}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "energy": 0.0,
+            "sensitivity": 1.0
+          },
+          "slots": {
+            "energy": 0,
+            "sensitivity": 1
+          }
+        },
+        "generetiLivecodeLastGood": {
+          "mode": "p5",
+          "source": "let energy = 0.0; /* 0..1 */\nlet sensitivity = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(230,45,9,22); noFill();\n  let e=constrain(energy*sensitivity,0,1);\n  for(let i=0;i<10;i++){\n    stroke((frameCount*.8+i*24)%360,80,95,70); strokeWeight(1+e*4);\n    let r=20+i*9+e*80;\n    circle(width/2+sin(frameCount*.02+i)*e*20,height/2,r*2);\n  }\n  if(mouseIsPressed){ noStroke(); fill(45,20,100); circle(mouseX,mouseY,12+e*100); }\n}"
+        }
+      },
+      "widgets_values": [
+        "p5",
+        384,
+        256,
+        true,
+        "let energy = 0.0; /* 0..1 */\nlet sensitivity = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(230,45,9,22); noFill();\n  let e=constrain(energy*sensitivity,0,1);\n  for(let i=0;i<10;i++){\n    stroke((frameCount*.8+i*24)%360,80,95,70); strokeWeight(1+e*4);\n    let r=20+i*9+e*80;\n    circle(width/2+sin(frameCount*.02+i)*e*20,height/2,r*2);\n  }\n  if(mouseIsPressed){ noStroke(); fill(45,20,100); circle(mouseX,mouseY,12+e*100); }\n}",
+        "{\"energy\": 0.0, \"sensitivity\": 1.0}",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "language": "p5",
+        "width": 384,
+        "height": 256,
+        "auto_update": true,
+        "code": "let energy = 0.0; /* 0..1 */\nlet sensitivity = 1.0; /* 0.1..3 */\nfunction setup(){ createCanvas(windowWidth,windowHeight); colorMode(HSB,360,100,100); }\nfunction draw(){\n  background(230,45,9,22); noFill();\n  let e=constrain(energy*sensitivity,0,1);\n  for(let i=0;i<10;i++){\n    stroke((frameCount*.8+i*24)%360,80,95,70); strokeWeight(1+e*4);\n    let r=20+i*9+e*80;\n    circle(width/2+sin(frameCount*.02+i)*e*20,height/2,r*2);\n  }\n  if(mouseIsPressed){ noStroke(); fill(45,20,100); circle(mouseX,mouseY,12+e*100); }\n}",
+        "parameters": "{\"energy\": 0.0, \"sensitivity\": 1.0}",
+        "performance": "{}",
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 13,
+      "type": "GeneretiLiveImagePreview",
+      "title": "ꘇ audiovisual output",
+      "pos": [
+        2060,
+        0
+      ],
+      "size": [
+        340,
+        440
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 12
+        },
+        {
+          "name": "preview_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "fc5089af-4041-50d4-bb4b-31733311da63",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "preview_size": 384
+        }
+      },
+      "widgets_values": [
+        384,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "preview_size": 384,
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 14,
+      "type": "GeneretiDatLesson",
+      "title": "ꘇ walkthrough · start here",
+      "pos": [
+        1570,
+        750
+      ],
+      "size": [
+        630,
+        590
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "guide",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiLessonRef": "9d4ed75e-58e2-5220-b6e1-77dc4da941eb",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"av-livecode\",\n  \"title\": \"Livecode: sound analysis becomes visual control\",\n  \"summary\": \"A quiet modular synth, RMS signal routing, spectrum/scope and an interactive p5 display.\",\n  \"steps\": [\n    {\n      \"title\": \"Start sound explicitly\",\n      \"text\": \"Press ▷ Start on mod.output at its low level. The lesson Play/Do it controls never unlock audio; this step waits for your own audio gesture.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"7e66d584-d287-5e54-be4d-54f680cdb01e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The music clock and sequence describe notes; the output activates the browser AudioContext. Panic stops it. Queue never plays sound.\"\n    },\n    {\n      \"title\": \"Inspect the sound\",\n      \"text\": \"scope shows stereo waveforms, spectrum shows frequency-bin magnitudes, and lissajous plots left against right. Display gain enlarges drawings without changing sound.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSpectrum\",\n        \"ref\": \"f85f6ff0-290a-5914-998c-ff2194d448c4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"fft_size trades frequency detail for a longer analysis window. Do it sets 2048; all three taps analyze the running gain bus.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSpectrum\",\n            \"ref\": \"f85f6ff0-290a-5914-998c-ff2194d448c4\",\n            \"widget\": \"fft_size\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 2048\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioScope\",\n            \"ref\": \"6d8a5892-a32b-539c-ad2a-dbcb76dda3b3\",\n            \"widget\": \"display_gain\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 12\n        }\n      ]\n    },\n    {\n      \"title\": \"Route RMS into p5\",\n      \"text\": \"analyze.channels → chop.select rms → chop.math × 12 → energy. FLOAT is the last sample of the named control block. The p5 rings grow with sound level.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopMath\",\n        \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"This is control-rate analysis, not audio-rate DSP. energy is clamped to 0..1 in the annotated parameter. Do it restores the connection and increases sensitivity.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiChopSelect\",\n            \"ref\": \"1fc7df09-036c-5001-8b4b-dce14c820f45\",\n            \"widget\": \"pattern\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"rms\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiChopMath\",\n            \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\",\n            \"widget\": \"value\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 18\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiChopMath\",\n            \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\"\n          },\n          \"input\": \"controls.value0\",\n          \"output\": \"value\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Add a pointer to the performance\",\n      \"text\": \"Hold and move the pointer inside the p5 output. Light spots follow your mouse while ring size follows audio. Both interactions stay live in Alt+W / Alt+O.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\",\n        \"part\": \"preview\"\n      },\n      \"hint\": \"Do it changes the unconnected sensitivity parameter. The connected energy default is overridden by RMS, so changing its local widget cannot defeat the wire.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\",\n            \"widget\": \"controls.value1\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 1.5\n        }\n      ]\n    },\n    {\n      \"title\": \"Explore stereo and stop\",\n      \"text\": \"Adjust pan to tilt the lissajous line. Mono balance is not phase modulation. Press Panic on mod.output when finished; analysis and energy return to zero.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioLissajous\",\n        \"ref\": \"c692e22a-4ae9-5c23-996f-af3efe933de0\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Do it only changes pan. Stop audio yourself. A future stereo effect can turn the diagonal into a loop; this demo preserves the actual channel relationship.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioGain\",\n            \"ref\": \"d5f37102-1fb6-5efd-b6fc-5eaf37637596\",\n            \"widget\": \"pan\",\n            \"part\": \"parameter\"\n          },\n          \"value\": -0.45\n        }\n      ]\n    }\n  ]\n}"
+        }
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"av-livecode\",\n  \"title\": \"Livecode: sound analysis becomes visual control\",\n  \"summary\": \"A quiet modular synth, RMS signal routing, spectrum/scope and an interactive p5 display.\",\n  \"steps\": [\n    {\n      \"title\": \"Start sound explicitly\",\n      \"text\": \"Press ▷ Start on mod.output at its low level. The lesson Play/Do it controls never unlock audio; this step waits for your own audio gesture.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"7e66d584-d287-5e54-be4d-54f680cdb01e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The music clock and sequence describe notes; the output activates the browser AudioContext. Panic stops it. Queue never plays sound.\"\n    },\n    {\n      \"title\": \"Inspect the sound\",\n      \"text\": \"scope shows stereo waveforms, spectrum shows frequency-bin magnitudes, and lissajous plots left against right. Display gain enlarges drawings without changing sound.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSpectrum\",\n        \"ref\": \"f85f6ff0-290a-5914-998c-ff2194d448c4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"fft_size trades frequency detail for a longer analysis window. Do it sets 2048; all three taps analyze the running gain bus.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSpectrum\",\n            \"ref\": \"f85f6ff0-290a-5914-998c-ff2194d448c4\",\n            \"widget\": \"fft_size\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 2048\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioScope\",\n            \"ref\": \"6d8a5892-a32b-539c-ad2a-dbcb76dda3b3\",\n            \"widget\": \"display_gain\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 12\n        }\n      ]\n    },\n    {\n      \"title\": \"Route RMS into p5\",\n      \"text\": \"analyze.channels → chop.select rms → chop.math × 12 → energy. FLOAT is the last sample of the named control block. The p5 rings grow with sound level.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopMath\",\n        \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"This is control-rate analysis, not audio-rate DSP. energy is clamped to 0..1 in the annotated parameter. Do it restores the connection and increases sensitivity.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiChopSelect\",\n            \"ref\": \"1fc7df09-036c-5001-8b4b-dce14c820f45\",\n            \"widget\": \"pattern\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"rms\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiChopMath\",\n            \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\",\n            \"widget\": \"value\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 18\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiChopMath\",\n            \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\"\n          },\n          \"input\": \"controls.value0\",\n          \"output\": \"value\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Add a pointer to the performance\",\n      \"text\": \"Hold and move the pointer inside the p5 output. Light spots follow your mouse while ring size follows audio. Both interactions stay live in Alt+W / Alt+O.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\",\n        \"part\": \"preview\"\n      },\n      \"hint\": \"Do it changes the unconnected sensitivity parameter. The connected energy default is overridden by RMS, so changing its local widget cannot defeat the wire.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\",\n            \"widget\": \"controls.value1\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 1.5\n        }\n      ]\n    },\n    {\n      \"title\": \"Explore stereo and stop\",\n      \"text\": \"Adjust pan to tilt the lissajous line. Mono balance is not phase modulation. Press Panic on mod.output when finished; analysis and energy return to zero.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioLissajous\",\n        \"ref\": \"c692e22a-4ae9-5c23-996f-af3efe933de0\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Do it only changes pan. Stop audio yourself. A future stereo effect can turn the diagonal into a loop; this demo preserves the actual channel relationship.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioGain\",\n            \"ref\": \"d5f37102-1fb6-5efd-b6fc-5eaf37637596\",\n            \"widget\": \"pan\",\n            \"part\": \"parameter\"\n          },\n          \"value\": -0.45\n        }\n      ]\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"av-livecode\",\n  \"title\": \"Livecode: sound analysis becomes visual control\",\n  \"summary\": \"A quiet modular synth, RMS signal routing, spectrum/scope and an interactive p5 display.\",\n  \"steps\": [\n    {\n      \"title\": \"Start sound explicitly\",\n      \"text\": \"Press ▷ Start on mod.output at its low level. The lesson Play/Do it controls never unlock audio; this step waits for your own audio gesture.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"7e66d584-d287-5e54-be4d-54f680cdb01e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The music clock and sequence describe notes; the output activates the browser AudioContext. Panic stops it. Queue never plays sound.\"\n    },\n    {\n      \"title\": \"Inspect the sound\",\n      \"text\": \"scope shows stereo waveforms, spectrum shows frequency-bin magnitudes, and lissajous plots left against right. Display gain enlarges drawings without changing sound.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSpectrum\",\n        \"ref\": \"f85f6ff0-290a-5914-998c-ff2194d448c4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"fft_size trades frequency detail for a longer analysis window. Do it sets 2048; all three taps analyze the running gain bus.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioSpectrum\",\n            \"ref\": \"f85f6ff0-290a-5914-998c-ff2194d448c4\",\n            \"widget\": \"fft_size\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 2048\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioScope\",\n            \"ref\": \"6d8a5892-a32b-539c-ad2a-dbcb76dda3b3\",\n            \"widget\": \"display_gain\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 12\n        }\n      ]\n    },\n    {\n      \"title\": \"Route RMS into p5\",\n      \"text\": \"analyze.channels → chop.select rms → chop.math × 12 → energy. FLOAT is the last sample of the named control block. The p5 rings grow with sound level.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiChopMath\",\n        \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"This is control-rate analysis, not audio-rate DSP. energy is clamped to 0..1 in the annotated parameter. Do it restores the connection and increases sensitivity.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiChopSelect\",\n            \"ref\": \"1fc7df09-036c-5001-8b4b-dce14c820f45\",\n            \"widget\": \"pattern\",\n            \"part\": \"parameter\"\n          },\n          \"value\": \"rms\"\n        },\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiChopMath\",\n            \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\",\n            \"widget\": \"value\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 18\n        },\n        {\n          \"kind\": \"connect\",\n          \"source\": {\n            \"nodeType\": \"GeneretiChopMath\",\n            \"ref\": \"9d9d2e0f-2cc8-56cf-976e-5e1274b09610\"\n          },\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\"\n          },\n          \"input\": \"controls.value0\",\n          \"output\": \"value\"\n        }\n      ]\n    },\n    {\n      \"title\": \"Add a pointer to the performance\",\n      \"text\": \"Hold and move the pointer inside the p5 output. Light spots follow your mouse while ring size follows audio. Both interactions stay live in Alt+W / Alt+O.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\",\n        \"part\": \"preview\"\n      },\n      \"hint\": \"Do it changes the unconnected sensitivity parameter. The connected energy default is overridden by RMS, so changing its local widget cannot defeat the wire.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiLivecode\",\n            \"ref\": \"635be1ab-b538-5c16-a74f-76aa7c2890b3\",\n            \"widget\": \"controls.value1\",\n            \"part\": \"parameter\"\n          },\n          \"value\": 1.5\n        }\n      ]\n    },\n    {\n      \"title\": \"Explore stereo and stop\",\n      \"text\": \"Adjust pan to tilt the lissajous line. Mono balance is not phase modulation. Press Panic on mod.output when finished; analysis and energy return to zero.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioLissajous\",\n        \"ref\": \"c692e22a-4ae9-5c23-996f-af3efe933de0\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Do it only changes pan. Stop audio yourself. A future stereo effect can turn the diagonal into a loop; this demo preserves the actual channel relationship.\",\n      \"actions\": [\n        {\n          \"kind\": \"set-widget\",\n          \"target\": {\n            \"nodeType\": \"GeneretiAudioGain\",\n            \"ref\": \"d5f37102-1fb6-5efd-b6fc-5eaf37637596\",\n            \"widget\": \"pan\",\n            \"part\": \"parameter\"\n          },\n          \"value\": -0.45\n        }\n      ]\n    }\n  ]\n}",
+        "genereti_delivery": "Live"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      2,
+      2,
+      0,
+      3,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      4,
+      4,
+      0,
+      5,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      5,
+      4,
+      0,
+      6,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      6,
+      4,
+      0,
+      7,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      7,
+      4,
+      0,
+      8,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      8,
+      4,
+      0,
+      9,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      9,
+      6,
+      1,
+      10,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      10,
+      10,
+      0,
+      11,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      11,
+      11,
+      1,
+      12,
+      6,
+      "FLOAT"
+    ],
+    [
+      12,
+      12,
+      0,
+      13,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.42,
+      "offset": [
+        70,
+        90
+      ]
+    }
+  },
+  "version": 0.4
+}

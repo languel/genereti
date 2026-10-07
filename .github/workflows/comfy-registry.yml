@@ -1,0 +1,32 @@
+name: Publish to Comfy Registry
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: comfy-registry-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check registry metadata and token
+        env:
+          REGISTRY_ACCESS_TOKEN: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
+        run: |
+          python scripts/build_comfy_package.py --check-registry
+          test -n "$REGISTRY_ACCESS_TOKEN" || { echo 'Add the REGISTRY_ACCESS_TOKEN repository secret'; exit 1; }
+      - name: Install publishing CLI
+        run: python -m pip install comfy-cli
+      - name: Publish committed version
+        env:
+          REGISTRY_ACCESS_TOKEN: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
+          # comfy-cli's tracked-file parser needs literal UTF-8 ꘇ workflow names.
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: core.quotepath
+          GIT_CONFIG_VALUE_0: 'false'
+        run: comfy node publish --token "$REGISTRY_ACCESS_TOKEN"

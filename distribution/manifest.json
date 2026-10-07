@@ -1,0 +1,39 @@
+{
+  "format": 1,
+  "packs": [
+    "genereti_comfy_inputs",
+    "genereti_comfy_p5",
+    "genereti_comfy_drawing",
+    "genereti_comfy_stream",
+    "genereti_comfy_texture",
+    "genereti_comfy_chop",
+    "genereti_comfy_dat",
+    "genereti_comfy_projector",
+    "genereti_comfy_performance",
+    "genereti_comfy_agent"
+  ],
+  "files": [
+    "__init__.py",
+    "pyproject.toml",
+    "requirements.txt",
+    ".comfyignore",
+    "README.md",
+    "LICENSE",
+    "distribution/manifest.json",
+    "scripts/install_comfy_workflows.py",
+    "scripts/comfy_agent_cli.py",
+    "scripts/build_comfy_package.py",
+    "package.json",
+    "package-lock.json",
+    "scripts/build_editor.mjs",
+    "scripts/build_livecode.mjs",
+    "scripts/build_performance.mjs",
+    "scripts/build_livecode_lessons.py"
+  ],
+  "directories": [
+    "docs",
+    "editor",
+    "web/vendor/excalidraw",
+    "integrations/comfyui_genereti/workflows"
+  ]
+}

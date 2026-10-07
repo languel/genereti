@@ -1,0 +1,140 @@
+{
+  "format": "genereti-guide",
+  "version": 1,
+  "id": "av-livecode",
+  "title": "Livecode: sound analysis becomes visual control",
+  "summary": "A quiet modular synth, RMS signal routing, spectrum/scope and an interactive p5 display.",
+  "steps": [
+    {
+      "title": "Start sound explicitly",
+      "text": "Press ▷ Start on mod.output at its low level. The lesson Play/Do it controls never unlock audio; this step waits for your own audio gesture.",
+      "target": {
+        "nodeType": "GeneretiAudioOutput",
+        "ref": "7e66d584-d287-5e54-be4d-54f680cdb01e",
+        "part": "node"
+      },
+      "hint": "The music clock and sequence describe notes; the output activates the browser AudioContext. Panic stops it. Queue never plays sound."
+    },
+    {
+      "title": "Inspect the sound",
+      "text": "scope shows stereo waveforms, spectrum shows frequency-bin magnitudes, and lissajous plots left against right. Display gain enlarges drawings without changing sound.",
+      "target": {
+        "nodeType": "GeneretiAudioSpectrum",
+        "ref": "f85f6ff0-290a-5914-998c-ff2194d448c4",
+        "part": "node"
+      },
+      "hint": "fft_size trades frequency detail for a longer analysis window. Do it sets 2048; all three taps analyze the running gain bus.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiAudioSpectrum",
+            "ref": "f85f6ff0-290a-5914-998c-ff2194d448c4",
+            "widget": "fft_size",
+            "part": "parameter"
+          },
+          "value": 2048
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiAudioScope",
+            "ref": "6d8a5892-a32b-539c-ad2a-dbcb76dda3b3",
+            "widget": "display_gain",
+            "part": "parameter"
+          },
+          "value": 12
+        }
+      ]
+    },
+    {
+      "title": "Route RMS into p5",
+      "text": "analyze.channels → chop.select rms → chop.math × 12 → energy. FLOAT is the last sample of the named control block. The p5 rings grow with sound level.",
+      "target": {
+        "nodeType": "GeneretiChopMath",
+        "ref": "9d9d2e0f-2cc8-56cf-976e-5e1274b09610",
+        "part": "node"
+      },
+      "hint": "This is control-rate analysis, not audio-rate DSP. energy is clamped to 0..1 in the annotated parameter. Do it restores the connection and increases sensitivity.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiChopSelect",
+            "ref": "1fc7df09-036c-5001-8b4b-dce14c820f45",
+            "widget": "pattern",
+            "part": "parameter"
+          },
+          "value": "rms"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiChopMath",
+            "ref": "9d9d2e0f-2cc8-56cf-976e-5e1274b09610",
+            "widget": "value",
+            "part": "parameter"
+          },
+          "value": 18
+        },
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiChopMath",
+            "ref": "9d9d2e0f-2cc8-56cf-976e-5e1274b09610"
+          },
+          "target": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "635be1ab-b538-5c16-a74f-76aa7c2890b3"
+          },
+          "input": "controls.value0",
+          "output": "value"
+        }
+      ]
+    },
+    {
+      "title": "Add a pointer to the performance",
+      "text": "Hold and move the pointer inside the p5 output. Light spots follow your mouse while ring size follows audio. Both interactions stay live in Alt+W / Alt+O.",
+      "target": {
+        "nodeType": "GeneretiLivecode",
+        "ref": "635be1ab-b538-5c16-a74f-76aa7c2890b3",
+        "part": "preview"
+      },
+      "hint": "Do it changes the unconnected sensitivity parameter. The connected energy default is overridden by RMS, so changing its local widget cannot defeat the wire.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "635be1ab-b538-5c16-a74f-76aa7c2890b3",
+            "widget": "controls.value1",
+            "part": "parameter"
+          },
+          "value": 1.5
+        }
+      ]
+    },
+    {
+      "title": "Explore stereo and stop",
+      "text": "Adjust pan to tilt the lissajous line. Mono balance is not phase modulation. Press Panic on mod.output when finished; analysis and energy return to zero.",
+      "target": {
+        "nodeType": "GeneretiAudioLissajous",
+        "ref": "c692e22a-4ae9-5c23-996f-af3efe933de0",
+        "part": "node"
+      },
+      "hint": "Do it only changes pan. Stop audio yourself. A future stereo effect can turn the diagonal into a loop; this demo preserves the actual channel relationship.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiAudioGain",
+            "ref": "d5f37102-1fb6-5efd-b6fc-5eaf37637596",
+            "widget": "pan",
+            "part": "parameter"
+          },
+          "value": -0.45
+        }
+      ]
+    }
+  ]
+}

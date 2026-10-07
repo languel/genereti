@@ -122,7 +122,7 @@ Live sources draw borrowed ImageBitmaps directly into this window at their nativ
 
 Output fit controls offer Contain, Cover, Stretch and Native pixels in both the node and output window; pointer movement near the bottom reveals the window control. Contain preserves the source aspect and may show letterboxing. Desktop hosts may redirect ordinary popups into a separate browser. The local output tries Document Picture-in-Picture when available; if the desktop host rejects it, a draggable, resizable in-app output panel keeps the direct canvas path working. For a separate OS window in hosts without floating-window support, open Comfy's server URL in Chrome. This fallback was browser-tested with a simulated desktop rejection; native Electron behavior still needs testing in the desktop app. This direct mode never silently switches to JPEG. **Open projector** and **Copy projector link** remain available separately for external browsers/profiles, using the existing compressed relay when needed. Refresh Comfy to load these frontend controls; no backend restart is needed for the output window itself.
 
-Livecode uses a borderless icon toolbar. Auto-update is the circular-arrow toggle immediately after Stop (hover for its label); its value remains in the workflow. Export opens PNG (rendered output), HTML (standalone accepted runtime), JSON (draft code, language, auto-update and node properties), or Source script (`.js`, `.frag`, `.html`, or `.md`). JSON is a portable Livecode object, not a complete Comfy graph. The node-pack badge is hidden for Livecode.
+Livecode uses a borderless icon toolbar. Auto-update is the lightning toggle immediately after Stop (hover for its label); its value remains in the workflow. Export opens PNG (rendered output), HTML (standalone accepted runtime), JSON (draft code, language, auto-update and node properties), or Source script (`.js`, `.frag`, `.html`, or `.md`). JSON is a portable Livecode object, not a complete Comfy graph. The node-pack pill remains at the bottom of Livecode.
 
 The Livecode display label is **ꘇ livecode**; its internal `GeneretiLivecode` ID and Genereti search alias remain unchanged. Cmd/Ctrl+Shift+Plus/Minus adjusts only the focused code editor’s font (9–36px), saved with its appearance. Shift + two-finger scrolling over the editor scrolls code vertically without moving or zooming the Comfy graph.
 
@@ -190,3 +190,14 @@ noise automation, scale context, `dat.monitor` frame timing and an explicitly
 started modular synth.
 **Alt+Shift+T** opens the dock. See [performance time](performance-time.md) for
 recording parameter takes, offsets, `__` variables and seek limitations.
+
+## Guided Livecode pipelines
+
+- **ꘇ-Livecode-Shader-Buffers.json**: three connected GLSL passes, fresh/history composite and a delayed composite reference. These are external buffer nodes with one image input per pass, not full Shadertoy A–D tabs.
+- **ꘇ-Livecode-P5-Pipeline.json**: interactive source sketch → mirrored tile sketch → viewer, using `inputImage`.
+- **ꘇ-Livecode-Audio-Visual.json**: explicitly started FM synth, scope/spectrum/Lissajous, RMS → CHOP → annotated p5 parameter and pointer interaction.
+
+Each includes a clickable `dat.lesson` playlist with Hint/Do it actions. Open
+these workflows through the Learning lesson chooser or the Genereti workflow
+folder. The [step-by-step guide](livecode-tutorials.md) explains routing, controls
+and current multibuffer limits. All three ship in the student Comfy package.

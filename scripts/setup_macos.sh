@@ -18,7 +18,7 @@ if ! command -v python3.11 >/dev/null 2>&1; then
 fi
 
 uv venv --python "$(command -v python3.11)" .venv
-uv pip install --python .venv/bin/python -r requirements.txt
+uv pip install --python .venv/bin/python -r requirements-macos.txt
 mkdir -p web/models
 POSE_MODEL="web/models/pose_landmarker_lite.task"
 if [[ ! -s "$POSE_MODEL" ]]; then

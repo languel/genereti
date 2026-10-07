@@ -1,10 +1,10 @@
 # Genereti
 
-**Live, controllable image generation for creative coding and performance.** Genereti is currently built for **macOS on Apple silicon** (M-series Macs). It uses Core ML models on-device and includes a browser app plus bridges for p5.js, TouchDesigner, and ComfyUI.
+**Realtime creative coding and performance tools for ComfyUI**, plus an optional local image generator. The Comfy package includes Livecode, drawing, OpenTouch operators, Web Audio, lessons and timeline automation. The separate Core ML generator requires **macOS 14+ on Apple silicon** (M-series Macs).
 
 > A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition
 
-Start with the [student quickstart](docs/student-quickstart.md). It covers setup, model downloads, launch, and the first live workflow. The [platform guide](docs/platform-support.md) explains exactly what runs on Apple silicon and what can also be used on PC.
+For class, start with the [Comfy package quickstart](docs/comfy-distribution.md) and **ꘇ-Performance-Timeline**; no models or generator server are needed. The [student quickstart](docs/student-quickstart.md) also covers the optional Mac generator. The [platform guide](docs/platform-support.md) explains the separate platform requirements.
 
 ## Other app interfaces
 
@@ -18,7 +18,7 @@ Open [the standalone p5 canvas lab](http://localhost:8765/p5-lab.html) for side-
 
 **ꘇ livecode** retains the internal `GeneretiLivecode` ID and search aliases. It keeps the last working sketch running when a new draft fails. Its borderless toolbar includes Run, Stop, Auto-update, Settings, Split/Overlay/Code/Output views, and an Export menu for PNG, standalone HTML, a JSON node object, or source script. Editor settings include themes, custom themes, alpha colors, fonts, completion and rendering dimensions/fit.
 
-Use **Cmd/Ctrl+Enter** to run, **Ctrl+.** to pause, **Cmd/Ctrl+Shift +/-** to resize the focused editor font, and **Shift + two-finger scrolling** to scroll code without zooming the graph. Settings → Genereti → Workflow → Default workflow selects Blank canvas or Comfy default for the next default load; restored tabs stay intact. See the [Livecode guide](integrations/genereti_comfy_p5/README.md) and [workflow examples](docs/workflows.md#general-livecode-source).
+Use **Cmd/Ctrl+Enter** to run, **Ctrl+.** to pause, **Cmd/Ctrl+Shift +/-** to resize the focused editor font, and **Shift + two-finger scrolling** to scroll code without zooming the graph. Settings → Genereti → Workflow → Default workflow selects Blank canvas or Comfy default for the next default load; restored tabs stay intact. Try the [guided shader, p5 and audiovisual tutorials](docs/livecode-tutorials.md). See the [Livecode guide](integrations/genereti_comfy_p5/README.md) and [workflow examples](docs/workflows.md#general-livecode-source).
 
 ## Comfy drawing
 
@@ -31,7 +31,9 @@ automation/recording, global scale and `__` time in code/expression nodes.
 Use **Alt+Shift+T** for the dock and open **ꘇ-Performance-Timeline** for its guide.
 See [performance time](docs/performance-time.md) for domains and first-pass seek behavior.
 
-Install with `scripts/install_comfy.sh`, restart ComfyUI and refresh the browser.
+Use the [single-folder package install](docs/comfy-distribution.md), restart
+ComfyUI and refresh the browser. `scripts/install_comfy.sh` remains the alternative
+split-pack development installer; install only one layout at a time.
 
 **OpenTouch operators** add `top.*` WebGPU textures, `chop.*` sampled signals/MIDI/OSC/music, and `dat.*` documents/tables/lessons. All six family conversions are explicit. Open **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. The `dat.lesson` toolbar authors/runs/exports lessons; Settings → Genereti → Learning opens mini guides. Browser synth/drum audio is explicitly started. The independent `mod.*` Web Audio layer adds routed instruments, sequencers, effects and a mixer; open **ꘇ-Modular-Audio** and press Start on `mod.output`. See the [audio guide](docs/modular-audio.md), [catalog](docs/opentouch-catalog.md), [report](docs/opentouch-report.md) and [lesson/export guide](docs/opentouch-lessons.md).
 Open [ꘇ-Drawing-Source.json](<integrations/comfyui_genereti/workflows/ꘇ-Drawing-Source.json>)
@@ -58,6 +60,7 @@ Genereti is designed for responsive visuals, not full-resolution batch art. The 
 ## Quick links
 
 - [Student quickstart](docs/student-quickstart.md)
+- [Comfy package install, student releases and registry preparation](docs/comfy-distribution.md)
 - [Apple silicon and PC support](docs/platform-support.md)
 - [Web app, p5.js, TouchDesigner, and ComfyUI](docs/workflows.md)
 - [Classic SD 1.5 and Qwen Image 2.1 in ComfyUI](docs/comfy-sd15-and-qwen21.md)

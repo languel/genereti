@@ -1,0 +1,16 @@
+Student preview of ꘇ Genereti / OpenTouch for ComfyUI.
+
+Includes Livecode, drawing/capture, GPU texture operators, CHOP/DAT tools,
+modular Web Audio, interactive lessons, timeline automation and dat.monitor.
+Browser bundles and example workflows are included. No model weights or Core ML
+generator dependencies are included.
+
+Install: unzip the `genereti` folder into ComfyUI's `custom_nodes`, install its
+`requirements.txt` with ComfyUI's Python, restart ComfyUI, then refresh the page.
+Import an example from `integrations/comfyui_genereti/workflows`, starting with
+`ꘇ-Performance-Timeline.json`. Camera, screen sharing and audio start explicitly.
+
+See [installation and distribution instructions](https://github.com/languel/genereti/blob/main/docs/comfy-distribution.md)
+for Desktop/Portable paths, upgrades, example installation and current limitations.
+
+Three guided Livecode examples cover connected shader buffers/history, a two-sketch p5 image pipeline and sound analysis driving an interactive p5 display. Each includes Hint/Do it and exportable lesson source.

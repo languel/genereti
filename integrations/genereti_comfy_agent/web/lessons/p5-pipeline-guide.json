@@ -1,0 +1,135 @@
+{
+  "format": "genereti-guide",
+  "version": 1,
+  "id": "p5-pipeline",
+  "title": "Livecode: two p5 sketches, one image stream",
+  "summary": "An interactive source feeds a mirrored tile processor using inputImage.",
+  "steps": [
+    {
+      "title": "Draw in the source",
+      "text": "The left sketch paints animated colored dots. Press and move inside its output to paint a larger light spot. Its mouse is local to this source runtime.",
+      "target": {
+        "nodeType": "GeneretiLivecode",
+        "ref": "a8a634c3-4268-5e02-97c3-56c6061a0c9e",
+        "part": "preview"
+      },
+      "hint": "Use the output below the editor, Alt+W or Alt+O. Enable interaction in the overlay if you turned click-through on. Do it slows the animation, then try the mouse yourself.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "a8a634c3-4268-5e02-97c3-56c6061a0c9e",
+            "widget": "controls.value0",
+            "part": "parameter"
+          },
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "title": "Pass pixels to another sketch",
+      "text": "Connect the source IMAGE to the processor image input. The processor receives inputImage, a p5.Image refreshed as frames arrive.",
+      "target": {
+        "nodeType": "GeneretiLivecode",
+        "ref": "19e95292-7538-558f-b689-9503a56cb644",
+        "part": "node"
+      },
+      "hint": "inputImage is null before the first frame. It is an image, not the other sketch’s variables or canvas DOM. Do it reconnects the two sketches.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "a8a634c3-4268-5e02-97c3-56c6061a0c9e"
+          },
+          "target": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "19e95292-7538-558f-b689-9503a56cb644"
+          },
+          "input": "image",
+          "output": "IMAGE"
+        }
+      ]
+    },
+    {
+      "title": "Tile without recompiling",
+      "text": "tiles is an annotated number. Change its regular control to resize the grid; the same image is drawn into alternating mirrored cells.",
+      "target": {
+        "nodeType": "GeneretiLivecode",
+        "ref": "19e95292-7538-558f-b689-9503a56cb644",
+        "part": "node"
+      },
+      "hint": "The code rounds tiles to an integer. controls.value0 is the stable socket ID; tiles is its friendly label.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "19e95292-7538-558f-b689-9503a56cb644",
+            "widget": "controls.value0",
+            "part": "parameter"
+          },
+          "value": 5.0
+        }
+      ]
+    },
+    {
+      "title": "Edit independent runtimes",
+      "text": "Each sketch has its own setup, draw, frameCount and pointer. The downstream node receives images, not source code. Save keeps source text and wiring.",
+      "target": {
+        "nodeType": "GeneretiLivecode",
+        "ref": "a8a634c3-4268-5e02-97c3-56c6061a0c9e",
+        "part": "node"
+      },
+      "hint": "Do it restores a leisurely source speed. You can add another Livecode p5 node and keep extending this image pipeline.",
+      "actions": [
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "a8a634c3-4268-5e02-97c3-56c6061a0c9e",
+            "widget": "controls.value0",
+            "part": "parameter"
+          },
+          "value": 0.8
+        }
+      ]
+    },
+    {
+      "title": "Present the processed output",
+      "text": "Open the viewer or processor as an overlay. Source interaction continues to appear in the tiled output; keep the source preview accessible when performing.",
+      "target": {
+        "nodeType": "GeneretiLiveImagePreview",
+        "ref": "3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066",
+        "part": "node"
+      },
+      "hint": "Alt+W makes a floating view; Alt+O hides node chrome. Each node’s Queue capture freezes its current output; neither creates a shared p5 runtime.",
+      "actions": [
+        {
+          "kind": "connect",
+          "source": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "19e95292-7538-558f-b689-9503a56cb644"
+          },
+          "target": {
+            "nodeType": "GeneretiLiveImagePreview",
+            "ref": "3fc7f3e5-48f5-5f2d-9e87-0c2f05c1e066"
+          },
+          "input": "image",
+          "output": "IMAGE"
+        },
+        {
+          "kind": "set-widget",
+          "target": {
+            "nodeType": "GeneretiLivecode",
+            "ref": "19e95292-7538-558f-b689-9503a56cb644",
+            "widget": "controls.value0",
+            "part": "parameter"
+          },
+          "value": 3.0
+        }
+      ]
+    }
+  ]
+}
