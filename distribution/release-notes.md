@@ -18,3 +18,9 @@ Three guided Livecode examples cover connected shader buffers/history, a two-ske
 - MIT for Genereti-authored code, full browser dependency notices and p5 LGPL source delivery.
 - Public build omits embedded Strudel; saved patterns remain editable for external use.
 - Publisher `liuboto` configured; Registry publication remains manual.
+# Super alpha classroom release
+
+Version 0.1.1 is an early test release for classroom experimentation and feedback.
+Expect bugs, incomplete features and changing interfaces. Back up workflows and
+test in a separate ComfyUI installation before using an existing teaching setup.
+Please report your OS, browser and ComfyUI version with a small reproducing workflow.

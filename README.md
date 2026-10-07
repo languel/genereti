@@ -2,6 +2,12 @@
 
 **Realtime creative coding and performance tools for ComfyUI**, plus an optional local image generator. The Comfy package includes Livecode, drawing, OpenTouch operators, Web Audio, lessons and timeline automation. The separate Core ML generator requires **macOS 14+ on Apple silicon** (M-series Macs).
 
+**Super alpha · early classroom test release (0.1.1).** Expect bugs, incomplete
+features and changing interfaces. Back up your workflows before updating, try
+the package in a separate ComfyUI installation first, and report issues with
+your OS, browser, ComfyUI version and a small reproducing workflow. This release
+is intended for experimentation and student feedback; it is not production-ready.
+
 ## Student getting started
 
 Use an existing ComfyUI installation. The realtime classroom tools need no model
