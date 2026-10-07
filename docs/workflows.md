@@ -181,3 +181,11 @@ Demo filenames use `ꘇ-…`. Stable node IDs and the **Genereti** folder remain
 ## Painterly noise feedback
 
 **ꘇ-Painterly-Feedback-Tutorial** is a lesson-only starter with six Hint / Do it steps that create and wire the patch. **ꘇ-Painterly-Feedback-Patch** opens the completed pigment/noise/displacement loop with the same lesson. See [reference feedback and expression syntax](texture-operators.md#painterly-reference-feedback-tutorial). Both run without models or media permissions.
+
+## Performance timeline
+
+Open **ꘇ-Performance-Timeline** in the Genereti workflow folder. Its six-step
+lesson connects a project transport, readable time, global expression color,
+noise automation, scale context and an explicitly started modular synth.
+**Alt+Shift+T** opens the dock. See [performance time](performance-time.md) for
+recording parameter takes, offsets, `__` variables and seek limitations.

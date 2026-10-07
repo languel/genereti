@@ -10,6 +10,8 @@ IME composition alone. Select one node when a shortcut needs a graph selection.
 
 | Shortcut | Action | Scope |
 | --- | --- | --- |
+| Alt+Shift+T | Timeline dock | Show/hide; project time keeps running |
+| Alt+Space | Project play / pause | Outside editors; audio still requires explicit Start |
 | P | Parameters sidebar | Canvas with no selection; selected items retain Comfy pin/unpin. Follows the native Pin binding if remapped |
 | Alt+Shift+R | Parameters sidebar | Independent toggle, including in Satori |
 | Alt+O | Output-only node | Selected node or output-only node under pointer |

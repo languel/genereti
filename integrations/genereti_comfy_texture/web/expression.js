@@ -4,8 +4,9 @@ import {noise} from './noise.js';
 const arity={sin:1,cos:1,tan:1,abs:1,sqrt:1,floor:1,ceil:1,exp:1,log:1,fract:1,min:2,max:2,pow:2,clamp:3,mix:3,step:2};
 const noiseNames=new Set(['noise','perlin','simplex','value']);
 const precedence={'+':1,'-':1,'*':2,'/':2,'%':2,'^':3};
-export function parseExpression(source,variables=['t','i','x','y','c','v','a','b','w','h']){
+export function parseExpression(source,variables=['t','i','x','y','z','c','v','a','b','w','h','g_time','g_beat','g_bar','g_bpm','g_ticks','g_phase','g_playing','g_rate','g_root','g_tuning']){
  if(source.length>2048)throw Error('Expression is limited to 2048 characters');
+ source=source.replace(/__\.(time|beat|bar|bpm|ticks|phase|playing|rate|root|tuning)\b/g,(_,name)=>'g_'+name);
  const tokens=source.match(/(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?|[A-Za-z_]\w*|[^\s]/g)??[];let pos=0;
  function atom(){const token=tokens[pos++];if(token==='+'||token==='-')return {op:token==='-'?'neg':'pos',args:[expr(3)]};if(token==='('){const node=expr(0);if(tokens[pos++]!==')')throw Error('Missing closing parenthesis');return node;}if(token&&/^\d|^\.\d/.test(token)){if(!Number.isFinite(Number(token)))throw Error('Numeric constant must be finite');return {value:Number(token)};}if(token==='pi')return {value:Math.PI};if(token==='tau')return {value:Math.PI*2};if((Object.hasOwn(arity,token)||noiseNames.has(token))&&tokens[pos++]==='('){const args=[];do{args.push(expr(0));}while(tokens[pos]===','&&++pos);if(tokens[pos++]!==')'||(noiseNames.has(token)?args.length<1||args.length>4:args.length!==arity[token]))throw Error(`Expected ${noiseNames.has(token)?'1–4':arity[token]} arguments for ${token}`);return {op:token,args};}if(variables.includes(token)){// Variable parsing must not consume the following operator.
  if(Object.hasOwn(arity,token))throw Error('Reserved function name');return {name:token};}throw Error(`Unknown expression token: ${token??'end'}`);}

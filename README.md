@@ -26,6 +26,11 @@ Use **Cmd/Ctrl+Enter** to run, **Ctrl+.** to pause, **Cmd/Ctrl+Shift +/-** to re
 Mask frames and connection-driven IMAGE, MASK, SVG and JSON outputs. Choose Live
 or Comfy Queue above the editor. Transparent paper, output sizing, auto masks and
 Satori shortcuts are covered in the [drawing guide](integrations/genereti_comfy_drawing/README.md).
+**ꘇ performance** adds a shared project clock, bottom-panel timeline, numeric
+automation/recording, global scale and `__` time in code/expression nodes.
+Use **Alt+Shift+T** for the dock and open **ꘇ-Performance-Timeline** for its guide.
+See [performance time](docs/performance-time.md) for domains and first-pass seek behavior.
+
 Install with `scripts/install_comfy.sh`, restart ComfyUI and refresh the browser.
 
 **OpenTouch operators** add `top.*` WebGPU textures, `chop.*` sampled signals/MIDI/OSC/music, and `dat.*` documents/tables/lessons. All six family conversions are explicit. Open **ꘇ-OpenTouch-Operators-and-Lessons** under Workflows → Genereti. The `dat.lesson` toolbar authors/runs/exports lessons; Settings → Genereti → Learning opens mini guides. Browser synth/drum audio is explicitly started. The independent `mod.*` Web Audio layer adds routed instruments, sequencers, effects and a mixer; open **ꘇ-Modular-Audio** and press Start on `mod.output`. See the [audio guide](docs/modular-audio.md), [catalog](docs/opentouch-catalog.md), [report](docs/opentouch-report.md) and [lesson/export guide](docs/opentouch-lessons.md).

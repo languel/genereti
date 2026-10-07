@@ -1,0 +1,129 @@
+{
+  "format": "genereti-guide",
+  "version": 1,
+  "id": "performance-time",
+  "title": "Shared time and a first performance timeline",
+  "summary": "A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition. Shared visuals and sound with editable automation.",
+  "steps": [
+    {
+      "title": "Open the shared timeline",
+      "text": "Press Alt+Shift+T or use the timeline node. Play advances project time even while the dock is hidden. Opening a view never starts sound.",
+      "hint": "Use \u25a5 on mod.timeline. The floating view uses the same clock.",
+      "target": {
+        "ref": "0caf0c16-fbb6-59cc-b359-fe157dead80a",
+        "part": "node",
+        "nodeType": "GeneretiPerformanceTimeline"
+      },
+      "actions": [
+        {
+          "kind": "select",
+          "target": {
+            "ref": "0caf0c16-fbb6-59cc-b359-fe157dead80a",
+            "part": "node",
+            "nodeType": "GeneretiPerformanceTimeline"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Inspect clock units",
+      "text": "chop.time selects seconds, quarter notes, meter beats, bars, 480-PPQ ticks or phase. Its JSON is visible in dat.inspect.",
+      "hint": "Choose beat in the unit menu; 6/8 has six eighth-note meter beats per bar.",
+      "target": {
+        "ref": "96bc3167-6fe9-5761-b6fb-ddf15985175d",
+        "part": "node",
+        "nodeType": "GeneretiPerformanceTime"
+      },
+      "actions": [
+        {
+          "kind": "select",
+          "target": {
+            "ref": "96bc3167-6fe9-5761-b6fb-ddf15985175d",
+            "part": "node",
+            "nodeType": "GeneretiPerformanceTime"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Use global time in expressions",
+      "text": "Both visuals use linked project time. The colorful expression reads __.beat and __.time directly. x/y are normalized and c is the output RGB channel.",
+      "hint": "Try 0.5+0.5*sin(__.time+x*8+c*2). Offsets x/y/z/t can be wired.",
+      "target": {
+        "ref": "098060d5-74dc-5752-8a69-d81b5527a312",
+        "part": "node",
+        "nodeType": "GeneretiTextureExpression"
+      },
+      "actions": [
+        {
+          "kind": "select",
+          "target": {
+            "ref": "098060d5-74dc-5752-8a69-d81b5527a312",
+            "part": "node",
+            "nodeType": "GeneretiTextureExpression"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Play sound deliberately",
+      "text": "Press Start on mod.output, then Play the project clock. Sequence notes follow score beats; tempo edits retain phase. Panic stops all browser outputs.",
+      "hint": "Sound is silent until mod.output Start, even if the timeline plays.",
+      "target": {
+        "ref": "93dd7748-cf4e-5c8c-902e-6f921125d788",
+        "part": "node",
+        "nodeType": "GeneretiAudioOutput"
+      },
+      "actions": [
+        {
+          "kind": "select",
+          "target": {
+            "ref": "93dd7748-cf4e-5c8c-902e-6f921125d788",
+            "part": "node",
+            "nodeType": "GeneretiAudioOutput"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Record and edit a parameter",
+      "text": "Select top.noise, choose scale in the timeline parameter menu and press \u25cf. Change its scale parameter, then press \u25cf again. A numeric curve clip appears.",
+      "hint": "Drag the clip or its ends; Option-drag an edge stretches, double click loops. \u25c7 adds a key. Keys expand below the ruler.",
+      "target": {
+        "ref": "88125035-ca48-5818-a069-8d99c55d117f",
+        "part": "node",
+        "nodeType": "GeneretiTextureNoise"
+      },
+      "actions": [
+        {
+          "kind": "select",
+          "target": {
+            "ref": "88125035-ca48-5818-a069-8d99c55d117f",
+            "part": "node",
+            "nodeType": "GeneretiTextureNoise"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Scrub, reset and export",
+      "text": "Drag the ruler or playhead. Seeking pauses sound scheduling, updates linked stateless visuals and clears linked feedback. JSON export includes clock, musical context, tracks and clips.",
+      "hint": "Scrubbing is silent. Arbitrary p5 simulation state is not reconstructed by seeking. Replay from zero for stateful sketches.",
+      "target": {
+        "ref": "0caf0c16-fbb6-59cc-b359-fe157dead80a",
+        "part": "node",
+        "nodeType": "GeneretiPerformanceTimeline"
+      },
+      "actions": [
+        {
+          "kind": "select",
+          "target": {
+            "ref": "0caf0c16-fbb6-59cc-b359-fe157dead80a",
+            "part": "node",
+            "nodeType": "GeneretiPerformanceTimeline"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -43,10 +43,14 @@ separate notes. Custom native parameter sockets accept OpenTouch scalar values
 when their widgets are converted to inputs. All parameters remain ordinary
 Comfy controls; mixer faders mirror the same saved values.
 
-Transport uses an AudioContext timeline. Built-in sequences schedule up to
+With the performance pack installed, `clock_name=project` links transport to
+the dock; `local` preserves an independent running clock for older patches.
+CLOCK remains output 0; channels, seconds, meter beat and JSON are outputs 1–4.
+See [performance time](performance-time.md) for global `__`, scale and recording.
+The anchored transport maps musical deadlines onto the AudioContext timeline. Built-in sequences schedule up to
 120 ms ahead on a 25 ms timer, rather than using graph redraws as note timing.
-Transport/pattern changes cancel pending instrument voices; transport changes
-reset the shared phase, while pattern edits keep its current phase. Pausing stops
+Transport/pattern changes cancel pending instrument voices; seek/reset and loop discontinuities
+cancel pending notes, while pattern edits keep current musical position. Pausing stops
 instrument voices, although delay tails may still decay. After a stalled browser
 we skip missed steps rather than playing a backlog. CHOP-derived notes still
 arrive at their control update rate. Sequence CHOP output reports the currently

@@ -42,7 +42,7 @@ class Replace(Select):
     def define_schema(cls):return schema('Replace',[DAT.Input('input'),io.String.Input('find',default='speed'),io.String.Input('replace',default='frequency')])
 class Expression(Select):
     @classmethod
-    def define_schema(cls):return schema('Expression',[DAT.Input('input'),code('expression','v * 2')])
+    def define_schema(cls):return schema('Expression',[DAT.Input('input'),code('expression','v * 2'),io.String.Input('performance',default='{}',optional=True)])
 class ToChop(io.ComfyNode):
     @classmethod
     def define_schema(cls):return io.Schema(node_id='GeneretiDatToChop',display_name='ꘇdat.tochop',search_aliases=['genereti', 'dat.tochop', 'genereti dat.tochop', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[DAT.Input('input'),io.Float.Input('sample_rate',default=60,min=1,max=1000),io.Boolean.Input('header',default=True)],outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')])

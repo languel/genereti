@@ -1,7 +1,9 @@
 # Performance time, transport and timeline plan
 
-Reviewed **2026-10-06**. This is a source review and implementation plan, not a
-claim that the proposed timeline or shared clock has shipped.
+Reviewed **2026-10-06**. The original review below describes the pre-timeline
+baseline. A first implementation now adds the shared clock, native/floating
+timeline, numeric automation, scale context and code/offset adapters. See the
+[performance guide](performance-time.md) for shipped behavior and remaining work.
 
 Genereti's working baseline is **4780395**, pushed to `origin/main`, with the
 annotated tag **checkpoint/pre-timeline-2026-10-06**. The checkout was clean at

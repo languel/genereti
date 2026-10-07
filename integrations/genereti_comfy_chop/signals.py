@@ -13,14 +13,14 @@ def signal(channels,rate=60,start=0):
 
 def first(data):return float(next(iter(data['channels'].values()),np.zeros(1))[-1])
 def generate(kind,values):
-    n=int(values.get('samples',1));rate=float(values.get('sample_rate',60));start=float(values.get('time',0));channels=int(values.get('channels',1));i=np.arange(n);t=start+i/rate
+    n=int(values.get('samples',1));rate=float(values.get('sample_rate',60));start=float(values.get('time',0))+float(values.get('offset_t',0));channels=int(values.get('channels',1));i=np.arange(n);t=start+i/rate
     result={}
     for c in range(channels):
         phase=t*values.get('frequency',1)+values.get('phase',0)
         wave=values.get('wave','sine')
         if kind=='Constant':out=np.full(n,values.get('value',1))
-        elif kind=='Noise':out=np.sin((i+np.floor(start*rate)+c*131+values.get('seed',0))*12.9898)*43758.5453;out=(out-np.floor(out))*2-1
-        elif kind=='Expression':out=np.broadcast_to(_expr.evaluate(values['expression'],dict(t=t,i=i,x=i/max(1,n-1),y=0,c=c,v=0,a=0,b=0,w=n,h=channels)),(n,))
+        elif kind=='Noise':out=np.sin((i+np.floor(start*rate)+c*131+values.get('seed',0)+values.get('offset_x',0)+values.get('offset_y',0)*57+values.get('offset_z',0)*113)*12.9898)*43758.5453;out=(out-np.floor(out))*2-1
+        elif kind=='Expression':out=np.broadcast_to(_expr.evaluate(values['expression'],dict(**_expr.performance_values(values.get("performance")),t=t,i=i,x=i/max(1,n-1)+values.get("offset_x",0),y=values.get("offset_y",0),z=values.get("offset_z",0),c=c,v=0,a=0,b=0,w=n,h=channels)),(n,))
         else:out={'sine':lambda:np.sin(phase*np.pi*2),'triangle':lambda:1-4*np.abs((phase-np.floor(phase))-.5),'saw':lambda:(phase-np.floor(phase))*2-1,'square':lambda:np.where(phase-np.floor(phase)<.5,1.,-1.),'ramp':lambda:phase-np.floor(phase)}[wave]()
         if kind in ('Oscillator','Noise'):out=out*values.get('amplitude',1)+values.get('offset',0)
         result[f'chan{c}']=out
@@ -39,7 +39,7 @@ def process(kind,data,values,other=None):
             out[name]=np.interp(np.arange(n),np.linspace(0,n-1,len(v)),v)
     else:
         for c,(name,v) in enumerate(channels.items()):
-            if kind=='Expression':result=np.broadcast_to(_expr.evaluate(values['expression'],dict(t=data['start']+np.arange(n)/rate,i=np.arange(n),x=np.arange(n)/max(1,n-1),y=0,c=c,v=v,a=v,b=0,w=n,h=len(channels))),(n,))
+            if kind=='Expression':result=np.broadcast_to(_expr.evaluate(values['expression'],dict(**_expr.performance_values(values.get('performance')),t=data['start']+np.arange(n)/rate+values.get('offset_t',0),i=np.arange(n),x=np.arange(n)/max(1,n-1)+values.get('offset_x',0),y=values.get('offset_y',0),z=values.get('offset_z',0),c=c,v=v,a=v,b=0,w=n,h=len(channels))),(n,))
             elif kind=='Math':
                 k=values.get('value',1);op=values.get('operation','multiply')
                 result={'multiply':lambda:v*k,'add':lambda:v+k,'subtract':lambda:v-k,'divide':lambda:v/(k if abs(k)>1e-9 else 1e-9),'abs':lambda:abs(v),'clamp':lambda:np.clip(v,values.get('low',0),values.get('high',1)),'fit':lambda:values.get('low',0)+(v+1)*.5*(values.get('high',1)-values.get('low',0))}[op]()

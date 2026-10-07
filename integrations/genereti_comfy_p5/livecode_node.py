@@ -96,10 +96,11 @@ class GeneretiLivecode(io.ComfyNode):
                 io.String.Input('parameters', default='{}', socketless=True, extra_dict={'widgetType':'GENERETI_LIVECODE_PARAMETERS'}),
                 io.Autogrow.Input('controls', template=io.Autogrow.TemplatePrefix(
                     io.MultiType.Input('value', types=[io.Float,io.Int,io.Boolean,io.String]), prefix='value', min=0, max=64), optional=True),
+                io.String.Input('performance',default='{}',optional=True),
             ], hidden=[io.Hidden.unique_id], outputs=[io.Image.Output(display_name='IMAGE')])
 
     @classmethod
-    async def execute(cls, language, width, height, auto_update, code, parameters='{}', image=None, controls=None):
+    async def execute(cls, language, width, height, auto_update, code, parameters='{}', image=None, controls=None, performance='{}'):
         from server import PromptServer
         server = PromptServer.instance
         client_id = server.client_id
@@ -116,7 +117,7 @@ class GeneretiLivecode(io.ComfyNode):
                 'request_id': request_id, 'node_id': str(cls.hidden.unique_id),
                 'language': language, 'render': {'width': width, 'height': height},
                 'code': code, 'parameters': params, 'controls': controls or {},
-                'image': encode_image(image),
+                'image': encode_image(image), 'performance':json.loads(performance),
             }, sid=client_id)
             output = await asyncio.wait_for(future, timeout=30)
             return io.NodeOutput(output)

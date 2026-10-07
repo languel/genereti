@@ -56,6 +56,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
   if(kind==='FeedbackRef')bindReference(values.reference);
   if(state.signature!==signature){state.params=parameters(kind,values);state.signature=signature;}
   const p=state.params;
+  const transport=window.generetiPerformance,linked=transport?.linked(node),snapshot=transport?.clock.read();if(linked&&frame&&state.lastPerformanceTime===snapshot.seconds&&state.lastPerformanceEpoch===snapshot.epoch&&state.lastPerformanceIteration===snapshot.iteration&&state.lastSignature===signature&&state.lastPerformanceRevision===transport.revision&&['Expression','Noise','Feedback','FeedbackRef'].includes(kind)&&(!state.inputs[0]||kind.startsWith('Feedback')))return;state.lastPerformanceRevision=transport?.revision;state.signatureUnchanged=state.lastSignature===signature;state.lastSignature=signature;state.lastPerformanceTime=snapshot?.seconds;state.lastPerformanceEpoch=snapshot?.epoch;state.lastPerformanceIteration=snapshot?.iteration;
   const a=(kind==='FeedbackRef'?state.latch.current:null)??state.inputs[0]??gpu.target(prefix+'empty',Number(values.width),Number(values.height)),b=state.inputs[1];
   if(['Composite','Displace'].includes(kind)&&!b){status.textContent=kind==='Displace'?'Connect a live displacement map':'Connect a live background';return;}
   if(kind==='Math')p[3]=b?1:0;
@@ -69,7 +70,8 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
    if(kind==='Noise')values.expression=noiseExpression(values);
    if(state.expression!==values.expression){state.expression=values.expression;state.expressionPipeline=null;const source=values.expression;gpu.expressionPipeline(source).then(pipeline=>{if(state.dead||state.expression!==source)return;state.expressionPipeline=pipeline;schedule(state);}).catch(error=>{if(state.expression===source)status.textContent=error.message;});}
    if(!state.expressionPipeline)return;
-   p.set([now/1000+Number(values.time),a.width,a.height,state.inputs[0]?1:0]);
+   p.set([(window.generetiPerformance?.timeFor(node,now)??now/1000)+Number(values.time)+Number(values.offset_t??0),a.width,a.height,state.inputs[0]?1:0]);
+   const global=window.generetiPerformance?.expressionValues()??{};p.set(['g_time','g_beat','g_bar','g_bpm','g_ticks','g_phase','g_playing','g_rate','g_root','g_tuning'].map(k=>Number(global[k]??(k==='g_bpm'?120:k==='g_tuning'?440:k==='g_rate'?1:0))),4);p[14]=Number(values.offset_x??0);p[15]=Number(values.offset_y??0);p[16]=Number(values.offset_z??0);
    frame=gpu.expression(a,p,prefix+'output',a.width,a.height,state.expressionPipeline);
   }else if(kind==='Bloom'){
    const stage=state.bloomParams??=new Float32Array(48);stage[0]=9;stage[2]=values.threshold;
@@ -86,6 +88,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
   if(now-lastStatus>250){const fps=times.length>1?(1000*(times.length-1)/(now-times[0])).toFixed(1):'—';status.textContent=kind==='FeedbackRef'&&!state.latch.current?'Pick a live reference · seed / empty frame':`${fps} fps · WebGPU · ${a.width} × ${a.height}${kind==='FeedbackRef'?' · previous frame':''}`;lastStatus=now;}
  }};
  if(kind==='FeedbackRef')state.latch=new FrameLatch();
+ node._generetiPerformanceSeek=()=>{reset=true;state.latch?.reset();state.lastPerformanceTime=undefined;schedule(state);};
  let openViewers=0;
  const outputOpened=()=>openViewers>0;
  function present(next){
@@ -173,7 +176,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
   });
   state.binding=false;
  }
- node._generetiLiveSource={retain(){state.users++;bind();schedule(state);},release(){state.users=Math.max(0,state.users-1);if(!state.users){stopInputs();dirty.delete(state);}}};
+ node._generetiLiveSource={retain(){state.users++;bind();if(frame&&!node._generetiLivePaused&&node._generetiExecutionMode!=='Comfy Queue')window.dispatchEvent(new CustomEvent('genereti-live-frame',{detail:{nodeId:node.id,outputSlot:0,texture:frame,producedAt:frame.producedAt}}));schedule(state);},release(){state.users=Math.max(0,state.users-1);if(!state.users){stopInputs();dirty.delete(state);}}};
  node._generetiToggleTransport=()=>{node._generetiLivePaused=!node._generetiLivePaused;if(!node._generetiLivePaused)schedule(state);};
  node._generetiSetExecutionMode=mode=>{
   if(mode==='Live'&&!localRunning){localRunning=true;node._generetiLiveSource.retain();}

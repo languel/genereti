@@ -27,7 +27,8 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
     display: "block", width: "100%", height: "100%", border: "0", borderRadius: "4px", background: "transparent",
   });
   frameSlot.querySelectorAll('iframe').forEach(old=>old.remove());frameSlot.append(frame);
-  state.frame = frame;
+  state.releaseTime?.();state.frame = frame;
+  const syncTime=()=>{const snapshot=window.generetiPerformance?.snapshot();if(snapshot)frame.contentWindow?.postMessage({type:'performance-state',snapshot},'*');};frame.addEventListener('load',syncTime);window.addEventListener('genereti-performance-frame',syncTime);state.releaseTime=()=>window.removeEventListener('genereti-performance-frame',syncTime);
 
   const safeLibrary = librarySource.replace(/<\/script/gi, "<\\/script");
   const safeCode = code.replace(/<\/script/gi, "<\\/script");
@@ -35,7 +36,7 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
     html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#111;color:#eee;font:12px sans-serif}
     body{display:flex;align-items:center;justify-content:center}
     canvas{max-width:100%;max-height:100%;object-fit:contain;touch-action:none}
-  </style></head><body><script>${safeLibrary}</script><script>${safeCode}</script><script>
+  </style></head><body><script>${safeLibrary}</script><script>let sharedClock={seconds:0,playing:false,bpm:120,quarterNotes:0,signature:{numerator:4,denominator:4},music:{},data:{}};let clockArrival=performance.now();window.__={get time(){return sharedClock.seconds+(sharedClock.playing?(performance.now()-clockArrival)/1000*(sharedClock.rate||1):0)},get transport(){return sharedClock},get beat(){return sharedClock.beat||0},get bar(){return sharedClock.bar||0},get bpm(){return sharedClock.bpm},get ticks(){return sharedClock.ticks||0},get phase(){return sharedClock.phase||0},get playing(){return sharedClock.playing},get rate(){return sharedClock.rate||1},get root(){return sharedClock.music?.root||0},get tuning(){return sharedClock.music?.tuning||440},get music(){return sharedClock.music},data:{get:name=>sharedClock.data?.[name]}};window.addEventListener('message',e=>{if(e.source===parent&&e.data.type==='performance-state'){sharedClock=e.data.snapshot;clockArrival=performance.now();}});</script><script>${safeCode}</script><script>
     const stage = document.body;
     window.addEventListener('error', (event) => parent.postMessage({type:'error', message:event.message || 'Sketch error'}, '*'));
     try {
@@ -97,7 +98,7 @@ function makeFrame(state, frameSlot, status, code, librarySource) {
 }
 
 function makeP5Editor(node, inputName) {
-  const state = { frame: null, pendingCapture: null, timer: null, liveUsers: 0 };
+  const state = { node, frame: null, pendingCapture: null, timer: null, liveUsers: 0 };
   const container = document.createElement("div");container.classList.add('genereti-live-surface');
   Object.assign(container.style, { display: "flex", flexDirection: "column", gap: "6px", width: "100%" });
 
@@ -306,6 +307,7 @@ app.registerExtension({
     const originalRemoved = node.onRemoved;
     node.onRemoved = function () {
       clearTimeout(node._generetiP5?.timer);
+      node._generetiP5?.releaseTime?.();
       node._generetiP5?.frame?.remove();
       return originalRemoved?.apply(this, arguments);
     };

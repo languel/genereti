@@ -36,7 +36,7 @@ def process(kind,data,values,other=None):
             for x,cell in enumerate(row):
                 try:v=float(cell)
                 except ValueError:v=0
-                result[-1].append(_expr.evaluate(values['expression'],dict(t=0,i=y*width+x,x=x,y=y,c=x,v=v,a=v,b=0,w=width,h=len(rows))))
+                result[-1].append(_expr.evaluate(values['expression'],dict(**_expr.performance_values(values.get("performance")),t=0,z=0,i=y*width+x,x=x,y=y,c=x,v=v,a=v,b=0,w=width,h=len(rows))))
         return table(result)
     return table(rows)
 def to_chop(data,rate=60,header=True):

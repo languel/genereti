@@ -10,8 +10,8 @@ export function generate(kind,v,start){
   for(let i=0;i<n;i++){
    const t=start+i/rate,phase=t*Number(v.frequency??1)+Number(v.phase??0),f=phase-Math.floor(phase);let x=0;
    if(kind==='Constant')x=Number(v.value??1);
-   else if(kind==='Noise'){const r=Math.sin((i+Math.floor(start*rate)+c*131+Number(v.seed??0))*12.9898)*43758.5453;x=(r-Math.floor(r))*2-1;}
-   else if(kind==='Expression')x=evaluateExpression(expression(v.expression),{t,i,x:i/Math.max(1,n-1),y:0,c,v:0,a:0,b:0,w:n,h:Number(v.channels)});
+   else if(kind==='Noise'){const r=Math.sin((i+Math.floor(start*rate)+c*131+Number(v.seed??0)+Number(v.offset_x??0)+Number(v.offset_y??0)*57+Number(v.offset_z??0)*113)*12.9898)*43758.5453;x=(r-Math.floor(r))*2-1;}
+   else if(kind==='Expression')x=evaluateExpression(expression(v.expression),{...v.performanceValues,t,i,x:i/Math.max(1,n-1)+Number(v.offset_x??0),y:Number(v.offset_y??0),z:Number(v.offset_z??0),c,v:0,a:0,b:0,w:n,h:Number(v.channels)});
    else x={sine:()=>Math.sin(phase*Math.PI*2),triangle:()=>1-4*Math.abs(f-.5),saw:()=>f*2-1,square:()=>f<.5?1:-1,ramp:()=>f}[v.wave]();
    if(kind==='Oscillator'||kind==='Noise')x=x*Number(v.amplitude)+Number(v.offset);
    out[i]=Number.isFinite(x)?x:0;
@@ -30,7 +30,7 @@ export function process(kind,data,v,memory={},other){
   const out=new Float32Array(values.length);let prev=memory[name]??values[0],acc=memory[name]??0;
   for(let i=0;i<out.length;i++){
    const x=values[i];let y=x;
-   if(kind==='Expression')y=evaluateExpression(expression(v.expression),{t:data.start+i/rate,i,x:i/Math.max(1,n-1),y:0,c:Number(c),v:x,a:x,b:0,w:n,h:Object.keys(data.channels).length});
+   if(kind==='Expression')y=evaluateExpression(expression(v.expression),{...v.performanceValues,t:data.start+i/rate+Number(v.offset_t??0),i,x:i/Math.max(1,n-1)+Number(v.offset_x??0),y:Number(v.offset_y??0),z:Number(v.offset_z??0),c:Number(c),v:x,a:x,b:0,w:n,h:Object.keys(data.channels).length});
    if(kind==='Math')y={multiply:()=>x*Number(v.value),add:()=>x+Number(v.value),subtract:()=>x-Number(v.value),divide:()=>x/(Math.abs(v.value)>1e-9?v.value:1e-9),abs:()=>Math.abs(x),clamp:()=>Math.max(v.low,Math.min(v.high,x)),fit:()=>Number(v.low)+(x+1)*.5*(v.high-v.low)}[v.operation]();
    if(kind==='Logic')y=x>=Number(v.threshold)?1:0;
    if(kind==='Lag'){prev+=(x-prev)*(1-Math.exp(-1/(rate*Math.max(.00001,Number(v.seconds)))));y=prev;}

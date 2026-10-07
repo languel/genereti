@@ -14,6 +14,8 @@ export function choiceGlyph(value,label,kind=''){
  if(value==='cover')return svg('<rect x="3" y="3" width="18" height="18" rx="2"/><path d="m10 10-5-5m0 4V5h4m5 9 5 5m0-4v4h-4"/>');
  if(value==='fill')return svg('<path d="M3 3v18m18-18v18M3 12h18m-14-4-4 4 4 4m10-8 4 4-4 4"/>');
  if(value==='native')return svg('<rect x="4" y="4" width="16" height="16" rx="1"/><rect x="9" y="9" width="6" height="6"/>');
+ if(value==='free')return svg('<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>');
+ if(value==='linked')return svg('<path d="M10 18V5l10-2v13M10 7l10-2"/><ellipse cx="7" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>');
  if(value==='Live')return svg('<path d="M3 12h3l3-7 6 14 3-7h3"/>');
  if(value==='Comfy Queue')return svg('<path d="M3 5h12M3 10h8M3 15h5"/><circle cx="17" cy="16" r="5"/><path d="M17 13v3h2"/>');
  if(value==='markdown')return svg('<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M5 16V8l4 4 4-4v8m3-8v8m-2-2 2 2 2-2"/>');

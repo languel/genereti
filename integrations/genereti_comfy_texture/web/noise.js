@@ -49,7 +49,7 @@ export function noiseExpression(v){
  const n=Number(v.dimensions),kind=v.algorithm,octaves=Number(v.octaves);let weight=1,total=0,frequency=Number(v.scale),terms=[];
  for(let o=0;o<octaves;o++){
   const offset=Number(v.seed)*.123+o*19.19,shift=v.color==='RGB'?'+c*31.7':'';
-  const coords=[`x*${frequency}+${offset}${shift}${n<3?`+t*${Number(v.speed)}`:''}`,`y*${frequency}`,`${Number(v.z)}${n===3?`+t*${Number(v.speed)}`:''}`,`t*${Number(v.speed)}`].slice(0,n);
+  const coords=[`x*${frequency}+${offset}${shift}${n<3?`+t*${Number(v.speed)}`:''}`,`y*${frequency}`,`${Number(v.z)}+z${n===3?`+t*${Number(v.speed)}`:''}`,`t*${Number(v.speed)}`].slice(0,n);
   terms.push(`${weight}*${kind}(${coords.join(',')})`);total+=weight;weight*=Number(v.gain);frequency*=Number(v.lacunarity);
  }
  return `0.5+0.5*(${terms.join('+')})/${total}`;

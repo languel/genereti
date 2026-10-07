@@ -4,7 +4,7 @@ import {ensureControlStyle} from '/extensions/genereti_comfy_p5/js/control-style
 import {generate,process,first,patternMatch} from './signals.js';
 import {noteControl} from './music-signals.js';
 const states=new Set();let raf=0;
-function values(node){const out=Object.fromEntries((node.widgets??[]).filter(w=>['number','string','boolean'].includes(typeof w.value)).map(w=>[w.name,w.value]));for(let i=0;i<(node.inputs?.length??0);i++){const input=node.inputs[i],link=node.getInputLink?.(i);if(!link||input.type==='GENERETI_CHOP')continue;const source=node.graph?.getNodeById(link.origin_id);const value=source?._generetiLiveValue?.(link.origin_slot)??source?.widgets?.find(w=>w.name==='value')?.value;if(value!==undefined)out[input.widget?.name??input.name]=value;}return out;}
+function values(node){const out=Object.fromEntries((node.widgets??[]).filter(w=>['number','string','boolean'].includes(typeof w.value)).map(w=>[w.name,w.value]));for(let i=0;i<(node.inputs?.length??0);i++){const input=node.inputs[i],link=node.getInputLink?.(i);if(!link||input.type==='GENERETI_CHOP')continue;const source=node.graph?.getNodeById(link.origin_id);const value=source?._generetiLiveValue?.(link.origin_slot)??source?.widgets?.find(w=>w.name==='value')?.value;if(value!==undefined)out[input.widget?.name??input.name]=value;}return Object.assign(out,node._generetiPerformanceValues??{});}
 function clock(now){raf=0;const visiting=new Set(),done=new Set();function run(state){if(!state||done.has(state)||state.dead||!state.running)return;if(visiting.has(state))throw Error('CHOP cycles are not supported');visiting.add(state);state.update(now,run);visiting.delete(state);done.add(state);}for(const state of states){try{run(state);}catch(error){state.status.textContent=error.message;visiting.clear();}}if(states.size)raf=requestAnimationFrame(clock);}
 async function request(path,body){const response=await api.fetchApi('/genereti/chop/osc/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!response.ok)throw Error(await response.text());return response.json();}
 app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
@@ -14,8 +14,8 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
  let previewFrozen=false,previewMinimized=false;const disclosure=document.createElement('button');disclosure.textContent='⌄';disclosure.title='Minimize signal preview';disclosure.setAttribute('aria-label',disclosure.title);disclosure.setAttribute('aria-expanded','true');const freeze=document.createElement('button');freeze.textContent='❄';freeze.title='Freeze only this preview · signals keep flowing';freeze.setAttribute('aria-label',freeze.title);freeze.setAttribute('aria-pressed','false');const viewTools=document.createElement('div');viewTools.className='genereti-node-controls';viewTools.append(disclosure,freeze);
  const canvas=document.createElement('canvas');canvas.width=512;canvas.height=96;canvas.style.cssText='display:block;width:100%;height:auto';const status=document.createElement('span');status.style.cssText='font:11px monospace;color:var(--fg-color,#eee)';surface.append(tools,viewTools,canvas,status);
  const state={node,kind,status,running:true,memory:{},latest:null,connected:false,deviceChannels:{},dead:false,update(now,run){
-  const v=values(node),signature=JSON.stringify(v),link=name=>{const slot=node.inputs?.findIndex(i=>i.name===name),l=slot>=0?node.getInputLink?.(slot):null;const upstream=node.graph?.getNodeById(l?.origin_id);const s=upstream?._generetiChop;run(s);return s?.latest??upstream?._generetiDatSignal?.();};
-  const input=link('input'),other=link('other');let data;
+  const v=values(node);if(kind==='Expression')v.performanceValues=window.generetiPerformance?.expressionValues();const signature=JSON.stringify(v),link=name=>{const slot=node.inputs?.findIndex(i=>i.name===name),l=slot>=0?node.getInputLink?.(slot):null;const upstream=node.graph?.getNodeById(l?.origin_id);const s=upstream?._generetiChop;run(s);return s?.latest??upstream?._generetiDatSignal?.();};
+  v.performanceValues=window.generetiPerformance?.expressionValues();const input=link('input'),other=link('other');let data;
   if(kind==='MidiIn'||kind==='OscIn'){
    data={channels:Object.fromEntries(Object.entries(state.deviceChannels).map(([k,x])=>[k,new Float32Array([x])])),sampleRate:60,start:now/1000};
    if(state.deviceRevision===state.lastDeviceRevision&&state.latest)return;state.lastDeviceRevision=state.deviceRevision;
@@ -24,16 +24,18 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
    data=['MidiOut','OscOut'].includes(kind)?input:process(kind,input,v,state.memory,other);
   }else if(['Constant','Oscillator','Noise','Expression'].includes(kind)){
    if(signature!==state.signature)state.nextTime=undefined;
-   const t=now/1000;
+   const t=window.generetiPerformance?.timeFor(node,now)??now/1000;
+   if(state.timeEpoch!==window.generetiPerformance?.clock.read().epoch||t<(state.lastTime??t)){state.nextTime=undefined;state.memory={};}state.timeEpoch=window.generetiPerformance?.clock.read().epoch;state.lastTime=t;
    if(state.nextTime!==undefined&&t<state.nextTime)return;
    const start=state.nextTime===undefined||t-state.nextTime>.5?t:state.nextTime;state.nextTime=start+Number(v.samples)/Number(v.sample_rate);
-   data=generate(kind,v,start+Number(v.time));
+   v.performanceValues=window.generetiPerformance?.expressionValues();data=generate(kind,v,start+Number(v.time)+Number(v.offset_t??0));
   }else{status.textContent='Connect CHOP input';return;}
   state.latest=data;window.dispatchEvent(new CustomEvent('genereti-control-frame',{detail:{nodeId:node.id}}));state.lastInput=input;state.lastOther=other;state.signature=signature;
   if(state.connected)send(data,v,now);
   if(!previewFrozen&&!previewMinimized){const history=state.history??=new Map();for(const [name,samples] of Object.entries(data.channels)){const line=history.get(name)??[];for(const x of samples)line.push(x);if(line.length>256)line.splice(0,line.length-256);history.set(name,line);}for(const name of history.keys())if(!(name in data.channels))history.delete(name);}
   if(!previewFrozen&&!previewMinimized&&now-(state.lastPaint??0)>100){paint(data);state.lastPaint=now;}
  }};
+ node._generetiPerformanceSeek=()=>{state.nextTime=undefined;state.memory={};state.history=new Map();};
  function paint(data){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,512,96);const fg=getComputedStyle(surface).color||'#ddd';ctx.strokeStyle=fg;ctx.lineWidth=1;let n=0;for(const [name,samples]of Object.entries(data.channels)){const line=state.history?.get(name)??[];ctx.globalAlpha=Math.max(.25,1-n++*.12);ctx.beginPath();line.forEach((x,i)=>{const y=48-Math.max(-1,Math.min(1,x))*40;i?ctx.lineTo(i*512/Math.max(1,line.length-1),y):ctx.moveTo(0,y);});ctx.stroke();}ctx.globalAlpha=1;status.textContent=`${Object.keys(data.channels).length} channels · ${data.sampleRate} Hz · ${first(data).toFixed(3)}${state.connected?' · connected':''}`;}
  let midiAccess,midiPort,oscToken,touchTimer,activeNote=null,sendBusy=false,lastSent='',lastSend=0;
  async function disconnect(){state.connected=false;state.deviceChannels={};state.deviceRevision=(state.deviceRevision??0)+1;clearInterval(touchTimer);if(midiPort){if(activeNote){midiPort.send([0x80|activeNote[0],activeNote[1],0]);activeNote=null;}midiPort.onmidimessage=null;await midiPort.close();midiPort=null;}if(oscToken){const token=oscToken;oscToken=null;await request('stop',{token});}connect?.setAttribute('aria-pressed','false');}

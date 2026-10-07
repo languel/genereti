@@ -2,7 +2,8 @@
 
 TouchDesigner-inspired functionality with Genereti controls. Stable internal IDs retain saved workflow compatibility. [Report](opentouch-report.md) explains transport, conversion and device boundaries. [Lessons](opentouch-lessons.md) covers authoring and exports.
 
-49 OpenTouch TOP/CHOP/DAT operators, plus 10 independent modular audio operators.
+49 original OpenTouch TOP/CHOP/DAT operators, plus 14 modular audio/analysis
+operators and four performance controllers/converters.
 
 ## TOP
 
@@ -115,3 +116,18 @@ The display is runtime state, not saved data or a history log.
 
 **ꘇ-Inspect-Values** demonstrates a live oscillator and a JSON DAT feeding two
 inspectors. Restart Comfy and reload once to discover the new schema.
+
+## Performance controllers and conversion
+
+| Operator | Inputs | Outputs | Stable node ID |
+| --- | --- | --- | --- |
+| `ꘇchop.time` | unit, optional CLOCK | FLOAT, CHOP, JSON, CLOCK | `GeneretiPerformanceTime` |
+| `ꘇmod.timeline` | dock/floating controls | description STRING | `GeneretiPerformanceTimeline` |
+| `ꘇmod.scale` | root, scale, tuning | music JSON | `GeneretiPerformanceScale` |
+| `ꘇchop.quantize` | CHOP, optional music JSON | quantized CHOP, first-channel FLOAT | `GeneretiPerformanceQuantize` |
+
+`mod.transport` retains CLOCK output 0 and adds channels, seconds, beat and JSON.
+TOP noise/expression and CHOP noise/expression have optional XYZ/T offset ports;
+CHOP oscillator has T only. Code nodes share project `__` variables, with
+`u_genereti*` uniforms in GLSL. See [performance time](performance-time.md) for
+precise domains, frozen Queue behavior and the first automation timeline.

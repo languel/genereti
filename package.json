@@ -5,7 +5,8 @@
   "scripts": {
     "start": "./run.sh",
     "build:editor": "node scripts/build_editor.mjs",
-    "build:livecode": "node scripts/build_livecode.mjs"
+    "build:livecode": "node scripts/build_livecode.mjs",
+    "build:performance": "node scripts/build_performance.mjs"
   },
   "dependencies": {
     "@codemirror/lang-html": "6.4.11",

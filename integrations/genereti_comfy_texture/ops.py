@@ -66,6 +66,11 @@ def coords(a):
 
 
 def transform(image, translate_x=0., translate_y=0., scale=1., rotate=0., flip_x=False, flip_y=False):
+    # Exact identity/axis flips preserve low-alpha pixels and avoid resampling.
+    if translate_x == 0 and translate_y == 0 and scale == 1 and rotate % 360 == 0:
+        result = rgba(image)
+        axes = ([2] if flip_x else []) + ([1] if flip_y else [])
+        return result.flip(axes) if axes else result
     uv = coords(image)-.5
     r = math.radians(rotate)
     uv = (uv-torch.tensor([translate_x,translate_y],device=image.device,dtype=image.dtype))/max(scale,.001)

@@ -24,6 +24,10 @@ class TextureTests(unittest.TestCase):
         for out in [ops.transform(a),ops.crop(a),ops.corner_pin(a,[(0,0),(1,0),(1,1),(0,1)])]:
             self.assertTrue(torch.allclose(a,out,atol=1e-5))
         self.assertTrue(torch.allclose(ops.transform(a,flip_x=True),a.flip(2),atol=1e-5))
+    def test_exact_flips_preserve_low_alpha_pixels(self):
+        a=torch.tensor([[[[.9,.3,.1,1e-9],[.2,.8,.4,.00001]]]])
+        self.assertTrue(torch.equal(ops.transform(a),a))
+        self.assertTrue(torch.equal(ops.transform(a,flip_x=True),a.flip(2)))
     def test_outside_transparent_and_degenerate(self):
         a=torch.ones(1,8,6,3)
         self.assertEqual(ops.transform(a,translate_x=2).sum().item(),0)

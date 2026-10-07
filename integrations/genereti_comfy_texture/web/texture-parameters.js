@@ -10,5 +10,5 @@ export function readTextureValues(node){
   if(!['PrimitiveFloat','PrimitiveInt','PrimitiveBoolean','PrimitiveString','PrimitiveNode'].includes(source?.comfyClass??source?.type))continue;
   const widget=source.widgets?.find(w=>w.name==='value');if(widget)values[input.widget?.name??input.name]=widget.value;
  }
- return values;
+ return Object.assign(values,node._generetiPerformanceValues??{});
 }

@@ -143,10 +143,10 @@ export class TextureGPU {
     const expression=expressionWGSL(parseExpression(source));
     const code=SHADER.slice(0,SHADER.indexOf('@fragment'))+`
 ${NOISE_WGSL}
-fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {return ${expression};}
+fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {let g_time=p.v[1].x;let g_beat=p.v[1].y;let g_bar=p.v[1].z;let g_bpm=p.v[1].w;let g_ticks=p.v[2].x;let g_phase=p.v[2].y;let g_playing=p.v[2].z;let g_rate=p.v[2].w;let g_root=p.v[3].x;let g_tuning=p.v[3].y;let z=p.v[4].x;return ${expression};}
 @fragment fn fragment(in:Vertex)->@location(0) vec4f {
  let w=p.v[0].y;let h=p.v[0].z;let t=p.v[0].x;let i=floor(in.uv.y*h)*w+floor(in.uv.x*w);
- let src=sample(a,in.uv);let x=in.uv.x;let y=in.uv.y;
+ let src=sample(a,in.uv);let x=in.uv.x+p.v[3].z;let y=in.uv.y+p.v[3].w;
  return vec4f(clamp(vec3f(value(t,x,y,i,0.,src.r,src.r,0.,w,h),value(t,x,y,i,1.,src.g,src.g,0.,w,h),value(t,x,y,i,2.,src.b,src.b,0.,w,h)),vec3f(0),vec3f(1)),select(1.,src.a,p.v[0].w>0.));
 }`;
     const pending=(async()=>{const module=this.device.createShaderModule({label:'top.expression',code});

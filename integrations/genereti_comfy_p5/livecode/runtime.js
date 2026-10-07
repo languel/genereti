@@ -1,3 +1,4 @@
+import {performanceBridge} from './performance-bridge.js';
 import {resizeP5} from './render-sizing.js';
 import {parseParameters,parameterValues,prepareParameterSource} from '../web/js/code-parameters.js';
 import * as THREE from 'three';
@@ -26,6 +27,7 @@ let active=null,candidate=null,users=false,pending=false,raf=0,startTime=perform
 // One persistent texture surface; input frames never recompile the sketch.
 const inputCanvas=document.createElement('canvas');inputCanvas.width=inputCanvas.height=1;
 const bridge=window.__={params:Object.create(null),image:inputCanvas,inputSize:{width:0,height:0},render};
+const sharedTime=performanceBridge(bridge,(type,values)=>send(type,values));
 window.katex=katex;window.renderMathInElement=renderHtmlMath;ensureMathStyle(mathCss);
 let definitions=[],inputVersion=0;
 function setParameters(values){Object.assign(bridge.params,parameterValues(definitions,values));active?.changed?.();window.dispatchEvent(new CustomEvent('genereti-parameters',{detail:bridge.params}));}
@@ -69,7 +71,7 @@ async function compile(mode,source,revision,values={}){
    shaders.forEach(s=>gl.deleteShader(s));gl.useProgram(program);const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);const position=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
    const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);let textureVersion=-1;
    let mouse=[0,0];c.onpointermove=e=>{const r=c.getBoundingClientRect();mouse=[(e.clientX-r.left)*c.width/r.width,(r.bottom-e.clientY)*c.height/r.height];};
-   const runtime={canvas:c,paint(time){gl.viewport(0,0,c.width,c.height);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);if(textureVersion!==inputVersion){gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,inputCanvas);textureVersion=inputVersion;}gl.uniform1i(gl.getUniformLocation(program,'u_image'),0);gl.uniform2f(gl.getUniformLocation(program,'u_imageSize'),bridge.inputSize.width,bridge.inputSize.height);for(const p of definitions)if(p.type!=='string'){const location=gl.getUniformLocation(program,p.name);p.type==='int'||p.type==='boolean'?gl.uniform1i(location,Number(bridge.params[p.name])):gl.uniform1f(location,bridge.params[p.name]);}gl.uniform3f(gl.getUniformLocation(program,'iResolution'),c.width,c.height,1);gl.uniform1f(gl.getUniformLocation(program,'iTime'),time);gl.uniform4f(gl.getUniformLocation(program,'iMouse'),...mouse,0,0);gl.uniform1i(gl.getUniformLocation(program,'iChannel0'),0);gl.uniform2f(gl.getUniformLocation(program,'u_resolution'),c.width,c.height);gl.uniform1f(gl.getUniformLocation(program,'u_time'),time);gl.uniform2f(gl.getUniformLocation(program,'u_mouse'),...mouse);gl.drawArrays(gl.TRIANGLES,0,6);},dispose(){gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.getExtension('WEBGL_lose_context')?.loseContext();}};runtime.paint(0);activate(runtime);
+   const runtime={canvas:c,paint(time){gl.viewport(0,0,c.width,c.height);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);if(textureVersion!==inputVersion){gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,inputCanvas);textureVersion=inputVersion;}gl.uniform1i(gl.getUniformLocation(program,'u_image'),0);gl.uniform2f(gl.getUniformLocation(program,'u_imageSize'),bridge.inputSize.width,bridge.inputSize.height);for(const p of definitions)if(p.type!=='string'){const location=gl.getUniformLocation(program,p.name);p.type==='int'||p.type==='boolean'?gl.uniform1i(location,Number(bridge.params[p.name])):gl.uniform1f(location,bridge.params[p.name]);}gl.uniform3f(gl.getUniformLocation(program,'iResolution'),c.width,c.height,1);gl.uniform1f(gl.getUniformLocation(program,'iTime'),time);for(const name of ['Time','Beat','Bar','Bpm','Ticks','Phase','Root','Tuning','Playing','Rate'])gl.uniform1f(gl.getUniformLocation(program,'u_genereti'+name),Number(bridge[name.toLowerCase()]??0));gl.uniform4f(gl.getUniformLocation(program,'iMouse'),...mouse,0,0);gl.uniform1i(gl.getUniformLocation(program,'iChannel0'),0);gl.uniform2f(gl.getUniformLocation(program,'u_resolution'),c.width,c.height);gl.uniform1f(gl.getUniformLocation(program,'u_time'),time);gl.uniform2f(gl.getUniformLocation(program,'u_mouse'),...mouse);gl.drawArrays(gl.TRIANGLES,0,6);},dispose(){gl.deleteTexture(texture);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.getExtension('WEBGL_lose_context')?.loseContext();}};runtime.paint(0);activate(runtime);
   }else if(mode==='three'){
    const renderer=new THREE.WebGLRenderer({preserveDrawingBuffer:true,antialias:true});renderer.setSize(render.width,render.height);const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(50,render.width/render.height,.1,100);camera.position.z=4;const inputTexture=new THREE.CanvasTexture(inputCanvas);let textureVersion=-1,textureSize='';let callback=()=>{};
    const runtime={canvas:renderer.domElement,paint(time){if(textureVersion!==inputVersion){const size=inputCanvas.width+'x'+inputCanvas.height;if(size!==textureSize){inputTexture.dispose();inputTexture.source=new THREE.Source(inputCanvas);textureSize=size;}inputTexture.needsUpdate=true;textureVersion=inputVersion;}callback(time);renderer.render(scene,camera);},dispose(){scene.traverse(o=>{o.geometry?.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])m?.dispose();});inputTexture.dispose();renderer.dispose();renderer.forceContextLoss();}};
@@ -131,12 +133,13 @@ async function compile(mode,source,revision,values={}){
 }
 
 function tick(now){raf=requestAnimationFrame(tick);void renderFrame(now);}
-async function renderFrame(now,clock='raf'){try{active?.sample?.();active?.paint?.((now-startTime)/1000);}catch(error){diagnostic(error);active.paint=null;}
+async function renderFrame(now,clock='raf'){try{active?.sample?.();active?.paint?.(sharedTime.time((now-startTime)/1000));}catch(error){diagnostic(error);active.paint=null;}
  if(active?.canvas){const size=active.canvas.width+'x'+active.canvas.height;if(size!==lastSize){lastSize=size;send('size',{width:active.canvas.width,height:active.canvas.height});}}
  if(users&&active?.canvas&&!pending){pending=true;try{if(active.surface)active.canvas=await active.surface();const bitmap=await createImageBitmap(active.canvas);send('live-frame',{bitmap,clock});}catch(error){pending=false;diagnostic(error);}}
 }
 // Transfer ownership rather than cloning every frame.
 window.addEventListener('message',async e=>{if(e.source!==parent)return;const d=e.data;
+ if(d.type==='performance-state')sharedTime.update(d);
  if(d.type==='compile'){render={width:512,height:512,...d.render};newestRevision=d.revision;compileQueue=compileQueue.then(()=>{if(d.revision===newestRevision)return compile(d.mode,d.source,d.revision,d.parameters);});}
  if(d.type==='display-viewport'){responsiveDisplay=!!d.responsive;fitDom();}
  if(d.type==='resize-render'){resizeRender(d.render);}
@@ -149,7 +152,7 @@ window.addEventListener('message',async e=>{if(e.source!==parent)return;const d=
  if(d.type==='live-start')users=true;if(d.type==='live-stop')users=false;if(d.type==='live-ack')pending=false;
  if(d.type==='appearance'){appearance=d.appearance||{};applyAppearance();}
  if(d.type==='manim-next')active?.next?.();
- if(d.type==='capture'){try{if(!d.live)await nextPaint();active?.sample?.();active?.paint?.((performance.now()-startTime)/1000);if(active.surface)active.canvas=await active.surface(true);send('capture',{data:active.canvas.toDataURL('image/png'),id:d.id});}catch(error){send('capture-error',{message:error.message,id:d.id});}}
+ if(d.type==='capture'){try{if(!d.live)await nextPaint();active?.sample?.();active?.paint?.(sharedTime.time((performance.now()-startTime)/1000));if(active.surface)active.canvas=await active.surface(true);send('capture',{data:active.canvas.toDataURL('image/png'),id:d.id});}catch(error){send('capture-error',{message:error.message,id:d.id});}}
  if(d.type==='dispose'){users=false;cancelAnimationFrame(raf);dispose(active);dispose(candidate);active=null;candidate=null;}
  if(d.type==='stop')stopRuntime();
 });

@@ -23,7 +23,19 @@ class Route(io.ComfyNode):
 class Transport(Route):
     @classmethod
     def define_schema(cls):
-        return schema('Transport', [f('bpm',110,20,300), f('swing',0,0,.45)], [CLOCK.Output(display_name='clock')])
+        return schema('Transport', [f('bpm',110,20,300), f('swing',0,0,.45),io.String.Input('clock_name',default='local',optional=True,tooltip='local preserves an independent clock; project links this controller to the workflow timeline.'),io.String.Input('performance',default='{}',optional=True)], [CLOCK.Output(display_name='clock'),CHOP.Output(display_name='channels'),io.Float.Output(display_name='seconds'),io.Float.Output(display_name='beat'),io.String.Output(display_name='JSON')])
+
+    @classmethod
+    def execute(cls,bpm=110,swing=0,clock_name="local",performance="{}"):
+        import json
+        import math
+        s=json.loads(performance) if isinstance(performance,str) else performance
+        if not isinstance(s,dict):raise ValueError("Clock snapshot must be an object")
+        seconds=float(s.get("seconds",0));bpm=float(s.get("bpm",bpm));qn=float(s.get("quarterNotes",seconds*bpm/60));meter=s.get("signature",{"numerator":4,"denominator":4});numerator=float(meter.get("numerator",4));denominator=float(meter.get("denominator",4))
+        if not all(math.isfinite(x) for x in (seconds,qn,bpm,numerator,denominator)) or min(bpm,numerator,denominator)<=0:raise ValueError("Invalid clock snapshot")
+        beat=qn*denominator/4
+        s={**s,"version":1,"seconds":seconds,"quarterNotes":qn,"beat":beat,"bar":math.floor(beat/numerator),"beatInBar":beat%numerator,"ticks":math.floor(qn*480+1e-7),"ppq":480,"phase":qn%1,"iteration":s.get("iteration",0),"signature":meter,"bpm":bpm,"swing":swing,"playing":s.get("playing",False),"clock_name":clock_name}
+        return io.NodeOutput(s,signal({k:[s[k]] for k in ("seconds","quarterNotes","beat","bar","beatInBar","ticks","phase","bpm","playing","iteration")},25,seconds),seconds,beat,json.dumps(s))
 
 class Sequence(Route):
     @classmethod

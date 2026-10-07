@@ -1,0 +1,12 @@
+.genereti-performance{--transport-text:var(--input-text,#ddd);--transport-bg:var(--comfy-menu-bg,#202020);--transport-lane-bg:var(--comfy-input-bg,#272727);--transport-secondary:var(--descrip-text,#999);--transport-muted:var(--descrip-text,#999);--transport-field-bg:var(--comfy-input-bg,#272727);--transport-panel-bg:var(--comfy-menu-bg,#202020);--transport-border:var(--border-color,#444);--transport-grid:var(--border-color,#444);--transport-accent:var(--input-text,#ddd);--transport-accent-soft:color-mix(in srgb,var(--input-text,#ddd) 12%,transparent);color:var(--input-text,#ddd);background:var(--comfy-menu-bg,#202020);font:12px system-ui;padding:8px;min-height:150px;height:100%;overflow:auto;box-sizing:border-box}
+.genereti-performance-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:7px}
+.genereti-performance button,.genereti-performance select{border:0;background:transparent;color:inherit;font:inherit;border-radius:5px;cursor:pointer;padding:5px 7px}
+.genereti-performance button:hover,.genereti-performance button[aria-pressed=true]{background:color-mix(in srgb,var(--input-text,#ddd) 14%,transparent)}
+.genereti-performance button:disabled{opacity:.4;cursor:default}
+.genereti-performance input{background:var(--comfy-input-bg,#272727);color:inherit;border:0;border-radius:4px;font:inherit;padding:4px;width:65px}
+.genereti-performance input:focus,.genereti-performance select:focus,.genereti-performance button:focus-visible{outline:1px solid var(--input-text,#ddd)}
+.genereti-performance select option{background:var(--comfy-menu-bg,#202020);color:var(--input-text,#ddd)}
+.genereti-performance output{font-variant-numeric:tabular-nums;min-width:70px}
+.genereti-import{position:relative;cursor:pointer;padding:5px}.genereti-import input{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
+.genereti-keys{display:flex;gap:10px;flex-wrap:wrap;padding:8px}.genereti-keys label{display:flex;gap:3px}
+.genereti-performance .iannix-timeline{min-height:110px}.genereti-performance .iannix-arrangement-track{min-height:32px}

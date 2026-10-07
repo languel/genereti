@@ -77,22 +77,27 @@ class Feedback(io.ComfyNode):
     @classmethod
     def execute(cls,image,**values): return io.NodeOutput(ops.rgba(image))
 
+def domain_offsets():
+    return [io.Float.Input('offset_'+axis,default=0,min=-100000,max=100000,optional=True,force_input=True,tooltip='Domain offset '+axis+'; absent input is zero') for axis in ('x','y','z','t')]
+
+def performance_input():return io.String.Input('performance',default='{}',optional=True)
+
 class Expression(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return schema('Expression',[io.Image.Input('image',optional=True),io.String.Input('expression',default='0.5 + 0.5*sin(t + x*12)*cos(y*12)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),number('time',0,-100000,100000)],'Arithmetic per pixel/channel: t seconds, x/y normalized, i pixel index, c RGB channel index, v/a input value, b=0, w/h dimensions. Source IMAGE sets resolution; absent IMAGE generates a texture. Live t is time offset + graph clock; Queue uses time.')
+        return schema('Expression',[io.Image.Input('image',optional=True),io.String.Input('expression',default='0.5 + 0.5*sin(t + x*12)*cos(y*12)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),number('time',0,-100000,100000),*domain_offsets(),performance_input()],'Arithmetic per pixel/channel: t seconds, x/y normalized, i pixel index, c RGB channel index, v/a input value, b=0, w/h dimensions. Source IMAGE sets resolution; absent IMAGE generates a texture. Live t is time offset + graph clock; Queue uses time.')
     @classmethod
-    def execute(cls,expression,width,height,time,image=None):
+    def execute(cls,expression,width,height,time,image=None,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}"):
         import numpy as np
         import torch
-        from .expression import evaluate
+        from .expression import evaluate,performance_values
         if image is not None:
             a=ops.rgba(image);height,width=a.shape[1:3];values=a.detach().cpu().numpy()
         else:
             values=np.zeros((1,height,width,4),dtype=np.float32);values[...,3]=1
         y,x=np.mgrid[:height,:width];out=np.empty_like(values)
         for c in range(3):
-            out[...,c]=evaluate(expression,dict(t=time,x=(x+.5)/width,y=(y+.5)/height,i=y*width+x,c=c,v=values[...,c],a=values[...,c],b=0,w=width,h=height))
+            out[...,c]=evaluate(expression,dict(**performance_values(performance),t=time+offset_t,x=(x+.5)/width+offset_x,y=(y+.5)/height+offset_y,z=offset_z,i=y*width+x,c=c,v=values[...,c],a=values[...,c],b=0,w=width,h=height))
         out[...,3]=values[...,3]
         return io.NodeOutput(torch.from_numpy(out.clip(0,1)).to(image) if image is not None else torch.from_numpy(out.clip(0,1)))
 
@@ -106,14 +111,14 @@ class Noise(io.ComfyNode):
             number('scale',8,.01,256),io.Int.Input('seed',default=0,min=0,max=65535,control_after_generate=False),
             number('z',0,-10000,10000),number('time',0,-100000,100000),number('speed',.2,-10,10),
             io.Int.Input('octaves',default=1,min=1,max=6),number('lacunarity',2,1,4),number('gain',.5,0,1),
-            io.Combo.Input('color',options=['Grayscale','RGB'])],
+            io.Combo.Input('color',options=['Grayscale','RGB']),*domain_offsets(),performance_input()],
             'Coherent 1–4D Perlin, simplex or value noise. Signed noise is mapped to 0..1; layered octaves are normalized. Seed offsets the domain. 1/2D animation translates x; 3D animates z; 4D uses z and a separate time coordinate. Live WebGPU; Queue samples the explicit time.')
     @classmethod
-    def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color):
+    def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}"):
         import numpy as np
         import torch
         from .noise import noise
-        y,x=np.mgrid[:height,:width];x=(x+.5)/width;y=(y+.5)/height
+        y,x=np.mgrid[:height,:width];x=(x+.5)/width+offset_x;y=(y+.5)/height+offset_y;z+=offset_z;time+=offset_t
         result=np.empty((1,height,width,4),dtype=np.float32);result[...,3]=1
         for c in range(3 if color=='RGB' else 1):
             frequency=scale;weight=1.;total=0.;out=0.

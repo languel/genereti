@@ -31,6 +31,7 @@ link_node genereti_comfy_texture "$ROOT/integrations/genereti_comfy_texture"
 link_node genereti_comfy_chop "$ROOT/integrations/genereti_comfy_chop"
 link_node genereti_comfy_dat "$ROOT/integrations/genereti_comfy_dat"
 link_node genereti_comfy_projector "$ROOT/integrations/genereti_comfy_projector"
+link_node genereti_comfy_performance "$ROOT/integrations/genereti_comfy_performance"
 WORKFLOWS="$COMFY/user/default/workflows"
 python3 "$ROOT/scripts/install_comfy_workflows.py" \
   "$ROOT/integrations/comfyui_genereti/workflows" "$WORKFLOWS"

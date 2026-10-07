@@ -1,6 +1,30 @@
 # Genereti / OpenTouch handoff
 
-Review checkpoint: **2026-10-04**, `main`, functional changes through **17b0adc**. These changes are pushed to `origin/main`. This document is the review map, not a claim that every device or performance configuration has been tested.
+Review checkpoint: **2026-10-06**, `main`, including the first performance timeline below. Earlier sections retain their dated validation results. This document is the review map, not a claim that every device or performance configuration has been tested.
+
+## First performance timeline · 2026-10-06
+
+Review **ꘇ-Performance-Timeline** and the [performance guide](performance-time.md).
+The new performance pack ports __'s time-value parser and timeline interactions,
+adds an anchored project clock, numeric automation/take recording, native bottom
+panel and floating view, scale/tuning and optional project bindings. `mod.transport`
+keeps CLOCK at output 0 and adds readable channels/scalars/JSON. TOP/CHOP/DAT
+expressions can read numeric `__` fields; Livecode reads time/music/data helpers,
+and GLSL has `u_genereti*` uniforms. Generator XYZ/T offsets are input sockets.
+
+Seek pauses and resets linked feedback, rather than pretending to reconstruct
+historical state. Pending musical notes are cancelled; audio remains explicit.
+The first clip implementation is numeric automation only. Full shared Strudel
+scheduling, media/action clips, typed code outputs and external interchange are
+still pending. Restart Comfy and refresh for new schemas; user port 8000 was
+preserved during isolated browser verification. Validation: 153 JavaScript tests,
+41 distinct focused Python tests, 40 canonical workflow JSON files and rebuilt
+bundles. Browser checks covered play/pause/seek, actual WebGPU color output,
+recorded keys, migration of an older noise workflow, explicit audio start
+(nonzero peak 0.02), silent pause/Panic and a successful frozen Comfy Queue run.
+A real GLSL capture at project time 2 produced the expected RGBA [51, 94, 0, 255]
+from shared time/beat uniforms. Fresh-load paused generators also delivered held
+frames to their downstream image viewer. No hardware clock or latency benchmark is claimed.
 
 ## Performance time planning · 2026-10-06
 
@@ -9,8 +33,7 @@ The pre-timeline baseline is **4780395**, tagged and pushed as
 reviews Underscores' transport, timeline, time values, grid, recording and shared
 API against the current Comfy integration. It recommends a shared headless
 performance engine with a native bottom-panel timeline and compact node controls.
-Focused Underscores timing/clip/history/grid/Strudel tests passed 110/110; no new
-clock or timeline is implemented by this planning checkpoint.
+Focused Underscores timing/clip/history/grid/Strudel tests passed 110/110; that planning checkpoint preceded the implementation above.
 
 ## Modular audio follow-up · 2026-10-06
 
@@ -49,6 +72,7 @@ In Comfy, open **Workflows → Genereti**. The examples are installed locally in
 | `ꘇ-Tutorial-Authoring` | A seven-step guide to authoring guides, editable two-step lesson, actual texture exercise and export controls |
 | `ꘇ-Creative-Stage-Showcase` | Broader creative-stage overview, capture and optional Core ML generation |
 | `ꘇ-Livecode-Languages` / `ꘇ-Livecode-Math` | Language starters, document rendering and formulas |
+| `ꘇ-Performance-Timeline` | Shared clock, global expressions, noise automation and a six-step guide |
 | `ꘇ-Noise-Dimensions` | Layered simplex, 1–4D coordinates, signed expressions and Hint/Do it |
 | `ꘇ-Class-Feedback-Bloom-Displace` | Reference feedback, bloom/displacement, channel routing and seven actionable steps |
 | `ꘇ-Texture-Lab` / `ꘇ-Texture-Queue` | GPU live texture operators versus ordinary queued execution |
