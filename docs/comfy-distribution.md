@@ -6,10 +6,10 @@ Web Audio, lessons, timeline automation and `dat.monitor`. Browser bundles,
 their notices and examples ship with it. Students do not need npm, model
 downloads or the separate Genereti server for the realtime performance demos.
 
-The Core ML generator is **not loaded by this package**. It remains a separate
-macOS 14+ / Apple Silicon experiment, installed from a full source checkout
-through `scripts/setup_macos.sh` and `scripts/download_models.sh`. Its dependencies
-are in `requirements-macos.txt`; do not install that file into ComfyUI's Python.
+Inference is moving to the separate [GeneretiCore](https://github.com/languel/genereticore)
+project. Historical generator code and experiments are archived under
+`integrations/legacy-generator/`, excluded from this package and unsupported here.
+GeneretiCore is not yet an installable replacement.
 
 ## Student install
 

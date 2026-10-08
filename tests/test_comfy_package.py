@@ -99,6 +99,15 @@ class PackageTests(unittest.TestCase):
             self.assertIn('example_workflows/' + source.name, selected)
             self.assertEqual(template.read_bytes(), source.read_bytes())
         self.assertNotIn('requirements-macos.txt', selected)
+        self.assertFalse(any(name.startswith('integrations/legacy-generator/') for name in selected))
+        external = {'CheckpointLoaderSimple', 'UNETLoader', 'CLIPLoader',
+                    'GeneretiGenerate', 'GeneretiLiveFrame', 'GeneretiLiveGenerator',
+                    'GeneretiSendFrame', 'GeneretiReceiveFrame', 'Painter'}
+        for source in sources:
+            flow = json.loads(source.read_text())
+            types = {node['type'] for node in flow.get('nodes', [])}
+            self.assertFalse(types & external, source.name)
+            self.assertFalse(any('SDXS' in kind or 'SDTurbo' in kind for kind in types), source.name)
 
 
 if __name__ == '__main__':

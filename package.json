@@ -3,7 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "./run.sh",
     "build:editor": "node scripts/build_editor.mjs",
     "build:livecode": "node scripts/build_livecode.mjs",
     "build:performance": "node scripts/build_performance.mjs"

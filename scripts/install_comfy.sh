@@ -20,11 +20,9 @@ link_node() {
   ln -sfn "$source" "$target"
   echo "Linked $name"
 }
-link_node genereti_comfy_coreml "$ROOT/integrations/genereti_comfy_coreml"
 link_node genereti_comfy_drawing "$ROOT/integrations/genereti_comfy_drawing"
 link_node genereti_comfy_agent "$ROOT/integrations/genereti_comfy_agent"
 link_node genereti_comfy_stream "$ROOT/integrations/genereti_comfy_stream"
-link_node genereti_comfy_bridge "$ROOT/integrations/comfyui_genereti"
 link_node genereti_comfy_inputs "$ROOT/integrations/genereti_comfy_inputs"
 link_node genereti_comfy_p5 "$ROOT/integrations/genereti_comfy_p5"
 link_node genereti_comfy_texture "$ROOT/integrations/genereti_comfy_texture"
@@ -41,6 +39,5 @@ ComfyUI install complete. Restart ComfyUI, refresh its page, then open a
 workflow from Workflows → Genereti. The install also adds the
 Genereti Projector image output node and Genereti assistant sidebar. Open the
 assistant sidebar to configure a model or connect an external workspace agent.
-Keep the Genereti Mac app
-running for its Core ML Generate and Live Frame nodes.
+The realtime tools require no separate Genereti app or model server.
 MSG
