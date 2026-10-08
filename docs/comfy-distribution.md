@@ -166,7 +166,9 @@ and [metadata specification](https://docs.comfy.org/registry/specifications):
 2. Publisher **liuboto** is configured in `[tool.comfy].PublisherId`. Keep that
    immutable ID when updating the package.
 3. Add its API key as repository secret **REGISTRY_ACCESS_TOKEN**. Never commit it
-   or put it in an example. Icon/banner metadata can be added later.
+   or put it in an example. The transparent `ꘇ` icon is configured through `[tool.comfy].Icon` in
+   `pyproject.toml`, using the public SVG in `docs/branding/genereti-mark.svg`.
+   The same URL can be entered in the Registry listing metadata.
 4. Run `python scripts/build_comfy_package.py --check-registry`. This validates
    metadata without upload. Inspect the CLI archive before publishing; it
    respects `.comfyignore`. For current comfy-cli, use the command below so Git
