@@ -28,7 +28,11 @@ export function ensureControlStyle() {
  :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select::picker-icon{content:"";display:block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);color:inherit;transition:none}
  :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
 }
-.genereti-glyph-choice{width:52px!important;min-width:52px!important;padding:0 7px!important}
+/* Chromium can retain its native value text alongside a dynamically inserted
+   selectedcontent. Zero only the trigger's text; keep the menu's readable font. */
+.genereti-glyph-choice{width:30px!important;min-width:30px!important;padding:0 6px!important;font-size:0!important;gap:0!important}
+.genereti-glyph-choice::picker(select),.genereti-glyph-choice option{font-size:var(--genereti-choice-font-size,12px)!important}
+.genereti-glyph-choice::picker-icon,.genereti-glyph-choice option::checkmark{display:none!important}
 .genereti-glyph-choice::picker-icon{margin-left:0!important}
 .genereti-glyph-choice>button{display:contents!important}
 .genereti-glyph-choice selectedcontent{display:flex;align-items:center;justify-content:center}

@@ -33,6 +33,8 @@ export function decorateToolbarChoices(root=document){
  for(const select of root.querySelectorAll('.genereti-node-controls select,.genereti-livecode-toolbar select')){
   if(select.closest('label,[role=tabpanel],.genereti-drawing-settings-panel'))continue;
   const kind=select.getAttribute('aria-label')||select.title;
+  if(!select.style.getPropertyValue('--genereti-choice-font-size'))
+   select.style.setProperty('--genereti-choice-font-size',getComputedStyle(select.parentElement).fontSize);
   if(!select.classList.contains('genereti-glyph-choice')){
    select.classList.add('genereti-glyph-choice');select.dataset.generetiChoiceTip=select.title||kind;
    if(!select.getAttribute('aria-label'))select.setAttribute('aria-label',kind||'Toolbar choice');

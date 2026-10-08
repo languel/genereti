@@ -258,3 +258,5 @@ Run `python scripts/sync_node_references.py` after editing native-help Markdown.
 The generated reference catalog uses the existing agent extension alias so the
 quick-reference button can load guides before a backend restart registers the
 native-help web directory. Plain-text fallback preserves line breaks.
+
+Quick reference panels can be dragged by their title bar and docked using the ▥ button into Comfy’s native Quick Reference sidebar tab. Floating again restores the panel position; moving the viewport clamps the panel on screen. Reference text scrolls inside the panel, and keyboard/wheel events stay within the reference.
