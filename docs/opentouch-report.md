@@ -110,4 +110,4 @@ stacking and opacity leave the renderer and downstream texture unchanged.
 
 ## Independent modular audio follow-up
 
-The ten `ꘇmod.*` operators now provide a browser audio-bus graph, shared transport, editable sequencers, polyphonic synth, procedural drums, gain/pan, filter, delay, mixer and explicit output. They interoperate with CHOP notes/scalars while retaining separate Web Audio timing and resources. Legacy `chop.synth` endpoints described above remain unchanged. See [modular audio](modular-audio.md) and **ꘇ-Modular-Audio** for the first routed milestone and its limits.
+The ten `ꘇ mod.*` operators now provide a browser audio-bus graph, shared transport, editable sequencers, polyphonic synth, procedural drums, gain/pan, filter, delay, mixer and explicit output. They interoperate with CHOP notes/scalars while retaining separate Web Audio timing and resources. Legacy `chop.synth` endpoints described above remain unchanged. See [modular audio](modular-audio.md) and **ꘇ-Modular-Audio** for the first routed milestone and its limits.

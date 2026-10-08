@@ -137,7 +137,7 @@ it is distinct from Comfy's corner graph-redraw FPS.
 
 ## Coherent noise
 
-`ꘇtop.noise` provides Perlin gradient, simplex and interpolated value noise in
+`ꘇ top.noise` provides Perlin gradient, simplex and interpolated value noise in
 1–4 dimensions. A shared deterministic integer hash keeps browser scalar,
 WebGPU and queued NumPy results consistent (GPU output has floating-point and
 8-bit texture rounding). Perlin uses quintic interpolation, following the

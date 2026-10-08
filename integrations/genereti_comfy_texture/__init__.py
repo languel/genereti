@@ -6,7 +6,7 @@ WEB_DIRECTORY='./web'
 CATEGORY='ꘇ / TOP'
 
 def schema(name,inputs,description):
-    return io.Schema(node_id='GeneretiTexture'+name,display_name='ꘇ'+('top.'+('cornerpin' if name=='CornerPin' else name.lower())),search_aliases=['genereti', 'top', 'genereti top'],category=CATEGORY,
+    return io.Schema(node_id='GeneretiTexture'+name,display_name='ꘇ '+('top.'+('cornerpin' if name=='CornerPin' else name.lower())),search_aliases=['genereti', 'top', 'genereti top'],category=CATEGORY,
                      description=description,inputs=inputs,outputs=[io.Image.Output(display_name='image')])
 
 def number(name,default=0.,low=-4.,high=4.,tooltip=None):
@@ -78,14 +78,14 @@ class Feedback(io.ComfyNode):
     def execute(cls,image,**values): return io.NodeOutput(ops.rgba(image))
 
 def domain_offsets():
-    return [io.Float.Input('offset_'+axis,default=0,min=-100000,max=100000,optional=True,force_input=True,tooltip='Domain offset '+axis+'; absent input is zero') for axis in ('x','y','z','t')]
+    return [io.Float.Input('offset_'+axis,default=0,min=-100000,max=100000,optional=True,step=.01,tooltip='Domain offset '+axis+'; zero leaves the domain unchanged') for axis in ('x','y','z','t')]
 
 def performance_input():return io.String.Input('performance',default='{}',optional=True)
 
 class Expression(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return schema('Expression',[io.Image.Input('image',optional=True),io.String.Input('expression',default='0.5 + 0.5*sin(t + x*12)*cos(y*12)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),number('time',0,-100000,100000),*domain_offsets(),performance_input()],'Arithmetic per pixel/channel: t seconds, x/y normalized, i pixel index, c RGB channel index, v/a input value, b=0, w/h dimensions. Source IMAGE sets resolution; absent IMAGE generates a texture. Live t is time offset + graph clock; Queue uses time.')
+        return schema('Expression',[io.Image.Input('image',optional=True),io.String.Input('expression',default='0.5 + 0.5*sin(t + x*12)*cos(y*12)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),number('time',0,-100000,100000),performance_input(),*domain_offsets()],'Arithmetic per pixel/channel: t seconds, x/y normalized, i pixel index, c RGB channel index, v/a input value, b=0, w/h dimensions. Source IMAGE sets resolution; absent IMAGE generates a texture. Live t is time offset + graph clock; Queue uses time.')
     @classmethod
     def execute(cls,expression,width,height,time,image=None,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}"):
         import numpy as np
@@ -111,7 +111,7 @@ class Noise(io.ComfyNode):
             number('scale',8,.01,256),io.Int.Input('seed',default=0,min=0,max=65535,control_after_generate=False),
             number('z',0,-10000,10000),number('time',0,-100000,100000),number('speed',.2,-10,10),
             io.Int.Input('octaves',default=1,min=1,max=6),number('lacunarity',2,1,4),number('gain',.5,0,1),
-            io.Combo.Input('color',options=['Grayscale','RGB']),*domain_offsets(),performance_input()],
+            io.Combo.Input('color',options=['Grayscale','RGB']),performance_input(),*domain_offsets()],
             'Coherent 1–4D Perlin, simplex or value noise. Signed noise is mapped to 0..1; layered octaves are normalized. Seed offsets the domain. 1/2D animation translates x; 3D animates z; 4D uses z and a separate time coordinate. Live WebGPU; Queue samples the explicit time.')
     @classmethod
     def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}"):

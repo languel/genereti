@@ -55,6 +55,6 @@ app.registerExtension({name:'Genereti.ShortcutReference',setup(){
   };
   new MutationObserver(tips).observe(document.body,{childList:true,subtree:true});tips();
 },settings:[{
-  id:'Genereti.Shortcuts.Reference',name:'Keyboard shortcuts',category:['Genereti','Shortcuts','Reference'],
+  id:'Genereti.Shortcuts.Reference',name:'Keyboard shortcuts',sortOrder:200,category:['Genereti','Shortcuts','Reference'],
   type:reference,defaultValue:null,tooltip:'Reference for Genereti viewing, presentation and creative-editor shortcuts. These are actions, not workflow parameters.',
 }]});

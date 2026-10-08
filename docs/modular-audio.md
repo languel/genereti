@@ -1,6 +1,6 @@
 # Modular browser audio
 
-The `ꘇmod.*` family is an independent live Web Audio patching layer. OpenTouch
+The `ꘇ mod.*` family is an independent live Web Audio patching layer. OpenTouch
 CHOP signals can supply notes or converted scalar parameters. Audio cables carry
 `GENERETI_AUDIO_BUS` routes between native browser AudioNodes; they never move
 PCM blocks through Comfy's Python queue. The nodes live in the existing CHOP
@@ -15,16 +15,16 @@ stops all modular outputs. Removing an output or leaving the page also stops it.
 
 | Operator | Purpose |
 | --- | --- |
-| `ꘇmod.transport` | Shared BPM/swing clock, pause and reset |
-| `ꘇmod.sequence` | Editable MIDI pitches, `-` rests, division, gate and velocity |
-| `ꘇmod.drumsequence` | Editable kick/snare/hi-hat rows, division and velocity |
-| `ꘇmod.synth` | Polyphonic sine, subtractive, FM or square/reed-style voice; ADSR, filter, vibrato and audition keys |
-| `ꘇmod.drumkit` | Procedural kick, noise snare and hi-hat; no samples/downloads |
-| `ꘇmod.gain` | Gain, stereo pan and mute |
-| `ꘇmod.filter` | Low/high/bandpass or notch BiquadFilter |
-| `ꘇmod.delay` | Wet/dry delay and bounded internal feedback |
-| `ꘇmod.mixer` | Four buses with gain, pan, mute, solo and master level |
-| `ꘇmod.output` | Explicit Start, output level/mute, compressor, peak meter and Panic |
+| `ꘇ mod.transport` | Shared BPM/swing clock, pause and reset |
+| `ꘇ mod.sequence` | Editable MIDI pitches, `-` rests, division, gate and velocity |
+| `ꘇ mod.drumsequence` | Editable kick/snare/hi-hat rows, division and velocity |
+| `ꘇ mod.synth` | Polyphonic sine, subtractive, FM or square/reed-style voice; ADSR, filter, vibrato and audition keys |
+| `ꘇ mod.drumkit` | Procedural kick, noise snare and hi-hat; no samples/downloads |
+| `ꘇ mod.gain` | Gain, stereo pan and mute |
+| `ꘇ mod.filter` | Low/high/bandpass or notch BiquadFilter |
+| `ꘇ mod.delay` | Wet/dry delay and bounded internal feedback |
+| `ꘇ mod.mixer` | Four buses with gain, pan, mute, solo and master level |
+| `ꘇ mod.output` | Explicit Start, output level/mute, compressor, peak meter and Panic |
 
 Search `mod` or `genereti mod`. Stable internal IDs are `GeneretiAudio…`; saved
 workflows keep these regardless of labels. The older `chop.synth` and
@@ -72,10 +72,10 @@ They never start an unrelated instrument. Start a connected `mod.output` first.
 
 | Operator | Channels output | Visual |
 | --- | --- | --- |
-| `ꘇmod.scope` | `left`, `right` waveform blocks | Stereo oscilloscope |
-| `ꘇmod.spectrum` | `magnitude` (linear amplitude), `frequency` (Hz) | -90 to 0 dB on a linear frequency axis |
-| `ꘇmod.lissajous` | `left`, `right` waveform blocks | Left vs right XY trace |
-| `ꘇmod.analyze` | `rms`, `peak`, `correlation`, `low`, `mid`, `high` | Level/band bars |
+| `ꘇ mod.scope` | `left`, `right` waveform blocks | Stereo oscilloscope |
+| `ꘇ mod.spectrum` | `magnitude` (linear amplitude), `frequency` (Hz) | -90 to 0 dB on a linear frequency axis |
+| `ꘇ mod.lissajous` | `left`, `right` waveform blocks | Left vs right XY trace |
+| `ꘇ mod.analyze` | `rms`, `peak`, `correlation`, `low`, `mid`, `high` | Level/band bars |
 
 Every tap also exposes `rms` and `peak` FLOAT sockets and an IMAGE drawing. Use
 Alt+W/Alt+O or its viewing toolbar for an overlay/output-only scope; its IMAGE

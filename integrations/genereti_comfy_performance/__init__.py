@@ -21,10 +21,10 @@ def channels(s):
     return {'channels':{k:np.asarray([float(s[k])],dtype=np.float32) for k in ['seconds','quarterNotes','beat','bar','beatInBar','ticks','phase','bpm','playing','iteration']},'sample_rate':25.,'start':s['seconds']}
 
 def schema(kind,name,inputs,outputs):
-    return io.Schema(node_id='GeneretiPerformance'+kind,display_name='ꘇ'+name,category='ꘇ / Performance',search_aliases=['genereti',name.split('.')[0], 'time','timeline','transport','scale','music'],inputs=inputs,outputs=outputs,description='Shared browser performance time. Queue uses an explicit frozen snapshot; never starts browser audio.')
+    return io.Schema(node_id='GeneretiPerformance'+kind,display_name='ꘇ '+name,category='ꘇ / Performance',search_aliases=['genereti',name.split('.')[0], 'time','timeline','transport','scale','music'],inputs=inputs,outputs=outputs,description='Shared browser performance time. Queue uses an explicit frozen snapshot; never starts browser audio.')
 class Time(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return schema('Time','chop.time',[io.Combo.Input('unit',options=['seconds','quarterNotes','beat','bar','ticks','phase','bpm','playing','iteration','wallTime']),CLOCK.Input('clock',optional=True),io.String.Input('performance',default='{}',optional=True)], [io.Float.Output(display_name='value'),CHOP.Output(display_name='channels'),io.String.Output(display_name='JSON'),CLOCK.Output(display_name='clock')])
+    def define_schema(cls):return schema('Time','chop.time',[io.Combo.Input('unit',options=['seconds','quarterNotes','beat','bar','ticks','phase','bpm','playing','iteration','wallTime']),CLOCK.Input('clock',optional=True),io.String.Input('performance',default='{}',optional=True)], [io.Float.Output(display_name='value'),CHOP.Output(display_name='channels'),io.String.Output(display_name='json'),CLOCK.Output(display_name='clock')])
     @classmethod
     def execute(cls,unit='seconds',clock=None,performance='{}'):
         s=snapshot(clock or performance);return io.NodeOutput(float(s.get(unit,0)),channels(s),json.dumps(s),s)
@@ -36,7 +36,7 @@ class Timeline(io.ComfyNode):
 SCALES={'chromatic':list(range(12)),'major':[0,2,4,5,7,9,11],'minor':[0,2,3,5,7,8,10],'harmonicMinor':[0,2,3,5,7,8,11],'melodicMinor':[0,2,3,5,7,9,11],'pentatonic':[0,2,4,7,9]}
 class Scale(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return schema('Scale','mod.scale',[io.Int.Input('root',default=0,min=0,max=11),io.Combo.Input('scale',options=list(SCALES),default='minor'),io.Float.Input('tuning',default=440,min=1,max=1000)], [io.String.Output(display_name='music JSON')])
+    def define_schema(cls):return schema('Scale','mod.scale',[io.Int.Input('root',default=0,min=0,max=11),io.Combo.Input('scale',options=list(SCALES),default='minor'),io.Float.Input('tuning',default=440,min=1,max=1000)], [io.String.Output(display_name='music json')])
     @classmethod
     def execute(cls,root=0,scale='minor',tuning=440):return io.NodeOutput(json.dumps({'root':root,'scale':scale,'degrees':SCALES[scale],'tuning':tuning,'referenceNote':69}))
 class Quantize(io.ComfyNode):
@@ -52,7 +52,7 @@ class Quantize(io.ComfyNode):
         return io.NodeOutput(out,float(next(iter(out['channels'].values()))[-1]))
 class Monitor(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return schema('Monitor','dat.monitor',[io.String.Input('report',default='{}',optional=True)], [io.Float.Output(display_name='browser fps'),CHOP.Output(display_name='metrics'),io.String.Output(display_name='JSON')])
+    def define_schema(cls):return schema('Monitor','dat.monitor',[io.String.Input('report',default='{}',optional=True)], [io.Float.Output(display_name='browser fps'),CHOP.Output(display_name='metrics'),io.String.Output(display_name='json')])
     @classmethod
     def execute(cls,report='{}'):
         value=json.loads(report)

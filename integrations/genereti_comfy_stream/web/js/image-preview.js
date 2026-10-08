@@ -1,4 +1,5 @@
 import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
+import {previewWidgetHeight} from '/extensions/genereti_comfy_p5/js/widget-layout.js';
 import { app } from '../../../scripts/app.js';
 import { previewControls } from './preview-controls.js';
 import { subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
@@ -30,7 +31,10 @@ app.registerExtension({
     node._generetiMountTransport=()=>node._generetiExecutionModeElement?.append(output.actions);
     node._generetiMountTransport();
     const widget = node.addDOMWidget('live_image_preview', 'GENERETI_IMAGE_PREVIEW', container, {serialize:false});
-    widget.computeSize = width => [width, (localPreview.minimized?0:Math.max(0,width-24)*canvas.height/canvas.width) + (performancePanel.open ? 80 : 60)];
+    const requiredHeight=(width=node.size[0])=>previewWidgetHeight(width,localPreview.minimized?0:canvas.height/canvas.width,102+(performancePanel.open?status.offsetHeight+6:0),widget.margin??10);
+    widget.computeSize = (width=node.size[0]) => [width,requiredHeight(width)];
+    widget.options.getMinHeight=requiredHeight;
+    widget.options.getMaxHeight=requiredHeight;
     const resizeCanvas=(width,height)=>{if(canvas.width===width&&canvas.height===height)return;canvas.width=width;canvas.height=height;canvas.style.aspectRatio=`${width} / ${height}`;node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);};
     performancePanel.ontoggle=()=>{node.setSize?.([node.size[0],node.computeSize()[1]]);node.graph?.setDirtyCanvas?.(true,true);};
     realtime.onclick=()=>{

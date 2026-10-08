@@ -5,7 +5,7 @@
     {
       "id": 1,
       "type": "GeneretiChopOscillator",
-      "title": "ꘇchop.oscillator",
+      "title": "ꘇ chop.oscillator",
       "pos": [
         0,
         0
@@ -44,13 +44,14 @@
         2,
         8,
         60,
+        0,
         0
       ]
     },
     {
       "id": 2,
       "type": "GeneretiDatInspect",
-      "title": "ꘇdat.inspect",
+      "title": "ꘇ dat.inspect",
       "pos": [
         520,
         0
@@ -87,7 +88,7 @@
     {
       "id": 3,
       "type": "GeneretiDatJSON",
-      "title": "ꘇdat.json",
+      "title": "ꘇ dat.json",
       "pos": [
         0,
         500
@@ -124,7 +125,7 @@
     {
       "id": 4,
       "type": "GeneretiDatInspect",
-      "title": "ꘇdat.inspect",
+      "title": "ꘇ dat.inspect",
       "pos": [
         520,
         500

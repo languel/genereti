@@ -23,7 +23,7 @@ class GeneretiProjector(io.ComfyNode):
                     extra_dict={"widgetType": "GENERETI_PROJECTOR"},
                 ),
             ],
-            outputs=[io.Image.Output(display_name="IMAGE")],
+            outputs=[io.Image.Output(display_name="image")],
         )
 
     @classmethod

@@ -19,7 +19,7 @@
             "nodeType": "GeneretiTextureExpression",
             "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
           },
-          "title": "ꘇtop.expression",
+          "title": "ꘇ top.expression",
           "widgets": {
             "expression": "0.5 + 0.5*sin(t + x*12)*cos(y*12)",
             "genereti_delivery": "Live",
@@ -44,7 +44,7 @@
             "nodeType": "GeneretiTextureFeedback",
             "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4"
           },
-          "title": "ꘇtop.feedback",
+          "title": "ꘇ top.feedback",
           "widgets": {
             "decay": 0.96,
             "genereti_delivery": "Live",
@@ -94,7 +94,7 @@
             "nodeType": "GeneretiTextureExpression",
             "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
           },
-          "title": "ꘇtop.expression"
+          "title": "ꘇ top.expression"
         },
         {
           "delayMs": 33,
@@ -136,7 +136,7 @@
             "nodeType": "GeneretiTextureFeedback",
             "ref": "1f0675e5-3f26-4e73-ad06-7408ae8906c4"
           },
-          "title": "ꘇtop.feedback"
+          "title": "ꘇ top.feedback"
         },
         {
           "delayMs": 0,
@@ -170,7 +170,7 @@
             "nodeType": "GeneretiTextureExpression",
             "ref": "8230f677-42f7-4cd1-84fb-69fe8fa4d6f1"
           },
-          "title": "ꘇtop.expression"
+          "title": "ꘇ top.expression"
         }
       ],
       "hint": "Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.",
@@ -223,7 +223,7 @@
             "nodeType": "GeneretiTextureFilter",
             "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8"
           },
-          "title": "ꘇtop.filter",
+          "title": "ꘇ top.filter",
           "widgets": {
             "amount": 1,
             "genereti_delivery": "Live",
@@ -344,7 +344,7 @@
             "nodeType": "GeneretiTextureFilter",
             "ref": "33b9d971-a93c-4fdc-a2fb-fb1189d725d8"
           },
-          "title": "ꘇtop.filter"
+          "title": "ꘇ top.filter"
         },
         {
           "delayMs": 0,
@@ -391,7 +391,7 @@
             "nodeType": "GeneretiAudioTransport",
             "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13"
           },
-          "title": "ꘇmod.transport",
+          "title": "ꘇ mod.transport",
           "widgets": {
             "bpm": 110,
             "swing": 0
@@ -413,7 +413,7 @@
             "nodeType": "GeneretiAudioSequence",
             "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61"
           },
-          "title": "ꘇmod.sequence",
+          "title": "ꘇ mod.sequence",
           "widgets": {
             "division": 4,
             "gate": 0.55,
@@ -461,7 +461,7 @@
             "nodeType": "GeneretiAudioTransport",
             "ref": "5d29ce83-d8f6-4cdb-98e6-b2c3ff342f13"
           },
-          "title": "ꘇmod.transport"
+          "title": "ꘇ mod.transport"
         },
         {
           "delayMs": 5,
@@ -479,7 +479,7 @@
             "nodeType": "GeneretiAudioSynth",
             "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c"
           },
-          "title": "ꘇmod.synth",
+          "title": "ꘇ mod.synth",
           "widgets": {
             "attack": 0.02,
             "cutoff": 2200,
@@ -535,7 +535,7 @@
             "nodeType": "GeneretiAudioSequence",
             "ref": "4d984d82-1f22-4ef5-b8d4-ddbd919d2e61"
           },
-          "title": "ꘇmod.sequence"
+          "title": "ꘇ mod.sequence"
         },
         {
           "delayMs": 62,
@@ -605,7 +605,7 @@
             "nodeType": "GeneretiAudioSynth",
             "ref": "1f245b32-9b99-42f9-8fba-460b75e8ee0c"
           },
-          "title": "ꘇmod.synth"
+          "title": "ꘇ mod.synth"
         },
         {
           "delayMs": 0,
@@ -652,7 +652,7 @@
             "nodeType": "GeneretiAudioDelay",
             "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
           },
-          "title": "ꘇmod.delay",
+          "title": "ꘇ mod.delay",
           "widgets": {
             "feedback": 0.25,
             "mix": 0.25,
@@ -675,7 +675,7 @@
             "nodeType": "GeneretiAudioMixer",
             "ref": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11"
           },
-          "title": "ꘇmod.mixer",
+          "title": "ꘇ mod.mixer",
           "widgets": {
             "level_1": 0.7,
             "level_2": 0.7,
@@ -748,7 +748,7 @@
             "nodeType": "GeneretiAudioDelay",
             "ref": "d968ad5b-f9cc-4f1a-ae70-b53cf3c1315c"
           },
-          "title": "ꘇmod.delay"
+          "title": "ꘇ mod.delay"
         },
         {
           "delayMs": 3,
@@ -766,7 +766,7 @@
             "nodeType": "GeneretiAudioOutput",
             "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
           },
-          "title": "ꘇmod.output",
+          "title": "ꘇ mod.output",
           "widgets": {
             "level": 0.65,
             "mute": false
@@ -800,7 +800,7 @@
             "nodeType": "GeneretiAudioMixer",
             "ref": "e5702b31-6b8e-4cd4-a2e3-2b0f95794e11"
           },
-          "title": "ꘇmod.mixer"
+          "title": "ꘇ mod.mixer"
         },
         {
           "delayMs": 41,
@@ -862,7 +862,7 @@
             "nodeType": "GeneretiAudioOutput",
             "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
           },
-          "title": "ꘇmod.output"
+          "title": "ꘇ mod.output"
         },
         {
           "delayMs": 0,
@@ -909,7 +909,7 @@
             "nodeType": "GeneretiTextureMath",
             "ref": "fe8f8a27-eee5-49ab-abba-e36e06818e1f"
           },
-          "title": "ꘇtop.math",
+          "title": "ꘇ top.math",
           "widgets": {
             "genereti_delivery": "Live",
             "operation": "multiply",
@@ -944,7 +944,7 @@
             "nodeType": "GeneretiTextureMath",
             "ref": "fe8f8a27-eee5-49ab-abba-e36e06818e1f"
           },
-          "title": "ꘇtop.math"
+          "title": "ꘇ top.math"
         },
         {
           "delayMs": 1,
@@ -971,7 +971,7 @@
             "nodeType": "GeneretiAudioOutput",
             "ref": "d188116c-9322-4467-b3ec-f7aa60a1a27f"
           },
-          "title": "ꘇmod.output"
+          "title": "ꘇ mod.output"
         }
       ],
       "hint": "Use Do it for this step, or Play remaining to build the sequence. Click any outline title to revisit a step.",

@@ -39,7 +39,7 @@ class GeneretiDrawing(io.ComfyNode):
                 io.String.Input('capture', default='', socketless=True,
                                 extra_dict={'widgetType': 'GENERETI_DRAWING_CAPTURE'}),
             ],
-            outputs=[io.Image.Output(display_name='IMAGE'),io.Mask.Output(display_name='MASK'),io.String.Output(display_name='SVG'),io.String.Output(display_name='JSON')],
+            outputs=[io.Image.Output(display_name='image'),io.Mask.Output(display_name='mask'),io.String.Output(display_name='svg'),io.String.Output(display_name='json')],
         )
 
     @classmethod

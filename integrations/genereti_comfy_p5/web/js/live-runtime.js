@@ -1,3 +1,4 @@
+import {intrinsicRowHeight} from './widget-layout.js';
 import { app } from '../../../scripts/app.js';
 import { ensureControlStyle } from './control-style.js';
 
@@ -86,7 +87,7 @@ export function subscribeLive(node, onFrame, onStatus=()=>{}, {gpu=false}={}) {
 
 // Shared browser transport choice. This is workflow UI state, never a model
 // parameter and never an instruction to queue the Python graph automatically.
-const browserNodes=new Set(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator','GeneretiDrawing','GeneretiP5Sketch','GeneretiLivecode','GeneretiCameraCapture','GeneretiScreenCapture','GeneretiLiveImagePreview','GeneretiProjector']);
+const browserNodes=new Set(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator','GeneretiDrawing','GeneretiLivecode','GeneretiCameraCapture','GeneretiScreenCapture','GeneretiLiveImagePreview','GeneretiProjector']);
 export function attachExecutionMode(node){
   if(node._generetiExecutionModeWidget)return;
   ensureControlStyle();
@@ -112,7 +113,7 @@ export function attachExecutionMode(node){
   element.addEventListener('pointerdown',event=>event.stopPropagation());
   const widget=node.addDOMWidget('genereti_delivery','GENERETI_DELIVERY',element,{serialize:true,hideOnZoom:false,getValue:()=>mode,setValue:apply});
   // Keep the workflow choice, but exclude browser delivery state from Python inputs.
-  widget.serializeValue=()=>undefined;widget.computeSize=width=>[width,node.comfyClass==='GeneretiDrawing'?0:Math.max(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator'].includes(node.comfyClass)?64:32,element.scrollHeight??0)];
+  widget.serializeValue=()=>undefined;widget.computeSize=width=>[width,node.comfyClass==='GeneretiDrawing'?0:Math.max(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator'].includes(node.comfyClass)?64:32,intrinsicRowHeight(element))];
   node._generetiExecutionModeWidget=widget;node._generetiExecutionModeElement=element;
   node._generetiMountExecutionMode?.(element);node._generetiMountPreviewControls?.();node._generetiMountTransport?.();apply(mode);
   if(node.comfyClass!=='GeneretiDrawing'){

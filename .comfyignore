@@ -11,6 +11,7 @@
 !/distribution/
 /distribution/*
 !/distribution/manifest.json
+!/distribution/build-info.json
 !/scripts/
 /scripts/*
 !/scripts/install_comfy_workflows.py
@@ -62,3 +63,7 @@
 **/*.mov
 **/*.webm
 **/*.log
+
+!/help/
+!/help/**
+!/scripts/sync_node_references.py

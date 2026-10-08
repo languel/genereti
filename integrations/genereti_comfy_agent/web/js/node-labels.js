@@ -1,19 +1,20 @@
 import { app } from '../../../../scripts/app.js';
 
 // Titles are presentation. Saved workflow identity remains the Genereti node ID.
-export function generetiTitle(title) {
-  const label = String(title ?? '').replace(/^Genereti\s+/i, '').replace(/^ꘇ\s*/, '');
-  return 'ꘇ' + (/^(top|chop|dat|mod)\./i.test(label) ? '' : ' ') + label;
+export function generetiTitle(title, className = '') {
+  const core = className.startsWith('GeneretiCore') || (!className && /ꘅ/.test(String(title ?? '').match(/^[ꘇꘅ\s]*/)?.[0] ?? ''));
+  const label = String(title ?? '').replace(/^(?:[ꘇꘅ]\s*)+/, '').replace(/^GeneretiCore\s+/i, '').replace(/^Genereti\s+/i, '');
+  return (core ? 'ꘅ' : 'ꘇ') + ' ' + label;
 }
 function labelNode(node) {
-  if (node.comfyClass?.startsWith('Genereti')) node.title = generetiTitle(node.title);
+  if (node.comfyClass?.startsWith('Genereti')) node.title = generetiTitle(node.title, node.comfyClass);
 }
 app.registerExtension({
   name: 'Genereti.NodeLabels',
   beforeRegisterNodeDef(nodeType, data) {
     if (!data.name?.startsWith('Genereti')) return;
-    data.display_name = generetiTitle(data.display_name ?? data.name);
-    const label = data.display_name.replace(/^ꘇ\s*/, '');
+    data.display_name = generetiTitle(data.display_name ?? data.name, data.name);
+    const label = data.display_name.replace(/^[ꘇꘅ]\s*/, '');
     const family = /^(top|chop|dat|mod)\./i.exec(label)?.[1];
     data.search_aliases = [...new Set([...(data.search_aliases ?? []), 'genereti', label,
       'genereti ' + label, ...(family ? [family, 'genereti ' + family] : [])])];

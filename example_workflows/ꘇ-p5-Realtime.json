@@ -40,7 +40,7 @@
       "outputs": [
         {
           "localized_name": "IMAGE",
-          "name": "IMAGE",
+          "name": "image",
           "type": "IMAGE",
           "slot_index": 0,
           "links": [

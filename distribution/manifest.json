@@ -20,6 +20,7 @@
     "README.md",
     "LICENSE",
     "distribution/manifest.json",
+    "distribution/build-info.json",
     "scripts/install_comfy_workflows.py",
     "scripts/comfy_agent_cli.py",
     "scripts/build_comfy_package.py",
@@ -30,7 +31,8 @@
     "scripts/build_performance.mjs",
     "scripts/build_livecode_lessons.py",
     "scripts/browser_licenses.mjs",
-    "scripts/sync_comfy_templates.py"
+    "scripts/sync_comfy_templates.py",
+    "scripts/sync_node_references.py"
   ],
   "directories": [
     "docs",
@@ -38,6 +40,7 @@
     "web/vendor/excalidraw",
     "integrations/comfyui_genereti/workflows",
     "licensing",
-    "example_workflows"
+    "example_workflows",
+    "help/docs"
   ]
 }

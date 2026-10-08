@@ -115,7 +115,7 @@ Open **ꘇ-Tutorial-Authoring** for the expanded “Make a tutorial with Generet
 
 ### Lesson outline playlist
 
-Click a step title in `ꘇdat.lesson` to open that step directly in the learner guide. The outline marks the current step as you move with the guide’s Previous/Next controls. Choosing a step opens its instructions and target; recorded actions still require **Do it**. Run starts from the beginning. The divider between the code and lesson toolbar resizes the code area; arrow keys adjust it, double-click resets it, and its height is saved with the workflow.
+Click a step title in `ꘇ dat.lesson` to open that step directly in the learner guide. The outline marks the current step as you move with the guide’s Previous/Next controls. Choosing a step opens its instructions and target; recorded actions still require **Do it**. Run starts from the beginning. The divider between the code and lesson toolbar resizes the code area; arrow keys adjust it, double-click resets it, and its height is saved with the workflow.
 
 ## Record and replay a patch-building session
 

@@ -75,7 +75,7 @@
           "links": []
         },
         {
-          "name": "JSON",
+          "name": "json",
           "type": "STRING",
           "links": []
         }
@@ -1120,7 +1120,7 @@
       ],
       "outputs": [
         {
-          "name": "IMAGE",
+          "name": "image",
           "type": "IMAGE",
           "links": [
             12

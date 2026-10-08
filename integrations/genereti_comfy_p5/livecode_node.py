@@ -11,7 +11,7 @@ import torch
 from PIL import Image
 from aiohttp import web
 from comfy_api.latest import io
-from . import DEFAULT_SKETCH
+DEFAULT_SKETCH = """function setup(){createCanvas(windowWidth,windowHeight);background(245)}function draw(){stroke(random(255));line(random(width),random(height),random(width),random(height));if(mouseIsPressed){noStroke();fill(random(255));circle(mouseX,mouseY,dist(mouseX,mouseY,pmouseX,pmouseY))}}"""
 
 LANGUAGES = json.loads((Path(__file__).parent / 'web/js/livecode-languages.json').read_text())
 
@@ -48,6 +48,8 @@ def register_routes():
     from server import PromptServer
     if PromptServer.instance is None:
         return
+    from .about import register_about_route
+    register_about_route(PromptServer.instance.routes)
     _registered = True
 
     @PromptServer.instance.routes.post('/genereti/livecode/result')
@@ -97,7 +99,7 @@ class GeneretiLivecode(io.ComfyNode):
                 io.Autogrow.Input('controls', template=io.Autogrow.TemplatePrefix(
                     io.MultiType.Input('value', types=[io.Float,io.Int,io.Boolean,io.String]), prefix='value', min=0, max=64), optional=True),
                 io.String.Input('performance',default='{}',optional=True),
-            ], hidden=[io.Hidden.unique_id], outputs=[io.Image.Output(display_name='IMAGE')])
+            ], hidden=[io.Hidden.unique_id], outputs=[io.Image.Output(display_name='image')])
 
     @classmethod
     async def execute(cls, language, width, height, auto_update, code, parameters='{}', image=None, controls=None, performance='{}'):

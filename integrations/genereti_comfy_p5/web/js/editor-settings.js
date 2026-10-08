@@ -28,7 +28,7 @@ export function captureFontShortcut(node,element,apply){
  window.addEventListener('keydown',handler,true);return ()=>window.removeEventListener('keydown',handler,true);
 }
 app.registerExtension({name:'Genereti.EditorDefaults',settings:definitions.map(([key,name,type,defaultValue,options])=>({
- id:id(key),name,category:['Genereti','Editor',name],type,defaultValue,...(options?{options}:{}),
+ id:id(key),name,sortOrder:100,category:['Genereti','Editor',name],type,defaultValue,...(options?{options}:{}),
  ...(type==='number'?{attrs:{min:key==='fontSize'?9:key==='lineHeight'?.8:0,max:key==='fontSize'?36:key==='lineHeight'?2.5:1,step:key==='fontSize'?1:.05}}:{}),
  tooltip:key==='fontSize'?'Shared editor default. Cmd/Ctrl+Shift+Plus or Minus overrides the focused or selected node.':key.startsWith('overlay')?'Shared code overlay appearance.':key==='css'?'CSS for Livecode output documents.':key==='theme'?'Shared CodeMirror theme. Empty color overrides use this palette.':'Shared editor preference; updates open editors.',
  onChange:()=>{for(const callback of listeners)callback();}

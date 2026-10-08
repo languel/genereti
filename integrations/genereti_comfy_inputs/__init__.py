@@ -39,7 +39,7 @@ class GeneretiInputSelect(io.ComfyNode):
                 io.Image.Input("webcam", optional=True, lazy=True, tooltip="Connect Webcam Capture here."),
                 io.Image.Input("screen", optional=True, lazy=True, tooltip="Connect Genereti Window / Screen Capture here."),
             ],
-            outputs=[io.Image.Output(display_name="IMAGE")],
+            outputs=[io.Image.Output(display_name="image")],
         )
 
     @classmethod
@@ -109,7 +109,7 @@ class GeneretiCameraCapture(_GeneretiBrowserCapture):
             category="Genereti / Local Core ML",
             description="Start the selected camera with the top play control. GPU resize and horizontal flip apply before sampling; Queue uses the latest sampled frame.",
             inputs=[cls.capture_input()],
-            outputs=[io.Image.Output(display_name="IMAGE")],
+            outputs=[io.Image.Output(display_name="image")],
         )
 
 
@@ -128,7 +128,7 @@ class GeneretiScreenCapture(_GeneretiBrowserCapture):
                 "Capture is uploaded only when Window / Screen is the selected Genereti input."
             ),
             inputs=[cls.capture_input()],
-            outputs=[io.Image.Output(display_name="IMAGE")],
+            outputs=[io.Image.Output(display_name="image")],
         )
 
 

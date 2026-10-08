@@ -21,7 +21,7 @@ values, clip evaluation, timeline interactions, command/event conventions and
 lifecycle adapters, adapting their canvas-object bindings to Comfy nodes.
 
 The engine must operate with its UI closed. A docked timeline, a floating window
-and `ꘇmod.transport` are views/controllers of the same selected transport, not
+and `ꘇ mod.transport` are views/controllers of the same selected transport, not
 three independently advancing clocks. Existing independent `mod.*` audio routes
 and TOP/CHOP/DAT interoperability remain supported.
 
@@ -226,7 +226,7 @@ fill undo history or feed itself into recording on every frame.
 
 Extract musical scale/time-grid from __'s spatial grid. Keep root, custom scale
 degrees, octave span, reference note/frequency and tuning; allow node overrides
-of the project defaults. A `ꘇmod.scale` controller and CHOP note/time quantizers
+of the project defaults. A `ꘇ mod.scale` controller and CHOP note/time quantizers
 can share that context. The canvas grid can optionally map to it later, without
 turning pitch quantization into canvas snapping.
 

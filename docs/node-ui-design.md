@@ -193,7 +193,7 @@ This FPS is neither inference speed nor the output’s frame delivery rate.
 
 ### Node names and discovery
 
-All Genereti node labels start with `ꘇ`. Operator labels attach it directly to the family name, for example `ꘇdat.totop`; other labels use a space, for example `ꘇ livecode`. The glyph is visual branding, while stable `Genereti…` node IDs prevent namespace conflicts and preserve existing workflows. Search aliases include plain family names (`dat`, `top`, `chop`, `mod`) and branded phrases (`genereti dat`, `genereti top`, `genereti chop`, `genereti mod`), so typing the glyph is optional. Existing descriptive workflow titles receive the prefix when loaded; their wording and node IDs are preserved.
+All Genereti node labels start with `ꘇ`. Every label uses a space after the glyph, for example `ꘇ dat.totop`; other labels use a space, for example `ꘇ livecode`. The glyph is visual branding, while stable `Genereti…` node IDs prevent namespace conflicts and preserve existing workflows. Search aliases include plain family names (`dat`, `top`, `chop`, `mod`) and branded phrases (`genereti dat`, `genereti top`, `genereti chop`, `genereti mod`), so typing the glyph is optional. Existing descriptive workflow titles receive the prefix when loaded; their wording and node IDs are preserved.
 
 ### Interactive output overlays
 
@@ -226,7 +226,7 @@ Alt+W anchors the opened overlay at the current cursor position, clamped to the 
 
 ### Modular audio controls
 
-`ꘇmod.*` uses the same compact themed controls: explicit output Start/Panic, accessible note/drum grids, audition keys and mixer mute/solo/faders. Native parameters remain available for Comfy socket conversion and saved values. Sound never starts on node creation, workflow load or queue. Runtime AudioNodes and playing state are excluded from workflow serialization.
+`ꘇ mod.*` uses the same compact themed controls: explicit output Start/Panic, accessible note/drum grids, audition keys and mixer mute/solo/faders. Native parameters remain available for Comfy socket conversion and saved values. Sound never starts on node creation, workflow load or queue. Runtime AudioNodes and playing state are excluded from workflow serialization.
 
 ## Shared CodeMirror controls
 
@@ -237,3 +237,24 @@ Format and minify operate on explicit selections (including multiple ranges), or
 Toolbar choice dropdowns use a chosen glyph and chevron when closed, then glyph plus label for each menu entry. The shared decorator in `choice-glyphs.js` covers Livecode view/sizing/fit, delivery, capture and lesson/export controls while retaining native select values, keyboard input and change events. Labeled settings fields keep their text. Browsers without customizable native selects retain readable native dropdowns. Auto-update/apply-while-typing uses the same **ϟ** glyph across editors.
 
 Shared DAT/TOP/CHOP code editors have a divider below the code. Drag it to set editor height, use Up/Down for 16px adjustments, or double-click to reset to 160px. Drag distances account for graph zoom. Height is saved per widget in `generetiOperatorHeights`; minimizing hides the divider and restores the chosen height when expanded.
+
+Port labels use lowercase descriptive names on inputs and outputs (`image`,
+`mask`, `svg`, `json`, `music json`). Comfy data types remain uppercase (`IMAGE`,
+`MASK`, `STRING`, `GENERETI_CHOP`). Set output display names explicitly so type
+names do not become fallback labels. Preserve input IDs and output order.
+
+Noise and expression domain offsets (`offset_x/y/z/t`) are ordinary numeric
+controls, convertible to sockets. The existing oscillator time offset follows
+the same rule. Keep these on operators that sample a domain; use `top.transform`
+for translating, scaling or rotating a finished texture. New offset widgets
+follow the existing serialized controls so saved values retain their positions.
+
+Node `?` controls open a local quick reference, separate from lesson hints.
+References live in `help/docs/<NodeID>.md`, are also available through Comfy’s
+native node Info view, and use the host Markdown renderer. Keep syntax examples
+short and copyable; offer the related guided lesson separately.
+
+Run `python scripts/sync_node_references.py` after editing native-help Markdown.
+The generated reference catalog uses the existing agent extension alias so the
+quick-reference button can load guides before a backend restart registers the
+native-help web directory. Plain-text fallback preserves line breaks.

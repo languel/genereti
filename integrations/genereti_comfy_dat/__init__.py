@@ -7,7 +7,7 @@ from .inspect import Inspect
 WEB_DIRECTORY='./web'
 DAT=io.Custom('GENERETI_DAT');CHOP=io.Custom('GENERETI_CHOP')
 def code(name,default):return io.String.Input(name,default=default,multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'})
-def schema(kind,inputs):return io.Schema(node_id='GeneretiDat'+kind,display_name='ꘇ'+('dat.'+kind.lower()),search_aliases=['genereti', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=inputs,outputs=[DAT.Output(display_name='table'),io.String.Output(display_name='text')])
+def schema(kind,inputs):return io.Schema(node_id='GeneretiDat'+kind,display_name='ꘇ '+('dat.'+kind.lower()),search_aliases=['genereti', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=inputs,outputs=[DAT.Output(display_name='table'),io.String.Output(display_name='text')])
 def output(data):return io.NodeOutput(data,tables.text(data))
 class Text(io.ComfyNode):
     @classmethod
@@ -45,20 +45,20 @@ class Expression(Select):
     def define_schema(cls):return schema('Expression',[DAT.Input('input'),code('expression','v * 2'),io.String.Input('performance',default='{}',optional=True)])
 class ToChop(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return io.Schema(node_id='GeneretiDatToChop',display_name='ꘇdat.tochop',search_aliases=['genereti', 'dat.tochop', 'genereti dat.tochop', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[DAT.Input('input'),io.Float.Input('sample_rate',default=60,min=1,max=1000),io.Boolean.Input('header',default=True)],outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')])
+    def define_schema(cls):return io.Schema(node_id='GeneretiDatToChop',display_name='ꘇ dat.tochop',search_aliases=['genereti', 'dat.tochop', 'genereti dat.tochop', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[DAT.Input('input'),io.Float.Input('sample_rate',default=60,min=1,max=1000),io.Boolean.Input('header',default=True)],outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')])
     @classmethod
     def execute(cls,input,sample_rate,header):
         data=tables.to_chop(input,sample_rate,header);value=float(next(iter(data['channels'].values()),[0])[-1]);return io.NodeOutput(data,value)
 class Cell(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return io.Schema(node_id='GeneretiDatCell',display_name='ꘇdat.cell',search_aliases=['genereti', 'dat.cell', 'genereti dat.cell', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[DAT.Input('input'),io.Int.Input('row',default=1,min=0,max=100000),io.Int.Input('column',default=0,min=0,max=100000)],outputs=[io.String.Output(display_name='text'),io.Float.Output(display_name='value')])
+    def define_schema(cls):return io.Schema(node_id='GeneretiDatCell',display_name='ꘇ dat.cell',search_aliases=['genereti', 'dat.cell', 'genereti dat.cell', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[DAT.Input('input'),io.Int.Input('row',default=1,min=0,max=100000),io.Int.Input('column',default=0,min=0,max=100000)],outputs=[io.String.Output(display_name='text'),io.Float.Output(display_name='value')])
     @classmethod
     def execute(cls,input,row,column):
         text,value=tables.cell_value(input,row,column);return io.NodeOutput(text,value)
 class FromChop(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        result=schema('FromChop',[CHOP.Input('input')]);result.display_name='ꘇchop.todat';result.search_aliases=['genereti','chop','genereti chop','chop.todat'];result.category='ꘇ / CHOP';return result
+        result=schema('FromChop',[CHOP.Input('input')]);result.display_name='ꘇ chop.todat';result.search_aliases=['genereti','chop','genereti chop','chop.todat'];result.category='ꘇ / CHOP';return result
     @classmethod
     def execute(cls,input):return output(tables.from_chop(input))
 class DatExtension(ComfyExtension):

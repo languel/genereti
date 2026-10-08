@@ -9,7 +9,7 @@ def f(name, default, low=0, high=1):
     return io.Float.Input(name, default=default, min=low, max=high, step=.01)
 
 def schema(kind, inputs, outputs=None, endpoint=False):
-    return io.Schema(node_id='GeneretiAudio'+kind, display_name='ꘇmod.'+kind.lower(),
+    return io.Schema(node_id='GeneretiAudio'+kind, display_name='ꘇ mod.'+kind.lower(),
         category='ꘇ / Modular audio', search_aliases=['mod', 'genereti mod', 'genereti audio', 'synth', 'music', kind.lower()],
         inputs=inputs, outputs=outputs if outputs is not None else [BUS.Output(display_name='audio')],
         is_output_node=endpoint,
@@ -23,7 +23,7 @@ class Route(io.ComfyNode):
 class Transport(Route):
     @classmethod
     def define_schema(cls):
-        return schema('Transport', [f('bpm',110,20,300), f('swing',0,0,.45),io.String.Input('clock_name',default='local',optional=True,tooltip='local preserves an independent clock; project links this controller to the workflow timeline.'),io.String.Input('performance',default='{}',optional=True)], [CLOCK.Output(display_name='clock'),CHOP.Output(display_name='channels'),io.Float.Output(display_name='seconds'),io.Float.Output(display_name='beat'),io.String.Output(display_name='JSON')])
+        return schema('Transport', [f('bpm',110,20,300), f('swing',0,0,.45),io.String.Input('clock_name',default='local',optional=True,tooltip='local preserves an independent clock; project links this controller to the workflow timeline.'),io.String.Input('performance',default='{}',optional=True)], [CLOCK.Output(display_name='clock'),CHOP.Output(display_name='channels'),io.Float.Output(display_name='seconds'),io.Float.Output(display_name='beat'),io.String.Output(display_name='json')])
 
     @classmethod
     def execute(cls,bpm=110,swing=0,clock_name="local",performance="{}"):

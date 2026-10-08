@@ -5,7 +5,7 @@ from .signals import signal,first
 CHOP=io.Custom('GENERETI_CHOP')
 def number(name,value,low=0,high=1):return io.Float.Input(name,default=value,min=low,max=high)
 def timing():return [number('bpm',120,1,400),io.Int.Input('division',default=2,min=1,max=16),number('gate',.5,.01,.99),number('velocity',.7),io.Int.Input('samples',default=1,min=1,max=4096),number('sample_rate',60,1,1000),number('time',0,0,100000)]
-def schema(kind,inputs,endpoint=False):return io.Schema(node_id='GeneretiMusic'+kind,display_name='ꘇ'+('chop.'+kind.lower()),search_aliases=['genereti', 'chop', 'genereti chop'],category='ꘇ / CHOP',inputs=inputs,outputs=[CHOP.Output(display_name='notes'),io.Float.Output(display_name='value')],is_output_node=endpoint,description='Musical control channels: note (MIDI pitch), gate, velocity. Browser audio starts only by its button. Queue evaluates controls/passes them through, never plays sound or sends MIDI.')
+def schema(kind,inputs,endpoint=False):return io.Schema(node_id='GeneretiMusic'+kind,display_name='ꘇ '+('chop.'+kind.lower()),search_aliases=['genereti', 'chop', 'genereti chop'],category='ꘇ / CHOP',inputs=inputs,outputs=[CHOP.Output(display_name='notes'),io.Float.Output(display_name='value')],is_output_node=endpoint,description='Musical control channels: note (MIDI pitch), gate, velocity. Browser audio starts only by its button. Queue evaluates controls/passes them through, never plays sound or sends MIDI.')
 def notes(text):
     tokens=str(text).replace(',',' ').split()
     if not tokens or len(tokens)>256:raise ValueError('Use 1..256 MIDI notes or rest markers (- / .)')

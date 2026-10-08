@@ -8,6 +8,8 @@ import folder_paths
 import nodes
 from comfy_api.latest import ComfyExtension
 
+WEB_DIRECTORY = "./help"
+
 ROOT = Path(__file__).resolve().parent
 PACKS = json.loads((ROOT / 'distribution/manifest.json').read_text())['packs']
 

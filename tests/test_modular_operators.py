@@ -4,7 +4,7 @@ class ModularTests(unittest.TestCase):
  def test_schemas_are_independent_and_discoverable(self):
   for node in MODULAR:
    node.GET_SCHEMA()
-   self.assertTrue(node.define_schema().display_name.startswith('ꘇmod.'))
+   self.assertTrue(node.define_schema().display_name.startswith('ꘇ mod.'))
   self.assertEqual(Sequence.RETURN_TYPES,['GENERETI_CHOP'])
   self.assertEqual(Mixer.RETURN_TYPES,['GENERETI_AUDIO_BUS'])
   self.assertTrue(Output.OUTPUT_NODE)

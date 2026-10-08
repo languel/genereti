@@ -82,7 +82,7 @@
       "outputs": [
         {
           "localized_name": "IMAGE",
-          "name": "IMAGE",
+          "name": "image",
           "type": "IMAGE",
           "links": []
         }
@@ -207,7 +207,7 @@
       "outputs": [
         {
           "localized_name": "IMAGE",
-          "name": "IMAGE",
+          "name": "image",
           "type": "IMAGE",
           "links": []
         }
@@ -270,25 +270,25 @@
       "outputs": [
         {
           "localized_name": "IMAGE",
-          "name": "IMAGE",
+          "name": "image",
           "type": "IMAGE",
           "slot_index": 0,
           "links": []
         },
         {
-          "name": "MASK",
+          "name": "mask",
           "type": "MASK",
           "slot_index": 1,
           "links": []
         },
         {
-          "name": "SVG",
+          "name": "svg",
           "type": "STRING",
           "slot_index": 2,
           "links": []
         },
         {
-          "name": "JSON",
+          "name": "json",
           "type": "STRING",
           "slot_index": 3,
           "links": []

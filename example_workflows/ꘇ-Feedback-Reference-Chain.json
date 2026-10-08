@@ -147,6 +147,11 @@
         512,
         384,
         0,
+        "{}",
+        0,
+        0,
+        0,
+        0,
         "Live"
       ],
       "widgets_values_named": {
@@ -227,7 +232,7 @@
         340,
         460
       ],
-      "title": "ꘇtop.feedbackref · previous composite",
+      "title": "ꘇ top.feedbackref · previous composite",
       "type": "GeneretiTextureFeedbackRef",
       "widgets_values": [
         "{\"ref\":\"ba61e572-ddfe-4eb3-a191-dec5acd32c19\",\"outputSlot\":0}",

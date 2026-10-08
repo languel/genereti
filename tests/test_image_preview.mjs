@@ -1,14 +1,15 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
+import {previewWidgetHeight} from '../integrations/genereti_comfy_p5/web/js/widget-layout.js';
 import {readFileSync} from 'node:fs';
 
 function fixture(clock=performance){
  const elements=[],draws=[],outputs=[];let extension,frame,release=0,closed=0;const localPreview={visible:true,minimized:false};
  const element=tag=>{const e={tag,children:[],style:{},classList:{add(){}},setAttribute(k,v){this[k]=v;},append(...items){this.children.push(...items);},getContext(){return {clearRect(){draws.push('clear');},drawImage(image){draws.push(image);}};}};elements.push(e);return e;};
- const context=vm.createContext({document:{createElement:element},window:{addEventListener(){}},performance:clock,app:{registerExtension(value){extension=value;}},previewState(){localPreview.actions=element('preview-actions');return localPreview;},previewControls(canvas){return {toolbar:element('toolbar'),publish(value){outputs.push(value);},close(){closed++;}};},subscribeLive(node,callback){frame=callback;return ()=>release++;},Image:class{set src(value){this.naturalWidth=12;this.naturalHeight=8;this.onload();}}});
+ const context=vm.createContext({previewWidgetHeight,document:{createElement:element},window:{addEventListener(){}},performance:clock,app:{registerExtension(value){extension=value;}},previewState(){localPreview.actions=element('preview-actions');return localPreview;},previewControls(canvas){return {toolbar:element('toolbar'),publish(value){outputs.push(value);},close(){closed++;}};},subscribeLive(node,callback){frame=callback;return ()=>release++;},Image:class{set src(value){this.naturalWidth=12;this.naturalHeight=8;this.onload();}}});
  const source=readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/image-preview.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');vm.runInContext(source,context);
- const node={comfyClass:'GeneretiLiveImagePreview',widgets:[{name:'preview_size'},{name:'jpeg_quality'}],addDOMWidget(name,type,container){this.container=container;return {};}};extension.nodeCreated(node);
+ const node={size:[400,480],comfyClass:'GeneretiLiveImagePreview',widgets:[{name:'preview_size'},{name:'jpeg_quality'}],addDOMWidget(name,type,container){this.container=container;return {options:{},margin:10};}};extension.nodeCreated(node);
  return {node,elements,draws,outputs,localPreview,frame:bitmap=>frame({bitmap,producedAt:clock.now()}),counts:()=>({release,closed})};
 }
 

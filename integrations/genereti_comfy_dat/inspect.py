@@ -28,7 +28,7 @@ def display(value,format='json',limit=32):
 class Inspect(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return io.Schema(node_id='GeneretiDatInspect',display_name='ꘇdat.inspect',category='ꘇ / DAT',search_aliases=['genereti dat','dat','inspect','debug','display','values','json'],inputs=[io.AnyType.Input('input'),io.Combo.Input('format',options=['json','text']),io.Int.Input('limit',default=32,min=1,max=256)],outputs=[io.String.Output(display_name='text')],is_output_node=True,description='Read-only current values and JSON. Live OpenTouch signals update in the browser; Queue displays other Comfy outputs. Large arrays are bounded and tensors show metadata. Freeze pauses the display only.')
+        return io.Schema(node_id='GeneretiDatInspect',display_name='ꘇ dat.inspect',category='ꘇ / DAT',search_aliases=['genereti dat','dat','inspect','debug','display','values','json'],inputs=[io.AnyType.Input('input'),io.Combo.Input('format',options=['json','text']),io.Int.Input('limit',default=32,min=1,max=256)],outputs=[io.String.Output(display_name='text')],is_output_node=True,description='Read-only current values and JSON. Live OpenTouch signals update in the browser; Queue displays other Comfy outputs. Large arrays are bounded and tensors show metadata. Freeze pauses the display only.')
     @classmethod
     def execute(cls,input,format='json',limit=32):
         text=display(input,format,limit)

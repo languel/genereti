@@ -9,8 +9,8 @@ CHOP=io.Custom('GENERETI_CHOP')
 
 def number(name,value=0,low=-100000,high=100000):return io.Float.Input(name,default=value,min=low,max=high,step=.01)
 def common():return [io.Int.Input('channels',default=1,min=1,max=64),io.Int.Input('samples',default=1,min=1,max=4096),number('sample_rate',60,1,1000),number('time',0)]
-def domain_offsets():return [io.Float.Input("offset_"+axis,default=0,optional=True,force_input=True) for axis in ("x","y","z","t")]
-def schema(kind,inputs,output=False):return io.Schema(node_id='GeneretiChop'+kind,display_name='ꘇ'+('chop.'+kind.lower()),search_aliases=['genereti', 'chop', 'genereti chop'],category='ꘇ / CHOP',inputs=inputs,outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')],is_output_node=output,description='Named sampled control channels and last value of first channel. Live in browser; Queue evaluates explicit samples/time. Device I/O only runs after its Connect button, never on opening or Queue.')
+def domain_offsets():return [io.Float.Input("offset_"+axis,default=0,min=-100000,max=100000,step=.01,optional=True) for axis in ("x","y","z","t")]
+def schema(kind,inputs,output=False):return io.Schema(node_id='GeneretiChop'+kind,display_name='ꘇ '+('chop.'+kind.lower()),search_aliases=['genereti', 'chop', 'genereti chop'],category='ꘇ / CHOP',inputs=inputs,outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')],is_output_node=output,description='Named sampled control channels and last value of first channel. Live in browser; Queue evaluates explicit samples/time. Device I/O only runs after its Connect button, never on opening or Queue.')
 
 class Constant(io.ComfyNode):
     @classmethod
@@ -20,7 +20,7 @@ class Constant(io.ComfyNode):
         data=signals.generate('Constant',values);return io.NodeOutput(data,signals.first(data))
 class Oscillator(Constant):
     @classmethod
-    def define_schema(cls):return schema('Oscillator',[io.Combo.Input('wave',options=['sine','triangle','saw','square','ramp']),number('frequency',1,0,10000),number('amplitude',1),number('offset'),number('phase'),*common(),io.Float.Input('offset_t',default=0,optional=True,force_input=True)])
+    def define_schema(cls):return schema('Oscillator',[io.Combo.Input('wave',options=['sine','triangle','saw','square','ramp']),number('frequency',1,0,10000),number('amplitude',1),number('offset'),number('phase'),*common(),io.Float.Input('offset_t',default=0,min=-100000,max=100000,step=.01,optional=True)])
     @classmethod
     def execute(cls,**values):
         data=signals.generate('Oscillator',values);return io.NodeOutput(data,signals.first(data))
@@ -32,7 +32,7 @@ class Noise(Constant):
         data=signals.generate('Noise',values);return io.NodeOutput(data,signals.first(data))
 class Expression(Constant):
     @classmethod
-    def define_schema(cls):return schema('Expression',[CHOP.Input('input',optional=True),io.String.Input('expression',default='sin(t*tau + c)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),*common(),*domain_offsets(),io.String.Input('performance',default='{}',optional=True)])
+    def define_schema(cls):return schema('Expression',[CHOP.Input('input',optional=True),io.String.Input('expression',default='sin(t*tau + c)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),*common(),io.String.Input('performance',default='{}',optional=True),*domain_offsets()])
     @classmethod
     def execute(cls,input=None,**values):
         data=signals.process('Expression',input,values) if input is not None else signals.generate('Expression',values);return io.NodeOutput(data,signals.first(data))

@@ -5,7 +5,7 @@
     {
       "id": 1,
       "type": "GeneretiAudioTransport",
-      "title": "ꘇmod.transport",
+      "title": "ꘇ mod.transport",
       "pos": [
         0,
         0
@@ -39,7 +39,7 @@
     {
       "id": 2,
       "type": "GeneretiAudioSequence",
-      "title": "ꘇmod.sequence",
+      "title": "ꘇ mod.sequence",
       "pos": [
         360,
         0
@@ -80,7 +80,7 @@
     {
       "id": 3,
       "type": "GeneretiAudioDrumSequence",
-      "title": "ꘇmod.drumsequence",
+      "title": "ꘇ mod.drumsequence",
       "pos": [
         360,
         320
@@ -120,7 +120,7 @@
     {
       "id": 4,
       "type": "GeneretiAudioSynth",
-      "title": "ꘇmod.synth",
+      "title": "ꘇ mod.synth",
       "pos": [
         880,
         0
@@ -169,7 +169,7 @@
     {
       "id": 5,
       "type": "GeneretiAudioDrumKit",
-      "title": "ꘇmod.drumkit",
+      "title": "ꘇ mod.drumkit",
       "pos": [
         880,
         700
@@ -209,7 +209,7 @@
     {
       "id": 6,
       "type": "GeneretiAudioGain",
-      "title": "ꘇmod.gain",
+      "title": "ꘇ mod.gain",
       "pos": [
         1280,
         0
@@ -249,7 +249,7 @@
     {
       "id": 7,
       "type": "GeneretiAudioFilter",
-      "title": "ꘇmod.filter",
+      "title": "ꘇ mod.filter",
       "pos": [
         1280,
         250
@@ -289,7 +289,7 @@
     {
       "id": 8,
       "type": "GeneretiAudioDelay",
-      "title": "ꘇmod.delay",
+      "title": "ꘇ mod.delay",
       "pos": [
         1280,
         500
@@ -329,7 +329,7 @@
     {
       "id": 9,
       "type": "GeneretiAudioMixer",
-      "title": "ꘇmod.mixer",
+      "title": "ꘇ mod.mixer",
       "pos": [
         1640,
         0
@@ -398,7 +398,7 @@
     {
       "id": 10,
       "type": "GeneretiAudioOutput",
-      "title": "ꘇmod.output",
+      "title": "ꘇ mod.output",
       "pos": [
         2080,
         0

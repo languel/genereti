@@ -17,7 +17,7 @@ app.registerExtension({
   if(!defaults?.defaultGraph||!defaults.blankGraph)return;
   graph=defaults.defaultGraph;original=structuredClone(graph);blank=structuredClone(defaults.blankGraph);
   app.ui.settings.addSetting({
-   id:settingId,name:'Default workflow',category:['Genereti','Workflow','Default'],
+   id:settingId,name:'Default workflow',sortOrder:300,category:['Genereti','Workflow','Default'],
    type:'combo',defaultValue:'comfy',
    options:[{text:'Blank canvas',value:'blank'},{text:'Comfy default',value:'comfy'}],
    tooltip:'Applies to the next default load or startup without restored tabs. Does not replace the current canvas.',

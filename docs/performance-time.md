@@ -15,7 +15,7 @@ parameter recording and seeking. The example needs no models or capture devices.
 
 **Alt+Shift+T** toggles the native bottom panel. **Alt+Space** plays/pauses project
 time outside text editors. These are editable in Comfy's native Keybinding panel.
-`ꘇmod.timeline` opens the same dock or a draggable, resizable floating view.
+`ꘇ mod.timeline` opens the same dock or a draggable, resizable floating view.
 
 The active Timeline tab uses a compact native header: transport controls occupy
 the space beside Logs/Timeline, wrapping below them in narrow windows. Logs
@@ -29,18 +29,18 @@ when BPM changes. There are **480 ticks per quarter note**. `beat` counts meter
 beats, `bar` is the zero-based elapsed bar index, and `phase` is the quarter-note
 fraction. In 6/8, one bar contains six eighth-note beats and three quarter notes.
 
-`ꘇmod.transport` keeps its CLOCK output at socket **0**, and adds named control
+`ꘇ mod.transport` keeps its CLOCK output at socket **0**, and adds named control
 channels **1**, seconds **2**, meter beats **3**, and JSON **4**. Set `clock_name`
 to **project** to control the dock's clock. **local** preserves independent,
 initially running sequence clocks in older patches. Local clocks with the same
 label remain independent per node; named shared clock registries are future work.
 
-`ꘇchop.time` accepts an optional CLOCK input and otherwise reads project time.
+`ꘇ chop.time` accepts an optional CLOCK input and otherwise reads project time.
 Its selectable FLOAT includes seconds, quarter notes, beats, bar index, ticks,
 phase, BPM, playing, loop iteration or Unix wall-clock seconds. Other sockets
 provide a named CHOP block, JSON and the CLOCK reference. Wall time is separate
 from pausable score time. The CHOP is a control snapshot at 25 Hz, not audio PCM.
-Connect the CLOCK or JSON to `ꘇdat.inspect` to see its values.
+Connect the CLOCK or JSON to `ꘇ dat.inspect` to see its values.
 
 Time expressions accept `250 ms`, `2 seconds`, `beat`, `2 bars`, `4n`, `8nt`
 (triplet), `8n.` (dotted), `480 ticks`, frames and samples. Musical launch cues
@@ -96,7 +96,7 @@ render time. `sin(u_generetiBeat)` therefore follows project music even when
 
 ## Domain offset ports
 
-`ꘇtop.noise`, `ꘇtop.expression`, `ꘇchop.noise` and `ꘇchop.expression` have
+`ꘇ top.noise`, `ꘇ top.expression`, `ꘇ chop.noise` and `ꘇ chop.expression` have
 optional FLOAT input ports `offset_x`, `offset_y`, `offset_z`, `offset_t`.
 Unconnected ports equal zero. Connect `chop.time`, an oscillator, a constant or
 another scalar source; these stay visible as sockets instead of a parameter tab.
@@ -107,7 +107,7 @@ TOP expression's `z` starts at `offset_z`. For CHOP expressions, X shifts the
 normalized sample coordinate, Y/Z supply extra domain coordinates, and T shifts
 sample time. CHOP white noise uses XYZ as deterministic hash-domain offsets;
 use the expression's `perlin`/`simplex`/`value` functions for coherent noise.
-`ꘇchop.oscillator` has only `offset_t`, because its domain is one-dimensional.
+`ꘇ chop.oscillator` has only `offset_t`, because its domain is one-dimensional.
 These offsets do not alter the global project clock or amplitude/DC offset.
 
 ## Numeric automation and takes
@@ -155,7 +155,7 @@ Ableton/TouchDesigner/Bespoke interchange remain subsequent work.
 
 ## Performance monitoring
 
-`ꘇdat.monitor` samples the browser's animation-frame cadence over a rolling five
+`ꘇ dat.monitor` samples the browser's animation-frame cadence over a rolling five
 seconds and separately counts each live texture source's frame deliveries. It
 shows average FPS, average/p95/worst frame interval, frames slower than 50 ms,
 Long Tasks where the browser supports them, and transport-tick/UI-commit costs.

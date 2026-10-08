@@ -40,7 +40,7 @@
       "outputs": [
         {
           "localized_name": "IMAGE",
-          "name": "IMAGE",
+          "name": "image",
           "type": "IMAGE",
           "slot_index": 0,
           "links": [
@@ -184,10 +184,10 @@
         "ver": "0.14.1"
       },
       "widgets_values": [
-        "ꘇ-p5-Sketch/Generated"
+        "\ua607-p5-Sketch/Generated"
       ],
       "widgets_values_named": {
-        "filename_prefix": "ꘇ-p5-Sketch/Generated"
+        "filename_prefix": "\ua607-p5-Sketch/Generated"
       }
     },
     {

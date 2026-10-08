@@ -119,6 +119,13 @@ is still an alternative for work on the full source checkout.
 
 ## Maintainer distribution workflow
 
+Settings → Genereti → About shows the backend's loaded version, GitHub source
+link and installation path. Git checkouts show their branch, short commit and
+local changes; published packages show the release commit when stamped. The
+upstream commit is the locally recorded tracking ref, not a live GitHub lookup.
+Restart Comfy after changing checkout/version, then refresh browser tabs to load
+matching frontend code. Editor settings follow Shortcuts and can be collapsed.
+
 `pyproject.toml` holds the metadata: version **0.1.2**, registered node ID
 **genereti**, display name **ꘇ Genereti**. The registered publisher ID is **liuboto**.
 
@@ -193,3 +200,8 @@ editing them, run `python scripts/sync_comfy_templates.py` and commit the genera
 This top-level folder supports Comfy's native template discovery in Git, ZIP and
 Registry installs. Releases up to 0.1.1 predate automatic template/demo installation;
 they require the manual installer above or an updated package.
+
+The standalone **ꘇ p5.js Sketch** node has been removed. Use **ꘇ livecode**
+with its language set to **p5** for sketches, interactive drawing and IMAGE output.
+Older custom workflows using `GeneretiP5Sketch` need that node replaced with
+Livecode; copy the sketch into its code editor and reconnect the IMAGE output.

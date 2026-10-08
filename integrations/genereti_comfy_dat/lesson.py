@@ -13,7 +13,7 @@ def markdown(guide):
     return '\n\n'.join(parts)+'\n'
 class Lesson(io.ComfyNode):
     @classmethod
-    def define_schema(cls):return io.Schema(node_id='GeneretiDatLesson',display_name='ꘇdat.lesson',search_aliases=['genereti', 'dat.lesson', 'genereti dat.lesson', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[io.String.Input('guide',default=DEFAULT,multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'})],outputs=[io.Custom('GENERETI_DAT').Output(display_name='document'),io.String.Output(display_name='markdown')],description='Author a semantic guided lesson in CodeMirror. Toolbar Run/Stop plays it; export Markdown, static HTML or Print / Save as PDF here. Queue returns its Markdown document without running the tutorial.')
+    def define_schema(cls):return io.Schema(node_id='GeneretiDatLesson',display_name='ꘇ dat.lesson',search_aliases=['genereti', 'dat.lesson', 'genereti dat.lesson', 'dat', 'genereti dat'],category='ꘇ / DAT',inputs=[io.String.Input('guide',default=DEFAULT,multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'})],outputs=[io.Custom('GENERETI_DAT').Output(display_name='document'),io.String.Output(display_name='markdown')],description='Author a semantic guided lesson in CodeMirror. Toolbar Run/Stop plays it; export Markdown, static HTML or Print / Save as PDF here. Queue returns its Markdown document without running the tutorial.')
     @classmethod
     def execute(cls,guide):
         text=markdown(json.loads(guide));return io.NodeOutput(tables.table([[line] for line in text.splitlines()]),text)
