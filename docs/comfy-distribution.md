@@ -119,9 +119,8 @@ is still an alternative for work on the full source checkout.
 
 ## Maintainer distribution workflow
 
-`pyproject.toml` holds the metadata: initial version **0.1.0**, registry ID candidate
-**genereti**, display name **ꘇ Genereti · OpenTouch**. Registry name availability
-has not been claimed or verified. The registered publisher ID is **liuboto**.
+`pyproject.toml` holds the metadata: version **0.1.2**, registered node ID
+**genereti**, display name **ꘇ Genereti**. The registered publisher ID is **liuboto**.
 
 `distribution/manifest.json` is the student archive allowlist. `.comfyignore`
 selects the same files for registry archives; a test compares both selections.
@@ -178,7 +177,7 @@ and [metadata specification](https://docs.comfy.org/registry/specifications):
    can install the published ID through Comfy's registry/Manager.
 
 The publisher account and GitHub secret have been configured by the maintainer.
-Registry version 0.1.0 was uploaded on October 7, 2026; 0.1.1 adds explicit super-alpha labeling. Registry scanning and node extraction must finish before Manager availability is confirmed. Git/ZIP installation remains available. [Challenge preparation](comfy-challenge.md)
+Registry version 0.1.0 was uploaded on October 7, 2026; 0.1.1 adds explicit super-alpha labeling. Version 0.1.2 adds automatic demo installation, curated model-free classroom workflows and the lightweight framework scope; external-generator nodes are removed (see the [compatibility notice](../distribution/release-notes.md)). Registry scanning and node extraction must finish before Manager availability is confirmed. Git/ZIP installation remains available. [Challenge preparation](comfy-challenge.md)
 records the separate submission requirements.
 
 ```sh

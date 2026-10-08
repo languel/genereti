@@ -8,7 +8,7 @@
 
 The bundled demos need **no model downloads, separate model server, or extra node packs**. Use a recent ComfyUI installation and a modern browser; GPU texture demos require WebGPU support.
 
-1. Install **Genereti realtime** through Comfy's Extensions / Manager, then restart and refresh the browser. For a GitHub installation, stop Comfy and run this from your ComfyUI directory:
+1. Install **ꘇ Genereti** through Comfy's Extensions / Manager, then restart and refresh the browser. For a GitHub installation, stop Comfy and run this from your ComfyUI directory:
 
    ```sh
    git clone https://github.com/languel/genereti.git custom_nodes/genereti

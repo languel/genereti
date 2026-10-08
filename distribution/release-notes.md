@@ -1,18 +1,35 @@
-## Unreleased installation fix
+# ꘇ Genereti 0.1.2 — early alpha classroom release
+
+EARLY ALPHA - experimental classroom release.
+Experimental realtime live creative tools for ComfyUI: code (p5js,glsl), drawing,
+shaders, 2d operators, web audio, MIDI, lessons and performance timelines.
+Expect bugs and changing interfaces; back up workflows.
+
+## Changes in 0.1.2
 
 - Bundled demos appear in Comfy's Templates browser under genereti.
 - Startup installs demos into Workflows → Genereti for existing user profiles,
   preserving edited copies and backing up replaced managed examples.
 - Uses Comfy's configured paths, including Desktop installations.
+- Includes 26 curated classroom demos without inference models or extra node packs.
+- Updates the Registry display name to ꘇ Genereti, description and icon.
+- Focuses the distribution on the lightweight realtime framework. Historical
+  Core ML inference and standalone experiments are archived and excluded.
 
-# Super alpha classroom release
+**Compatibility:** external-generator Send Frame, Receive Frame, Live Preview
+and Live Generator nodes are no longer registered. Existing workflows using
+those nodes will have missing nodes after upgrading. User-saved workflows are
+preserved; image preview and native output views remain supported. GeneretiCore
+is the intended migration destination, but is not yet a working replacement.
 
-Version 0.1.1 is an early test release for classroom experimentation and feedback.
+## Classroom installation
+
+Version 0.1.2 is an early test release for classroom experimentation and feedback.
 Expect bugs, incomplete features and changing interfaces. Back up workflows and
 test in a separate ComfyUI installation before using an existing teaching setup.
 Please report your OS, browser and ComfyUI version with a small reproducing workflow.
 
-Student preview of ꘇ Genereti / OpenTouch for ComfyUI.
+Student preview of ꘇ Genereti for ComfyUI.
 
 Includes Livecode, drawing/capture, GPU texture operators, CHOP/DAT tools,
 modular Web Audio, interactive lessons, timeline automation and dat.monitor.
