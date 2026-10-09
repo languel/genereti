@@ -59,3 +59,18 @@ restore, dragging, invisible port connections, and all-node toggles. Save/reload
 and check parameter values and wires. Verify help from composer focus, Auto
 selection following, and context handoff without sending. Confirm preview
 freeze/minimize/offscreen behavior while downstream data stays live.
+
+## Companion browser bridge
+
+Genereti now exposes `window.generetiReference` for companion document registration
+and node-reference toggling, announced by `genereti-reference-ready`. Register a
+mapping of stable document/node IDs to Markdown with `registerDocuments`;
+Contents refreshes on catalog registration, and Auto uses those authored pages.
+Core-family native image IDs retain their existing Latin names and ꘅ labels.
+
+`window.generetiCompanion` version 1 exposes `publishLive`, `attachExecutionMode`,
+`visualNodeControls` and `ensureControlStyle`, announced by
+`genereti-companion-ready`. Companions can consume these without importing
+Genereti's extension URL aliases. A ready event announces UI availability only;
+it does not start model inference, capture or audio. Core's source and workflow
+migration are documented in its `docs/realtime-image-demo.md`.

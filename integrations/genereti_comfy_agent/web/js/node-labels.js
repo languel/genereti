@@ -2,7 +2,7 @@ import { app } from '../../../../scripts/app.js';
 
 // Titles are presentation. Saved workflow identity remains the Genereti node ID.
 export function generetiTitle(title, className = '') {
-  const core = className.startsWith('GeneretiCore') || (!className && /ꘅ/.test(String(title ?? '').match(/^[ꘇꘅ\s]*/)?.[0] ?? ''));
+  const core = (className.startsWith('GeneretiCore') || ['GeneretiSDXSGenerate','GeneretiSDTurboGenerate'].includes(className)) || (!className && /ꘅ/.test(String(title ?? '').match(/^[ꘇꘅ\s]*/)?.[0] ?? ''));
   const label = String(title ?? '').replace(/^(?:[ꘇꘅ]\s*)+/, '').replace(/^GeneretiCore\s+/i, '').replace(/^Genereti\s+/i, '');
   return (core ? 'ꘅ' : 'ꘇ') + ' ' + label;
 }

@@ -9,5 +9,6 @@ test('node labels always have one glyph and one separating space',()=>{
   assert.equal(context.generetiTitle(title,'GeneretiTextureExpression'),'ꘇ top.expression');
   assert.equal(context.generetiTitle(context.generetiTitle(title,'GeneretiTextureExpression'),'GeneretiTextureExpression'),'ꘇ top.expression');
  }
+ for(const id of ['GeneretiSDXSGenerate','GeneretiSDTurboGenerate'])assert.equal(context.generetiTitle('ꘇ ꘅ generator',id),'ꘅ generator');
  assert.equal(context.generetiTitle('ꘇ ꘅ local text','GeneretiCoreText'),'ꘅ local text');
 });
