@@ -14,8 +14,10 @@ these rules when adding or changing node UI.
   these controls.
 - Choices with several named values use a borderless dropdown. Keep its current
   value readable; add a hover tip describing the choice.
-- Match livecode's compact rhythm: 30px controls, 18px glyphs, 4px gaps and 6px
-  corner radii. Toolbars may wrap in narrow nodes without covering the workspace.
+- Use the same tight rhythm across node toolbars: 20px-square controls,
+  14px SVG glyphs and 12px text glyphs, no additional flex gap, and 6px corner radii. Keep glyph size readable;
+  the 12-control livecode row fits the default 270px node width. Toolbars may wrap
+  below that width without covering the workspace.
 - Preserve keyboard operation and a visible focus ring. Borderless resting
   controls must still be discoverable on hover and operable without a mouse.
 - Show status text for loading, errors or useful running feedback. Avoid repeated
@@ -259,7 +261,7 @@ The generated reference catalog uses the existing agent extension alias so the
 quick-reference button can load guides before a backend restart registers the
 native-help web directory. Plain-text fallback preserves line breaks.
 
-Quick reference panels can be dragged by their title bar and docked using the ▥ button into Comfy’s native Quick Reference sidebar tab. Floating again restores the panel position; moving the viewport clamps the panel on screen. Reference text scrolls inside the panel, and keyboard/wheel events stay within the reference.
+Reference, Contents, and Assistant share one **ꘇ Help** sidebar with tabs. Reference opens on Welcome; Contents searches node references, lessons, and tutorials by title, text, controls, and target node type. Every installed Genereti node is indexed: authored Markdown takes precedence, with an explicit guide-in-progress quickref generated from the installed interface as fallback. Lesson entries show their target nodes and can start guided steps in the current workflow or open an available example in a separate workflow tab. Node `?` opens the Reference tab; “Ask about this node” attaches the node and its guide as context, opens Assistant, and prepares a draft without sending it. Tab switches preserve the conversation and open guide. Reference’s toggleable Auto mode follows node selection without reopening the panel or switching away from Assistant; turning it off holds the current document. The preference is remembered in this browser, and the bundled catalog is cached. Genereti’s book/ꘇ glyph sits immediately above Comfy’s Help Center, with a distinct trigger for the same shared panel. The shared panel can float, be dragged by its title bar, or dock with ▥; only the active view is visible. Reference text and conversation scroll independently. Assistant providers, endpoints, models, tab-only API keys, context, MCP, and decision configuration live in **Settings → Genereti → Assistant**, reachable from the assistant’s gear. Existing provider preferences are retained; API keys are never persisted. The assistant footer owns attachment, undo, New Chat, Settings, model choice, and send/stop. New Chat resets conversation, draft and attached context without changing the workflow. Keep the model picker glyph-only, use the current provider’s model list, and show selection/count in its native hover title. Keep only the footer attachment picker; it already includes nodes and library resources. Use native hover titles without CSS tooltip duplicates.
 
 ### Minimal performance views
 
@@ -293,3 +295,9 @@ pointer is outside a visual node.
 
 Alt+Shift+V remains an alias for toggling all visual nodes. Alt+Shift+C toggles
 click-through for the current view.
+
+Gesture and LFO nodes place their interactive panel directly below the ports, before parameters. Preserve the established positional widget order in workflow serialization when changing presentation order. X/Y gesture traces use elapsed recording time while capturing, then the saved clip duration for playback.
+
+All visual operators place the preview below ports and node transport, with parameters next and code/text editors last. Group preview minimize, freeze, image fit, and time source in the preview toolbar. Livecode keeps its editor actions with the code and lets the preview divider resize the independent visual panel.
+
+Node quick reference (`?`) belongs at the right of the node header, beside the node label. Keep the toolbar fallback for frontend versions without a DOM header.

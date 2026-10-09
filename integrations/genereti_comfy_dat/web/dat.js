@@ -1,3 +1,4 @@
+import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import {app} from '../../scripts/app.js';
 import {ensureControlStyle} from '/extensions/genereti_comfy_p5/js/control-style.js';
@@ -27,6 +28,6 @@ app.registerExtension({name:'Genereti.DAT',nodeCreated(node){
  }};
  tools.append(documentExportControls(()=>({title:node.title,mode:'markdown',source:kind==='Text'?state.text??read(node).text:tableMarkdown(state.latest,node.title)}),error=>status.textContent=error.message));
  node._generetiDat=state;node._generetiDatSignal=()=>state.signal;node._generetiLiveValue=slot=>kind==='Cell'?(slot===0?state.cellText:slot===1?state.cellValue:undefined):slot===1?(kind==='ToChop'?Object.values(state.signal?.channels??{})[0]?.at(-1)??0:state.text):undefined;
- node.addDOMWidget('table_preview','GENERETI_DAT_PREVIEW',surface,{serialize:false,hideOnZoom:false}).computeSize=width=>[width,minimized?40:Math.min(180,Math.max(28,(state.latest?.rows.length??1)*25))+40];states.add(state);
+ const previewWidget=node.addDOMWidget('table_preview','GENERETI_DAT_PREVIEW',surface,{serialize:false,hideOnZoom:false});previewWidget.computeSize=width=>[width,minimized?40:Math.min(180,Math.max(28,(state.latest?.rows.length??1)*25))+40];previewFirst(node,previewWidget);states.add(state);
  const removed=node.onRemoved;node.onRemoved=function(){states.delete(state);return removed?.apply(this,arguments);};
 }});

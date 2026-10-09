@@ -6,13 +6,14 @@ export function ensureControlStyle() {
   const style = document.createElement('style');
   style.id = 'genereti-node-controls-style';
   style.textContent = `
-.genereti-node-controls{display:flex;align-items:center;flex-wrap:wrap;gap:4px;color:var(--fg-color,#eee)}
+.genereti-node-controls{display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;color:var(--fg-color,#eee)}
 .genereti-lightning{display:inline-block;line-height:1;transform:scaleY(1.2);transform-origin:center}
+.genereti-node-controls:empty{display:none}
 .genereti-node-controls[hidden]{display:none!important}
 /* Vue expands DOM widget grid tracks by default. Transport/settings rows
    are content-sized; livecode has its own editor-only expanding track. */
 .lg-node:has(.genereti-node-controls):not(:has(.genereti-livecode)) .lg-node-widgets{grid-template-rows:none!important;grid-auto-rows:min-content;align-content:start;align-items:start}
-.genereti-node-controls select,.genereti-node-controls button{height:30px;margin:0;border:0!important;border-radius:6px;box-shadow:none;background:transparent;color:inherit;font:inherit;cursor:pointer}
+.genereti-node-controls select,.genereti-node-controls button{height:20px;margin:0;border:0!important;border-radius:6px;box-shadow:none;background:transparent;color:inherit;font:inherit;cursor:pointer}
 .genereti-node-controls select{padding:0 7px}
 .genereti-node-controls select option{background:var(--comfy-input-bg,#222);color:var(--fg-color,#eee)}
 :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select:focus-visible{outline:2px solid currentColor!important;outline-offset:1px;box-shadow:none!important}
@@ -30,25 +31,25 @@ export function ensureControlStyle() {
 }
 /* Chromium can retain its native value text alongside a dynamically inserted
    selectedcontent. Zero only the trigger's text; keep the menu's readable font. */
-.genereti-glyph-choice{width:30px!important;min-width:30px!important;padding:0 6px!important;font-size:0!important;gap:0!important}
+.genereti-glyph-choice{height:20px!important;min-height:20px!important;box-sizing:border-box;width:20px!important;min-width:20px!important;padding:0!important;font-size:0!important;gap:0!important;align-items:center!important;justify-content:center!important;line-height:1}
 .genereti-glyph-choice::picker(select),.genereti-glyph-choice option{font-size:var(--genereti-choice-font-size,12px)!important}
 .genereti-glyph-choice::picker-icon,.genereti-glyph-choice option::checkmark{display:none!important}
 .genereti-glyph-choice::picker-icon{margin-left:0!important}
 .genereti-glyph-choice>button{display:contents!important}
-.genereti-glyph-choice selectedcontent{display:flex;align-items:center;justify-content:center}
+.genereti-glyph-choice selectedcontent{display:flex;align-items:center;justify-content:center;width:14px;height:14px;flex:none;line-height:1}
 .genereti-glyph-choice selectedcontent .genereti-choice-label{display:none}
-.genereti-choice-icon{display:inline-flex;align-items:center;justify-content:center;width:18px;flex:none}
-.genereti-choice-icon svg{width:18px;height:18px;display:block}
+.genereti-choice-icon{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;flex:none}
+.genereti-choice-icon svg{width:14px;height:14px;display:block}
 .genereti-glyph-choice::picker(select){min-width:160px!important}
-.genereti-node-controls button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;width:30px;min-width:30px;padding:0}
-.genereti-node-controls button svg{display:block;width:18px;height:18px;flex:none}
+.genereti-node-controls button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;width:20px;min-width:20px;padding:0;line-height:1}
+.genereti-node-controls button svg{display:block;width:14px;height:14px;flex:none}
 .genereti-node-controls select:hover{background:color-mix(in srgb,currentColor 8%,transparent)}
 .genereti-node-controls button:hover,.genereti-node-controls button[aria-pressed=true]{background:color-mix(in srgb,currentColor 12%,transparent)}
 .genereti-node-controls :is(button,select):focus-visible{outline:2px solid currentColor;outline-offset:1px}
 .genereti-drawing-settings{position:relative}
-.genereti-drawing-settings summary{display:flex;align-items:center;justify-content:center;width:30px;height:30px;cursor:pointer;list-style:none;border-radius:6px}
+.genereti-drawing-settings summary{display:flex;align-items:center;justify-content:center;width:20px;height:20px;cursor:pointer;list-style:none;border-radius:6px}
 .genereti-drawing-settings summary::-webkit-details-marker{display:none}
-.genereti-drawing-settings summary svg{width:18px;height:18px}
+.genereti-drawing-settings summary svg{width:14px;height:14px}
 .genereti-drawing-settings[open] summary,.genereti-drawing-settings summary:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
 .genereti-drawing-settings summary:focus-visible{outline:2px solid currentColor}
 .genereti-drawing-settings-panel{position:absolute;left:0;top:34px;z-index:30;width:280px;max-width:80vw;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px;border-radius:6px;background:var(--comfy-input-bg,#222);box-shadow:0 4px 16px #0004}

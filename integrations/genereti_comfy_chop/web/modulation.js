@@ -28,8 +28,9 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
  if(!['GeneretiChopLfo','GeneretiChopGesture'].includes(node.comfyClass))return;
  ensureControlStyle();node.properties??={};const gesture=node.comfyClass==='GeneretiChopGesture';
  const surface=document.createElement('div');surface.style.cssText='display:flex;flex-direction:column;gap:6px;width:100%;color:var(--input-text)';
- const tools=document.createElement('div');tools.className='genereti-node-controls';
+ const tools=document.createElement('div');tools.className='genereti-node-controls genereti-preview-actions';
  const canvas=document.createElement('canvas');canvas.width=512;canvas.height=gesture?300:120;canvas.style.cssText='display:block;width:100%;height:auto;touch-action:none;cursor:crosshair;background:color-mix(in srgb,var(--input-text) 4%,transparent);border:1px solid var(--border-color);border-radius:4px';canvas.ariaLabel=gesture?'Gesture recording pad':'LFO waveform';
+ let previewVisible=true;const visibility=new IntersectionObserver(entries=>{previewVisible=entries[0]?.isIntersecting??false;});visibility.observe(canvas);
  const status=document.createElement('span');status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.setAttribute('role','status');surface.append(tools,canvas);
  const state={node,status,manual:[.5,.5],playing:!gesture,armed:false,capturing:false,latest:null,running:false,previous:[],start:performance.now()/1000,phase:0,clip:validateGesture({version:1,duration:1,points:[]})};
  const play=button(gesture?'▶':'Ⅱ',gesture?'Play or pause recorded gesture':'Pause or resume LFO',()=>{
@@ -63,7 +64,22 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
  tools.append(button('▷','Play or pause shared project transport',()=>{const clock=window.generetiPerformance?.clock;if(clock)clock.read().playing?clock.pause():clock.play();}),button('▥','Open project timeline',()=>app.extensionManager.command.execute('Workspace.ToggleBottomPanelTab.genereti-timeline')));
  visualNodeControls(node,canvas,tools);
  surface.append(status);
- node.addDOMWidget('modulation_controls','GENERETI_MODULATION',surface,{serialize:false,hideOnZoom:false}).computeSize=w=>[w,gesture?Math.max(0,w-24)*(values(node).mode==='XY'?300:120)/512+110:Math.max(0,w-24)*120/512+50];
+ const originalWidgets=[...node.widgets];
+ const previewWidget=node.addDOMWidget('modulation_controls','GENERETI_MODULATION',surface,{serialize:false,hideOnZoom:false});previewWidget.computeSize=w=>[w,gesture?Math.max(0,w-24)*(values(node).mode==='XY'?300:120)/512+110:Math.max(0,w-24)*120/512+50];
+ // Display the interactive surface first while keeping saved positional values
+ // in their established schema order (including the trailing DOM widget slot).
+ const canonicalWidgets=[...originalWidgets,previewWidget];
+ node.widgets=[previewWidget,...originalWidgets];
+ const configuredLayout=node.onConfigure;node.onConfigure=function(info){
+  if(info?.widgets_values)canonicalWidgets.forEach((widget,i)=>{if(i<info.widgets_values.length&&widget!==previewWidget)widget.value=info.widgets_values[i];});
+  return configuredLayout?.apply(this,arguments);
+ };
+ const serializedLayout=node.onSerialize;node.onSerialize=function(info){
+  const result=serializedLayout?.apply(this,arguments);
+  const displayed=info.widgets_values;
+  if(displayed)info.widgets_values=canonicalWidgets.map(widget=>displayed[node.widgets.indexOf(widget)]);
+  return result;
+ };
  node._generetiChop=state;node._generetiLiveValue=slot=>gesture?(slot===0?state.latest:slot===1?state.output?.[0]:slot===2?state.output?.[1]:slot===3?state.output?.[values(node).mode==='Y'?1:0]:undefined):(slot===0?state.latest:slot===1?state.output?.[0]:undefined);
  state.update=now=>{
   const v=values(node),s=window.generetiPerformance?.clock.read(),free=v.interval==='free',dt=state.last===undefined?0:Math.min(.1,(now-state.last)/1000);state.last=now;
@@ -76,6 +92,8 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
   state.output=raw.map((x,i)=>{const key=i?'y':'x',low=Number(v[gesture?key+'_low':'low']),high=Number(v[gesture?key+'_high':'high']);return smooth(state.previous[i],low+(high-low)*x,dt,Number(v.smooth));});state.previous=state.output;
   state.latest={channels:gesture?{x:new Float32Array([state.output[0]]),y:new Float32Array([state.output[1]])}:{lfo:new Float32Array([state.output[0]])},sampleRate:60,start:now/1000};
   window.dispatchEvent(new CustomEvent('genereti-control-frame',{detail:{nodeId:node.id}}));
+  // Modulation and gesture recording continue when only the presentation is offscreen.
+  if(!previewVisible||document.hidden)return;
   text(play,state.playing?'Ⅱ':'▶');attr(play,'aria-pressed',String(state.playing));
   if(gesture&&state.mode!==v.mode){state.mode=v.mode;canvas.height=v.mode==='XY'?300:120;node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);}
   if(gesture){attr(state.recordButton,'aria-pressed',String(state.armed));for(const slider of state.sliders){style(slider.box,'display',v.mode==='XY'||v.mode===slider.axis.toUpperCase()?'flex':'none');const value=String(state.manual[slider.axis==='x'?0:1]);if(document.activeElement!==slider.range&&slider.range.value!==value)slider.range.value=value;if(now-(state.readoutTime??0)>=100)text(slider.readout,state.output[slider.axis==='x'?0:1].toFixed(3));}style(canvas,'opacity',v.mode==='XY'?'1':'.65');}if(now-(state.readoutTime??0)>=100)state.readoutTime=now;
@@ -84,10 +102,10 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
   // Read theme color occasionally, before painting; avoid a style flush every frame.
   if(!state.foreground||now-(state.themeTime??0)>1000){state.foreground=getComputedStyle(surface).color;state.themeTime=now;}
   const ctx=canvas.getContext('2d'),fg=state.foreground;ctx.clearRect(0,0,512,canvas.height);ctx.strokeStyle=fg;ctx.fillStyle=fg;ctx.lineWidth=2;
-  ctx.beginPath();if(gesture){const pts=state.capturing?state.points:state.clip.points;pts.forEach((p,i)=>{const x=(v.mode==='XY'?p.x:p.t/state.clip.duration)*512,y=(1-(v.mode==='X'?p.x:p.y))*canvas.height;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});}else for(let i=0;i<=512;i++){const y=(1-wave(v.wave,Math.floor(state.phase)+i/512+Number(v.phase),Number(v.seed)))*110+5;i?ctx.lineTo(i,y):ctx.moveTo(i,y);}ctx.stroke();
-  const point=gesture?(v.mode==='XY'?state.manual:[Math.max(0,state.phase-Math.floor(state.phase)),state.manual[v.mode==='Y'?1:0]]):[state.phase-Math.floor(state.phase),raw[0]];ctx.beginPath();ctx.arc(point[0]*512,gesture?(1-point[1])*canvas.height:(1-point[1])*110+5,5,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();if(gesture){const pts=state.capturing?state.points:state.clip.points,duration=state.capturing?Math.max(.001,performance.now()/1000-state.recordStart):state.clip.duration;pts.forEach((p,i)=>{const x=(v.mode==='XY'?p.x:p.t/duration)*512,y=(1-(v.mode==='X'?p.x:p.y))*canvas.height;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});}else for(let i=0;i<=512;i++){const y=(1-wave(v.wave,Math.floor(state.phase)+i/512+Number(v.phase),Number(v.seed)))*110+5;i?ctx.lineTo(i,y):ctx.moveTo(i,y);}ctx.stroke();
+  const point=gesture?(v.mode==='XY'?state.manual:[state.capturing?1:Math.max(0,state.phase-Math.floor(state.phase)),state.manual[v.mode==='Y'?1:0]]):[state.phase-Math.floor(state.phase),raw[0]];ctx.beginPath();ctx.arc(point[0]*512,gesture?(1-point[1])*canvas.height:(1-point[1])*110+5,5,0,Math.PI*2);ctx.fill();
   text(status,state.capturing?`Recording · ${(now/1000-state.recordStart).toFixed(2)} s`:state.armed?'Armed · drag to record':state.pending?'Waiting for musical boundary':`${gesture?state.clip.duration.toFixed(2)+' s gesture':state.output[0].toFixed(3)} · ${free?'free time':v.interval+' · project '+(s?.playing?'running':'paused')}${gesture&&!state.clip.points.length?' · press Record then drag':''}`);
  };
  states.add(state);if(!raf)raf=requestAnimationFrame(tick);
- const removed=node.onRemoved;node.onRemoved=function(){states.delete(state);return removed?.apply(this,arguments);};
+ const removed=node.onRemoved;node.onRemoved=function(){visibility.disconnect();states.delete(state);return removed?.apply(this,arguments);};
 }});

@@ -1,30 +1,45 @@
 import {app} from '/scripts/app.js';
+import {registerHelpView,showHelpView,helpViewHost} from './help-panel.js';
+import {referenceContext} from './reference-context.js';
 import {createWorkspace} from './workspace.js';
 import {parseReferences,referenceToken} from './resources.js';
 const PATH='/genereti/agent';
 const providers={ollama:['Ollama','http://localhost:11434'],lmstudio:['LM Studio','http://localhost:1234/v1'],unsloth:['Unsloth','http://localhost:8001/v1'],mlx:['MLX serve','http://localhost:8080/v1'],llamacpp:['llama.cpp','http://localhost:8080/v1'],compatible:['OpenAI-compatible','http://localhost:1234/v1'],openrouter:['OpenRouter','https://openrouter.ai/api/v1'],openai:['OpenAI API','https://api.openai.com/v1'],anthropic:['Claude API','https://api.anthropic.com/v1'],google:['Google Gemini','https://generativelanguage.googleapis.com/v1beta']};
 const decisionPresets={ollama:['Ollama decision','http://localhost:11434','nimble'],lev:['LEV / System One','http://localhost:8009','lev'],liquid:['Liquid d1','https://api.liquid.ai','d1:free'],clef:['Cloudflare Clef','https://api.cloudflare.com','clef'],openrouter:['OpenRouter decisions','https://openrouter.ai','typesafe/jev-1.13']};
 function element(tag,attrs={},...children){const el=document.createElement(tag);for(const [key,value] of Object.entries(attrs)){if(key==='class')el.className=value;else if(key.startsWith('on'))el.addEventListener(key.slice(2),value);else el.setAttribute(key,value);}for(const child of children)el.append(child);return el;}
-function icon(label,path,handler){const button=element('button',{type:'button',title:label,'aria-label':label,onclick:handler,class:'ga-icon','data-tooltip':label});button.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;return button;}
+function icon(label,path,handler){const button=element('button',{type:'button',title:label,'aria-label':label,onclick:handler,class:'ga-icon'});button.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;return button;}
 function load(key,fallback){try{return JSON.parse(localStorage.getItem(key))||fallback;}catch{return fallback;}}
 function parseReply(raw){const block=String(raw).match(/```(?:json)?\s*([\s\S]*?)```/)?.[1]||String(raw),start=block.indexOf('{'),end=block.lastIndexOf('}');try{const data=JSON.parse(block.slice(start,end+1));if(!Array.isArray(data.actions))throw Error();return data;}catch{return {say:raw,actions:[],done:true};}}
+let preferencesRoot,settingsStatus,attachedGuide,modelPicker,modelMenu;
+const sendGlyph='<circle cx="12" cy="12" r="10.5" fill="currentColor" stroke="none"/><path d="M12 18V6m-5 5 5-5 5 5" stroke="var(--comfy-menu-bg,#222)"/>';
+const stopGlyph='<circle cx="12" cy="12" r="10.5" fill="currentColor" stroke="none"/><rect x="8" y="8" width="8" height="8" rx="1" fill="var(--comfy-menu-bg,#222)" stroke="none"/>';
+function setSendGlyph(stopping){sendButton.querySelector('svg').innerHTML=stopping?stopGlyph:sendGlyph;}
+function renderModelMenu(){
+ if(!modelMenu)return;
+ const available=[...model.options].filter(option=>option.value&&option.value!=='__custom__');
+ modelPicker.title=`Select model · ${modelName()||'none selected'} · ${available.length} models available`;
+ modelMenu.replaceChildren(element('strong',{},providers[provider.value][0]));
+ if(!available.length)modelMenu.append(element('div',{class:'ga-note'},'No model list loaded. Choose a custom model in Genereti Settings.'));
+ for(const option of available){const choice=element('button',{type:'button','aria-pressed':String(model.value===option.value),title:option.value,onclick:()=>{model.value=option.value;model.onchange();modelMenu.hidePopover();modelPicker.focus();}},option.textContent);modelMenu.append(choice);}
+}
+
 let panel,log,input,provider,url,model,customModel,key,statusLine,bodyPane,attachmentPicker,modelEpoch=0,statusEpoch=0,decisionProvider,decisionUrl,decisionModel,decisionKey,decisionAccount,useSelection,useMcp,mcpState,mcpRetry,mcpEpoch=0,routeDecision,refs,approvalBox,sendButton,workspace,pollTimer,busy=null,requestId=null,pendingReviews=new Set(),mcpTools=[];
 const libraryReferences=new Map();let libraryEpoch=0,libraryTimer,preparing=false;
 const session=crypto.randomUUID(),history=[],references=new Map(),configs=load('genereti.assistant.providers',{}),decisionConfigs=load('genereti.assistant.decisions',{});
 async function request(path,data,signal){const response=await fetch(PATH+path,{method:data===undefined?'GET':'POST',headers:data===undefined?{}:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data),signal});let result;try{result=await response.json();}catch{throw Error('Assistant backend unavailable. Restart Comfy after installing the assistant pack.');}if(!response.ok||result?.error)throw Error(/Cannot connect to host|Connect call failed/.test(result?.error||'')?'Cannot reach the model server. Check that it is running and the server URL is correct.':result?.error||`Assistant HTTP ${response.status}`);return result;}
-function setStatus(text){const epoch=++statusEpoch;statusLine.textContent=String(text);return {remove(){if(epoch===statusEpoch)statusLine.textContent='';}};}
+function setStatus(text){const epoch=++statusEpoch;statusLine.textContent=String(text);if(settingsStatus)settingsStatus.textContent=String(text);return {remove(){if(epoch===statusEpoch){statusLine.textContent='';if(settingsStatus)settingsStatus.textContent='';}}};}
 function modelName(){return model.value==='__custom__'?customModel.value.trim():model.value;}
 function add(who,text){if(who==='status'||who==='tool')return setStatus(text);const row=element('div',{class:`ga-message ga-${who}`});row.append(element('span',{class:'ga-role'},who==='you'?'You':who==='assistant'?'ꘇ':who==='decision'?'Decision':'Status'),element('div',{},String(text)));log.append(row);bodyPane.scrollTop=bodyPane.scrollHeight;return row;}
 function settings(){return {provider:provider.value,url:url.value,model:modelName(),key:key.value};}
 function decisionSettings(){return {provider:decisionProvider.value,url:decisionUrl.value,model:decisionModel.value,key:decisionKey.value,account:decisionAccount.value};}
-function saveSettings(){configs[provider.value]={url:url.value,model:modelName()};localStorage.setItem('genereti.assistant.providers',JSON.stringify(configs));localStorage.setItem('genereti.assistant.provider',provider.value);decisionConfigs[decisionProvider.value]={url:decisionUrl.value,model:decisionModel.value,account:decisionAccount.value};localStorage.setItem('genereti.assistant.decisions',JSON.stringify(decisionConfigs));}
+function saveSettings(){configs[provider.value]={url:url.value,model:modelName()};localStorage.setItem('genereti.assistant.providers',JSON.stringify(configs));localStorage.setItem('genereti.assistant.provider',provider.value);decisionConfigs[decisionProvider.value]={url:decisionUrl.value,model:decisionModel.value,account:decisionAccount.value};localStorage.setItem('genereti.assistant.decisions',JSON.stringify(decisionConfigs));localStorage.setItem('genereti.assistant.context',JSON.stringify({selection:useSelection.checked,mcp:useMcp.checked,route:routeDecision.checked}));}
 function review(change){return new Promise(resolve=>{
  const card=element('div',{class:'ga-review'}),finish=value=>{card.remove();pendingReviews.delete(finish);resolve(value);};pendingReviews.add(finish);
  card.append(element('strong',{},`${change.tool}${change.node?` · #${change.node.id} ${change.node.title}`:''}`));
  if(change.before!==undefined){card.append(element('label',{},'Current'),element('pre',{},String(change.before)),element('label',{},'Proposed'),element('pre',{},String(change.after)));}else card.append(element('pre',{},JSON.stringify(change,null,2)));
  card.append(element('button',{onclick:()=>finish(true)},'Apply'),element('button',{onclick:()=>finish(false)},'Dismiss'));approvalBox.append(card);card.scrollIntoView({block:'nearest'});
  });}
-function refreshRefs(){refs.replaceChildren();for(const [id,node] of references){refs.append(element('button',{title:'Remove reference',onclick:()=>{references.delete(id);refreshRefs();}},`#${id} ${node.title} ×`));}for(const [token,item] of libraryReferences)refs.append(element('button',{title:token+' · Remove reference',onclick:()=>{libraryReferences.delete(token);input.value=input.value.replace(token,'');refreshRefs();}},`${item.kind} · ${item.name} ×`));}
+function refreshRefs(){refs.replaceChildren();if(attachedGuide)refs.append(element('button',{title:'Remove guide context',onclick:()=>{attachedGuide=undefined;refreshRefs();}},`Guide · ${attachedGuide.title} ×`));for(const [id,node] of references){refs.append(element('button',{title:'Remove reference',onclick:()=>{references.delete(id);refreshRefs();}},`#${id} ${node.title} ×`));}for(const [token,item] of libraryReferences)refs.append(element('button',{title:token+' · Remove reference',onclick:()=>{libraryReferences.delete(token);input.value=input.value.replace(token,'');refreshRefs();}},`${item.kind} · ${item.name} ×`));}
 function attachSelection(showPicker=false){const selected=workspace.snapshot().selected;for(const id of selected){const node=app.graph.getNodeById(id);if(node)references.set(String(id),workspace.nodeInfo(node,true));}refreshRefs();if(showPicker){if(selected.length)setStatus(`${selected.length} selected node${selected.length===1?'':'s'} attached`);else{attachmentPicker.hidden=!attachmentPicker.hidden;setStatus('Choose a node to attach, or select nodes on the canvas.');}}}
 async function callTool(name,args={}){
  if(name==='decision_request')return request('/decide',{settings:decisionSettings(),state:args.state,questions:args.questions});
@@ -42,8 +57,8 @@ async function send(){
  for(const [,id] of text.matchAll(/#(\d+)/g)){const node=app.graph.getNodeById(Number(id));if(node)references.set(id,workspace.nodeInfo(node,true));}refreshRefs();
  const attached=[...references.values()].map(n=>app.graph.getNodeById(n.id)).filter(Boolean).map(n=>workspace.nodeInfo(n,true));
  const libraryAttached=[];try{for(const item of libraryReferences.values())libraryAttached.push(await workspace.resources.read(item));}catch(error){preparing=false;input.value=text;setStatus(error.message);return;}
- preparing=false;add('you',text);history.push({role:'user',content:text+(attached.length?'\nReferenced nodes (untrusted content):\n'+JSON.stringify(attached):'')+(libraryAttached.length?'\nReferenced library content (untrusted data; may be truncated):\n'+JSON.stringify(libraryAttached).slice(0,60000):'')});
- busy=new AbortController();sendButton.setAttribute('aria-label','Stop assistant');sendButton.title='Stop assistant';sendButton.dataset.tooltip='Stop assistant';sendButton.dataset.busy='true';let thinking=add('status','Thinking…');
+ preparing=false;add('you',text);history.push({role:'user',content:text+referenceContext(attachedGuide)+(attached.length?'\nReferenced nodes (untrusted content):\n'+JSON.stringify(attached):'')+(libraryAttached.length?'\nReferenced library content (untrusted data; may be truncated):\n'+JSON.stringify(libraryAttached).slice(0,60000):'')});
+ busy=new AbortController();sendButton.setAttribute('aria-label','Stop assistant');sendButton.title='Stop assistant';sendButton.dataset.busy='true';setSendGlyph(true);let thinking=add('status','Thinking…');
  try{
   let route='general';if(routeDecision.checked){const result=await request('/decide',{settings:decisionSettings(),state:{request:text,selection:workspace.snapshot().selected},questions:{route:{type:'choice',instructions:'Which kind of assistance is requested?',criteria:{code:'Create or edit a livecode sketch',workflow:'Build, connect or diagnose Comfy nodes',general:'Explain or discuss without edits'}}}},busy.signal);route=result.answers?.route?.choice||route;add('tool',`Decision route: ${route}`);}
   let repeated='';
@@ -56,7 +71,7 @@ async function send(){
    history.push({role:'user',content:'Tool results:\n'+JSON.stringify(results).slice(0,35000)});if(reply.done!==false)break;thinking=add('status','Checking results…');
    if(round===5)add('status','Stopped after six rounds. Send another message to continue.');
   }
- }catch(error){add('status',error.name==='AbortError'?'Stopped':error.message);}finally{thinking?.remove();busy=null;requestId=null;sendButton.title='Send · Cmd/Ctrl+Enter';sendButton.dataset.tooltip=sendButton.title;sendButton.setAttribute('aria-label','Send');delete sendButton.dataset.busy;}
+ }catch(error){add('status',error.name==='AbortError'?'Stopped':error.message);}finally{thinking?.remove();busy=null;requestId=null;sendButton.title='Send · Cmd/Ctrl+Enter';sendButton.setAttribute('aria-label','Send');delete sendButton.dataset.busy;setSendGlyph(false);}
 }
 function field(label,control){return element('label',{class:'ga-field'},element('span',{},label),control);}
 function inputField(label,type='text'){return element('input',{type,'aria-label':label});}
@@ -72,7 +87,7 @@ async function connectMcp(){
 function style(){if(document.getElementById('genereti-agent-style'))return;const css=element('style',{id:'genereti-agent-style'});css.textContent=`
 .genereti-assistant{height:100%;min-height:0;display:flex;flex-direction:column;gap:8px;padding:12px;box-sizing:border-box;color:var(--fg-color,#ddd);background:var(--comfy-menu-bg,#222);font:13px/1.45 system-ui;overflow:hidden;min-width:240px}
 .genereti-assistant *{box-sizing:border-box}.genereti-assistant button,.genereti-assistant input,.genereti-assistant select,.genereti-assistant textarea{color:inherit;font:inherit;background:var(--comfy-input-bg,#303030);border:0;border-radius:6px;padding:6px 8px;min-width:0}.genereti-assistant button{cursor:pointer}.genereti-assistant button:hover{background:color-mix(in srgb,currentColor 12%,transparent)}.genereti-assistant input:focus-visible,.genereti-assistant textarea:focus-visible,.genereti-assistant button:focus-visible{outline:1px solid currentColor}
-.genereti-assistant .ga-icon{display:inline-flex;width:30px;height:30px;justify-content:center;align-items:center;padding:6px;background:transparent}.ga-icon svg{width:18px;height:18px}.ga-icon[data-busy=true]{background:color-mix(in srgb,currentColor 15%,transparent)}
+.genereti-assistant .ga-icon{border:0!important;box-shadow:none!important;display:inline-flex;width:30px;height:30px;justify-content:center;align-items:center;padding:6px;background:transparent}.ga-icon svg{width:18px;height:18px}.ga-icon[data-busy=true]{background:color-mix(in srgb,currentColor 15%,transparent)}
 .genereti-assistant .ga-row{display:flex;gap:6px;align-items:center}.genereti-assistant .ga-row>select{flex:1}.genereti-assistant .ga-settings{overflow:auto;max-height:55%;flex-shrink:0}.genereti-assistant summary{cursor:pointer;padding:4px}.genereti-assistant .ga-fields{display:grid;gap:8px;padding:8px 0}.genereti-assistant .ga-field{display:grid;gap:4px}.ga-field>span{font-size:11px;opacity:.7}.genereti-assistant .ga-log{flex:1;min-height:80px;overflow:auto;user-select:text}.ga-message{padding:8px 0;overflow-wrap:anywhere;white-space:pre-wrap}.ga-role{font-size:10px;opacity:.6;display:block;margin-bottom:3px}.ga-you{background:color-mix(in srgb,currentColor 4%,transparent);border-radius:6px;padding:8px}.ga-tool,.ga-status{font-size:12px;opacity:.8}.ga-refs{display:flex;flex-wrap:wrap;gap:4px}.ga-refs button{font-size:11px;padding:3px 6px}.ga-composer{resize:vertical;min-height:64px;max-height:200px;width:100%}.ga-review{padding:8px;background:var(--comfy-input-bg,#303030);border-radius:6px;margin:6px 0}.ga-review pre{max-height:160px;overflow:auto;white-space:pre-wrap;font:11px/1.4 monospace}.ga-review button{margin:4px}.ga-approvals{overflow:auto;max-height:45%;flex-shrink:0}.genereti-assistant .ga-note{font-size:11px;opacity:.65}.genereti-assistant .ga-node-picker{width:100%}
 
 .genereti-assistant-host{height:100%;width:100%;min-height:0;overflow:hidden;display:flex}
@@ -83,46 +98,51 @@ function style(){if(document.getElementById('genereti-agent-style'))return;const
 .genereti-assistant .ga-log{min-height:0;overflow:visible;flex:none}
 .genereti-assistant .ga-approvals{overflow:visible;max-height:none}
 .genereti-assistant .ga-footer{flex:none;display:flex;flex-direction:column;gap:6px;padding-top:8px;background:var(--comfy-menu-bg,#222)}
+.genereti-assistant .ga-status-line:empty{display:none}
 .genereti-assistant .ga-status-line{font-size:11px;line-height:1.4;opacity:.75;min-height:16px;max-height:48px;overflow:auto;overflow-wrap:anywhere}
 .genereti-assistant .ga-composer{display:block;min-height:64px;max-height:160px}
 .genereti-assistant .ga-icon{position:relative;flex:none}
-.genereti-assistant .ga-icon:hover::after,.genereti-assistant .ga-icon:focus-visible::after{content:attr(data-tooltip);position:absolute;bottom:calc(100% + 6px);left:0;white-space:nowrap;font:11px/1.4 system-ui;color:var(--fg-color,#ddd);background:var(--comfy-input-bg,#303030);padding:5px 8px;border-radius:5px;z-index:10;box-shadow:0 2px 8px #0004;pointer-events:none}
+
 .genereti-assistant .ga-row>select{width:0;flex:1}
 .genereti-assistant .ga-attachment-picker>select{width:100%}
-.genereti-assistant .ga-actions button:last-child{margin-left:auto}
+.genereti-assistant .ga-actions .ga-model-picker{margin-left:auto}
+.genereti-assistant .ga-send{padding:2px}.genereti-assistant .ga-send svg{width:26px;height:26px}
+.ga-model-menu{position:fixed;inset:auto;margin:0;box-sizing:border-box;width:min(340px,calc(100vw - 24px));max-height:min(360px,70vh);overflow:auto;overscroll-behavior:contain;border:1px solid var(--border-color,#555);border-radius:8px;padding:8px;background:var(--comfy-menu-bg,#222);color:var(--fg-color,#ddd);font:13px/1.45 system-ui;box-shadow:0 4px 16px #0004}
+.ga-model-menu:popover-open{display:grid;gap:4px}.ga-model-menu strong{padding:4px 8px;font-size:11px;opacity:.7}.ga-model-menu button{display:block;text-align:left;overflow-wrap:anywhere;border:0!important;box-shadow:none!important;border-radius:6px;padding:8px;background:transparent;color:inherit;font:inherit;cursor:pointer}.ga-model-menu button:hover,.ga-model-menu button[aria-pressed=true]{background:color-mix(in srgb,currentColor 10%,transparent)}.ga-model-menu button:focus-visible{outline:1px solid currentColor}
+
 .ga-library-results{max-height:220px;overflow:auto;display:grid;gap:3px}.ga-library-results button{text-align:left;overflow-wrap:anywhere}.ga-attachment-picker{display:grid;gap:6px;max-height:330px;overflow:auto}.ga-attachment-picker input{width:100%}
 .genereti-assistant [hidden]{display:none!important}
+.setting-item:has(.ga-preferences)>div{flex-direction:column;align-items:stretch}.setting-item:has(.ga-preferences) .form-input{width:100%;justify-content:stretch}.setting-item:has(.ga-preferences) .form-input>div{width:100%}
+.genereti-assistant.ga-preferences{height:auto;min-width:0;padding:0;background:transparent;overflow:visible}.ga-preferences .ga-fields{width:100%;grid-template-columns:repeat(2,minmax(0,1fr))}.ga-preferences .ga-fields>details,.ga-preferences .ga-fields>input,.ga-preferences .ga-fields>label:has(input[type=checkbox]){grid-column:1/-1}@media(max-width:700px){.ga-preferences .ga-fields{grid-template-columns:1fr}}.ga-preferences .ga-field{min-width:0}.ga-preferences input,.ga-preferences textarea{width:100%}.ga-preferences input[type=checkbox]{width:auto}.genereti-assistant>.ga-row strong{flex:1}
 `;document.head.append(css);}
 export function mountAssistant(host){
  style();host.classList.add('genereti-assistant-host');if(panel){host.append(panel);return;}panel=element('section',{class:'genereti-assistant','aria-label':'Genereti assistant'});
- const title=element('div',{class:'ga-row'},element('strong',{},'ꘇ assistant'));
- const preferences=element('details',{class:'ga-settings'}),summary=element('summary',{},'Settings');preferences.append(summary);
+ const preferences=element('div',{class:'ga-settings'});preferencesRoot=element('section',{class:'genereti-assistant ga-preferences','aria-label':'Genereti assistant settings'},preferences);
  const fields=element('div',{class:'ga-fields'});provider=selectField('Provider',Object.entries(providers).map(([id,[name]])=>[id,name]));url=inputField('Server URL');model=selectField('Model',[]);customModel=inputField('Custom model');customModel.placeholder='Model ID';customModel.hidden=true;key=inputField('API key','password');key.autocomplete='off';
  function populateModels(list=[],selected=''){
   model.replaceChildren(element('option',{value:''},list.length?'Choose model…':'No models loaded'),...list.map(id=>element('option',{value:id},id)),element('option',{value:'__custom__'},'Custom model…'));
   if(selected&&list.includes(selected))model.value=selected;else if(selected){model.value='__custom__';customModel.value=selected;}else if(list.length)model.value=list[0];
-  customModel.hidden=model.value!=='__custom__';
+  customModel.hidden=model.value!=='__custom__';renderModelMenu();
  }
  async function refreshModels(){
-  const epoch=++modelEpoch,owner=provider.value,server=url.value,selected=modelName();setStatus('Loading models…');
-  try{const list=await request('/models',{settings:settings()});if(epoch!==modelEpoch||owner!==provider.value||server!==url.value)return;populateModels([...new Set(list)],selected);saveSettings();setStatus(`${list.length} models available`);}
+  const epoch=++modelEpoch,owner=provider.value,server=url.value,selected=modelName(),loading=setStatus('Loading models…');
+  try{const list=await request('/models',{settings:settings()});if(epoch!==modelEpoch||owner!==provider.value||server!==url.value)return;populateModels([...new Set(list)],modelName()||selected);saveSettings();loading.remove();}
   catch(error){if(epoch!==modelEpoch||owner!==provider.value||server!==url.value)return;populateModels([],selected);setStatus(`${providers[owner][0]}: ${error.message}`);}
  }
  const refresh=icon('Refresh model list','<path d="M20 7v5h-5M4 17v-5h5"/><path d="M6 7a7 7 0 0 1 12-1l2 6M4 12l2 6a7 7 0 0 0 12-1"/>',refreshModels);
  fields.append(field('Provider',provider),field('Server',url),field('Model',element('div',{class:'ga-row'},model,refresh)),customModel,field('API key · this tab only',key));
  provider.value=localStorage.getItem('genereti.assistant.provider')||'ollama';if(!providers[provider.value])provider.value='ollama';
  function changeProvider(){++modelEpoch;const c=configs[provider.value]||{};url.value=c.url||providers[provider.value][1];customModel.value='';populateModels([],c.model||'');key.value='';}
- changeProvider();provider.onchange=()=>{changeProvider();saveSettings();refreshModels();};url.onchange=()=>{++modelEpoch;populateModels();saveSettings();refreshModels();};model.onchange=()=>{customModel.hidden=model.value!=='__custom__';saveSettings();};customModel.onchange=saveSettings;key.onchange=refreshModels;
- useSelection=checkbox('Include current selection',true);useMcp=checkbox('Comfy MCP catalog');mcpState=element('div',{class:'ga-note',role:'status','aria-live':'polite'});mcpRetry=element('button',{type:'button',hidden:'',onclick:connectMcp},'Retry MCP connection');routeDecision=checkbox('Decision routing');fields.append(field('Context',element('label',{},useSelection,' Include current selection')),field('Tools',element('div',{},element('label',{},useMcp,' Comfy MCP catalog'),mcpState,mcpRetry)));useMcp.onchange=connectMcp;
+ changeProvider();provider.onchange=()=>{changeProvider();saveSettings();refreshModels();};url.onchange=()=>{++modelEpoch;populateModels();saveSettings();refreshModels();};model.onchange=()=>{customModel.hidden=model.value!=='__custom__';saveSettings();renderModelMenu();};customModel.onchange=()=>{saveSettings();renderModelMenu();};key.onchange=refreshModels;
+ useSelection=checkbox('Include current selection',true);useMcp=checkbox('Comfy MCP catalog');mcpState=element('div',{class:'ga-note',role:'status','aria-live':'polite'});mcpRetry=element('button',{type:'button',hidden:'',onclick:connectMcp},'Retry MCP connection');routeDecision=checkbox('Decision routing');fields.append(field('Context',element('label',{},useSelection,' Include current selection')),field('Tools',element('div',{},element('label',{},useMcp,' Comfy MCP catalog'),mcpState,mcpRetry)));const context=load('genereti.assistant.context',{});useSelection.checked=context.selection??true;useMcp.checked=context.mcp??false;routeDecision.checked=context.route??false;useSelection.onchange=routeDecision.onchange=saveSettings;useMcp.onchange=()=>{saveSettings();connectMcp();};
  const decisionPanel=element('details'),decisionFields=element('div',{class:'ga-fields'});decisionProvider=selectField('Decision provider',Object.entries(decisionPresets).map(([id,[name]])=>[id,name]));decisionUrl=inputField('Decision URL');decisionModel=inputField('Decision model');decisionKey=inputField('Decision API key','password');decisionAccount=inputField('Cloudflare account');function changeDecision(){const c=decisionConfigs[decisionProvider.value]||{},preset=decisionPresets[decisionProvider.value];decisionUrl.value=c.url||preset[1];decisionModel.value=c.model||preset[2];decisionKey.value='';decisionAccount.value=c.account||'';}changeDecision();decisionProvider.onchange=()=>{changeDecision();saveSettings();};for(const el of [decisionUrl,decisionModel,decisionAccount])el.onchange=saveSettings;
  const questions=element('textarea',{'aria-label':'Decision questions',rows:4});questions.value=JSON.stringify({next:{type:'choice',instructions:'What should happen next?',criteria:{continue:'Keep the current performance',pause:'Pause to adjust it',change:'Choose a new cue'}}},null,2);
  const state=element('textarea',{'aria-label':'Decision state',rows:3,placeholder:'State, scene or sequencer context'});
  decisionFields.append(field('Provider',decisionProvider),field('Endpoint',decisionUrl),field('Model',decisionModel),field('Key · this tab only',decisionKey),field('Cloudflare account',decisionAccount),element('label',{},routeDecision,' Route assistant requests'),field('State',state),field('Questions',questions),element('button',{onclick:async()=>{try{const result=await request('/decide',{settings:decisionSettings(),state:state.value||workspace.snapshot(),questions:JSON.parse(questions.value)});add('decision',JSON.stringify(result,null,2));}catch(error){add('status',error.message);}}},'Ask decision model'));
  decisionPanel.append(element('summary',{},'Decision models'),decisionFields);fields.append(decisionPanel);
- const external=element('details');external.append(element('summary',{},'Subscription / external agents'),element('p',{class:'ga-note'},'Use your logged-in Codex or Claude agent with scripts/comfy_workspace_mcp.py. ChatGPT/Claude subscription login is separate from API keys. The bridge edits this visible workspace and uses the same Apply controls.'),element('code',{},'GENERETI_COMFY_URL=http://127.0.0.1:8000'));fields.append(external);preferences.append(fields);
+ const external=element('details');external.append(element('summary',{},'Subscription / external agents'),element('p',{class:'ga-note'},'Use your logged-in Codex or Claude agent with scripts/comfy_workspace_mcp.py. ChatGPT/Claude subscription login is separate from API keys. The bridge edits this visible workspace and uses the same Apply controls.'),element('code',{},`GENERETI_COMFY_URL=${location.origin}`));fields.append(external);preferences.append(fields);
+ settingsStatus=element('div',{class:'ga-status-line',role:'status','aria-live':'polite'});preferences.append(settingsStatus);
  refs=element('div',{class:'ga-refs'});log=element('div',{class:'ga-log','aria-live':'polite'});approvalBox=element('div',{class:'ga-approvals'});input=element('textarea',{class:'ga-composer',rows:3,placeholder:'Ask about this workspace… #node or @asset / @template','aria-label':'Message'});
- const picker=inputField('Reference node');picker.placeholder='Reference #node · attach @assets/templates below';picker.setAttribute('list','genereti-agent-nodes');picker.classList.add('ga-node-picker');const nodeList=element('datalist',{id:'genereti-agent-nodes'});
- picker.onfocus=()=>{nodeList.replaceChildren(...(app.graph._nodes||[]).map(n=>element('option',{value:`#${n.id} ${n.title}`})));};picker.onchange=()=>{const id=picker.value.match(/^#(\d+)/)?.[1],node=id&&app.graph.getNodeById(Number(id));if(node){references.set(id,workspace.nodeInfo(node,true));refreshRefs();}picker.value='';};
  attachmentPicker=element('div',{class:'ga-attachment-picker',hidden:''});
  const libraryKind=selectField('Reference type',[['all','All'],['node','Nodes'],['asset','Assets'],['workflow','Workflows'],['template','Templates']]),librarySearch=inputField('Search references');librarySearch.placeholder='Search assets, workflows, templates…';
  const libraryResults=element('div',{class:'ga-library-results'}),libraryNote=element('div',{class:'ga-note'}),more=element('button',{type:'button',hidden:''},'More results');let libraryOffset=0;
@@ -140,14 +160,40 @@ export function mountAssistant(host){
   }catch(error){if(epoch===libraryEpoch)libraryNote.textContent=error.message;}
  }
  more.onclick=()=>listAttachments(false,true);libraryKind.onchange=()=>listAttachments();librarySearch.oninput=()=>{++libraryEpoch;clearTimeout(libraryTimer);libraryTimer=setTimeout(()=>listAttachments(),180);};
- const actions=element('div',{class:'ga-row ga-actions'});sendButton=icon('Send · Cmd/Ctrl+Enter','<path d="m5 12 14-7-4 14-3-7-7 0Z"/>',send);actions.append(icon('Attach nodes, assets, workflows or templates','<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 12h8M12 8v8"/>',()=>{attachSelection();attachmentPicker.hidden=!attachmentPicker.hidden;if(!attachmentPicker.hidden)listAttachments();}),icon('Undo assistant edit','<path d="M8 7 3 12l5 5M3 12h10a6 6 0 0 1 6 6"/>',()=>callTool('workspace_undo').then(()=>add('tool','Undo complete')).catch(e=>add('status',e.message))),icon('Clear conversation','<path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/>',()=>{if(busy)return;history.length=0;log.replaceChildren();references.clear();libraryReferences.clear();refreshRefs();setStatus('Conversation cleared');}),sendButton);
+ const actions=element('div',{class:'ga-row ga-actions'});
+ sendButton=icon('Send · Cmd/Ctrl+Enter',sendGlyph,send);sendButton.classList.add('ga-send');
+ modelMenu=element('div',{class:'ga-model-menu',popover:'auto','aria-label':'Available models',role:'dialog',tabindex:'-1'});document.body.append(modelMenu);
+ modelPicker=icon('Select model','<path d="m12 3 8 4v10l-8 4-8-4V7Z"/><path d="m4 7 8 4 8-4m-8 4v10"/>',async()=>{
+  if(modelMenu.matches(':popover-open')){modelMenu.hidePopover();return;}
+  renderModelMenu();const r=modelPicker.getBoundingClientRect();modelMenu.style.left=Math.max(12,Math.min(r.right-340,innerWidth-352))+'px';modelMenu.style.bottom=Math.max(12,innerHeight-r.top+8)+'px';modelMenu.showPopover();
+  await refreshModels();if(modelMenu.matches(':popover-open'))(modelMenu.querySelector('button[aria-pressed=true]')||modelMenu.querySelector('button')||modelMenu).focus();
+ });modelPicker.classList.add('ga-model-picker');modelPicker.setAttribute('aria-haspopup','dialog');modelPicker.setAttribute('aria-expanded','false');modelMenu.addEventListener('keydown',event=>event.stopPropagation());modelMenu.addEventListener('toggle',event=>modelPicker.setAttribute('aria-expanded',String(event.newState==='open')));renderModelMenu();
+ actions.append(
+  icon('Attach nodes, assets, workflows or templates','<path d="M5 12h14M12 5v14"/>',()=>{attachSelection();attachmentPicker.hidden=!attachmentPicker.hidden;if(!attachmentPicker.hidden)listAttachments();}),
+  icon('Undo assistant edit','<path d="M8 7 3 12l5 5M3 12h10a6 6 0 0 1 6 6"/>',()=>callTool('workspace_undo').then(()=>add('tool','Undo complete')).catch(e=>add('status',e.message))),
+  icon('New chat','<path d="M20 11V5H4v13l4-4h4M15 17h7m-3.5-3.5v7"/>',()=>{if(busy)return;history.length=0;log.replaceChildren();references.clear();libraryReferences.clear();attachedGuide=undefined;input.value='';attachmentPicker.hidden=true;refreshRefs();setStatus('New chat');input.focus();}),
+  icon('Assistant settings · Genereti Settings','<path d="M9 3h6l1 3 3 1 2 5-2 5-3 1-1 3H9l-1-3-3-1-2-5 2-5 3-1Z"/><circle cx="12" cy="12" r="3"/>',openAssistantSettings),modelPicker,sendButton);
+
  input.oninput=()=>{const mention=input.value.slice(0,input.selectionStart).match(/@(asset|workflow|template):[^@]*$|@$/);if(mention){libraryKind.value=mention[1]||'all';librarySearch.value='';attachmentPicker.hidden=false;listAttachments();}};
  input.onkeydown=e=>{e.stopPropagation();if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();send();}};
  panel.addEventListener('keydown',e=>{if(e.key==='Escape')attachmentPicker.hidden=true;e.stopPropagation();});panel.addEventListener('wheel',e=>e.stopPropagation());for(const event of ['pointerdown','mousedown','click'])panel.addEventListener(event,e=>e.stopPropagation());
- bodyPane=element('div',{class:'ga-body'},preferences,picker,nodeList,log,approvalBox);statusLine=element('div',{class:'ga-status-line',role:'status','aria-live':'polite'});const footer=element('div',{class:'ga-footer'},refs,attachmentPicker,input,actions,statusLine);panel.append(title,bodyPane,footer);host.append(panel);
+ bodyPane=element('div',{class:'ga-body'},log,approvalBox);statusLine=element('div',{class:'ga-status-line',role:'status','aria-live':'polite'});const footer=element('div',{class:'ga-footer'},refs,attachmentPicker,input,actions,statusLine);panel.append(bodyPane,footer);host.append(panel);
  workspace=createWorkspace(app,{review});window.generetiWorkspace={...workspace,session,decision:args=>request('/decide',{settings:decisionSettings(),...args}),call:callTool};
  async function poll(){try{const result=await request(`/workspaces/${session}/poll`,{snapshot:workspace.snapshot()});for(const command of result.commands){Promise.resolve(callTool(command.tool,command.args)).then(result=>request(`/workspaces/${session}/result`,{id:command.id,result})).catch(error=>request(`/workspaces/${session}/result`,{id:command.id,result:{error:error.message}}).catch(()=>{}));}}catch{}pollTimer=setTimeout(poll,1000);}
  if(!['openrouter','openai','anthropic','google'].includes(provider.value))refreshModels();
+ if(useMcp.checked)connectMcp();
  poll();window.addEventListener('beforeunload',()=>{clearTimeout(pollTimer);for(const finish of pendingReviews)finish(false);});
 }
-app.registerExtension({name:'Genereti.Assistant',setup(){app.extensionManager.registerSidebarTab({id:'genereti-assistant',icon:'pi pi-comments',title:'ꘇ assistant',tooltip:'Genereti assistant',type:'custom',render:mountAssistant});}});
+async function openAssistantSettings(){
+ await app.extensionManager.command.execute('Comfy.ShowSettingsDialog');
+ const open=()=>{const tab=[...document.querySelectorAll('button,[role=button]')].find(item=>item.textContent.trim()==='Genereti');if(!tab)return false;tab.click();requestAnimationFrame(()=>document.querySelector('[data-setting-id="Genereti.Assistant.Configuration"]')?.scrollIntoView({block:'center'}));return true;};
+ if(open())return;const observer=new MutationObserver(()=>{if(open())observer.disconnect();});observer.observe(document.body,{childList:true,subtree:true});setTimeout(()=>observer.disconnect(),3000);
+}
+export function mountAssistantSettings(){helpViewHost('assistant');return preferencesRoot;}
+registerHelpView('assistant','Assistant',mountAssistant);
+window.addEventListener('genereti-reference-assistant',event=>{
+ showHelpView('assistant');attachedGuide={...event.detail};const node=attachedGuide.nodeId!=null?app.graph.getNodeById(attachedGuide.nodeId):undefined;if(node)references.set(String(node.id),workspace.nodeInfo(node,true));refreshRefs();
+ if(!input.value.trim())input.value=`Help me understand ${attachedGuide.title}${node?' #'+node.id:''}. `;
+ setStatus(`${node?'Node and guide':'Guide'} attached · add your question and send`);input.focus();
+});
+app.registerExtension({name:'Genereti.Assistant',settings:[{id:'Genereti.Assistant.Configuration',name:'Assistant configuration',category:['Genereti','Assistant','Configuration'],sortOrder:80,type:mountAssistantSettings,defaultValue:null,tooltip:'Model providers, connection settings, context and decision models. API keys remain in this browser tab only.'}]});

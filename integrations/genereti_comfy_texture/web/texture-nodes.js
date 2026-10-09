@@ -1,3 +1,4 @@
+import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import {attachExpressionParameters} from '/extensions/genereti_comfy_texture/expression-controls.js';
 import { app } from '../../scripts/app.js';
 import { attachExecutionMode, subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
@@ -125,7 +126,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  output=previewControls(canvas,status,node,()=>{}, {initialFrame:()=>frame?{bitmap:present(frame)}:{bitmap:canvas},getRenderSize:()=>frame??canvas,onFitChange:value=>local.setFit(value),onViewerChange:opened=>{openViewers=Math.max(0,openViewers+(opened?1:-1));}});
  const performancePanel=document.createElement('details');const summary=document.createElement('summary');summary.title='Performance details';summary.setAttribute('aria-label','Performance details');summary.style.cssText='width:30px;cursor:pointer';performancePanel.append(summary,status);state.performancePanel=performancePanel;
  surface.append(output.toolbar,local.actions,preview,performancePanel);
- const widget=node.addDOMWidget('texture_preview','GENERETI_TEXTURE_PREVIEW',surface,{serialize:false,hideOnZoom:false});
+ const widget=node.addDOMWidget('texture_preview','GENERETI_TEXTURE_PREVIEW',surface,{serialize:false,hideOnZoom:false});previewFirst(node,widget);
  widget.computeSize=width=>[width,(local.minimized?0:Math.max(0,width-24)*canvas.height/canvas.width)+60];
 
  const resize=new ResizeObserver(()=>{

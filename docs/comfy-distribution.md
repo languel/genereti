@@ -126,7 +126,7 @@ upstream commit is the locally recorded tracking ref, not a live GitHub lookup.
 Restart Comfy after changing checkout/version, then refresh browser tabs to load
 matching frontend code. Editor settings follow Shortcuts and can be collapsed.
 
-`pyproject.toml` holds the metadata: version **0.1.2**, registered node ID
+`pyproject.toml` holds the metadata: version **0.1.3**, registered node ID
 **genereti**, display name **ꘇ Genereti**. The registered publisher ID is **liuboto**.
 
 `distribution/manifest.json` is the student archive allowlist. `.comfyignore`

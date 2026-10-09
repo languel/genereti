@@ -29,6 +29,7 @@ Start with Performance Timeline, then the shader, p5 and audiovisual tutorials.
 - [ꘇ-Texture-Queue](../example_workflows/ꘇ-Texture-Queue.json)
 - [ꘇ-Tutorial-Authoring](../example_workflows/ꘇ-Tutorial-Authoring.json)
 - [ꘇ-p5-Realtime](../example_workflows/ꘇ-p5-Realtime.json)
-- [ꘇ-p5-Source](../example_workflows/ꘇ-p5-Source.json)
 
 Model-dependent and external-server examples are archived and excluded from installation. Existing saved copies are preserved; remove obsolete copies from your own Workflows folder if desired.
+
+The older queue-based p5 Source demo is retired; use the Livecode p5 realtime and two-sketch pipeline examples.

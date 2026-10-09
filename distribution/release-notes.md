@@ -1,3 +1,18 @@
+# ꘇ Genereti 0.1.3 — reference and performance UI
+
+- Visual panels appear below ports and node transport, above parameters. Code and text editors follow their parameters.
+- Preview minimize, freeze, image fit, and time source controls share the top preview toolbar.
+- Node quick reference sits in the top-right header, inset from the resize handle. Press it again, or Escape inside any Help tab, to close the panel.
+- Compact square toolbar buttons use centered glyphs and consistent spacing.
+- CHOP curves redraw at signal cadence; offscreen CHOP, LFO, and gesture previews skip drawing while downstream signals continue.
+- X/Y gesture recording draws its live trace before release.
+- Reference, searchable Contents, and Assistant share one dockable or floating Help panel. Includes Welcome, schema quickrefs, and lesson/tutorial context.
+- Auto Reference follows selected nodes. The book/Genereti button appears above Comfy Help Center.
+- Assistant settings live under Genereti settings, with a provider model picker and compact composer.
+- Retires the redundant queue-based p5 Source demo; current p5 examples use Livecode.
+
+Existing workflow widget values and recordings keep their positional serialization contract. Nodes 2.0 is required for the visual presentation and Alt-O views. No models are bundled.
+
 # ꘇ Genereti 0.1.2 — early alpha classroom release
 
 EARLY ALPHA - experimental classroom release.

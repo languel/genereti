@@ -4,7 +4,7 @@ import { ensureControlStyle } from './control-style.js';
 export function previewState(node, surface, {capture, resize=()=>{},getFit=()=>'contain'}={}) {
   ensureControlStyle();
   let frozen=false, minimized=false, version=0, snapshot,snapshotImage;
-  const actions=document.createElement('div');actions.className='genereti-node-controls genereti-preview-actions';actions.style.cssText='display:flex;align-items:center;gap:0;flex-shrink:0;align-self:flex-start';
+  const actions=document.createElement('div');actions.className='genereti-node-controls genereti-preview-actions';actions.style.cssText='display:flex;align-items:center;flex-shrink:0;align-self:flex-start';
   const button=(glyph,title)=>{const b=document.createElement('button');b.type='button';b.textContent=glyph;b.title=title;b.setAttribute('aria-label',title);actions.append(b);return b;};
   const minimize=button('⌄','Minimize node preview only · downstream frames continue');
   const freeze=button('❄','Freeze node preview only · downstream frames continue');

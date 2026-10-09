@@ -1,3 +1,4 @@
+import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import {attachExpressionParameters} from '/extensions/genereti_comfy_texture/expression-controls.js';
 import {app} from '../../scripts/app.js';
@@ -13,9 +14,12 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
  if(!node.comfyClass?.startsWith('GeneretiChop')||['GeneretiChopLfo','GeneretiChopGesture'].includes(node.comfyClass))return;ensureControlStyle();const kind=node.comfyClass.slice(12);if(kind==='Expression')attachExpressionParameters(node);
  const surface=document.createElement('div');surface.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%';
  const tools=document.createElement('div');tools.className='genereti-node-controls';const play=document.createElement('button');play.textContent='Ⅱ';play.title='Pause live signals';play.setAttribute('aria-label',play.title);tools.append(play);
- let previewFrozen=false,previewMinimized=false;const disclosure=document.createElement('button');disclosure.textContent='⌄';disclosure.title='Minimize signal preview';disclosure.setAttribute('aria-label',disclosure.title);disclosure.setAttribute('aria-expanded','true');const freeze=document.createElement('button');freeze.textContent='❄';freeze.title='Freeze only this preview · signals keep flowing';freeze.setAttribute('aria-label',freeze.title);freeze.setAttribute('aria-pressed','false');const viewTools=document.createElement('div');viewTools.className='genereti-node-controls';viewTools.append(disclosure,freeze);
+ let previewFrozen=false,previewMinimized=false;const disclosure=document.createElement('button');disclosure.textContent='⌄';disclosure.title='Minimize signal preview';disclosure.setAttribute('aria-label',disclosure.title);disclosure.setAttribute('aria-expanded','true');const freeze=document.createElement('button');freeze.textContent='❄';freeze.title='Freeze only this preview · signals keep flowing';freeze.setAttribute('aria-label',freeze.title);freeze.setAttribute('aria-pressed','false');const viewTools=document.createElement('div');viewTools.className='genereti-node-controls genereti-preview-actions';viewTools.append(disclosure,freeze);
  const canvas=document.createElement('canvas');canvas.width=512;canvas.height=96;canvas.style.cssText='display:block;width:100%;height:auto';const status=document.createElement('span');status.style.cssText='font:11px monospace;color:var(--fg-color,#eee)';surface.append(tools,viewTools,canvas,status);
  visualNodeControls(node,canvas,viewTools);
+ // Signal computation stays live; only visible waveforms need presentation work.
+ let previewVisible=true;const visibility=new IntersectionObserver(entries=>{previewVisible=entries[0]?.isIntersecting??false;});visibility.observe(canvas);
+ const context=canvas.getContext('2d');let previewColor='#ddd';
  const state={node,kind,status,running:true,memory:{},latest:null,connected:false,deviceChannels:{},dead:false,update(now,run){
   const v=values(node);if(kind==='Expression')v.performanceValues=window.generetiPerformance?.expressionValues();const signature=JSON.stringify(v),link=name=>{const slot=node.inputs?.findIndex(i=>i.name===name),l=slot>=0?node.getInputLink?.(slot):null;const upstream=node.graph?.getNodeById(l?.origin_id);const s=upstream?._generetiChop;run(s);return s?.latest??upstream?._generetiDatSignal?.();};
   v.performanceValues=window.generetiPerformance?.expressionValues();const input=link('input'),other=link('other');let data;
@@ -36,10 +40,14 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
   state.latest=data;window.dispatchEvent(new CustomEvent('genereti-control-frame',{detail:{nodeId:node.id}}));state.lastInput=input;state.lastOther=other;state.signature=signature;
   if(state.connected)send(data,v,now);
   if(!previewFrozen&&!previewMinimized){const history=state.history??=new Map();for(const [name,samples] of Object.entries(data.channels)){const line=history.get(name)??[];for(const x of samples)line.push(x);if(line.length>256)line.splice(0,line.length-256);history.set(name,line);}for(const name of history.keys())if(!(name in data.channels))history.delete(name);}
-  if(!previewFrozen&&!previewMinimized&&now-(state.lastPaint??0)>100){paint(data);state.lastPaint=now;}
+  if(!previewFrozen&&!previewMinimized&&previewVisible&&!document.hidden){
+   // Keep inexpensive canvas motion at signal cadence, but DOM readouts at 10 Hz.
+   if(now-(state.lastReadout??0)>100){previewColor=getComputedStyle(surface).color||'#ddd';const text=`${Object.keys(data.channels).length} channels · ${data.sampleRate} Hz · ${first(data).toFixed(3)}${state.connected?' · connected':''}`;if(status.textContent!==text)status.textContent=text;state.lastReadout=now;}
+   paint(data);
+  }
  }};
  node._generetiPerformanceSeek=()=>{state.nextTime=undefined;state.memory={};state.history=new Map();};
- function paint(data){const ctx=canvas.getContext('2d');ctx.clearRect(0,0,512,96);const fg=getComputedStyle(surface).color||'#ddd';ctx.strokeStyle=fg;ctx.lineWidth=1;let n=0;for(const [name,samples]of Object.entries(data.channels)){const line=state.history?.get(name)??[];ctx.globalAlpha=Math.max(.25,1-n++*.12);ctx.beginPath();line.forEach((x,i)=>{const y=48-Math.max(-1,Math.min(1,x))*40;i?ctx.lineTo(i*512/Math.max(1,line.length-1),y):ctx.moveTo(0,y);});ctx.stroke();}ctx.globalAlpha=1;status.textContent=`${Object.keys(data.channels).length} channels · ${data.sampleRate} Hz · ${first(data).toFixed(3)}${state.connected?' · connected':''}`;}
+ function paint(data){const ctx=context;ctx.clearRect(0,0,512,96);ctx.strokeStyle=previewColor;ctx.lineWidth=1;let n=0;for(const name of Object.keys(data.channels)){const line=state.history?.get(name)??[];ctx.globalAlpha=Math.max(.25,1-n++*.12);ctx.beginPath();line.forEach((x,i)=>{const y=48-Math.max(-1,Math.min(1,x))*40;i?ctx.lineTo(i*512/Math.max(1,line.length-1),y):ctx.moveTo(0,y);});ctx.stroke();}ctx.globalAlpha=1;}
  let midiAccess,midiPort,oscToken,touchTimer,activeNote=null,sendBusy=false,lastSent='',lastSend=0;
  async function disconnect(){state.connected=false;state.deviceChannels={};state.deviceRevision=(state.deviceRevision??0)+1;clearInterval(touchTimer);if(midiPort){if(activeNote){midiPort.send([0x80|activeNote[0],activeNote[1],0]);activeNote=null;}midiPort.onmidimessage=null;await midiPort.close();midiPort=null;}if(oscToken){const token=oscToken;oscToken=null;await request('stop',{token});}connect?.setAttribute('aria-pressed','false');}
  let connect;
@@ -61,10 +69,10 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
  const onOSC=e=>{if(e.detail.token!==oscToken)return;for(const [name,x]of Object.entries(e.detail.channels))if(patternMatch(name.split(':')[0],values(node).address))state.deviceChannels[name]=x;state.deviceRevision=(state.deviceRevision??0)+1;};api.addEventListener('genereti-osc',onOSC);
  play.onclick=()=>{state.running=!state.running;if(!state.running&&activeNote&&midiPort){midiPort.send([0x80|activeNote[0],activeNote[1],0]);activeNote=null;lastSent='';}play.textContent=state.running?'Ⅱ':'▶';play.setAttribute('aria-pressed',String(!state.running));};
  const reset=document.createElement('button');reset.textContent='↺';reset.title='Reset channel history';reset.setAttribute('aria-label',reset.title);reset.onclick=()=>{state.memory={};state.history?.clear();state.lastInput=null;};if(['Lag','Speed','Slope'].includes(kind))tools.append(reset);
- node.addDOMWidget('signal_preview','GENERETI_CHOP_PREVIEW',surface,{serialize:false,hideOnZoom:false}).computeSize=width=>[width,(previewMinimized?0:Math.max(0,width-24)*96/512)+85];
+ const previewWidget=node.addDOMWidget('signal_preview','GENERETI_CHOP_PREVIEW',surface,{serialize:false,hideOnZoom:false});previewWidget.computeSize=width=>[width,(previewMinimized?0:Math.max(0,width-24)*96/512)+85];previewFirst(node,previewWidget);
  disclosure.onclick=()=>{previewMinimized=!previewMinimized;canvas.hidden=previewMinimized;canvas.style.display=previewMinimized?'none':'block';disclosure.textContent=previewMinimized?'›':'⌄';disclosure.setAttribute('aria-expanded',String(!previewMinimized));node.setSize?.(node.computeSize());};freeze.onclick=()=>{previewFrozen=!previewFrozen;freeze.setAttribute('aria-pressed',String(previewFrozen));};
  node._generetiChop=state;node._generetiLiveValue=slot=>slot===1?first(state.latest):undefined;
  states.add(state);if(!raf)raf=requestAnimationFrame(clock);
- const remove=node.onRemoved;node.onRemoved=function(){state.dead=true;states.delete(state);window.removeEventListener('pagehide',onPageHide);api.removeEventListener('genereti-osc',onOSC);disconnect().catch(()=>{});return remove?.apply(this,arguments);};
+ const remove=node.onRemoved;node.onRemoved=function(){state.dead=true;visibility.disconnect();states.delete(state);window.removeEventListener('pagehide',onPageHide);api.removeEventListener('genereti-osc',onOSC);disconnect().catch(()=>{});return remove?.apply(this,arguments);};
  const onPageHide=()=>{if(oscToken)fetch('/genereti/chop/osc/stop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:oscToken}),keepalive:true});};window.addEventListener('pagehide',onPageHide,{once:true});
 }});

@@ -1,7 +1,9 @@
+import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import { overlayShell } from './overlay-shell.js';
 import { registerPreviewShortcuts } from './preview-shortcuts.js';
 // Share the overlay bar and move the live surface rather than cloning it.
 export function nodeOutputView(node,surface,{beforeOpen=()=>{},onChange=()=>{}}={}){
+ requestAnimationFrame(()=>{if(!node.graph)return;const widget=node.widgets?.find(w=>w.element?.contains(surface));if(widget)previewFirst(node,widget);const root=widget?.element,actions=root?.querySelector('.genereti-preview-actions');if(actions){for(const fit of root.querySelectorAll('select[aria-label="Image fit"],select[aria-label^="Preview fit"]'))actions.append(fit);}});
  if(!document.getElementById('genereti-node-output-style')){
   const style=document.createElement('style');style.id='genereti-node-output-style';style.textContent=`
   .lg-node:has(>.genereti-output-only-view){background:transparent!important;border-color:transparent!important;box-shadow:none!important;filter:none!important;outline:none!important;overflow:visible!important}

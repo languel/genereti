@@ -94,7 +94,7 @@ export function attachExecutionMode(node){
   let mode='Live';
   const element=document.createElement('div');
   element.className='genereti-node-controls';
-  Object.assign(element.style,{display:'flex',gap:'10px',alignItems:'center',padding:'4px 0'});
+  Object.assign(element.style,{display:'flex',alignItems:'center',padding:'4px 0'});
   const select=document.createElement('select');select.setAttribute('aria-label','Output delivery');
   select.title='Output delivery';
   for(const choice of ['Live','Comfy Queue'])select.add(new Option(choice,choice));
@@ -119,10 +119,10 @@ export function attachExecutionMode(node){
   if(node.comfyClass!=='GeneretiDrawing'){
     // Canonical serialization follows the original widget order, even though
     // the browser-only transport row is displayed first.
-    const original=node.widgets.filter(w=>w!==widget);
+    const original=[...(node._generetiCanonicalWidgets??node.widgets)].filter(w=>w!==widget);
     const defaults=new Map(original.map(w=>[w.name,w.value]));
     const valid=(w,v)=>{const d=defaults.get(w.name);return typeof d==='boolean'?typeof v==='boolean':typeof d==='number'?typeof v==='number'&&Number.isFinite(v):true;};
-    node.widgets=[widget,...original];
+    node.widgets=[widget,...node.widgets.filter(w=>w!==widget)];
     const configured=node.onConfigure;
     node.onConfigure=function(info){
       const result=configured?.apply(this,arguments);

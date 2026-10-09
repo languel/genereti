@@ -1,3 +1,4 @@
+import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import {app} from '../../scripts/app.js';
 import {createEditor} from '/extensions/genereti_comfy_p5/lib/editor.mjs';
@@ -31,6 +32,6 @@ app.registerExtension({name:'Genereti.Inspect',nodeCreated(node){
  const unsub=subscribeEditorAppearance(()=>editor.setAppearance(appearance())),font=captureFontShortcut(node,body,()=>editor.setAppearance(appearance()));
  const timer=setInterval(tick,200);const executed=node.onExecuted;node.onExecuted=function(data){const result=executed?.apply(this,arguments);queued=data.genereti_inspect?.[0]??'';set(queued,'Queued value');return result;};
  node._generetiLiveValue=slot=>slot===0?text:undefined;
- node.addDOMWidget('inspect_display','GENERETI_INSPECT',surface,{serialize:false,hideOnZoom:false}).computeSize=w=>[w,260];
+ const previewWidget=node.addDOMWidget('inspect_display','GENERETI_INSPECT',surface,{serialize:false,hideOnZoom:false});previewWidget.computeSize=w=>[w,260];previewFirst(node,previewWidget);
  const removed=node.onRemoved;node.onRemoved=function(){disposed=true;clearInterval(timer);unsub();font();editor.destroy();return removed?.apply(this,arguments);};
 }});
