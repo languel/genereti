@@ -2,7 +2,9 @@
 
 The **ꘇ livecode** toolbar is the reference for custom ComfyUI node controls.
 Keep the creative surface prominent and the surrounding controls quiet. Apply
-these rules when adding or changing node UI.
+these rules when adding or changing node UI. See [help guidelines](help-guidelines.md)
+and the [GeneretiCore handoff](genereticore-ui-handoff.md) for the shared panel
+and portable adoption checklist.
 
 - Buttons and dropdowns have no resting borders, shadows or filled backgrounds.
   Use the host's text and surface colors. Hover and active states use a subtle
@@ -56,7 +58,7 @@ tool colors still follow Excalidraw's own theme.
 Keep inference and display separate: **ꘇ generator** owns model parameters and
 start/pause, while **ꘇ image preview** owns its canvas and local window controls. Projector links
 and relay transport belong to the separate projector node. Place independent window and overlay glyphs beside play/pause. Put the fit
-dropdown on its own below preview size, above the image; collapse performance details
+dropdown beside freeze in the top preview toolbar; collapse performance details
 under a triangle below it.
 Both participate in the shared Live / Comfy Queue delivery contract. Preserve the
 legacy combined node's identity for saved workflows.
@@ -272,8 +274,8 @@ bindings can be changed in Comfy's Keyboard Shortcuts.
 
 The view also covers CHOP waveforms, Gesture/LFO pads, DAT tables and inspectors,
 conversion previews, audio analysis, sequence grids, mixer faders and output
-meters. New signal/data surfaces have a **▣** glyph with a hover tip. Existing
-image, drawing and Livecode controls retain their Shift-click overlay glyph.
+meters. New signal/data surfaces have a **▣** glyph with a hover tip. Image, drawing and Livecode controls also expose the same Alt-O glyph between
+the overlay and backdrop controls; Shift-click on overlay remains an alias.
 Hover just outside an edge to reveal the restore bar. The same live DOM surface
 stays in its original layout, so gestures, sequence editing, audio and downstream updates
 continue; opening a view never starts recording, capture or sound. Each node's
@@ -300,4 +302,17 @@ Gesture and LFO nodes place their interactive panel directly below the ports, be
 
 All visual operators place the preview below ports and node transport, with parameters next and code/text editors last. Group preview minimize, freeze, image fit, and time source in the preview toolbar. Livecode keeps its editor actions with the code and lets the preview divider resize the independent visual panel.
 
-Node quick reference (`?`) belongs at the right of the node header, beside the node label. Keep the toolbar fallback for frontend versions without a DOM header.
+Node quick reference (`?`) belongs at the right of the node header, beside the node label, inset 8px from the right to clear resize handles. Clicking
+the same `?` again closes help; Escape inside any Help tab closes the panel. Keep the toolbar fallback for frontend versions without a DOM header.
+
+CHOP, LFO, gesture, and signal analysis canvases are frameless and transparent by default, including Alt-O. Genereti → Previews → CHOP preview background accepts a CSS color (default `transparent`).
+
+Overlay bars follow the same 20px buttons, 14px SVG/12px text glyphs, centered
+alignment, zero flex gap, and quiet hover/active states. The bar is 24px high;
+its opacity slider is 51px wide. The Alt-O glyph is an outlined square with a
+filled center. Reuse it on the node toolbar between overlay and backdrop and
+on the edge bar before the node label as Restore node controls.
+
+Dynamic numeric parameters update display precision from their declared step,
+including fractional steps such as 0.025. Clean floating-point arithmetic noise
+from user edits without rounding connected signal values to display precision.

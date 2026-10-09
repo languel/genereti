@@ -1,3 +1,13 @@
+# Unreleased — UI consistency follow-up
+
+- Transparent, frameless CHOP/LFO/gesture/analysis previews, with optional CHOP background color in Genereti settings.
+- Compact overlay controls: 20px buttons, 14px glyphs, and a 51px opacity slider.
+- Explicit Alt-O control beside overlay and before backdrop, including Livecode; the matching glyph before the minimal-view label restores node controls.
+- Dynamic parameter edits remove binary numeric noise and follow declared step precision.
+- Documents shared visual/help conventions and a portable GeneretiCore UI handoff.
+
+These changes follow 0.1.3; this Git update does not publish another Registry version.
+
 # ꘇ Genereti 0.1.3 — reference and performance UI
 
 - Visual panels appear below ports and node transport, above parameters. Code and text editors follow their parameters.

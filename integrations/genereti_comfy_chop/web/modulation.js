@@ -1,3 +1,4 @@
+import './preview-appearance.js';
 import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import {app} from '../../scripts/app.js';
 import {ensureControlStyle} from '/extensions/genereti_comfy_p5/js/control-style.js';
@@ -29,7 +30,7 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
  ensureControlStyle();node.properties??={};const gesture=node.comfyClass==='GeneretiChopGesture';
  const surface=document.createElement('div');surface.style.cssText='display:flex;flex-direction:column;gap:6px;width:100%;color:var(--input-text)';
  const tools=document.createElement('div');tools.className='genereti-node-controls genereti-preview-actions';
- const canvas=document.createElement('canvas');canvas.width=512;canvas.height=gesture?300:120;canvas.style.cssText='display:block;width:100%;height:auto;touch-action:none;cursor:crosshair;background:color-mix(in srgb,var(--input-text) 4%,transparent);border:1px solid var(--border-color);border-radius:4px';canvas.ariaLabel=gesture?'Gesture recording pad':'LFO waveform';
+ const canvas=document.createElement('canvas');canvas.className='genereti-chop-preview';canvas.width=512;canvas.height=gesture?300:120;canvas.style.cssText='display:block;width:100%;height:auto;touch-action:none;cursor:crosshair';canvas.ariaLabel=gesture?'Gesture recording pad':'LFO waveform';
  let previewVisible=true;const visibility=new IntersectionObserver(entries=>{previewVisible=entries[0]?.isIntersecting??false;});visibility.observe(canvas);
  const status=document.createElement('span');status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.setAttribute('role','status');surface.append(tools,canvas);
  const state={node,status,manual:[.5,.5],playing:!gesture,armed:false,capturing:false,latest:null,running:false,previous:[],start:performance.now()/1000,phase:0,clip:validateGesture({version:1,duration:1,points:[]})};

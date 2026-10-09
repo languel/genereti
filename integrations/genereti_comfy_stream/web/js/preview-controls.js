@@ -41,10 +41,11 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   fit.value=currentFit();fit.onchange=()=>apply(true);apply();
   const setFit=value=>{fit.value=value;apply(false);};
   const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);fit.value=currentFit();apply();return result;};
-  const nodeView=nodeOutputView(node,canvas,{beforeOpen:()=>{if(overlay.element)overlayButton.click();},onChange:config.onNodeViewChange});
+  const visualButton=button('Visual node view · hide controls (Alt+O)','<rect x="4" y="4" width="16" height="16" rx="1"/><rect x="7" y="7" width="10" height="10" fill="currentColor"/>',()=>nodeView.toggle());visualButton.setAttribute('aria-pressed',String(!!node.properties.genereti_output_only));
+  const nodeView=nodeOutputView(node,canvas,{beforeOpen:()=>{if(overlay.element)overlayButton.click();},onChange:open=>{visualButton.setAttribute('aria-pressed',String(open));config.onNodeViewChange?.(open);}});
   const unregister=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:options=>overlayButton.onclick(options),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.click(),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
   overlayButton.title+=' (Alt+W · Shift-click / Alt+O: output-only node)';backdropButton.title+=' (D)';
-  actions.append(windowButton,overlayButton,backdropButton);if(config.fitControl!==false)toolbar.append(fit);
+  actions.append(windowButton,overlayButton,visualButton,backdropButton);if(config.fitControl!==false)toolbar.append(fit);
   for(const row of [toolbar,actions])row.addEventListener('pointerdown',event=>event.stopPropagation());
   return {toolbar,actions,getViewport(){return viewers.filter(v=>v.opened).sort((a,b)=>b.order-a.order).map(v=>v.viewport()).find(Boolean)||null;},publish(frame){output.publish(frame);overlay.publish(frame);backdrop.publish(frame);},setFit,close(){nodeView.dispose();unregister();output.close();overlay.close();backdrop.close();}};
 }

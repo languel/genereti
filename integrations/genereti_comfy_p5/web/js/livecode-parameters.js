@@ -1,5 +1,13 @@
 import {parseParameters,parameterValues} from './code-parameters.js';
 
+// Strip arithmetic noise from user edits, without quantizing to the slider step.
+export function cleanNumericValue(value){return typeof value==='number'&&Number.isFinite(value)?Number(value.toPrecision(15)):value;}
+export function parameterPrecision(parameter){
+ if(parameter.type==='int')return 0;
+ const [mantissa,exponent='0']=String(parameter.step).toLowerCase().split('e');
+ return Math.min(12,Math.max(0,(mantissa.split('.')[1]?.length||0)-Number(exponent)));
+}
+
 // V3 Autogrow validates controls.value0..value63 on the backend. Human names
 // are socket labels; stable indexed ids keep wires intact when source is edited.
 export function codeParameters(node,onChange,{parse=parseParameters,editorName='code',property='generetiLivecodeParameters'}={}){
@@ -17,10 +25,10 @@ export function codeParameters(node,onChange,{parse=parseParameters,editorName='
   for(const p of definitions){const id=`controls.value${state.slots[p.name]}`,type=p.type==='boolean'?'BOOLEAN':p.type==='string'?'STRING':p.type==='int'?'INT':'FLOAT';
    let input=node.inputs.find(i=>i.name===id);if(!input){node.addInput(id,type,{label:p.name});input=node.inputs.at(-1);}if(!String(input.type).split(',').includes(type)&&input.link!=null)node.disconnectInput(node.inputs.indexOf(input));input.type=type;input.label=p.name;
    let widget=widgets.get(p.name);if(widget&&widget._paramType!==p.type){node.widgets.splice(node.widgets.indexOf(widget),1);widgets.delete(p.name);widget=null;}
-   if(!widget){const shim=node.widgets.find(w=>w.name===id&&w.type==='shim');if(shim)node.widgets.splice(node.widgets.indexOf(shim),1);widget=node.widgets.find(w=>w.name===id)||node.addWidget(p.type==='boolean'?'toggle':p.type==='string'?'text':'number',id,values[p.name],v=>{saved().values[p.name]=v;onChange(current());},{serialize:false,min:p.min,max:p.max,step:p.step*10,precision:p.type==='int'?0:Math.min(8,Math.max(0,-Math.floor(Math.log10(p.step)))),tooltip:`Code parameter: ${p.name}. Connected ${type} overrides this value when queued.`});widget._paramType=p.type;widgets.set(p.name,widget);}
+   if(!widget){const shim=node.widgets.find(w=>w.name===id&&w.type==='shim');if(shim)node.widgets.splice(node.widgets.indexOf(shim),1);widget=node.widgets.find(w=>w.name===id)||node.addWidget(p.type==='boolean'?'toggle':p.type==='string'?'text':'number',id,values[p.name],v=>{saved().values[p.name]=v;onChange(current());},{serialize:false,min:p.min,max:p.max,step:p.step*10,precision:parameterPrecision(p),tooltip:`Code parameter: ${p.name}. Connected ${type} overrides this value when queued.`});widget._paramType=p.type;widgets.set(p.name,widget);}
    widget.label=p.name;input.widget={name:id};
-   widget.callback=v=>{saved().values[p.name]=v;onChange(current());};
-   widget.value=values[p.name];widget.options={...widget.options,serialize:false,min:p.min,max:p.max,step:p.step*10};
+   widget.callback=v=>{const clean=cleanNumericValue(v);if(clean!==v)widget.value=clean;saved().values[p.name]=clean;onChange(current());};
+   widget.value=values[p.name];widget.options={...widget.options,serialize:false,min:p.min,max:p.max,step:p.step*10,precision:parameterPrecision(p)};
    // Keep code last, beneath all regular controls.
    node.widgets.splice(node.widgets.indexOf(widget),1);const editor=node.widgets.findIndex(w=>w.name===editorName);node.widgets.splice(editor<0?node.widgets.length:editor,0,widget);
   }

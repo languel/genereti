@@ -97,8 +97,8 @@ test('follow-output overlay opens at source aspect and retains remembered positi
 test('overlay header identifies its source node and refreshes renamed titles',async()=>{
  const f=fixture(),node={title:'ꘇ livecode'},overlay=f.make({}, {node});await overlay.open({overlay:true});
  const panel=f.panels[0],header=panel.children.find(e=>e.className==='output-header'),title=header.children[0];
- assert.match(title.innerHTML,/<rect/);assert.equal(title.children[0].textContent,node.title);
- node.title='My sketch';panel.onpointerenter();assert.equal(title.children[0].textContent,'My sketch');overlay.close();
+ assert.match(title.children[0].innerHTML,/<rect/);assert.equal(title.children[1].textContent,node.title);
+ node.title='My sketch';panel.onpointerenter();assert.equal(title.children[1].textContent,'My sketch');overlay.close();
 });
 
 test('fill window toggles CSS viewport bounds and restores geometry without native fullscreen',()=>{
@@ -139,4 +139,15 @@ test('in-place visual mode keeps its surface in the original layout',()=>{
  const f=fixture(),parent={style:{},append(){}},original={isConnected:true},frame={parentNode:original,style:{cssText:'height:188px'},isConnected:false,addEventListener(){},removeEventListener(){}};
  const view=f.shell(frame,{},()=>{},{parent,embedded:true,inPlace:true,surfaceSize:{left:12,top:350,width:320,height:188}});
  assert.equal(frame.parentNode,original);assert.equal(frame.style.cssText,'height:188px');assert.equal(view.element.style.pointerEvents,'none');assert.equal(view.element.style.top,'350px');assert.equal(view.element.style.left,'12px');view.close();assert.equal(frame.parentNode,original);
+});
+
+test('minimal-view header glyph restores node controls',()=>{
+ const f=fixture(),frame={style:{cssText:''},isConnected:false,addEventListener(){},removeEventListener(){}};let restored=false;
+ const shell=f.shell(frame,{},()=>{restored=true;},{embedded:true,node:{title:'ꘇ livecode'}});
+ const header=shell.element.children.find(e=>e.className==='output-header');
+ const restore=header.children[0].children[0],close=header.children.find(e=>e.title==='Restore node controls (Alt+O)');
+ close.click=()=>close.onclick();
+ assert.equal(restore.getAttribute('aria-label'),'Restore node controls (Alt+O)');
+ assert.match(restore.innerHTML,/fill="currentColor"/);
+ restore.onclick();assert.equal(restored,true);assert.equal(shell.element.removed,true);
 });

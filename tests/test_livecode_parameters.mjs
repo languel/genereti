@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {parseParameters,parameterValues,prepareParameterSource} from '../integrations/genereti_comfy_p5/web/js/code-parameters.js';
-import {codeParameters} from '../integrations/genereti_comfy_p5/web/js/livecode-parameters.js';
+import {codeParameters,cleanNumericValue,parameterPrecision} from '../integrations/genereti_comfy_p5/web/js/livecode-parameters.js';
 
 test('range comments, typed annotations and bounded values',()=>{
  const defs=parseParameters('float influence = 0; /* 0. .. 1. */\nint count = 8; /* 2..40 */\n// @param enabled = true\n// @param title = "Hello" (string)');
@@ -29,4 +29,12 @@ test('parameter sockets keep ids when reordered and accept connected primitives'
   assert.equal(params.connected({value0:.8}).influence,.8);
   assert.equal(JSON.parse(params.serialize()).influence,.5);
  }finally{globalThis.requestAnimationFrame=raf;}
+});
+
+test('numeric edits remove binary noise and precision follows fractional steps',()=>{
+ assert.equal(cleanNumericValue(.41000000000000014),.41);
+ assert.equal(cleanNumericValue(.123456789012345),.123456789012345);
+ assert.equal(parameterPrecision({type:'float',step:.025}),3);
+ assert.equal(parameterPrecision({type:'float',step:1e-7}),7);
+ assert.equal(parameterPrecision({type:'int',step:1}),0);
 });

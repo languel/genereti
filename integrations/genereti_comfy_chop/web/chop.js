@@ -1,3 +1,4 @@
+import './preview-appearance.js';
 import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import {attachExpressionParameters} from '/extensions/genereti_comfy_texture/expression-controls.js';
@@ -15,7 +16,7 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
  const surface=document.createElement('div');surface.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%';
  const tools=document.createElement('div');tools.className='genereti-node-controls';const play=document.createElement('button');play.textContent='Ⅱ';play.title='Pause live signals';play.setAttribute('aria-label',play.title);tools.append(play);
  let previewFrozen=false,previewMinimized=false;const disclosure=document.createElement('button');disclosure.textContent='⌄';disclosure.title='Minimize signal preview';disclosure.setAttribute('aria-label',disclosure.title);disclosure.setAttribute('aria-expanded','true');const freeze=document.createElement('button');freeze.textContent='❄';freeze.title='Freeze only this preview · signals keep flowing';freeze.setAttribute('aria-label',freeze.title);freeze.setAttribute('aria-pressed','false');const viewTools=document.createElement('div');viewTools.className='genereti-node-controls genereti-preview-actions';viewTools.append(disclosure,freeze);
- const canvas=document.createElement('canvas');canvas.width=512;canvas.height=96;canvas.style.cssText='display:block;width:100%;height:auto';const status=document.createElement('span');status.style.cssText='font:11px monospace;color:var(--fg-color,#eee)';surface.append(tools,viewTools,canvas,status);
+ const canvas=document.createElement('canvas');canvas.className='genereti-chop-preview';canvas.width=512;canvas.height=96;canvas.style.cssText='display:block;width:100%;height:auto';const status=document.createElement('span');status.style.cssText='font:11px monospace;color:var(--fg-color,#eee)';surface.append(tools,viewTools,canvas,status);
  visualNodeControls(node,canvas,viewTools);
  // Signal computation stays live; only visible waveforms need presentation work.
  let previewVisible=true;const visibility=new IntersectionObserver(entries=>{previewVisible=entries[0]?.isIntersecting??false;});visibility.observe(canvas);

@@ -7,7 +7,7 @@ Genereti adds realtime creative tools to ComfyUI: live code, drawing, textures, 
 ## Find your way
 
 - **Contents** searches node references, lessons, and tutorials. Every installed Genereti node has a quickref; longer guides are added over time.
-- **Reference** shows a guide. Turn on **Auto** to follow the selected node, or open a node’s **?** button. Turn Auto off to hold a page while working elsewhere.
+- **Reference** shows a guide. Turn on **Auto** to follow the selected node, or open a node’s **?** button. Turn Auto off to hold a page while working elsewhere. Press the same **?** again, or **Escape** inside any Help tab, to close the panel.
 - **Assistant** can discuss your patch. **Ask about this guide** attaches the reference as context; a node’s guide can also attach that node. You choose when to send.
 
 ## The building blocks
@@ -27,7 +27,7 @@ Connect outputs to inputs to compose these tools. Numeric controls can become so
 
 **Live** runs supported creative tools in the browser without queuing Python work. **Comfy Queue** uses Comfy’s normal execution path. These paths have different clocks and device behavior; read each node’s reference for its contract.
 
-Freeze or minimize a preview to reduce local presentation work. Downstream frames keep flowing. **Option/Alt-O** toggles the hovered node’s minimal visual view; **Option/Alt-Shift-O** toggles all visual nodes. Use **Nodes 2.0** for these views.
+Freeze or minimize a preview to reduce local presentation work. Downstream frames keep flowing. **Option/Alt-O** toggles the hovered node’s minimal visual view; **Option/Alt-Shift-O** toggles all visual nodes. Use **Nodes 2.0** for these views. The outlined-square glyph with a filled center, beside overlay, also toggles the minimal view; the same glyph before its edge-bar label restores controls. Signal previews are transparent by default, with an optional CHOP preview background under Genereti → Previews.
 
 ## Learn by doing
 
