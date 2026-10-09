@@ -1,6 +1,7 @@
 """GPU browser texture operators with independent queued IMAGE implementations."""
 from comfy_api.latest import ComfyExtension, io
 from . import ops
+from .expression import parameter_inputs,prepare_expression
 
 WEB_DIRECTORY='./web'
 CATEGORY='ꘇ / TOP'
@@ -85,11 +86,12 @@ def performance_input():return io.String.Input('performance',default='{}',option
 class Expression(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return schema('Expression',[io.Image.Input('image',optional=True),io.String.Input('expression',default='0.5 + 0.5*sin(t + x*12)*cos(y*12)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),number('time',0,-100000,100000),performance_input(),*domain_offsets()],'Arithmetic per pixel/channel: t seconds, x/y normalized, i pixel index, c RGB channel index, v/a input value, b=0, w/h dimensions. Source IMAGE sets resolution; absent IMAGE generates a texture. Live t is time offset + graph clock; Queue uses time.')
+        return schema('Expression',[io.Image.Input('image',optional=True),io.String.Input('expression',default='0.5 + 0.5*sin(t + x*12)*cos(y*12)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),number('time',0,-100000,100000),performance_input(),*domain_offsets(),*parameter_inputs(io)],'Arithmetic per pixel/channel: t seconds, x/y normalized, i pixel index, c RGB channel index, v/a input value, b=0, w/h dimensions. Source IMAGE sets resolution; absent IMAGE generates a texture. Live t is time offset + graph clock; Queue uses time.')
     @classmethod
-    def execute(cls,expression,width,height,time,image=None,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}"):
+    def execute(cls,expression,width,height,time,image=None,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}",parameters="{}",controls=None):
         import numpy as np
         import torch
+        expression=prepare_expression(expression,parameters,controls)
         from .expression import evaluate,performance_values
         if image is not None:
             a=ops.rgba(image);height,width=a.shape[1:3];values=a.detach().cpu().numpy()

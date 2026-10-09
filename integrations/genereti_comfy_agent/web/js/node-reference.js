@@ -8,10 +8,10 @@ let panel,body,title,lessonButton,dockButton,opener,sidebarHost,previousSidebar,
 let docked=false;
 let references;
 function loadReferences(){
- references??=fetch('/extensions/genereti_comfy_agent/lessons/node-references.json').then(async response=>{
+ references??=fetch('/extensions/genereti_comfy_agent/lessons/node-references.json',{cache:'no-store'}).then(async response=>{
   if(!response.ok)throw Error('Bundled references could not be loaded');
   return response.json();
- }).catch(error=>{references=undefined;throw error;});
+ }).finally(()=>{references=undefined;});
  return references;
 }
 function plainText(text){body.style.whiteSpace='pre-wrap';body.textContent=text;}

@@ -1,0 +1,729 @@
+{
+  "id": "fd291c00-4d98-43a0-8422-2d870e5c9339",
+  "revision": 0,
+  "last_node_id": 4,
+  "last_link_id": 3,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiChopLfo",
+      "pos": [
+        90,
+        90
+      ],
+      "size": [
+        360,
+        500
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "wave",
+          "name": "wave",
+          "type": "COMBO",
+          "widget": {
+            "name": "wave"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "period",
+          "name": "period",
+          "type": "FLOAT",
+          "widget": {
+            "name": "period"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "low",
+          "name": "low",
+          "type": "FLOAT",
+          "widget": {
+            "name": "low"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "high",
+          "name": "high",
+          "type": "FLOAT",
+          "widget": {
+            "name": "high"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "phase",
+          "name": "phase",
+          "type": "FLOAT",
+          "widget": {
+            "name": "phase"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "seed",
+          "name": "seed",
+          "type": "INT",
+          "widget": {
+            "name": "seed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "interval",
+          "name": "interval",
+          "type": "COMBO",
+          "widget": {
+            "name": "interval"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "speed",
+          "name": "speed",
+          "type": "FLOAT",
+          "widget": {
+            "name": "speed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "smooth",
+          "name": "smooth",
+          "type": "FLOAT",
+          "widget": {
+            "name": "smooth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "performance",
+          "name": "performance",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "performance"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "generetiPerformanceVersion": 1,
+        "Node name for S&R": "GeneretiChopLfo"
+      },
+      "widgets_values": [
+        "sine",
+        2,
+        0.25,
+        3,
+        0,
+        0,
+        "free",
+        1,
+        0,
+        0,
+        1,
+        60,
+        "{}",
+        ""
+      ],
+      "widgets_values_named": {
+        "wave": "sine",
+        "period": 2,
+        "low": 0.25,
+        "high": 3,
+        "phase": 0,
+        "seed": 0,
+        "interval": "free",
+        "speed": 1,
+        "smooth": 0,
+        "time": 0,
+        "samples": 1,
+        "sample_rate": 60,
+        "performance": "{}",
+        "modulation_controls": ""
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiChopGesture",
+      "pos": [
+        520,
+        90
+      ],
+      "size": [
+        360,
+        760
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "mode",
+          "name": "mode",
+          "type": "COMBO",
+          "widget": {
+            "name": "mode"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "x_low",
+          "name": "x_low",
+          "type": "FLOAT",
+          "widget": {
+            "name": "x_low"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "x_high",
+          "name": "x_high",
+          "type": "FLOAT",
+          "widget": {
+            "name": "x_high"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "y_low",
+          "name": "y_low",
+          "type": "FLOAT",
+          "widget": {
+            "name": "y_low"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "y_high",
+          "name": "y_high",
+          "type": "FLOAT",
+          "widget": {
+            "name": "y_high"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "loop",
+          "name": "loop",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "loop"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "quantize",
+          "name": "quantize",
+          "type": "BOOLEAN",
+          "widget": {
+            "name": "quantize"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "recording",
+          "name": "recording",
+          "type": "STRING",
+          "widget": {
+            "name": "recording"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "interval",
+          "name": "interval",
+          "type": "COMBO",
+          "widget": {
+            "name": "interval"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "speed",
+          "name": "speed",
+          "type": "FLOAT",
+          "widget": {
+            "name": "speed"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "smooth",
+          "name": "smooth",
+          "type": "FLOAT",
+          "widget": {
+            "name": "smooth"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "samples",
+          "name": "samples",
+          "type": "INT",
+          "widget": {
+            "name": "samples"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "sample_rate",
+          "name": "sample_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "sample_rate"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "performance",
+          "name": "performance",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "performance"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "channels",
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "localized_name": "x",
+          "name": "x",
+          "type": "FLOAT",
+          "links": [
+            2
+          ]
+        },
+        {
+          "localized_name": "y",
+          "name": "y",
+          "type": "FLOAT",
+          "links": null
+        },
+        {
+          "localized_name": "value",
+          "name": "value",
+          "type": "FLOAT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "generetiPerformanceVersion": 1,
+        "Node name for S&R": "GeneretiChopGesture"
+      },
+      "widgets_values": [
+        "XY",
+        0,
+        1,
+        0,
+        1,
+        true,
+        true,
+        "{\"version\":1,\"duration\":0.667600000023846,\"points\":[{\"t\":0,\"x\":0.15,\"y\":0.2000002176790192},{\"t\":0.014800000011923942,\"x\":0.175,\"y\":0.2300001959111173},{\"t\":0.03219999998808021,\"x\":0.2,\"y\":0.2600001741432154},{\"t\":0.04810000002384385,\"x\":0.225,\"y\":0.2900001523753134},{\"t\":0.06569999998808385,\"x\":0.25,\"y\":0.3200001306074115},{\"t\":0.08160000002384038,\"x\":0.275,\"y\":0.3500001088395096},{\"t\":0.09900000000000375,\"x\":0.3,\"y\":0.3800000870716077},{\"t\":0.11490000003576739,\"x\":0.325,\"y\":0.4100000653037058},{\"t\":0.13230000001192366,\"x\":0.35,\"y\":0.4400000435358038},{\"t\":0.1483000000119219,\"x\":0.375,\"y\":0.4700000217679019},{\"t\":0.1658000000119202,\"x\":0.4,\"y\":0.5},{\"t\":0.1816999999880835,\"x\":0.425,\"y\":0.5299999782320981},{\"t\":0.19899999999999807,\"x\":0.45,\"y\":0.5599999564641962},{\"t\":0.2149000000357617,\"x\":0.475,\"y\":0.5899999346962943},{\"t\":0.23280000001192036,\"x\":0.5,\"y\":0.6199999129283923},{\"t\":0.24840000003576534,\"x\":0.525,\"y\":0.6499998911604904},{\"t\":0.26590000003576364,\"x\":0.55,\"y\":0.6799998693925884},{\"t\":0.2816999999880778,\"x\":0.575,\"y\":0.7099998476246865},{\"t\":0.29930000001192525,\"x\":0.6,\"y\":0.7399998258567846},{\"t\":0.31500000000000483,\"x\":0.625,\"y\":0.7699998040888827},{\"t\":0.3329000000357638,\"x\":0.65,\"y\":0.7999997823209808},{\"t\":0.3486000000238434,\"x\":0.6600001284950658,\"y\":0.7749998911604904},{\"t\":0.3661999999880834,\"x\":0.6699999357524671,\"y\":0.75},{\"t\":0.38160000002384464,\"x\":0.6800000642475329,\"y\":0.7250001088395096},{\"t\":0.39930000001191956,\"x\":0.6899998715049342,\"y\":0.7000002176790192},{\"t\":0.41499999999999915,\"x\":0.7,\"y\":0.6749997823209808},{\"t\":0.4326000000238466,\"x\":0.7100001284950658,\"y\":0.6499998911604904},{\"t\":0.4484000000357611,\"x\":0.7199999357524671,\"y\":0.625},{\"t\":0.4659000000357665,\"x\":0.7300000642475329,\"y\":0.6000001088395096},{\"t\":0.48160000002384606,\"x\":0.7399998715049342,\"y\":0.5750002176790192},{\"t\":0.499300000011921,\"x\":0.75,\"y\":0.5499997823209808},{\"t\":0.5151999999880772,\"x\":0.7600001284950658,\"y\":0.5249998911604904},{\"t\":0.5326999999880826,\"x\":0.7699999357524671,\"y\":0.5},{\"t\":0.5483000000119205,\"x\":0.7800000642475329,\"y\":0.4750001088395096},{\"t\":0.5661000000238445,\"x\":0.7899998715049342,\"y\":0.4500002176790192},{\"t\":0.5816000000238404,\"x\":0.8,\"y\":0.4249997823209808},{\"t\":0.599499999999999,\"x\":0.8100001284950658,\"y\":0.3999998911604904},{\"t\":0.6153000000119206,\"x\":0.8199999357524671,\"y\":0.375},{\"t\":0.6328000000119189,\"x\":0.8300000642475329,\"y\":0.3500001088395096},{\"t\":0.6483000000119219,\"x\":0.8399998715049342,\"y\":0.3250002176790192},{\"t\":0.6644000000357622,\"x\":0.85,\"y\":0.2999997823209808},{\"t\":0.667600000023846,\"x\":0.85,\"y\":0.2999997823209808},{\"t\":0.667600000023846,\"x\":0.85,\"y\":0.2999997823209808}]}",
+        "free",
+        1,
+        0.03,
+        0,
+        1,
+        60,
+        "{}",
+        ""
+      ],
+      "widgets_values_named": {
+        "mode": "XY",
+        "x_low": 0,
+        "x_high": 1,
+        "y_low": 0,
+        "y_high": 1,
+        "loop": true,
+        "quantize": true,
+        "recording": "{\"version\":1,\"duration\":0.667600000023846,\"points\":[{\"t\":0,\"x\":0.15,\"y\":0.2000002176790192},{\"t\":0.014800000011923942,\"x\":0.175,\"y\":0.2300001959111173},{\"t\":0.03219999998808021,\"x\":0.2,\"y\":0.2600001741432154},{\"t\":0.04810000002384385,\"x\":0.225,\"y\":0.2900001523753134},{\"t\":0.06569999998808385,\"x\":0.25,\"y\":0.3200001306074115},{\"t\":0.08160000002384038,\"x\":0.275,\"y\":0.3500001088395096},{\"t\":0.09900000000000375,\"x\":0.3,\"y\":0.3800000870716077},{\"t\":0.11490000003576739,\"x\":0.325,\"y\":0.4100000653037058},{\"t\":0.13230000001192366,\"x\":0.35,\"y\":0.4400000435358038},{\"t\":0.1483000000119219,\"x\":0.375,\"y\":0.4700000217679019},{\"t\":0.1658000000119202,\"x\":0.4,\"y\":0.5},{\"t\":0.1816999999880835,\"x\":0.425,\"y\":0.5299999782320981},{\"t\":0.19899999999999807,\"x\":0.45,\"y\":0.5599999564641962},{\"t\":0.2149000000357617,\"x\":0.475,\"y\":0.5899999346962943},{\"t\":0.23280000001192036,\"x\":0.5,\"y\":0.6199999129283923},{\"t\":0.24840000003576534,\"x\":0.525,\"y\":0.6499998911604904},{\"t\":0.26590000003576364,\"x\":0.55,\"y\":0.6799998693925884},{\"t\":0.2816999999880778,\"x\":0.575,\"y\":0.7099998476246865},{\"t\":0.29930000001192525,\"x\":0.6,\"y\":0.7399998258567846},{\"t\":0.31500000000000483,\"x\":0.625,\"y\":0.7699998040888827},{\"t\":0.3329000000357638,\"x\":0.65,\"y\":0.7999997823209808},{\"t\":0.3486000000238434,\"x\":0.6600001284950658,\"y\":0.7749998911604904},{\"t\":0.3661999999880834,\"x\":0.6699999357524671,\"y\":0.75},{\"t\":0.38160000002384464,\"x\":0.6800000642475329,\"y\":0.7250001088395096},{\"t\":0.39930000001191956,\"x\":0.6899998715049342,\"y\":0.7000002176790192},{\"t\":0.41499999999999915,\"x\":0.7,\"y\":0.6749997823209808},{\"t\":0.4326000000238466,\"x\":0.7100001284950658,\"y\":0.6499998911604904},{\"t\":0.4484000000357611,\"x\":0.7199999357524671,\"y\":0.625},{\"t\":0.4659000000357665,\"x\":0.7300000642475329,\"y\":0.6000001088395096},{\"t\":0.48160000002384606,\"x\":0.7399998715049342,\"y\":0.5750002176790192},{\"t\":0.499300000011921,\"x\":0.75,\"y\":0.5499997823209808},{\"t\":0.5151999999880772,\"x\":0.7600001284950658,\"y\":0.5249998911604904},{\"t\":0.5326999999880826,\"x\":0.7699999357524671,\"y\":0.5},{\"t\":0.5483000000119205,\"x\":0.7800000642475329,\"y\":0.4750001088395096},{\"t\":0.5661000000238445,\"x\":0.7899998715049342,\"y\":0.4500002176790192},{\"t\":0.5816000000238404,\"x\":0.8,\"y\":0.4249997823209808},{\"t\":0.599499999999999,\"x\":0.8100001284950658,\"y\":0.3999998911604904},{\"t\":0.6153000000119206,\"x\":0.8199999357524671,\"y\":0.375},{\"t\":0.6328000000119189,\"x\":0.8300000642475329,\"y\":0.3500001088395096},{\"t\":0.6483000000119219,\"x\":0.8399998715049342,\"y\":0.3250002176790192},{\"t\":0.6644000000357622,\"x\":0.85,\"y\":0.2999997823209808},{\"t\":0.667600000023846,\"x\":0.85,\"y\":0.2999997823209808},{\"t\":0.667600000023846,\"x\":0.85,\"y\":0.2999997823209808}]}",
+        "interval": "free",
+        "speed": 1,
+        "smooth": 0.03,
+        "time": 0,
+        "samples": 1,
+        "sample_rate": 60,
+        "performance": "{}",
+        "modulation_controls": ""
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiTextureExpression",
+      "pos": [
+        960,
+        100
+      ],
+      "size": [
+        380,
+        852.5476593017578
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "label": "speed",
+          "localized_name": "value0",
+          "name": "controls.value0",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "controls.value0"
+          },
+          "link": 1
+        },
+        {
+          "localized_name": "expression",
+          "name": "expression",
+          "type": "STRING",
+          "widget": {
+            "name": "expression"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "width",
+          "name": "width",
+          "type": "INT",
+          "widget": {
+            "name": "width"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "height",
+          "name": "height",
+          "type": "INT",
+          "widget": {
+            "name": "height"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "time",
+          "name": "time",
+          "type": "FLOAT",
+          "widget": {
+            "name": "time"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "performance",
+          "name": "performance",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "performance"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "offset_x",
+          "name": "offset_x",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "offset_x"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "offset_y",
+          "name": "offset_y",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "offset_y"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "offset_z",
+          "name": "offset_z",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "offset_z"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "offset_t",
+          "name": "offset_t",
+          "shape": 7,
+          "type": "FLOAT",
+          "widget": {
+            "name": "offset_t"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "parameters",
+          "name": "parameters",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "parameters"
+          },
+          "link": null
+        },
+        {
+          "label": "position",
+          "name": "controls.value1",
+          "type": "FLOAT",
+          "widget": {
+            "name": "controls.value1"
+          },
+          "link": 2
+        },
+        {
+          "localized_name": "value2",
+          "name": "controls.value2",
+          "shape": 7,
+          "type": "FLOAT,INT",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            3
+          ]
+        }
+      ],
+      "title": "ꘇ gesture + LFO · moving waves",
+      "properties": {
+        "genereti_output_layout": {},
+        "generetiPerformanceVersion": 1,
+        "Node name for S&R": "GeneretiTextureExpression",
+        "generetiExpressionParameters": {
+          "values": {},
+          "slots": {
+            "speed": 0,
+            "position": 1
+          }
+        },
+        "generetiOperatorHeights": {
+          "expression": 160
+        },
+        "generetiOperatorText": {
+          "expression": "// @param speed = 1 (0.1..4)\n// @param position = .5 (0..1)\n0.5 + 0.5*sin(t*speed + x*12 + position*tau)*cos(y*12)"
+        },
+        "genereti_widget_values": {
+          "expression": "// @param speed = 1 (0.1..4)\n// @param position = .5 (0..1)\n0.5 + 0.5*sin(t*speed + x*12 + position*tau)*cos(y*12)",
+          "width": 512,
+          "height": 512,
+          "time": 0,
+          "performance": "{}",
+          "offset_x": 0,
+          "offset_y": 0,
+          "offset_z": 0,
+          "offset_t": 0,
+          "parameters": "{\"speed\":1,\"position\":0.5}"
+        }
+      },
+      "widgets_values": [
+        "// @param speed = 1 (0.1..4)\n// @param position = .5 (0..1)\n0.5 + 0.5*sin(t*speed + x*12 + position*tau)*cos(y*12)",
+        512,
+        512,
+        0,
+        "{}",
+        0,
+        0,
+        0,
+        0,
+        "{\"speed\":1,\"position\":0.5}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "controls.value0": 1,
+        "controls.value1": 0.5,
+        "expression": "// @param speed = 1 (0.1..4)\n// @param position = .5 (0..1)\n0.5 + 0.5*sin(t*speed + x*12 + position*tau)*cos(y*12)",
+        "width": 512,
+        "height": 512,
+        "time": 0,
+        "performance": "{}",
+        "offset_x": 0,
+        "offset_y": 0,
+        "offset_z": 0,
+        "offset_t": 0,
+        "parameters": "{\"speed\":1,\"position\":0.5}",
+        "texture_preview": "",
+        "performance_binding": ""
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiLiveImagePreview",
+      "pos": [
+        1420,
+        100
+      ],
+      "size": [
+        270,
+        536
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        },
+        {
+          "localized_name": "preview_size",
+          "name": "preview_size",
+          "type": "INT",
+          "widget": {
+            "name": "preview_size"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "genereti_output_layout": {},
+        "generetiPerformanceVersion": 1,
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "genereti_delivery": "Live",
+        "preview_size": 512,
+        "live_image_preview": ""
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      1,
+      3,
+      1,
+      "FLOAT"
+    ],
+    [
+      2,
+      2,
+      1,
+      3,
+      12,
+      "FLOAT"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        40,
+        30
+      ]
+    }
+  },
+  "version": 0.4
+}

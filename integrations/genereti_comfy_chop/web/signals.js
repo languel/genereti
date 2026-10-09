@@ -1,6 +1,6 @@
 import {parseExpression,evaluateExpression} from '/extensions/genereti_comfy_texture/expression.js';
 const trees=new Map();
-export function expression(source){if(!trees.has(source)){const tree=parseExpression(source);trees.set(source,tree);if(trees.size>128)trees.delete(trees.keys().next().value);}return trees.get(source);}
+export function expression(source){if(!trees.has(source)){let tree;try{tree=parseExpression(source);}catch(error){tree=error;}trees.set(source,tree);if(trees.size>128)trees.delete(trees.keys().next().value);}const tree=trees.get(source);if(tree instanceof Error)throw tree;return tree;}
 export const first=data=>Object.values(data?.channels??{})[0]?.at(-1)??0;
 export function patternMatch(name,patterns){return patterns.trim().split(/\s+/).some(p=>new RegExp('^'+p.replace(/[.+^${}()|[\]\\]/g,'\\$&').replaceAll('*','.*').replaceAll('?','.')+'$').test(name));}
 export function generate(kind,v,start){

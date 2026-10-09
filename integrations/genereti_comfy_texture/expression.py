@@ -2,6 +2,12 @@
 import json
 import ast
 import math
+import importlib.util
+from pathlib import Path
+_params_spec=importlib.util.spec_from_file_location('genereti_expression_parameters',Path(__file__).with_name('expression_parameters.py'))
+_params_module=importlib.util.module_from_spec(_params_spec);_params_spec.loader.exec_module(_params_module)
+prepare_expression=_params_module.prepare_expression
+parameter_inputs=_params_module.parameter_inputs
 import operator
 from functools import lru_cache
 import numpy as np
@@ -27,8 +33,8 @@ def parse(source):
     if sum(1 for _ in ast.walk(tree))>512:raise ValueError('Expression is too complex')
     return tree
 
-def evaluate(source,values):
-    tree=parse(source)
+def evaluate(source,values,parameters=None,controls=None):
+    tree=parse(prepare_expression(source,parameters,controls))
     def run(node):
         if isinstance(node,ast.Constant) and type(node.value) in (int,float): return node.value
         if isinstance(node,ast.Name):

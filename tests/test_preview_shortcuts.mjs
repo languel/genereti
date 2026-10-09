@@ -38,7 +38,7 @@ test('Alt-F fills selected output, prioritizes hover and Escape restores filled 
 
 test('Alt-O selects output-only nodes and leaves text editing and click-through distinct',()=>{
  const f=fixture();f.controls.toggleOutputOnly=()=>f.calls.push('output');f.controls.toggleClickThrough=()=>f.calls.push('through');
- f.key('KeyO',{altKey:true});f.key('KeyO',{altKey:true,shiftKey:true});
+ f.key('KeyO',{altKey:true});f.key('KeyC',{altKey:true,shiftKey:true});
  f.key('KeyO',{altKey:true,target:{isContentEditable:true}});
  f.context.registerPreviewShortcuts(f.other,{isOutputHovered:()=>true,toggleOutputOnly:()=>f.calls.push('hover output')});
  f.key('KeyO',{altKey:true});assert.deepEqual(f.calls,['output','through','hover output']);
@@ -70,4 +70,22 @@ test('dialogs and another native command on the same key take priority',()=>{
  const f=fixture(),store=f.app.extensionManager._p._s.get('keybinding');
  f.key('KeyW',{altKey:true,target:{closest:()=>true}});assert.deepEqual(f.calls,[]);
  store.getKeybinding=()=>({commandId:'Other.Extension'});f.key('KeyW',{altKey:true,key:'∑'});assert.deepEqual(f.calls,[]);
+});
+
+test('performance view opens all registered visual nodes together and restores them',()=>{
+ const f=fixture();f.node.properties={genereti_output_only:true};f.other.properties={genereti_output_only:false};
+ f.controls.toggleOutputOnly=()=>{f.node.properties.genereti_output_only=!f.node.properties.genereti_output_only;f.calls.push('first');};
+ f.context.registerPreviewShortcuts(f.other,{toggleOutputOnly:()=>{f.other.properties.genereti_output_only=!f.other.properties.genereti_output_only;f.calls.push('second');}});
+ f.key('KeyV',{altKey:true,shiftKey:true,key:'◊'});assert.deepEqual(f.calls,['second']);assert.equal(f.other.properties.genereti_output_only,true);
+ f.key('KeyO',{altKey:true,shiftKey:true,key:'Ø'});assert.deepEqual(f.calls,['second','first','second']);assert.equal(f.node.properties.genereti_output_only,false);assert.equal(f.other.properties.genereti_output_only,false);
+ f.key('KeyV',{altKey:true,shiftKey:true,target:{isContentEditable:true}});assert.equal(f.calls.length,3);
+});
+
+test('Alt-O prefers an unselected node anywhere under the pointer',()=>{
+ const f=fixture();f.node.id=1;f.other.id=2;
+ f.controls.toggleOutputOnly=()=>f.calls.push('selected');
+ f.context.registerPreviewShortcuts(f.other,{toggleOutputOnly:()=>f.calls.push('hovered')});
+ f.context.document.elementFromPoint=()=>({closest:()=>({dataset:{nodeId:'2'}})});
+ f.listeners.pointermove({clientX:300,clientY:200});f.key('KeyO',{altKey:true});assert.deepEqual(f.calls,['hovered']);
+ f.context.document.elementFromPoint=()=>({closest:()=>null});f.key('KeyO',{altKey:true});assert.deepEqual(f.calls,['hovered','selected']);
 });

@@ -1,3 +1,4 @@
+import {parseExpressionParameters} from './expression-parameters.js';
 import {NOISE_WGSL} from './noise.js';
 import {parseExpression,expressionWGSL} from './expression.js';
 // One device per module/Comfy page. Intermediate frames are borrowed GPUTexture
@@ -16,7 +17,7 @@ export function homography(points) {
 }
 
 export const SHADER=`
-struct Params { v: array<vec4f, 12> };
+struct Params { v: array<vec4f, 28> };
 @group(0) @binding(0) var a: texture_2d<f32>;
 @group(0) @binding(1) var b: texture_2d<f32>;
 @group(0) @binding(2) var<uniform> p: Params;
@@ -130,7 +131,7 @@ export class TextureGPU {
   }
   pass(a,b,params,target,format=this.format,uniformKey=target,customPipeline=null){
     const device=this.device,pipeline=customPipeline??this.pipeline(format);
-    let buffer=this.uniforms.get(uniformKey);if(!buffer){buffer=device.createBuffer({size:192,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});this.uniforms.set(uniformKey,buffer);}
+    let buffer=this.uniforms.get(uniformKey);if(!buffer){buffer=device.createBuffer({size:448,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});this.uniforms.set(uniformKey,buffer);}
     device.queue.writeBuffer(buffer,0,params);
     const group=device.createBindGroup({layout:pipeline.getBindGroupLayout(0),entries:[{binding:0,resource:a.texture.createView()},{binding:1,resource:(b??a).texture.createView()},{binding:2,resource:{buffer}}]});
     const encoder=device.createCommandEncoder();const pass=encoder.beginRenderPass({colorAttachments:[{view:target.createView(),clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'}]});
@@ -140,7 +141,8 @@ export class TextureGPU {
   async expressionPipeline(source){
     this.expressions??=new Map();
     if(this.expressions.has(source))return this.expressions.get(source);
-    const expression=expressionWGSL(parseExpression(source));
+    const defs=parseExpressionParameters(source),bindings=Object.fromEntries(defs.map((p,i)=>[p.name,`p.v[${5+Math.floor(i/4)}].${'xyzw'[i%4]}`]));
+    const expression=expressionWGSL(parseExpression(source,undefined,true),bindings);
     const code=SHADER.slice(0,SHADER.indexOf('@fragment'))+`
 ${NOISE_WGSL}
 fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {let g_time=p.v[1].x;let g_beat=p.v[1].y;let g_bar=p.v[1].z;let g_bpm=p.v[1].w;let g_ticks=p.v[2].x;let g_phase=p.v[2].y;let g_playing=p.v[2].z;let g_rate=p.v[2].w;let g_root=p.v[3].x;let g_tuning=p.v[3].y;let z=p.v[4].x;return ${expression};}
@@ -204,7 +206,7 @@ fn pigment(t:f32,x:f32,y:f32,c:f32)->f32 {
 }
 
 export function parameters(kind,values){
- const p=new Float32Array(48);p[8]=p[9]=1;
+ const p=new Float32Array(112);p[8]=p[9]=1;
  const modes={Composite:['over','under','add','multiply','screen','difference','cross'],Math:['multiply','add','subtract','divide','difference','minimum','maximum'],Filter:['level','invert','monochrome','threshold','opacity','blur','edge']};
  const codes={FeedbackRef:0,Composite:1,Math:2,Filter:3,Transform:4,Crop:5,CornerPin:6,Feedback:7,Bloom:13,Displace:10,Channels:14};
  p[0]=codes[kind];p[1]=Math.max(0,modes[kind]?.indexOf(values.operation)??0);p[2]=values.opacity??values.value??values.amount??values.decay??1;

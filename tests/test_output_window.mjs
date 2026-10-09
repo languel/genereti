@@ -5,7 +5,7 @@ import {readFileSync} from 'node:fs';
 
 function fixture(desktop=false){
  const panels=[],popups=[],draws=[],nativeFrames=[];let nativeOpens=0;
- const element=tag=>({tag,style:{},children:[],attributes:{},append(...items){this.children.push(...items);},replaceChildren(){},addEventListener(){},removeEventListener(){},moveBefore(child){this.children.push(child);child.parentNode=this;},remove(){this.removed=true;},getContext(type,options){this.contextOptions=options;return {clearRect(){},drawImage(image){draws.push(image);}};},setAttribute(k,v){this.attributes[k]=v;},getAttribute(k){return this.attributes[k];},removeAttribute(k){delete this.attributes[k];},setPointerCapture(){}});
+ const element=tag=>({tag,classList:{add(){}},style:{},children:[],attributes:{},append(...items){this.children.push(...items);},replaceChildren(){},addEventListener(){},removeEventListener(){},moveBefore(child){this.children.push(child);child.parentNode=this;},remove(){this.removed=true;},getContext(type,options){this.contextOptions=options;return {clearRect(){},drawImage(image){draws.push(image);}};},setAttribute(k,v){this.attributes[k]=v;},getAttribute(k){return this.attributes[k];},removeAttribute(k){delete this.attributes[k];},setPointerCapture(){}});
  const doc=()=>({title:'',documentElement:element('html'),body:element('body'),head:element('head'),removeEventListener(){},createElement(tag){const e=element(tag);if(tag==='iframe')e.contentWindow=target();return e;},addEventListener(){}});
  const target=()=>({document:doc(),Option:class{},addEventListener(){},focus(){},close(){this.closed=true;}});
  const document=doc();document.body.append=e=>panels.push(e);
@@ -14,7 +14,7 @@ function fixture(desktop=false){
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/view-stack.js',import.meta.url),'utf8').replaceAll('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/overlay-shell.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/output-window.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export function','function'),context);
- const status={textContent:''};return {shell:(frame,layout,onClose)=>context.overlayShell(frame,layout,onClose),make:(layout,config)=>context.outputWindow(status,undefined,layout,config),status,panels,popups,draws,nativeFrames,nativeOpens:()=>nativeOpens};
+ const status={textContent:''};return {shell:(frame,layout,onClose,config)=>context.overlayShell(frame,layout,onClose,config),make:(layout,config)=>context.outputWindow(status,undefined,layout,config),status,panels,popups,draws,nativeFrames,nativeOpens:()=>nativeOpens};
 }
 
 test('separate window and explicit overlay coexist and both draw the current frame',async()=>{
@@ -118,4 +118,25 @@ test('Alt-W cursor placement overrides remembered position, preserves size and s
  assert.equal(view.element.style.left,'120px');assert.equal(view.element.style.top,'200px');assert.equal(view.element.style.width,'400px');Object.assign(view.element,{offsetLeft:120,offsetTop:200,offsetWidth:400,offsetHeight:300});view.close();
  const next=f.make(layout);await next.open({overlay:true,position:{x:1195,y:895}});
  assert.equal(next.element.style.left,'792px');assert.equal(next.element.style.top,'592px');next.close();
+});
+
+test('embedded visual header moves its node at graph zoom and keeps buttons independent',()=>{
+ const f=fixture(),frame={style:{cssText:''},isConnected:false,addEventListener(){},removeEventListener(){}};
+ let changes=0,paints=0;
+ const node={pos:[100,200],graph:{change(){changes++;}},setDirtyCanvas(){paints++;}};
+ const parent={style:{},offsetWidth:400,getBoundingClientRect:()=>({width:200}),append(){}};
+ const view=f.shell(frame,{},()=>{},{node,parent,embedded:true,surfaceSize:{width:320,height:188}});
+ assert.equal(view.element.style.width,'320px');assert.equal(view.element.style.height,'188px');
+ const header=view.element.children.find(e=>e.className==='output-header');
+ header.onpointerdown({button:0,target:header,clientX:10,clientY:20,pointerId:1,preventDefault(){}});
+ header.onpointermove({clientX:40,clientY:70});header.onpointerup();
+ assert.deepEqual(Array.from(node.pos),[160,300]);assert.equal(changes,1);assert.equal(paints,1);
+ header.onpointerdown({button:0,target:{closest:()=>true},clientX:10,clientY:20});
+ header.onpointermove({clientX:200,clientY:200});assert.deepEqual(Array.from(node.pos),[160,300]);
+});
+
+test('in-place visual mode keeps its surface in the original layout',()=>{
+ const f=fixture(),parent={style:{},append(){}},original={isConnected:true},frame={parentNode:original,style:{cssText:'height:188px'},isConnected:false,addEventListener(){},removeEventListener(){}};
+ const view=f.shell(frame,{},()=>{},{parent,embedded:true,inPlace:true,surfaceSize:{left:12,top:350,width:320,height:188}});
+ assert.equal(frame.parentNode,original);assert.equal(frame.style.cssText,'height:188px');assert.equal(view.element.style.pointerEvents,'none');assert.equal(view.element.style.top,'350px');assert.equal(view.element.style.left,'12px');view.close();assert.equal(frame.parentNode,original);
 });

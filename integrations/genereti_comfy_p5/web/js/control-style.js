@@ -1,4 +1,4 @@
-import {decorateToolbarChoices} from './choice-glyphs.js';
+import {decorateToolbarChoices,toolbarChoiceMutationRoots} from './choice-glyphs.js';
 export const SETTINGS_GLYPH='<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M9 3h6l.6 2.5 2.1 1.2 2.4-.7 3 5.2-1.8 1.8v2.4l1.8 1.8-3 5.2-2.4-.7-2.1 1.2-.6 2.5H9l-.6-2.5-2.1-1.2-2.4.7-3-5.2 1.8-1.8V13l-1.8-1.8 3-5.2 2.4.7 2.1-1.2z" transform="translate(2 0) scale(.83)"/><circle cx="12" cy="12" r="3"/></svg>';
 // Shared node chrome follows the livecode toolbar. See docs/node-ui-design.md.
 export function ensureControlStyle() {
@@ -57,8 +57,9 @@ export function ensureControlStyle() {
 .genereti-drawing-settings-panel input{background:transparent;border:1px solid var(--border-color,#555);border-radius:4px;padding:4px}
 `;
   document.head.append(style);
-  new MutationObserver(()=>decorateToolbarChoices()).observe(document.body,{childList:true,subtree:true});
+  new MutationObserver(records=>{for(const root of toolbarChoiceMutationRoots(records))decorateToolbarChoices(root);}).observe(document.body,{childList:true,subtree:true});
   decorateToolbarChoices();
+  document.addEventListener('change',event=>{if(event.target.matches?.('select'))decorateToolbarChoices(event.target);});
   // Pickers live in the top layer, outside the graph's CSS transform. Match the
   // control's displayed text size when opening, without work in the render loop.
   const syncPickerScale = event => {

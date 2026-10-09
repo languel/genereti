@@ -3,6 +3,7 @@ from comfy_api.latest import ComfyExtension, io
 from . import signals
 from .music import MUSIC
 from .modular import MODULAR
+from .modulation import MODULATION
 from .osc import register
 WEB_DIRECTORY='./web'
 CHOP=io.Custom('GENERETI_CHOP')
@@ -32,9 +33,10 @@ class Noise(Constant):
         data=signals.generate('Noise',values);return io.NodeOutput(data,signals.first(data))
 class Expression(Constant):
     @classmethod
-    def define_schema(cls):return schema('Expression',[CHOP.Input('input',optional=True),io.String.Input('expression',default='sin(t*tau + c)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),*common(),io.String.Input('performance',default='{}',optional=True),*domain_offsets()])
+    def define_schema(cls):return schema('Expression',[CHOP.Input('input',optional=True),io.String.Input('expression',default='sin(t*tau + c)',multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'}),*common(),io.String.Input('performance',default='{}',optional=True),*domain_offsets(),*signals._expr.parameter_inputs(io)])
     @classmethod
     def execute(cls,input=None,**values):
+        values['expression']=signals._expr.prepare_expression(values['expression'],values.get('parameters'),values.get('controls'))
         data=signals.process('Expression',input,values) if input is not None else signals.generate('Expression',values);return io.NodeOutput(data,signals.first(data))
 class Math(Constant):
     @classmethod
@@ -82,6 +84,6 @@ class OscOut(MidiOut):
     @classmethod
     def define_schema(cls):return schema('OscOut',[CHOP.Input('input'),io.Int.Input('port',default=9001,min=1024,max=65535),io.String.Input('address',default='/genereti')],True)
 class ChopExtension(ComfyExtension):
-    async def get_node_list(self):return [Constant,Oscillator,Noise,Expression,Math,Lag,Logic,Speed,Slope,Select,Merge,MidiIn,MidiOut,OscIn,OscOut,*MUSIC,*MODULAR]
+    async def get_node_list(self):return [Constant,Oscillator,Noise,Expression,Math,Lag,Logic,Speed,Slope,Select,Merge,MidiIn,MidiOut,OscIn,OscOut,*MUSIC,*MODULAR,*MODULATION]
 async def comfy_entrypoint():
     register();return ChopExtension()

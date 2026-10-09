@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {parseExpression,evaluateExpression,expressionWGSL} from '../integrations/genereti_comfy_texture/web/expression.js';
 import {parseCSV,csv,fromJSON} from '../integrations/genereti_comfy_dat/web/tables.js';
 const signalSource=(await readFile(new URL('../integrations/genereti_comfy_chop/web/signals.js',import.meta.url),'utf8')).replace('/extensions/genereti_comfy_texture/expression.js',new URL('../integrations/genereti_comfy_texture/web/expression.js',import.meta.url).href);
-const {generate,process,first,patternMatch}=await import('data:text/javascript;base64,'+Buffer.from(signalSource).toString('base64'));
+const {generate,process,first,patternMatch,expression}=await import('data:text/javascript;base64,'+Buffer.from(signalSource).toString('base64'));
 test('arithmetic grammar has precedence, names and bounded functions without code execution',()=>{
  assert.equal(evaluateExpression(parseExpression('-2^2 + clamp(v,0,1)*3'),{v:2}),-1);
  assert.ok(Math.abs(evaluateExpression(parseExpression('sin(t*tau)'),{t:.25})-1)<1e-9);
@@ -32,3 +32,5 @@ test('CSV roundtrip preserves delimiters quotes empty cells and newlines',()=>{
  assert.deepEqual(parseCSV(csv(table)),table);assert.equal(table.rows[2][0],'multiline\ncell');assert.throws(()=>parseCSV('"unfinished'),/quote/i);
  assert.deepEqual(fromJSON('[{"n":1,"x":true},{"n":2,"x":{"a":1}}]').rows,[['n','x'],['1','true'],['2','{"a":1}']]);
 });
+
+test('invalid expression parsing is cached and editing source recovers',()=>{let firstError;try{expression('sin(t)ø')}catch(error){firstError=error;}assert.ok(firstError);assert.throws(()=>expression('sin(t)ø'),error=>error===firstError);assert.ok(expression('sin(t)'));});

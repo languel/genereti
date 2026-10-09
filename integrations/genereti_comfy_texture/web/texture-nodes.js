@@ -1,3 +1,4 @@
+import {attachExpressionParameters} from '/extensions/genereti_comfy_texture/expression-controls.js';
 import { app } from '../../scripts/app.js';
 import { attachExecutionMode, subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
 import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
@@ -6,7 +7,7 @@ import { textureGPU, parameters } from './texture-gpu.js';
 import { readTextureValues } from './texture-parameters.js';
 import { referenceFor, resolveReference, FrameLatch } from './texture-reference.js';
 
-function valuesFor(node,kind){const values=readTextureValues(node);if(kind==='Feedback')values.blend??=node.properties?.generetiFeedbackBlend??'screen';return values;}
+function valuesFor(node,kind){const values=readTextureValues(node);if(kind==='Expression'){const expression=node._generetiExpressionValues?.();if(expression){values.expression=expression.source;values.expressionParameters=expression.values;}}if(kind==='Feedback')values.blend??=node.properties?.generetiFeedbackBlend??'screen';return values;}
 
 const states=new Map(),dirty=new Set(),copyParams=new Float32Array(48);let clock=0,flushing=false;
 function schedule(state){if(state.dead||!state.users||state.node._generetiLivePaused||state.node._generetiExecutionMode==='Comfy Queue')return;dirty.add(state);if(!clock&&!flushing)clock=requestAnimationFrame(flush);}
@@ -37,6 +38,7 @@ setInterval(()=>{for(const state of states.values())if(state.users&&!state.dead&
 app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  if(!node.comfyClass?.startsWith('GeneretiTexture'))return;
  const kind=node.comfyClass.slice('GeneretiTexture'.length),prefix=`texture:${node.id}:${crypto.randomUUID()}:`;
+ if(kind==='Expression')attachExpressionParameters(node);
  const surface=document.createElement('div');surface.className='genereti-live-surface genereti-texture-surface';surface.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%';
  const canvas=document.createElement('canvas');canvas.width=canvas.height=512;canvas.style.cssText='display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:transparent';
  const status=document.createElement('span');status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.textContent='Initializing WebGPU';
@@ -70,6 +72,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
    if(state.expression!==values.expression){state.expression=values.expression;state.expressionPipeline=null;const source=values.expression;(kind==='Noise'?gpu.noisePipeline(values.algorithm,values.dimensions):gpu.expressionPipeline(source)).then(pipeline=>{if(state.dead||state.expression!==source)return;state.expressionPipeline=pipeline;schedule(state);}).catch(error=>{if(state.expression===source)status.textContent=error.message;});}
    if(!state.expressionPipeline)return;
    p.set([(window.generetiPerformance?.timeFor(node,now)??now/1000)+Number(values.time)+Number(values.offset_t??0),a.width,a.height,state.inputs[0]?1:0]);
+   if(kind==='Expression')p.set(values.expressionParameters??[],20);
    const global=window.generetiPerformance?.expressionValues()??{};p.set(['g_time','g_beat','g_bar','g_bpm','g_ticks','g_phase','g_playing','g_rate','g_root','g_tuning'].map(k=>Number(global[k]??(k==='g_bpm'?120:k==='g_tuning'?440:k==='g_rate'?1:0))),4);p[14]=Number(values.offset_x??0);p[15]=Number(values.offset_y??0);p[16]=Number(values.offset_z??0);
    if(kind==='Noise')p.set([Number(values.scale),Number(values.seed),Number(values.z),Number(values.speed),Number(values.octaves),Number(values.lacunarity),Number(values.gain),+(values.color==='RGB')],20);
    frame=gpu.expression(a,p,prefix+'output',a.width,a.height,state.expressionPipeline);
@@ -80,7 +83,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
    const blurred=gpu.run(horizontal,null,stage,prefix+'bloom:blurred');frame=gpu.run(a,blurred,p,prefix+'output');
   }else frame=gpu.run(a,previous,p,prefix+(kind==='Feedback'?`history:${history}`:'output'));
   frame={...frame,producedAt:now};presentedFrame=null;
-  if(local.visible){const aspect=`${frame.width}/${frame.height}`,changed=preview.style.aspectRatio.replaceAll(' ','')!==aspect;preview.style.aspectRatio=canvas.style.aspectRatio=aspect;gpu.present(frame,canvas);if(changed)node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);}
+  if(local.visible){const aspect=`${frame.width}/${frame.height}`,changed=preview.style.aspectRatio.replaceAll(' ','')!==aspect;if(changed)preview.style.aspectRatio=canvas.style.aspectRatio=aspect;gpu.present(frame,canvas);if(changed)node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);}
   // Viewers share one presentation conversion, created lazily at the boundary.
   window.dispatchEvent(new CustomEvent('genereti-live-frame',{detail:{nodeId:node.id,outputSlot:0,texture:frame,producedAt:now}}));
   if(outputOpened())output.publish({bitmap:present(frame)});
@@ -127,7 +130,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
 
  const resize=new ResizeObserver(()=>{
   const host=surface.closest('.lg-node'),grid=host?.querySelector('.lg-node-widgets');
-  if(grid){const rows=(grid.style.gridTemplateRows||'').split(/\s+(?![^()]*\))/);grid.style.setProperty('grid-template-rows',rows.map(()=> 'min-content').join(' '),'important');}
+  if(grid){const rows=(grid.style.gridTemplateRows||'').split(/\s+(?![^()]*\))/);const tracks=rows.map(()=> 'min-content').join(' ');if(grid.style.gridTemplateRows!==tracks)grid.style.setProperty('grid-template-rows',tracks,'important');}
  });
  function watch(){if(state.dead)return;const host=surface.closest('.lg-node');if(host)resize.observe(host);else requestAnimationFrame(watch);}requestAnimationFrame(watch);
  node._generetiMountTransport=()=>node._generetiExecutionModeElement?.append(output.actions);

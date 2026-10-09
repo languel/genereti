@@ -28,9 +28,23 @@ export function choiceGlyph(value,label,kind=''){
 }
 // Customizable native selects preserve .value, change events, keyboard handling
 // and Comfy serialization. Older browsers retain the readable native control.
+const toolbarChoiceSelector='.genereti-node-controls select,.genereti-livecode-toolbar select';
+// Ignore live readout/text mutations. Only new controls or changed options need decoration.
+export function toolbarChoiceMutationRoots(records){
+ const roots=new Set();
+ for(const record of records){
+  const select=record.target.closest?.('select');
+  if(select?.matches(toolbarChoiceSelector)&&record.target!==select.querySelector('selectedcontent')&&!record.target.closest?.('selectedcontent'))roots.add(select);
+  for(const node of record.addedNodes){
+   if(node.nodeType!==1)continue;
+   if(node.matches?.(toolbarChoiceSelector)||node.querySelector?.(toolbarChoiceSelector))roots.add(node);
+  }
+ }
+ return roots;
+}
 export function decorateToolbarChoices(root=document){
  if(!CSS.supports('appearance','base-select'))return;
- for(const select of root.querySelectorAll('.genereti-node-controls select,.genereti-livecode-toolbar select')){
+ for(const select of [...(root.matches?.(toolbarChoiceSelector)?[root]:[]),...root.querySelectorAll(toolbarChoiceSelector)]){
   if(select.closest('label,[role=tabpanel],.genereti-drawing-settings-panel'))continue;
   const kind=select.getAttribute('aria-label')||select.title;
   if(!select.style.getPropertyValue('--genereti-choice-font-size'))

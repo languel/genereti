@@ -21,7 +21,7 @@ function about(){
   if(!response.ok)throw Error('Version endpoint unavailable');
   const info=await response.json();status.textContent=versionLabel(info);
   if(info.revision){link.href=`${info.repository}/tree/${info.revision}`;link.title='Open this source revision on GitHub';}
-  path.textContent=`Loaded from ${info.path}`;
+  path.textContent=`Server ${location.origin} · loaded from ${info.path}`;
   if(info.restartRequired){const notice=document.createElement('div');notice.textContent='Source changed since startup · restart Comfy to load it';root.append(notice);}
   if(info.kind==='checkout'&&info.upstreamRevision&&info.upstreamRevision!==info.revision){
    const upstream=document.createElement('div');upstream.textContent=`Upstream ${info.upstreamRevision.slice(0,7)} · checkout differs`;upstream.title='Locally recorded upstream revision; no network lookup';root.append(upstream);

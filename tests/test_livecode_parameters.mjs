@@ -20,6 +20,7 @@ test('parameter sockets keep ids when reordered and accept connected primitives'
   const node={properties:{},inputs:[],widgets:[{name:'code'}],addInput(name,type,options){this.inputs.push({name,type,...options});},removeInput(i){this.inputs.splice(i,1);},disconnectInput(){},addWidget(type,name,value,callback,options){const w={type,name,value,callback,options};this.widgets.push(w);return w;},getInputLink(i){return this.inputs[i].link?{origin_id:9}:null;},graph:{getNodeById(){return {comfyClass:'PrimitiveFloat',widgets:[{name:'value',value:.7}]};}}};
   const params=codeParameters(node,()=>{});params.update('let influence = .5; /* 0..1 */\nlet speed = 2; /* 0..10 */');
   const influence=node.inputs.find(i=>i.label==='influence');influence.link=1;
+  influence.type='FLOAT,INT';node.disconnectInput=()=>{throw Error('Compatible Autogrow socket must retain its wire');};
   assert.deepEqual(influence.widget,{name:influence.name});
   assert.equal(node.widgets.find(w=>w.name===influence.name).label,'influence');
   params.update('let speed = 2; /* 0..10 */\nlet influence = .5; /* 0..1 */');

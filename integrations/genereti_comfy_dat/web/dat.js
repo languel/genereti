@@ -1,3 +1,4 @@
+import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import {app} from '../../scripts/app.js';
 import {ensureControlStyle} from '/extensions/genereti_comfy_p5/js/control-style.js';
 import {parseExpression,evaluateExpression} from '/extensions/genereti_comfy_texture/expression.js';
@@ -9,6 +10,7 @@ function tick(){const done=new Set(),visiting=new Set();function run(s){if(!s||d
 setInterval(tick,100);
 app.registerExtension({name:'Genereti.DAT',nodeCreated(node){
  if(!node.comfyClass?.startsWith('GeneretiDat')||['GeneretiDatLesson','GeneretiDatInspect'].includes(node.comfyClass))return;ensureControlStyle();const kind=node.comfyClass.slice(11),surface=document.createElement('div'),preview=document.createElement('div'),status=document.createElement('span');surface.style.cssText='width:100%;display:flex;flex-direction:column;gap:4px;color:var(--fg-color,#eee)';preview.style.cssText='max-height:180px;overflow:auto;font:12px monospace';status.style.cssText='font:11px monospace';const tools=document.createElement('div');tools.className='genereti-node-controls';const collapse=document.createElement('button');collapse.textContent='⌄';collapse.title='Minimize table preview';collapse.setAttribute('aria-label',collapse.title);collapse.setAttribute('aria-expanded','true');tools.append(collapse);surface.append(tools,preview,status);let minimized=false;collapse.onclick=()=>{minimized=!minimized;preview.hidden=minimized;collapse.textContent=minimized?'›':'⌄';collapse.setAttribute('aria-expanded',String(!minimized));node.setSize?.(node.computeSize());node.setDirtyCanvas?.(true,true);};
+ visualNodeControls(node,preview,tools);
  const state={node,status,latest:null,update(run){const v=read(node),input=name=>{const slot=node.inputs.findIndex(i=>i.name===name),l=slot>=0?node.getInputLink?.(slot):null,upstream=node.graph?.getNodeById(l?.origin_id),s=upstream?._generetiDat;run(s);return s?.latest??upstream?._generetiChop?.latest??upstream?._generetiDatTable?.()??upstream?._generetiDatSignal?.();},a=input('input'),b=input('other');if(kind==='Expression')v.performanceValues=window.generetiPerformance?.expressionValues();const signature=JSON.stringify(v);if(state.signature===signature&&state.a===a&&state.b===b)return;let data;
   if(kind==='Text')data={rows:String(v.text).split(/\r?\n/).map(s=>[s])};else if(kind==='Table')data=parseCSV(v.text,v.delimiter==='tab'?'\t':v.delimiter);else if(kind==='JSON')data=fromJSON(v.text);
   else if(!a){status.textContent='Connect DAT input';return;}

@@ -128,7 +128,7 @@ Preview controls live in a compact row directly above the image, aligned left: a
 
 Local output overlays default to content-only: no resting border, shadow or title bar. An outside edge hit target reveals the compact title bar; hovering the image does not. Its close and keep-controls-visible glyphs have transparent resting backgrounds, hover tips and keyboard focus. Drag the revealed title bar; resize from the outside edges. The keep-visible toggle is session-only.
 
-Overlay opacity changes only its displayed content; source frames remain unchanged. The position-lock glyph prevents dragging/resizing. Click-through passes content-area pointer events to Comfy underneath while outside edges and the revealed toolbar remain interactive. Alt+Shift+O toggles click-through for open overlays as a recovery shortcut. These controls are session-only and apply inside Comfy, not across other macOS applications.
+Overlay opacity changes only its displayed content; source frames remain unchanged. The position-lock glyph prevents dragging/resizing. Click-through passes content-area pointer events to Comfy underneath while outside edges and the revealed toolbar remain interactive. Alt+Shift+C toggles click-through for open overlays as a recovery shortcut. These controls are session-only and apply inside Comfy, not across other macOS applications.
 
 Output canvases preserve source alpha, and fit/letterbox space is transparent. Overlay iframe documents explicitly use a normal color scheme so a dark host cannot introduce an opaque backing. The macOS companion also clears its native window and WebKit backing. Opacity multiplies the source alpha rather than replacing it.
 
@@ -142,7 +142,7 @@ editor** into a viewport overlay; drawing and live outputs continue there. Toggl
 it again, or close the overlay, to return the editor to its node. It shares image
 output's edge-revealed controls, opacity, lock, click-through and remembered
 placement. Use transparent paper to annotate over the graph; solid paper stays
-solid. Alt+Z exposes drawing tools, and Alt+Shift+O switches between drawing and
+solid. Alt+Z exposes drawing tools, and Alt+Shift+C switches between drawing and
 interacting underneath. Modern Chromium hosts preserve the iframe runtime and
 undo history when moving; older hosts reload it and restore the saved scene.
 
@@ -197,11 +197,11 @@ All Genereti node labels start with `ꘇ`. Every label uses a space after the gl
 
 ### Interactive output overlays
 
-Livecode Alt+W moves the existing output surface into the overlay, rather than displaying a raster copy. The same iframe keeps its sketch state, selectable document text, links, scrolling and pointer interaction. Closing returns it to the node; code and parameter controls stay in the node. Interaction is enabled by default; the click-through glyph (Alt+Shift+O) explicitly passes input to the graph underneath. Node preview freeze/minimize affects only the embedded view, while the interactive overlay and downstream frames continue. External output windows and graph backdrops remain image displays.
+Livecode Alt+W moves the existing output surface into the overlay, rather than displaying a raster copy. The same iframe keeps its sketch state, selectable document text, links, scrolling and pointer interaction. Closing returns it to the node; code and parameter controls stay in the node. Interaction is enabled by default; the click-through glyph (Alt+Shift+C) explicitly passes input to the graph underneath. Node preview freeze/minimize affects only the embedded view, while the interactive overlay and downstream frames continue. External output windows and graph backdrops remain image displays.
 
 **Alt+O** toggles an output-only node view for Livecode, drawing and nodes using
-the shared output-view controls. The existing interactive surface fills the node;
-title, sockets, parameters, editor, status and resize controls are hidden. Hover
+the shared output-view controls. The existing interactive surface stays in place;
+title, parameters, editor, status and resize controls are hidden. Cables remain visible; port labels and dots fade to opacity zero but keep their original hit targets and attachment points. Hover
 just outside any edge to reveal the restore-controls glyph above the top edge,
 or press Alt+O again. Text editing is excluded. The mode is saved in workflow
 properties, preserves node placement, and keeps the same iframe/renderer alive.
@@ -260,3 +260,36 @@ quick-reference button can load guides before a backend restart registers the
 native-help web directory. Plain-text fallback preserves line breaks.
 
 Quick reference panels can be dragged by their title bar and docked using the ▥ button into Comfy’s native Quick Reference sidebar tab. Floating again restores the panel position; moving the viewport clamps the panel on screen. Reference text scrolls inside the panel, and keyboard/wheel events stay within the reference.
+
+### Minimal performance views
+
+**Alt+Shift+O** toggles every visual node in the current workflow into the shared
+surface-only view. If some are already minimal, the first toggle opens the rest;
+the next restores all controls. **Alt+O** toggles one selected visual node. These
+bindings can be changed in Comfy's Keyboard Shortcuts.
+
+The view also covers CHOP waveforms, Gesture/LFO pads, DAT tables and inspectors,
+conversion previews, audio analysis, sequence grids, mixer faders and output
+meters. New signal/data surfaces have a **▣** glyph with a hover tip. Existing
+image, drawing and Livecode controls retain their Shift-click overlay glyph.
+Hover just outside an edge to reveal the restore bar. The same live DOM surface
+stays in its original layout, so gestures, sequence editing, audio and downstream updates
+continue; opening a view never starts recording, capture or sound. Each node's
+view preference is saved with the workflow. This view uses Nodes 2.0.
+
+In minimal views, drag the edge-revealed title bar to move the actual node and
+its cable attachment points. The four-square glyph on that bar toggles all visual
+nodes directly, as an alternative to Alt+Shift+O.
+
+Minimal views preserve the visual panel’s displayed width and height instead of
+stretching it to the full node height formerly occupied by controls.
+
+Minimal views fade node chrome, port labels and dots to opacity zero, leaving
+all elements in their original positions and retaining pointer input. Invisible
+sockets still show native hover tips and accept connections. The visual surface
+keeps its original parent, position and dimensions. Alt+O prioritizes the node
+under the pointer anywhere inside its bounds, then the selected node if the
+pointer is outside a visual node.
+
+Alt+Shift+V remains an alias for toggling all visual nodes. Alt+Shift+C toggles
+click-through for the current view.
