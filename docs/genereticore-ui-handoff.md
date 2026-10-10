@@ -74,3 +74,7 @@ Core-family native image IDs retain their existing Latin names and ꘅ labels.
 Genereti's extension URL aliases. A ready event announces UI availability only;
 it does not start model inference, capture or audio. Core's source and workflow
 migration are documented in its `docs/realtime-image-demo.md`.
+
+## Shared live-frame bridge (October 10)
+
+`window.generetiCompanion` version 1 now also exports `subscribeLive`. Companions should subscribe to an IMAGE input with `{inputName:"image"}` rather than checking source-specific capture methods. Copy borrowed bitmap frames synchronously, retain only the latest owned frame, and release the returned subscription on pause/removal. Source-change status is sent before retain, preserving a first frame published synchronously by retain. Core’s native image nodes use this for streams, preview pass-through, camera, textures and Livecode; queued IMAGE execution is unchanged.

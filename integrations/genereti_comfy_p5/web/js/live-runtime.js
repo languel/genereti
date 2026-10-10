@@ -67,8 +67,8 @@ export function subscribeLive(node, onFrame, onStatus=()=>{}, {gpu=false,inputNa
     if (next===source&&nextSlot===sourceSlot) return;
     driver?.release(sourceSlot);source=next;sourceSlot=nextSlot;driver=null;
     if (source) {
-      driver=source._generetiLiveSource || videoSource(source);driver.retain(sourceSlot);
       onStatus('Browser clock · waiting for live frames');
+      driver=source._generetiLiveSource || videoSource(source);driver.retain(sourceSlot);
     } else onStatus('No browser live source · queued IMAGE previews still work');
   };
   const listener = event => {
