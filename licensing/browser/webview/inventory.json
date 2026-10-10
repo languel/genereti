@@ -1,0 +1,789 @@
+[
+  {
+    "name": "@braintree/sanitize-url",
+    "version": "7.1.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/@braintree-sanitize-url-7.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/braintree/sanitize-url.git"
+    }
+  },
+  {
+    "name": "@iconify/utils",
+    "version": "3.1.7",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/@iconify-utils-3.1.7/license.txt"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/iconify/iconify.git",
+      "directory": "packages/utils"
+    }
+  },
+  {
+    "name": "@mermaid-js/parser",
+    "version": "1.2.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/@mermaid-js-parser-1.2.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mermaid-js/mermaid.git",
+      "directory": "packages/parser"
+    }
+  },
+  {
+    "name": "@upsetjs/venn.js",
+    "version": "2.0.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/@upsetjs-venn.js-2.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/upsetjs/venn.js.git"
+    }
+  },
+  {
+    "name": "cose-base",
+    "version": "1.0.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/cose-base-1.0.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/cose-base.git"
+    }
+  },
+  {
+    "name": "cose-base",
+    "version": "2.2.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/cose-base-2.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/cose-base.git"
+    }
+  },
+  {
+    "name": "cytoscape",
+    "version": "3.34.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/cytoscape-3.34.3/LICENSE",
+      "licensing/browser/webview/cytoscape-3.34.3/license-update.mjs"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/cytoscape/cytoscape.js.git"
+    }
+  },
+  {
+    "name": "cytoscape-cose-bilkent",
+    "version": "4.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/cytoscape-cose-bilkent-4.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/cytoscape/cytoscape.js-cose-bilkent.git"
+    }
+  },
+  {
+    "name": "cytoscape-fcose",
+    "version": "2.2.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/cytoscape-fcose-2.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/iVis-at-Bilkent/cytoscape.js-fcose.git"
+    }
+  },
+  {
+    "name": "d3",
+    "version": "7.9.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-7.9.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3.git"
+    }
+  },
+  {
+    "name": "d3-array",
+    "version": "3.2.4",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-array-3.2.4/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-array.git"
+    }
+  },
+  {
+    "name": "d3-array",
+    "version": "2.12.1",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/webview/d3-array-2.12.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-array.git"
+    }
+  },
+  {
+    "name": "d3-axis",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-axis-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-axis.git"
+    }
+  },
+  {
+    "name": "d3-brush",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-brush-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-brush.git"
+    }
+  },
+  {
+    "name": "d3-chord",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-chord-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-chord.git"
+    }
+  },
+  {
+    "name": "d3-color",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-color-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-color.git"
+    }
+  },
+  {
+    "name": "d3-contour",
+    "version": "4.0.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-contour-4.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-contour.git"
+    }
+  },
+  {
+    "name": "d3-delaunay",
+    "version": "6.0.4",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-delaunay-6.0.4/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-delaunay.git"
+    }
+  },
+  {
+    "name": "d3-dispatch",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-dispatch-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-dispatch.git"
+    }
+  },
+  {
+    "name": "d3-drag",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-drag-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-drag.git"
+    }
+  },
+  {
+    "name": "d3-dsv",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-dsv-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-dsv.git"
+    }
+  },
+  {
+    "name": "d3-ease",
+    "version": "3.0.1",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/webview/d3-ease-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-ease.git"
+    }
+  },
+  {
+    "name": "d3-fetch",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-fetch-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-fetch.git"
+    }
+  },
+  {
+    "name": "d3-force",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-force-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-force.git"
+    }
+  },
+  {
+    "name": "d3-format",
+    "version": "3.1.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-format-3.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-format.git"
+    }
+  },
+  {
+    "name": "d3-geo",
+    "version": "3.1.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-geo-3.1.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-geo.git"
+    }
+  },
+  {
+    "name": "d3-hierarchy",
+    "version": "3.1.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-hierarchy-3.1.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-hierarchy.git"
+    }
+  },
+  {
+    "name": "d3-interpolate",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-interpolate-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-interpolate.git"
+    }
+  },
+  {
+    "name": "d3-path",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-path-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-path.git"
+    }
+  },
+  {
+    "name": "d3-path",
+    "version": "1.0.9",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/webview/d3-path-1.0.9/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-path.git"
+    }
+  },
+  {
+    "name": "d3-polygon",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-polygon-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-polygon.git"
+    }
+  },
+  {
+    "name": "d3-quadtree",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-quadtree-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-quadtree.git"
+    }
+  },
+  {
+    "name": "d3-random",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-random-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-random.git"
+    }
+  },
+  {
+    "name": "d3-sankey",
+    "version": "0.12.3",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/webview/d3-sankey-0.12.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-sankey.git"
+    }
+  },
+  {
+    "name": "d3-scale",
+    "version": "4.0.2",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-scale-4.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-scale.git"
+    }
+  },
+  {
+    "name": "d3-scale-chromatic",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-scale-chromatic-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-scale-chromatic.git"
+    }
+  },
+  {
+    "name": "d3-selection",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-selection-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-selection.git"
+    }
+  },
+  {
+    "name": "d3-shape",
+    "version": "1.3.7",
+    "license": "BSD-3-Clause",
+    "notices": [
+      "licensing/browser/webview/d3-shape-1.3.7/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-shape.git"
+    }
+  },
+  {
+    "name": "d3-shape",
+    "version": "3.2.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-shape-3.2.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-shape.git"
+    }
+  },
+  {
+    "name": "d3-time",
+    "version": "3.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-time-3.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-time.git"
+    }
+  },
+  {
+    "name": "d3-time-format",
+    "version": "4.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-time-format-4.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-time-format.git"
+    }
+  },
+  {
+    "name": "d3-timer",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-timer-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-timer.git"
+    }
+  },
+  {
+    "name": "d3-transition",
+    "version": "3.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-transition-3.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-transition.git"
+    }
+  },
+  {
+    "name": "d3-zoom",
+    "version": "3.0.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/d3-zoom-3.0.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/d3/d3-zoom.git"
+    }
+  },
+  {
+    "name": "dagre-d3-es",
+    "version": "7.0.14",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/dagre-d3-es-7.0.14/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/tbo47/dagre-es.git"
+    }
+  },
+  {
+    "name": "dayjs",
+    "version": "1.11.23",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/dayjs-1.11.23/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/iamkun/dayjs.git"
+    }
+  },
+  {
+    "name": "delaunator",
+    "version": "5.1.0",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/delaunator-5.1.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mapbox/delaunator.git"
+    }
+  },
+  {
+    "name": "dompurify",
+    "version": "3.3.3",
+    "license": "(MPL-2.0 OR Apache-2.0)",
+    "notices": [
+      "licensing/browser/webview/dompurify-3.3.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/cure53/DOMPurify.git"
+    }
+  },
+  {
+    "name": "es-toolkit",
+    "version": "1.52.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/es-toolkit-1.52.0/LICENSE",
+      "licensing/browser/webview/es-toolkit-1.52.0/NOTICE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/toss/es-toolkit.git"
+    }
+  },
+  {
+    "name": "fastdom",
+    "version": "1.0.12",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/fastdom-1.0.12/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/wilsonpage/fastdom.git"
+    }
+  },
+  {
+    "name": "internmap",
+    "version": "1.0.1",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/internmap-1.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mbostock/internmap.git"
+    }
+  },
+  {
+    "name": "internmap",
+    "version": "2.0.3",
+    "license": "ISC",
+    "notices": [
+      "licensing/browser/webview/internmap-2.0.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mbostock/internmap.git"
+    }
+  },
+  {
+    "name": "katex",
+    "version": "0.18.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/katex-0.18.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/KaTeX/KaTeX.git"
+    }
+  },
+  {
+    "name": "katex",
+    "version": "0.16.47",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/katex-0.16.47/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/KaTeX/KaTeX.git"
+    }
+  },
+  {
+    "name": "khroma",
+    "version": "2.1.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/khroma-2.1.0/license"
+    ],
+    "repository": "github:fabiospampinato/khroma"
+  },
+  {
+    "name": "layout-base",
+    "version": "2.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/layout-base-2.0.1/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/layout-base.git"
+    }
+  },
+  {
+    "name": "layout-base",
+    "version": "1.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/layout-base-1.0.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/iVis-at-Bilkent/layout-base.git"
+    }
+  },
+  {
+    "name": "lodash-es",
+    "version": "4.18.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/lodash-es-4.18.1/LICENSE"
+    ],
+    "repository": "lodash/lodash"
+  },
+  {
+    "name": "marked",
+    "version": "17.0.1",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/marked-17.0.1/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/markedjs/marked.git"
+    }
+  },
+  {
+    "name": "marked",
+    "version": "16.4.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/marked-16.4.2/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/markedjs/marked.git"
+    }
+  },
+  {
+    "name": "mermaid",
+    "version": "11.17.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/mermaid-11.17.2/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mermaid-js/mermaid"
+    }
+  },
+  {
+    "name": "robust-predicates",
+    "version": "3.0.3",
+    "license": "Unlicense",
+    "notices": [
+      "licensing/browser/webview/robust-predicates-3.0.3/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mourner/robust-predicates.git"
+    }
+  },
+  {
+    "name": "roughjs",
+    "version": "4.6.6",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/roughjs-4.6.6/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/pshihn/rough.git"
+    }
+  },
+  {
+    "name": "stylis",
+    "version": "4.4.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/stylis-4.4.0/LICENSE"
+    ],
+    "repository": "https://github.com/thysultan/stylis.js"
+  },
+  {
+    "name": "ts-dedent",
+    "version": "2.3.0",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/ts-dedent-2.3.0/LICENSE"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/tamino-martinius/node-ts-dedent.git"
+    }
+  },
+  {
+    "name": "uuid",
+    "version": "14.0.2",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/webview/uuid-14.0.2/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/uuidjs/uuid.git"
+    }
+  }
+]

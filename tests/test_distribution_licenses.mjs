@@ -9,7 +9,7 @@ test('public runtime dependency graph excludes embedded AGPL engines',async()=>{
  for(const file of ['runtime.js','editor.js'])assert.doesNotMatch(await readFile(new URL('integrations/genereti_comfy_p5/livecode/'+file,root),'utf8'),/from ['"](?:@strudel\/|superdough)/);
 });
 test('every bundled package carries license text, with no strong copyleft core imports',async()=>{
- for(const group of ['livecode','drawing','timeline']){
+ for(const group of ['livecode','drawing','timeline','webview']){
   const entries=JSON.parse(await readFile(new URL(`licensing/browser/${group}/inventory.json`,root)));
   assert.ok(entries.length>0);
   for(const item of entries){assert.ok(item.notices.length,item.name);assert.doesNotMatch(JSON.stringify(item.license),/AGPL|(^|[^L])GPL/i);for(const path of item.notices)await access(new URL(path,root));}

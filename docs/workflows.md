@@ -2,6 +2,8 @@
 
 Open **Workflows → Genereti** or **Templates → genereti**. These demos require no model downloads, separate model server or additional node packs. GPU demos need WebGPU; sound starts explicitly. Save your own named copy when experimenting.
 
+Try [ꘇ-Webview-Paper-Stage](../example_workflows/ꘇ-Webview-Paper-Stage.json) for an interactive HTML scene with optional audio and a math/diagram notebook.
+
 Start with Performance Timeline, then the shader, p5 and audiovisual tutorials.
 
 - [ꘇ-Class-Feedback-Bloom-Displace](../example_workflows/ꘇ-Class-Feedback-Bloom-Displace.json)

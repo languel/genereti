@@ -32,7 +32,8 @@
     "scripts/build_livecode_lessons.py",
     "scripts/browser_licenses.mjs",
     "scripts/sync_comfy_templates.py",
-    "scripts/sync_node_references.py"
+    "scripts/sync_node_references.py",
+    "scripts/build_document.mjs"
   ],
   "directories": [
     "docs",

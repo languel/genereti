@@ -5,7 +5,8 @@
   "scripts": {
     "build:editor": "node scripts/build_editor.mjs",
     "build:livecode": "node scripts/build_livecode.mjs",
-    "build:performance": "node scripts/build_performance.mjs"
+    "build:performance": "node scripts/build_performance.mjs",
+    "build:document": "node scripts/build_document.mjs"
   },
   "dependencies": {
     "@codemirror/lang-html": "6.4.11",
@@ -22,6 +23,7 @@
     "katex": "0.18.1",
     "manim-web": "0.3.24",
     "marked": "17.0.1",
+    "mermaid": "11.17.2",
     "p5": "1.11.11",
     "prettier": "3.9.9",
     "react": "18.3.1",

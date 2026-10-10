@@ -1,5 +1,6 @@
-# Unreleased — UI consistency follow-up
+# Unreleased — webview and UI consistency follow-up
 
+- New webview node: Raw/Rendered HTML, Markdown with bundled KaTeX/Mermaid, text and URL; unchanged STRING ports, persisted drafts/fonts, interactive window/overlay/visual/backdrop controls and a model-free Paper Stage demo.
 - Transparent, frameless CHOP/LFO/gesture/analysis previews, with optional CHOP background color in Genereti settings.
 - Compact overlay controls: 20px buttons, 14px glyphs, and a 51px opacity slider.
 - Explicit Alt-O control beside overlay and before backdrop, including Livecode; the matching glyph before the minimal-view label restores node controls.

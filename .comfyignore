@@ -19,6 +19,7 @@
 !/scripts/build_comfy_package.py
 !/scripts/sync_comfy_templates.py
 !/scripts/build_editor.mjs
+!/scripts/build_document.mjs
 !/scripts/build_livecode.mjs
 !/scripts/build_performance.mjs
 !/scripts/build_livecode_lessons.py

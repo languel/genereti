@@ -28,6 +28,7 @@ Continue with the [student quickstart](docs/student-quickstart.md), [shader, p5 
 
 ## What is included
 
+- **Webview:** editable HTML, Markdown with local math/diagrams, plain text and embedded URL pages; unchanged text ports and interactive output controls.
 - **Livecode:** p5, GLSL/multibuffer shaders, Three.js, HTML and document rendering, with editable parameters.
 - **Drawing and capture:** interactive Excalidraw, explicitly started camera/screen sources, and image output views.
 - **OpenTouch:** `top.*` textures, `chop.*` signals and `dat.*` data/lessons.

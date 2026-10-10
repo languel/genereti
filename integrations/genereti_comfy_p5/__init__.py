@@ -6,7 +6,8 @@ class GeneretiP5Extension(ComfyExtension):
     async def get_node_list(self):
         from .livecode_node import GeneretiLivecode, register_routes
         register_routes()
-        return [GeneretiLivecode]
+        from .document_node import GeneretiDocument
+        return [GeneretiLivecode, GeneretiDocument]
 
 
 async def comfy_entrypoint():

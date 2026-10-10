@@ -1,0 +1,132 @@
+{
+  "version": 0.4,
+  "last_node_id": 2,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiDocument",
+      "pos": [
+        60,
+        60
+      ],
+      "size": [
+        500,
+        430
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "format",
+          "name": "format",
+          "type": "COMBO",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDocument",
+        "generetiWebviewRendered": true
+      },
+      "widgets_values": [
+        "html",
+        "<!doctype html><html><head><title>Paper stage</title><style>\nbody{margin:0;background:#10151e;color:#eee;font-family:system-ui}button{font:inherit;color:inherit;background:#283344;border:0;border-radius:6px;padding:6px 10px}canvas{display:block;width:100%;height:240px}header{padding:12px}#status{margin-left:8px}\n</style></head><body><header><strong>Paper stage</strong> <button id=\"sound\">Start sound</button><span id=\"status\">Audio starts only when you click.</span></header><canvas id=\"stage\" width=\"640\" height=\"360\" aria-label=\"Interactive paper stage\"></canvas><p>Move over the stage to change its light and tone. Raw preserves this source; Rendered runs it.</p><script>\nconst canvas=document.querySelector('#stage'),ctx=canvas.getContext('2d');let pointer=.5,audio,osc,gain,active=false;window.startedAt=performance.now();window.draws=0;\ncanvas.onpointermove=e=>{pointer=(e.clientX-canvas.getBoundingClientRect().left)/canvas.getBoundingClientRect().width;if(osc)osc.frequency.setTargetAtTime(130+pointer*390,audio.currentTime,.05)};\ndocument.querySelector('#sound').onclick=async()=>{audio??=new AudioContext();await audio.resume();if(!osc){osc=audio.createOscillator();gain=audio.createGain();gain.gain.value=0;osc.type='sine';osc.connect(gain).connect(audio.destination);osc.start()}active=!active;gain.gain.setTargetAtTime(active?.06:0,audio.currentTime,.03);document.querySelector('#sound').textContent=active?'Mute sound':'Start sound';document.querySelector('#status').textContent=active?'Sound running · move on stage':'Muted';};\nfunction draw(now){window.draws++;ctx.fillStyle='#10151e';ctx.fillRect(0,0,640,360);for(let i=0;i<8;i++){ctx.save();ctx.translate(70+i*70,180+Math.sin(now*.001+i)*55);ctx.rotate(Math.sin(now*.0006+i)*.4);ctx.fillStyle=i%2?'#e5763b':'#315eca';ctx.globalAlpha=.35+pointer*.6;ctx.beginPath();ctx.moveTo(-40,70);ctx.lineTo(0,-80);ctx.lineTo(40,70);ctx.closePath();ctx.fill();ctx.restore()}requestAnimationFrame(draw)}requestAnimationFrame(draw);\n</script></body></html>\n"
+      ],
+      "widgets_values_named": {
+        "text": "<!doctype html><html><head><title>Paper stage</title><style>\nbody{margin:0;background:#10151e;color:#eee;font-family:system-ui}button{font:inherit;color:inherit;background:#283344;border:0;border-radius:6px;padding:6px 10px}canvas{display:block;width:100%;height:240px}header{padding:12px}#status{margin-left:8px}\n</style></head><body><header><strong>Paper stage</strong> <button id=\"sound\">Start sound</button><span id=\"status\">Audio starts only when you click.</span></header><canvas id=\"stage\" width=\"640\" height=\"360\" aria-label=\"Interactive paper stage\"></canvas><p>Move over the stage to change its light and tone. Raw preserves this source; Rendered runs it.</p><script>\nconst canvas=document.querySelector('#stage'),ctx=canvas.getContext('2d');let pointer=.5,audio,osc,gain,active=false;window.startedAt=performance.now();window.draws=0;\ncanvas.onpointermove=e=>{pointer=(e.clientX-canvas.getBoundingClientRect().left)/canvas.getBoundingClientRect().width;if(osc)osc.frequency.setTargetAtTime(130+pointer*390,audio.currentTime,.05)};\ndocument.querySelector('#sound').onclick=async()=>{audio??=new AudioContext();await audio.resume();if(!osc){osc=audio.createOscillator();gain=audio.createGain();gain.gain.value=0;osc.type='sine';osc.connect(gain).connect(audio.destination);osc.start()}active=!active;gain.gain.setTargetAtTime(active?.06:0,audio.currentTime,.03);document.querySelector('#sound').textContent=active?'Mute sound':'Start sound';document.querySelector('#status').textContent=active?'Sound running · move on stage':'Muted';};\nfunction draw(now){window.draws++;ctx.fillStyle='#10151e';ctx.fillRect(0,0,640,360);for(let i=0;i<8;i++){ctx.save();ctx.translate(70+i*70,180+Math.sin(now*.001+i)*55);ctx.rotate(Math.sin(now*.0006+i)*.4);ctx.fillStyle=i%2?'#e5763b':'#315eca';ctx.globalAlpha=.35+pointer*.6;ctx.beginPath();ctx.moveTo(-40,70);ctx.lineTo(0,-80);ctx.lineTo(40,70);ctx.closePath();ctx.fill();ctx.restore()}requestAnimationFrame(draw)}requestAnimationFrame(draw);\n</script></body></html>\n",
+        "format": "html"
+      },
+      "title": "ꘇ Paper stage · HTML + sound"
+    },
+    {
+      "id": 2,
+      "type": "GeneretiDocument",
+      "pos": [
+        600,
+        60
+      ],
+      "size": [
+        500,
+        430
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "format",
+          "name": "format",
+          "type": "COMBO",
+          "widget": {
+            "name": "format"
+          },
+          "link": null
+        },
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "text",
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDocument",
+        "generetiWebviewRendered": true
+      },
+      "widgets_values": [
+        "markdown",
+        "# Paper stage\n\nMove over the shapes, then press **Start sound**. No downloads or model server are needed.\n\nTry Raw / Rendered, Option+O and Option+W. The overlay keeps the running scene. Font: Cmd/Ctrl+Shift+Plus or Minus.\n\n## Oscillator\n\n$$f = 110 + 660x$$\n\n```mermaid\nflowchart LR\n Pointer --> Light\n Pointer --> Pitch\n Button --> Audio\n```\n\nHTML scripts run in an isolated frame. Separate windows and backdrops are independent instances. Audio begins only after a click.\n"
+      ],
+      "widgets_values_named": {
+        "text": "<!doctype html><html><head><title>Paper stage</title><style>\nbody{margin:0;background:#10151e;color:#eee;font-family:system-ui}button{font:inherit;color:inherit;background:#283344;border:0;border-radius:6px;padding:6px 10px}canvas{display:block;width:100%;height:240px}header{padding:12px}#status{margin-left:8px}\n</style></head><body><header><strong>Paper stage</strong> <button id=\"sound\">Start sound</button><span id=\"status\">Audio starts only when you click.</span></header><canvas id=\"stage\" width=\"640\" height=\"360\" aria-label=\"Interactive paper stage\"></canvas><p>Move over the stage to change its light and tone. Raw preserves this source; Rendered runs it.</p><script>\nconst canvas=document.querySelector('#stage'),ctx=canvas.getContext('2d');let pointer=.5,audio,osc,gain,active=false;window.startedAt=performance.now();window.draws=0;\ncanvas.onpointermove=e=>{pointer=(e.clientX-canvas.getBoundingClientRect().left)/canvas.getBoundingClientRect().width;if(osc)osc.frequency.setTargetAtTime(130+pointer*390,audio.currentTime,.05)};\ndocument.querySelector('#sound').onclick=async()=>{audio??=new AudioContext();await audio.resume();if(!osc){osc=audio.createOscillator();gain=audio.createGain();gain.gain.value=0;osc.type='sine';osc.connect(gain).connect(audio.destination);osc.start()}active=!active;gain.gain.setTargetAtTime(active?.06:0,audio.currentTime,.03);document.querySelector('#sound').textContent=active?'Mute sound':'Start sound';document.querySelector('#status').textContent=active?'Sound running · move on stage':'Muted';};\nfunction draw(now){window.draws++;ctx.fillStyle='#10151e';ctx.fillRect(0,0,640,360);for(let i=0;i<8;i++){ctx.save();ctx.translate(70+i*70,180+Math.sin(now*.001+i)*55);ctx.rotate(Math.sin(now*.0006+i)*.4);ctx.fillStyle=i%2?'#e5763b':'#315eca';ctx.globalAlpha=.35+pointer*.6;ctx.beginPath();ctx.moveTo(-40,70);ctx.lineTo(0,-80);ctx.lineTo(40,70);ctx.closePath();ctx.fill();ctx.restore()}requestAnimationFrame(draw)}requestAnimationFrame(draw);\n</script></body></html>\n",
+        "format": "html"
+      },
+      "title": "ꘇ Notebook · math + diagrams"
+    }
+  ],
+  "links": [],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        0,
+        0
+      ]
+    }
+  },
+  "id": "f5e488f1-d18c-4f5e-b745-3649598fc45d"
+}

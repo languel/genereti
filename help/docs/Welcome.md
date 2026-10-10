@@ -17,6 +17,7 @@ Genereti adds realtime creative tools to ComfyUI: live code, drawing, textures, 
 | TOP | Images, textures, and image operations |
 | CHOP | Numeric channels, modulation, LFOs, and gestures |
 | DAT | Text, documents, tables, and lessons |
+| Webview | Interactive HTML, Markdown with math/diagrams, literal text and embedded pages |
 | Livecode | p5, GLSL, Three.js, HTML, Markdown, and audio sketches |
 | Drawing and inputs | Interactive artwork and user-started media sources |
 | Performance | Shared time, musical timing, and automation |

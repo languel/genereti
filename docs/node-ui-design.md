@@ -316,3 +316,16 @@ on the edge bar before the node label as Restore node controls.
 Dynamic numeric parameters update display precision from their declared step,
 including fractional steps such as 0.025. Clean floating-point arithmetic noise
 from user edits without rounding connected signal values to display precision.
+
+Webview follows the same compact viewing toolbar: output window, overlay, visual
+node view and backdrop, followed by Raw, Rendered and explicit Reload. Raw edits
+the saved source; rendering and queued inputs do not rewrite STRING output or
+the local draft. Font changes update the existing document without restarting
+scripts. Overlay and visual node view retain the original interactive frame;
+separate output windows and backdrops are independent document instances.
+
+Authored HTML runs in an opaque sandbox; Markdown is sanitized. URL pages retain
+their origin for app APIs, so same-origin pages must be trusted. External frame
+policies and keyboard handling remain page-owned. Keep Cmd/Ctrl+O assigned to
+Comfy Open workflow; use the existing Option/Alt viewing shortcuts. See the
+[Webview quick reference](../help/docs/GeneretiDocument.md) for the user contract.
