@@ -2,6 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
+import {observeSurface} from '../integrations/genereti_comfy_stream/web/js/image-frame.js';
 import {sampleDue} from '../integrations/genereti_comfy_inputs/web/js/capture-frame.js';
 function fixture(){
  let extension,now=0,stops=0,previewPaints=0;const frames=[],elements=[];const preview={visible:true,minimized:false};
@@ -9,7 +10,7 @@ function fixture(){
  const element=tag=>{const e={tag,style:{},children:[],value:'',videoWidth:1920,videoHeight:1080,readyState:2,play:async()=>{},setAttribute(){},addEventListener(){},append(...xs){this.children.push(...xs);},add(o){this.children.push(o);if(this.children.length===1)this.value=o.value;},replaceChildren(...xs){this.children=xs;},getContext(){return {drawImage(){previewPaints++;}};}};elements.push(e);return e;};
  const track={stop(){stops++;},addEventListener(){}};const stream={getTracks:()=>[track],getVideoTracks:()=>[track]};
  const node={id:1,comfyClass:'GeneretiCameraCapture',properties:{},widgets:[],size:[400,400],addDOMWidget(name,type,container){const w={name,options:{},container};this.widgets.push(w);return w;}};
- const context=vm.createContext({app:{registerExtension(e){extension=e;},graph:{_nodes:[]}},api:{},Option,document:{createElement:element},window:{addEventListener(){},removeEventListener(){}},navigator:{mediaDevices:{getUserMedia:async()=>stream,enumerateDevices:async()=>[]}},performance:{now:()=>now},ensureControlStyle(){},previewState(){return preview;},sampleDue,drawSample(canvas,video,size,flip){canvas.width=size;canvas.height=Math.round(size*video.videoHeight/video.videoWidth);canvas.flipped=flip;},disposeSample(){},createImageBitmap:async canvas=>({width:canvas.width,height:canvas.height,flipped:canvas.flipped,close(){}}),publishLive(n,b){frames.push({width:b.width,flipped:b.flipped});},setInterval(){return 1;},clearInterval(){}});
+ const context=vm.createContext({observeSurface,previewControls(){return {actions:element('actions'),toolbar:element('toolbar'),getViewport(){},publish(){},close(){}};},frameControls(){return {row:element('dimensions'),size(w,h){return [w,h];}};},app:{registerExtension(e){extension=e;},graph:{_nodes:[]}},api:{},Option,document:{createElement:element},window:{addEventListener(){},removeEventListener(){}},navigator:{mediaDevices:{getUserMedia:async()=>stream,enumerateDevices:async()=>[]}},performance:{now:()=>now},ensureControlStyle(){},previewState(){preview.actions=element('preview-actions');return preview;},sampleDue,drawSample(canvas,video,size,flip){canvas.width=size.width;canvas.height=size.height;canvas.flipped=flip;},disposeSample(){},createImageBitmap:async canvas=>({width:canvas.width,height:canvas.height,flipped:canvas.flipped,close(){}}),publishLive(n,b){frames.push({width:b.width,flipped:b.flipped});},setInterval(){return 1;},clearInterval(){}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_inputs/web/js/capture.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,''),context);
  extension.getCustomWidgets().GENERETI_CAMERA_CAPTURE(node,'capture');extension.nodeCreated(node);
  return {node,elements,preview,frames,time(t){now=t;},counts:()=>({stops,previewPaints})};

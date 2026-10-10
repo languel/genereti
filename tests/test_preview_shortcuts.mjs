@@ -6,14 +6,14 @@ function fixture(){
  const app={graph:{},canvas:{selected_nodes:{}}},listeners={},calls=[],bindings=new Map(),commands=new Map();
  app.registerExtension=extension=>{for(const c of extension.commands)commands.set(c.id,c.function);for(const b of extension.keybindings)bindings.set(`${b.combo.key.toUpperCase()}:false:${Boolean(b.combo.alt)}:${Boolean(b.combo.shift)}`,b);};
  app.extensionManager={_p:{_s:new Map([['keybinding',{getKeybinding:key=>bindings.get(key.serialize())}]])},command:{execute:id=>{commands.get(id)?.();return Promise.resolve();}}};
- const context=vm.createContext({app,console,document:{getElementById:()=>null},moveActiveView:()=>false,window:{addEventListener:(name,fn)=>listeners[name]=fn}});
+ let hoveredId;const context=vm.createContext({app,console,document:{getElementById:()=>null,elementFromPoint:()=>hoveredId?{closest:()=>({dataset:{nodeId:hoveredId}})}:null},moveActiveView:()=>false,window:{addEventListener:(name,fn)=>listeners[name]=fn}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/keybinding-router.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/preview-shortcuts.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function'),context);
- const node={graph:app.graph},other={graph:app.graph};app.canvas.selected_nodes={1:node};
+ const node={id:1,graph:app.graph},other={id:2,graph:app.graph};app.canvas.selected_nodes={1:node};
  const controls={toggleBackdrop:()=>calls.push('backdrop'),toggleOverlay:()=>calls.push('overlay'),isHovered:()=>false};
  const unregister=context.registerPreviewShortcuts(node,controls);
  const key=(code,options={})=>{const event={code,key:code.slice(3).toLowerCase(),preventDefault(){this.defaultPrevented=true;},stopPropagation(){},stopImmediatePropagation(){},...options};listeners.keydown(event);return event;};
- return {app,context,node,other,controls,unregister,key,calls,listeners};
+ return {hover(id){hoveredId=id;listeners.pointermove({clientX:20,clientY:20});},app,context,node,other,controls,unregister,key,calls,listeners};
 }
 test('selected preview shortcuts use physical keys including Option-W',()=>{
  const f=fixture();f.key('KeyD');f.key('KeyW',{altKey:true,key:'∑'});assert.deepEqual(f.calls,['backdrop','overlay']);
@@ -88,4 +88,10 @@ test('Alt-O prefers an unselected node anywhere under the pointer',()=>{
  f.context.document.elementFromPoint=()=>({closest:()=>({dataset:{nodeId:'2'}})});
  f.listeners.pointermove({clientX:300,clientY:200});f.key('KeyO',{altKey:true});assert.deepEqual(f.calls,['hovered']);
  f.context.document.elementFromPoint=()=>({closest:()=>null});f.key('KeyO',{altKey:true});assert.deepEqual(f.calls,['hovered','selected']);
+});
+
+test('D prioritizes the pointer node and falls back to selection outside nodes',()=>{
+ const f=fixture();f.context.registerPreviewShortcuts(f.other,{toggleBackdrop:()=>f.calls.push('hovered')});
+ f.hover('2');f.key('KeyD');assert.deepEqual(f.calls,['hovered']);
+ f.hover(undefined);f.key('KeyD');assert.deepEqual(f.calls,['hovered','backdrop']);
 });

@@ -1,3 +1,5 @@
+import {frameControls,observeSurface} from '/extensions/genereti_comfy_stream/js/image-frame.js';
+import {previewControls} from '/extensions/genereti_comfy_stream/js/preview-controls.js';
 import { api } from "../../../scripts/api.js";
 import { app } from "../../../scripts/app.js";
 import { publishLive } from '../../../extensions/genereti_comfy_p5/js/live-runtime.js';
@@ -33,13 +35,16 @@ function makeCaptureWidget(node, inputName, kind) {
   const rate=select('Sampling rate · preview, live output and queued captures share the sampled frame', [['0','Hold input'],['0.2','0.2 fps'],['0.5','0.5 fps'],['1','1 fps'],['5','5 fps'],['15','15 fps'],['30','30 fps']]);
   const icon=(glyph,label)=>{const el=document.createElement('button');el.type='button';el.textContent=glyph;el.title=label;el.setAttribute('aria-label',label);return el;};
   const flip=icon('↔','Flip horizontally · affects preview and output');
-  controls.append(device,flip,size,rate);
+  controls.append(device,flip,rate);
   const status=document.createElement('span');Object.assign(status.style,{fontSize:'11px',opacity:'.75'});
   const video=document.createElement('video'); video.muted=true;video.playsInline=true;
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=288;
   Object.assign(canvas.style,{display:'block',width:'100%',height:'auto',aspectRatio:'16 / 9',objectFit:'contain',background:'transparent',borderRadius:'4px'});
   const sampled=document.createElement('canvas');
-  container.append(controls,canvas,status);
+  node.properties??={};node.properties.genereti_capture_frame??={mode:'fixed',width:512,height:288};
+  const visibility=observeSurface(canvas);const output=previewControls(canvas,status,node,()=>{}, {fitTarget:null,onFitChange:()=>void sample(true)});
+  const dimensions=frameControls(node,sampled,async()=>{if(camera&&state.stream){const [width,height]=dimensions.size(video.videoWidth,video.videoHeight,output.getViewport());try{await state.stream.getVideoTracks()[0]?.applyConstraints?.({width:{ideal:width},height:{ideal:height}});}catch(e){status.textContent='Camera resolution: '+e.message;}}await sample(true);},'genereti_capture_frame');
+  container.append(output.actions,controls,canvas,status);
   function paintFrame(){
     const changed=canvas.width!==sampled.width||canvas.height!==sampled.height;
     if(changed){canvas.width=sampled.width;canvas.height=sampled.height;canvas.style.aspectRatio=`${sampled.width} / ${sampled.height}`;}
@@ -47,6 +52,7 @@ function makeCaptureWidget(node, inputName, kind) {
     if(changed)node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);
   }
   const preview=previewState(node,canvas,{resize:()=>{if(state.hasFrame&&preview.visible)paintFrame();node.graph?.setDirtyCanvas?.(true,true);}});
+  for(const row of [preview.actions,output.toolbar,dimensions.row])row.style.display='contents';output.actions.append(preview.actions,output.toolbar,dimensions.row);
   Object.assign(state,{video,canvas:sampled});node._generetiCapture=state;
   node.properties??={};
   let prefs={size:512,fps:30,flip:false,...node.properties.genereti_capture};
@@ -59,8 +65,8 @@ function makeCaptureWidget(node, inputName, kind) {
   const sample=async(force=false)=>{
     if(state.busy || !state.stream || video.readyState<2 || (!force && !sampleDue(performance.now(),state.last,prefs.fps,false,state.hasFrame)))return;
     state.last=performance.now();state.busy=true;const epoch=state.epoch;
-    try{drawSample(sampled,video,prefs.size,prefs.flip);}catch(error){state.busy=false;status.textContent=error.message;return;}
-    state.hasFrame=true;if(preview.visible)paintFrame();paint();
+    try{const [width,height]=dimensions.size(video.videoWidth,video.videoHeight,output.getViewport());drawSample(sampled,video,{width,height,fit:node.properties.genereti_preview_fit||'contain'},prefs.flip);}catch(error){state.busy=false;status.textContent=error.message;return;}
+    state.hasFrame=true;if(preview.visible&&visibility.visible)paintFrame();output.publish({bitmap:sampled});paint();
     try{if(state.users){const bitmap=await createImageBitmap(sampled);try{if(epoch===state.epoch&&state.stream)publishLive(node,bitmap);}finally{bitmap.close();}}}
     catch(error){status.textContent=`Capture failed: ${error.message}`;}finally{state.busy=false;}
   };
@@ -78,13 +84,13 @@ function makeCaptureWidget(node, inputName, kind) {
     if(state.starting)return;state.starting=true;paint();const epoch=++state.epoch;
     try{
       const media=navigator.mediaDevices;if(!media)throw Error('Capture is unavailable in this browser.');
-      const stream=camera?await media.getUserMedia({video:{...(device.value?{deviceId:{exact:device.value}}:{}),width:{ideal:prefs.size||1920},frameRate:{ideal:30}},audio:false}):await media.getDisplayMedia({video:true,audio:false});
+      const stream=camera?await media.getUserMedia({video:{...(device.value?{deviceId:{exact:device.value}}:{}),width:{ideal:dimensions.size(1920,1080,output.getViewport())[0]},height:{ideal:dimensions.size(1920,1080,output.getViewport())[1]},frameRate:{ideal:30}},audio:false}):await media.getDisplayMedia({video:true,audio:false});
       if(epoch!==state.epoch){stream.getTracks().forEach(t=>t.stop());return;}
       state.stream=stream;video.srcObject=stream;await video.play();
       state.hasFrame=false;state.last=-Infinity;node._generetiLivePaused=false;
       stream.getVideoTracks()[0]?.addEventListener('ended',()=>{if(state.stream===stream)stopCapture();},{once:true});
       if(camera)await enumerate();
-      await sample();state.timer=setInterval(()=>{if(preview.visible||state.users)void sample();},1000/60);
+      await sample();state.timer=setInterval(()=>{if(preview.visible&&visibility.visible||state.users||output.getViewport())void sample();},1000/60);
     }catch(error){stopCapture();status.textContent=`Capture failed: ${error.message}`;}
     finally{state.starting=false;node._generetiTransportRefresh?.();}
   };
@@ -98,16 +104,16 @@ function makeCaptureWidget(node, inputName, kind) {
   device.onchange=async()=>{if(state.stream){stopCapture();await beginCapture();}};
   const configured=node.onConfigure;node.onConfigure=function(info){const result=configured?.apply(this,arguments);prefs={...prefs,...info?.properties?.genereti_capture};paint();return result;};
   const widget=node.addDOMWidget(inputName,spec.widget,container,{serialize:true,hideOnZoom:false});
-  widget.computeSize=width=>[width,(preview.minimized?0:Math.max(0,width-24)*canvas.height/canvas.width)+110];
+  widget.computeSize=width=>[width,(preview.minimized?0:Math.max(0,width-24)*canvas.height/canvas.width)+160];
   container.addEventListener('pointerdown',event=>event.stopPropagation());
   node._generetiLiveSource={retain(){state.users++;if(state.hasFrame)void (async()=>{const bitmap=await createImageBitmap(sampled);try{publishLive(node,bitmap);}finally{bitmap.close();}})();},release(){state.users=Math.max(0,state.users-1);}};
-  const cleanup=()=>{stopCapture();disposeSample(sampled);};window.addEventListener('pagehide',cleanup,{once:true});state.stopCapture=()=>{window.removeEventListener('pagehide',cleanup);cleanup();};paint();if(camera)void enumerate();return {widget};
+  const cleanup=()=>{stopCapture();visibility.dispose();output.close();disposeSample(sampled);};window.addEventListener('pagehide',cleanup,{once:true});state.stopCapture=()=>{window.removeEventListener('pagehide',cleanup);cleanup();};paint();if(camera)void enumerate();return {widget};
 }
 
 async function captureToComfy(node, kind) {
   const source = SOURCES[kind].label;
   const direct=(node.outputs?.[0]?.links??[]).some(id=>{const link=node.graph?.links?.[id];return node.graph?.getNodeById(link?.target_id)?.comfyClass!=='GeneretiInputSelect';});
-  if (!direct && selectedSource().length && !selectedSource().includes(source)) return `GENERETI_OFF:${source}`;
+  if (!direct && !selectedSource().includes(source)) return `GENERETI_OFF:${source}`;
 
   const state = node._generetiCapture;
   const video = state?.video;

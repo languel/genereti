@@ -57,11 +57,13 @@ function videoSource(node) {
   return node._generetiLiveSource;
 }
 
-export function subscribeLive(node, onFrame, onStatus=()=>{}, {gpu=false}={}) {
+export function subscribeLive(node, onFrame, onStatus=()=>{}, {gpu=false,inputName}={}) {
   let source=undefined, sourceSlot=0,driver=null, disposed=false;
   const bind = () => {
-    const next=resolveLiveSource(node);
-    const nextSlot=liveOutputSlot(node,next);
+    let graph;try{graph=node.graph;}catch{return;}if(inputName&&!graph)return;
+    const slot=inputName?node.inputs?.findIndex(i=>i.name===inputName):-1;const link=slot>=0?(node.getInputLink?.(slot)??graph?.links?.[node.inputs[slot].link]):null;const target=inputName?graph?.getNodeById(link?.origin_id):node;
+    const next=resolveLiveSource(target);
+    const nextSlot=target===next?(link?.origin_slot??0):liveOutputSlot(target,next);
     if (next===source&&nextSlot===sourceSlot) return;
     driver?.release(sourceSlot);source=next;sourceSlot=nextSlot;driver=null;
     if (source) {
@@ -87,7 +89,7 @@ export function subscribeLive(node, onFrame, onStatus=()=>{}, {gpu=false}={}) {
 
 // Shared browser transport choice. This is workflow UI state, never a model
 // parameter and never an instruction to queue the Python graph automatically.
-const browserNodes=new Set(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator','GeneretiDrawing','GeneretiLivecode','GeneretiCameraCapture','GeneretiScreenCapture','GeneretiLiveImagePreview','GeneretiProjector']);
+const browserNodes=new Set(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator','GeneretiDrawing','GeneretiLivecode','GeneretiCameraCapture','GeneretiScreenCapture','GeneretiLiveImagePreview','GeneretiImageCompare','GeneretiMediaStream','GeneretiProjector']);
 export function attachExecutionMode(node){
   if(node._generetiExecutionModeWidget)return;
   ensureControlStyle();

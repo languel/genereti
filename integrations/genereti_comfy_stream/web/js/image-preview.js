@@ -1,15 +1,25 @@
+import {frameControls,paintImage,observeSurface} from './image-frame.js';
 import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
 import {previewWidgetHeight} from '/extensions/genereti_comfy_p5/js/widget-layout.js';
 import { app } from '../../../scripts/app.js';
 import { previewControls } from './preview-controls.js';
 import { subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
 
+const resolutionId='Genereti.Preview.QueuedResolution';
+const queuedResolution=()=>Number(app.ui?.settings?.getSettingValue(resolutionId)??512);
+
 app.registerExtension({
   name: 'Genereti.LiveImagePreview',
+  settings:[{id:resolutionId,name:'Queued preview resolution',category:['Genereti','Previews','Queued resolution'],type:'combo',options:[128,256,512,1024,2048],defaultValue:512,tooltip:'Maximum thumbnail width and height after Comfy Queue, preserving proportions. Lower values reduce encoding time and data transfer; higher values show finer detail, including in Alt-O and Alt-W previews. Does not affect live streams or full-resolution image input/output.',onChange(value){for(const node of app.graph?._nodes||[]){if(node.comfyClass==='GeneretiLiveImagePreview'){const widget=node.widgets?.find(w=>w.name==='preview_size');if(widget)widget.value=Number(value);}}}}],
   nodeCreated(node) {
     if (node.comfyClass !== 'GeneretiLiveImagePreview') return;
     node.title='ꘇ image preview';
     node.widgets=node.widgets?.filter(widget=>widget.name!=='jpeg_quality')||[];
+    const limit=node.widgets.find(w=>w.name==='preview_size');if(limit){
+      limit.type='converted-widget';limit.hidden=true;limit.computeSize=()=>[0,-4];
+      limit.value=queuedResolution();limit.serializeValue=()=>queuedResolution();
+      const configured=node.onConfigure;node.onConfigure=function(){configured?.apply(this,arguments);limit.value=queuedResolution();};
+    }
     let disposed = false, revision = 0, last = 0, lastBrowserFrame = 0, unsubscribe = null, frameTimes = [], lastStatus = -Infinity;
     const container = document.createElement('div');container.classList.add('genereti-live-surface');
     container.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:6px';
@@ -19,32 +29,34 @@ app.registerExtension({
     const canvas = document.createElement('canvas');
     canvas.width = canvas.height = 512;
     canvas.style.cssText = 'display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:transparent';
+    let latest;const dimensions=frameControls(node,canvas,()=>{if(latest&&localPreview.visible){dimensions.resize(latest.width||latest.naturalWidth,latest.height||latest.naturalHeight,output.getViewport());paintImage(canvas,latest,node.properties.genereti_preview_fit);}});
+    const visibility=observeSurface(canvas,()=>{if(latest&&localPreview.visible){dimensions.resize(latest.naturalWidth,latest.naturalHeight,output.getViewport());paintImage(canvas,latest,node.properties.genereti_preview_fit);}});
     const localPreview=previewState(node,canvas);
     const realtime=document.createElement('button');
     realtime.type='button';realtime.textContent='Start realtime';realtime.hidden=true;
-    const output=previewControls(canvas,status,node,()=>{performancePanel.open=true;});
+    const output=previewControls(canvas,status,node,()=>{performancePanel.open=true;},{onFitChange:()=>{if(latest&&localPreview.visible)paintImage(canvas,latest,node.properties.genereti_preview_fit);}});
     const performancePanel=document.createElement('details');
     const summary=document.createElement('summary');summary.title='Performance details';summary.setAttribute('aria-label','Performance details');
     summary.style.cssText='cursor:pointer;width:30px;min-height:24px';
     performancePanel.append(summary,status);
-    container.append(realtime,output.toolbar,localPreview.actions,canvas,performancePanel);
+    for(const row of [localPreview.actions,output.toolbar,dimensions.row])row.style.display='contents';output.actions.append(localPreview.actions,output.toolbar,dimensions.row);
+    container.append(realtime,output.actions,canvas,performancePanel);
     node._generetiMountTransport=()=>node._generetiExecutionModeElement?.append(output.actions);
     node._generetiMountTransport();
     const widget = node.addDOMWidget('live_image_preview', 'GENERETI_IMAGE_PREVIEW', container, {serialize:false});
-    const requiredHeight=(width=node.size[0])=>previewWidgetHeight(width,localPreview.minimized?0:canvas.height/canvas.width,102+(performancePanel.open?status.offsetHeight+6:0),widget.margin??10);
+    const requiredHeight=(width=node.size[0])=>previewWidgetHeight(width,localPreview.minimized?0:canvas.height/canvas.width,134+(performancePanel.open?status.offsetHeight+6:0),widget.margin??10);
     widget.computeSize = (width=node.size[0]) => [width,requiredHeight(width)];
     widget.options.getMinHeight=requiredHeight;
     widget.options.getMaxHeight=requiredHeight;
-    const resizeCanvas=(width,height)=>{if(canvas.width===width&&canvas.height===height)return;canvas.width=width;canvas.height=height;canvas.style.aspectRatio=`${width} / ${height}`;node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);};
+    const resizeCanvas=(width,height)=>{if(!dimensions.resize(width,height,output.getViewport()))return;node.setSize?.([node.size[0],Math.max(node.size[1],node.computeSize()[1])]);};
     performancePanel.ontoggle=()=>{node.setSize?.([node.size[0],node.computeSize()[1]]);node.graph?.setDirtyCanvas?.(true,true);};
     realtime.onclick=()=>{
       if(unsubscribe){unsubscribe();unsubscribe=null;realtime.textContent='Start realtime';status.textContent='Browser clock paused';return;}
       last=0;frameTimes=[];lastStatus=-Infinity;realtime.textContent='Pause realtime';
       unsubscribe=subscribeLive(node,({bitmap,producedAt})=>{
         lastBrowserFrame=performance.now();
-        if(localPreview.visible){resizeCanvas(bitmap.width,bitmap.height);
-        canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-        canvas.getContext('2d').drawImage(bitmap,0,0);
+        if(localPreview.visible&&visibility.visible){resizeCanvas(bitmap.width,bitmap.height);
+        paintImage(canvas,bitmap,node.properties.genereti_preview_fit);
         }
         output.publish({bitmap});
         const now=performance.now();
@@ -74,9 +86,8 @@ app.registerExtension({
       const image = new Image();
       image.onload = () => {
         if (disposed || current !== revision) return;
-        if(localPreview.visible){resizeCanvas(image.naturalWidth,image.naturalHeight);
-        canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-        canvas.getContext('2d').drawImage(image,0,0);
+        latest=image;if(localPreview.visible&&visibility.visible){resizeCanvas(image.naturalWidth,image.naturalHeight);
+        paintImage(canvas,image,node.properties.genereti_preview_fit);
         }
         output.publish({src});
         const now = performance.now();
@@ -87,7 +98,7 @@ app.registerExtension({
       image.src = src;
     };
     const removed = node.onRemoved;
-    node.onRemoved = function() { disposed = true; revision++; unsubscribe?.();output.close(); return removed?.apply(this, arguments); };
+    node.onRemoved = function() { disposed = true; revision++; unsubscribe?.();visibility.dispose();output.close(); return removed?.apply(this, arguments); };
     window.addEventListener('pagehide', () => {unsubscribe?.();output.close();}, {once:true});
   },
 });

@@ -329,3 +329,5 @@ their origin for app APIs, so same-origin pages must be trusted. External frame
 policies and keyboard handling remain page-owned. Keep Cmd/Ctrl+O assigned to
 Comfy Open workflow; use the existing Option/Alt viewing shortcuts. See the
 [Webview quick reference](../help/docs/GeneretiDocument.md) for the user contract.
+
+D uses the same node-under-pointer priority as Alt-O, falling back to selection. Image surfaces share explicit width/height and Match source / Match output choices, plus Contain, Cover, Stretch and Native pixels. Capture framing applies to sampled output; viewer framing leaves passthrough IMAGE batches unchanged.

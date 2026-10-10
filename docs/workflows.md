@@ -4,6 +4,8 @@ Open **Workflows → Genereti** or **Templates → genereti**. These demos requi
 
 Try [ꘇ-Webview-Paper-Stage](../example_workflows/ꘇ-Webview-Paper-Stage.json) for an interactive HTML scene with optional audio and a math/diagram notebook.
 
+Try [ꘇ-2D-Stream-Compare](../example_workflows/ꘇ-2D-Stream-Compare.json) for browser media sources and live A/B comparison. Files, animated GIFs and direct video/image URLs share explicit sizing and fit controls.
+
 Start with Performance Timeline, then the shader, p5 and audiovisual tutorials.
 
 - [ꘇ-Class-Feedback-Bloom-Displace](../example_workflows/ꘇ-Class-Feedback-Bloom-Displace.json)

@@ -2,20 +2,21 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {previewWidgetHeight} from '../integrations/genereti_comfy_p5/web/js/widget-layout.js';
+import {paintImage,observeSurface} from '../integrations/genereti_comfy_stream/web/js/image-frame.js';
 import {readFileSync} from 'node:fs';
 
 function fixture(clock=performance){
  const elements=[],draws=[],outputs=[];let extension,frame,release=0,closed=0;const localPreview={visible:true,minimized:false};
  const element=tag=>{const e={tag,children:[],style:{},classList:{add(){}},setAttribute(k,v){this[k]=v;},append(...items){this.children.push(...items);},getContext(){return {clearRect(){draws.push('clear');},drawImage(image){draws.push(image);}};}};elements.push(e);return e;};
- const context=vm.createContext({previewWidgetHeight,document:{createElement:element},window:{addEventListener(){}},performance:clock,app:{registerExtension(value){extension=value;}},previewState(){localPreview.actions=element('preview-actions');return localPreview;},previewControls(canvas){return {toolbar:element('toolbar'),publish(value){outputs.push(value);},close(){closed++;}};},subscribeLive(node,callback){frame=callback;return ()=>release++;},Image:class{set src(value){this.naturalWidth=12;this.naturalHeight=8;this.onload();}}});
+ const context=vm.createContext({observeSurface,paintImage,frameControls(node,canvas){return {row:element('dimensions'),resize(w,h){canvas.width=w;canvas.height=h;return true;}};},previewWidgetHeight,document:{createElement:element},window:{addEventListener(){}},performance:clock,app:{registerExtension(value){extension=value;}},previewState(){localPreview.actions=element('preview-actions');return localPreview;},previewControls(canvas){return {actions:element('window-actions'),toolbar:element('toolbar'),getViewport(){},publish(value){outputs.push(value);},close(){closed++;}};},subscribeLive(node,callback){frame=callback;return ()=>release++;},Image:class{set src(value){this.naturalWidth=12;this.naturalHeight=8;this.onload();}}});
  const source=readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/image-preview.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'');vm.runInContext(source,context);
- const node={size:[400,480],comfyClass:'GeneretiLiveImagePreview',widgets:[{name:'preview_size'},{name:'jpeg_quality'}],addDOMWidget(name,type,container){this.container=container;return {options:{},margin:10};}};extension.nodeCreated(node);
+ const node={properties:{},size:[400,480],comfyClass:'GeneretiLiveImagePreview',widgets:[{name:'preview_size'},{name:'jpeg_quality'}],addDOMWidget(name,type,container){this.container=container;return {options:{},margin:10};}};extension.nodeCreated(node);
  return {node,elements,draws,outputs,localPreview,frame:bitmap=>frame({bitmap,producedAt:clock.now()}),counts:()=>({release,closed})};
 }
 
 test('Live preview clears alpha and forwards direct frames, Queue decodes once, cleanup releases viewers',()=>{
  const f=fixture();assert.equal(f.node.title,'ꘇ image preview');assert.equal(f.node.widgets.length,1);
- assert.deepEqual(f.node.container.children.map(e=>e.tag),['button','toolbar','preview-actions','canvas','details']);
+ assert.deepEqual(f.node.container.children.map(e=>e.tag),['button','window-actions','canvas','details']);
  const details=f.elements.find(e=>e.tag==='details');assert.equal(Boolean(details.open),false);
  const bitmap={width:16,height:9};f.frame(bitmap);assert.equal(f.draws[0],'clear');assert.equal(f.draws[1],bitmap);assert.equal(f.outputs[0].bitmap,bitmap);
  f.node._generetiSetExecutionMode('Comfy Queue');f.node.onExecuted({genereti_preview:['data:image/png;base64,alpha']});
@@ -40,4 +41,10 @@ test('Live FPS reflects recent frames after an idle gap instead of the session a
  const status=f.elements.find(e=>e.tag==='span');
  assert.match(status.textContent,/^30\.0 fps/);
  assert.equal(f.outputs.length,63);
+});
+
+test('Queued resolution is global and hidden on the node',()=>{
+ const f=fixture();const limit=f.node.widgets.find(w=>w.name==='preview_size');
+ assert.equal(limit.hidden,true);assert.equal(limit.serializeValue(),512);
+ limit.value=2048;f.node.onConfigure();assert.equal(limit.value,512);
 });

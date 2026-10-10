@@ -30,6 +30,18 @@ class GeneretiLiveImagePreview(io.ComfyNode):
         return io.NodeOutput(image,ui={'genereti_preview':[data],
             'genereti_preview_ms':[round((time.perf_counter()-start)*1000,2)]})
 
+class GeneretiImageCompare(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(node_id='GeneretiImageCompare', display_name='ꘇ image compare', category='Genereti / Streams',
+            is_output_node=True, description='Live A/B image comparison with wipe, side-by-side and difference views. Outputs preserve the original A and B batches.',
+            inputs=[io.Image.Input('a'), io.Image.Input('b')], outputs=[io.Image.Output(display_name='a'), io.Image.Output(display_name='b')])
+    @classmethod
+    def execute(cls, a, b):
+        left=GeneretiLiveImagePreview.execute(a).ui['genereti_preview']
+        right=GeneretiLiveImagePreview.execute(b).ui['genereti_preview']
+        return io.NodeOutput(a,b,ui={'genereti_compare_a':left,'genereti_compare_b':right})
+
 class GeneretiStreams(ComfyExtension):
     async def get_node_list(self):
-        return [GeneretiLiveImagePreview]
+        return [GeneretiLiveImagePreview, GeneretiImageCompare]

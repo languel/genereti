@@ -1,5 +1,7 @@
 """Genereti ComfyUI nodes for selecting guide images and sharing a window."""
 
+from io import BytesIO
+import base64
 import folder_paths
 import numpy as np
 import torch
@@ -132,9 +134,38 @@ class GeneretiScreenCapture(_GeneretiBrowserCapture):
         )
 
 
+class GeneretiMediaStream(_GeneretiBrowserCapture):
+    capture_name = '2D stream'
+    widget_type = 'GENERETI_MEDIA_STREAM'
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(node_id='GeneretiMediaStream', display_name='ꘇ 2D stream', category='Genereti / Streams',
+            description='Stream a local image, video or GIF, a direct media URL, or an upstream live IMAGE. Start playback explicitly. Queue uploads the currently sampled frame.',
+            inputs=[cls.capture_input(), io.Image.Input('image', optional=True)], outputs=[io.Image.Output(display_name='image')])
+    @classmethod
+    def fingerprint_inputs(cls, capture=None, image=None):
+        return capture or 'GENERETI_OFF:2D stream'
+    @classmethod
+    def execute(cls, capture=None, image=None):
+        if capture and not capture.startswith('GENERETI_OFF:'):
+            with Image.open(folder_paths.get_annotated_filepath(capture)) as frame:
+                rgba = frame.convert('RGBA')
+                mode = 'RGBA' if rgba.getextrema()[3][0] < 255 else 'RGB'
+                pixels = np.asarray(frame.convert(mode), dtype=np.float32) / 255.0
+            image = torch.from_numpy(pixels.copy()).unsqueeze(0)
+        if image is None:
+            raise ValueError('Load media, or connect an IMAGE source before queueing.')
+        pixels = (image[0].detach().cpu().numpy().clip(0, 1) * 255).astype(np.uint8)
+        preview = Image.fromarray(pixels)
+        preview.thumbnail((1024, 1024), Image.Resampling.BILINEAR)
+        buffer = BytesIO()
+        preview.save(buffer, format='PNG')
+        src = 'data:image/png;base64,' + base64.b64encode(buffer.getvalue()).decode()
+        return io.NodeOutput(image, ui={'genereti_media_frame': [src]})
+
 class GeneretiComfyInputs(ComfyExtension):
     async def get_node_list(self):
-        return [GeneretiInputSelect, GeneretiCameraCapture, GeneretiScreenCapture]
+        return [GeneretiInputSelect, GeneretiCameraCapture, GeneretiScreenCapture, GeneretiMediaStream]
 
 
 async def comfy_entrypoint():
