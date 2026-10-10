@@ -42,6 +42,33 @@ class GeneretiImageCompare(io.ComfyNode):
         right=GeneretiLiveImagePreview.execute(b).ui['genereti_preview']
         return io.NodeOutput(a,b,ui={'genereti_compare_a':left,'genereti_compare_b':right})
 
+class GeneretiPerformanceProbe(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(node_id='GeneretiPerformanceProbe', display_name='ꘇ performance probe', category='Genereti / Streams',
+            search_aliases=['fps', 'performance', 'probe', 'monitor'], is_output_node=True, not_idempotent=True,
+            description='Observe live frame/control delivery rates and queued output metadata without copying pixels. Connect any output.',
+            inputs=[io.AnyType.Input('input')], outputs=[])
+    @classmethod
+    def execute(cls, input):
+        info={'type':type(input).__name__}
+        if hasattr(input,'shape'):
+            info['shape']=list(input.shape)
+            info['dtype']=str(input.dtype)
+            if hasattr(input,'element_size') and hasattr(input,'numel'):
+                info['bytes']=input.numel()*input.element_size()
+        elif isinstance(input,dict):
+            info['keys']=list(map(str,list(input)[:16]))
+            channels=input.get('channels')
+            if isinstance(channels,dict):
+                info['channels']=len(channels)
+                info['samples']={str(k):len(v) for k,v in list(channels.items())[:8] if hasattr(v,'__len__')}
+            for key in ['sampleRate','sample_rate','time']:
+                if isinstance(input.get(key),(int,float,str)):info[key]=input[key]
+        elif isinstance(input,(str,list,tuple)):
+            info['length']=len(input)
+        return io.NodeOutput(ui={'genereti_probe':[info]})
+
 class GeneretiStreams(ComfyExtension):
     async def get_node_list(self):
-        return [GeneretiLiveImagePreview, GeneretiImageCompare]
+        return [GeneretiLiveImagePreview, GeneretiImageCompare, GeneretiPerformanceProbe]

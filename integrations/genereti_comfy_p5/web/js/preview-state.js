@@ -8,12 +8,13 @@ export function previewState(node, surface, {capture, resize=()=>{},getFit=()=>'
   const button=(glyph,title)=>{const b=document.createElement('button');b.type='button';b.textContent=glyph;b.title=title;b.setAttribute('aria-label',title);actions.append(b);return b;};
   const minimize=button('⌄','Minimize node preview only · downstream frames continue');
   const freeze=button('❄','Freeze node preview only · downstream frames continue');
+  const oldDisplay=surface.style.display;
   const oldHeight=surface.style.height, oldMinHeight=surface.style.minHeight, oldOverflow=surface.style.overflow, oldFlex=surface.style.flex, oldMaxHeight=surface.style.maxHeight;
   const iframe=Boolean(capture);
   function paint(){
     freeze.setAttribute('aria-pressed',String(frozen));minimize.setAttribute('aria-pressed',String(minimized));minimize.textContent=minimized?'›':'⌄';minimize.title=minimized?'Restore node preview · downstream frames continue':'Minimize node preview only · downstream frames continue';minimize.setAttribute('aria-label',minimize.title);
     if(iframe){surface.style.flex=minimized?'0 0 0':oldFlex;surface.style.maxHeight=minimized?'0px':oldMaxHeight;surface.style.height=minimized?'0px':oldHeight;surface.style.minHeight=minimized?'0px':oldMinHeight;surface.style.overflow=minimized?'hidden':oldOverflow;surface.style.opacity=minimized?'0':'1';}
-    else surface.hidden=minimized;
+    else {surface.hidden=minimized;surface.style.display=minimized?'none':oldDisplay;}
     resize();node.graph?.setDirtyCanvas?.(true,true);
   }
   freeze.onclick=async()=>{
@@ -27,5 +28,5 @@ export function previewState(node, surface, {capture, resize=()=>{},getFit=()=>'
   };
   minimize.onclick=()=>{minimized=!minimized;paint();};
   if(surface.parentNode)surface.parentNode.insertBefore(actions,surface);
-  return {get frozen(){return frozen;},setFit(value){if(snapshotImage)snapshotImage.style.objectFit=value==='native'?'none':value;},get visible(){return !frozen&&!minimized;},get minimized(){return minimized;},actions};
+  return {get frozen(){return frozen;},setFit(value){if(snapshotImage)snapshotImage.style.objectFit=value==='native'?'none':value;},get visible(){return !frozen&&!minimized;},get minimized(){return minimized;},actions,minimize};
 }

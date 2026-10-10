@@ -34,12 +34,13 @@ app.registerExtension({
     const localPreview=previewState(node,canvas);
     const realtime=document.createElement('button');
     realtime.type='button';realtime.textContent='Start realtime';realtime.hidden=true;
-    const output=previewControls(canvas,status,node,()=>{performancePanel.open=true;},{onFitChange:()=>{if(latest&&localPreview.visible)paintImage(canvas,latest,node.properties.genereti_preview_fit);}});
-    const performancePanel=document.createElement('details');
+    const output=previewControls(canvas,status,node,()=>{performancePanel.hidden=false;performancePanel.open=true;},{onFitChange:()=>{if(latest&&localPreview.visible)paintImage(canvas,latest,node.properties.genereti_preview_fit);}});
+    const performancePanel=document.createElement('details');performancePanel.className='genereti-disclosure';performancePanel.hidden=true;
     const summary=document.createElement('summary');summary.title='Performance details';summary.setAttribute('aria-label','Performance details');
     summary.style.cssText='cursor:pointer;width:30px;min-height:24px';
     performancePanel.append(summary,status);
     for(const row of [localPreview.actions,output.toolbar,dimensions.row])row.style.display='contents';output.actions.append(localPreview.actions,output.toolbar,dimensions.row);
+ output.actions.prepend(localPreview.minimize);
     container.append(realtime,output.actions,canvas,performancePanel);
     node._generetiMountTransport=()=>node._generetiExecutionModeElement?.append(output.actions);
     node._generetiMountTransport();
@@ -94,7 +95,7 @@ app.registerExtension({
         status.textContent = `${last ? (1000/(now-last)).toFixed(1) : '—'} fps · ${message.genereti_preview_ms?.[0] ?? '—'} ms encode`;
         last = now;
       };
-      image.onerror = () => { if (current === revision && !disposed) {status.textContent = 'Preview decode failed';performancePanel.open=true;} };
+      image.onerror = () => { if (current === revision && !disposed) {status.textContent = 'Preview decode failed';performancePanel.hidden=false;performancePanel.open=true;} };
       image.src = src;
     };
     const removed = node.onRemoved;

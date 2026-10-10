@@ -7,3 +7,5 @@ Preview dimensions can **Match source**, **Match output window**, or use explici
 Freeze and minimize skip local drawing while forwarding fresh frames to downstream viewers. Window, overlay, visual node view and backdrop use the standard Genereti controls. D targets the node under the pointer and falls back to selection.
 
 Queued preview resolution is set globally in **Genereti settings → Previews** (default 512 px). Its hover tip explains quality and speed. This only limits queued thumbnails, including Alt-O and Alt-W views; live frames and full-resolution IMAGE input/output remain unchanged. Existing workflows use the global value when queued in the browser.
+
+For FPS and delivery timings, connect a **performance probe**. The preview itself only exposes its error disclosure when needed.

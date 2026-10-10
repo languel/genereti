@@ -9,6 +9,11 @@ export function ensureControlStyle() {
 .genereti-node-controls{display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;color:var(--fg-color,#eee)}
 .genereti-lightning{display:inline-block;line-height:1;transform:scaleY(1.2);transform-origin:center}
 .genereti-node-controls:empty{display:none}
+.genereti-disclosure>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:4px;min-height:20px}
+.genereti-disclosure>summary::-webkit-details-marker{display:none}
+.genereti-disclosure>summary::before{content:'';width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);margin:0 7px 0 4px}
+.genereti-disclosure[open]>summary::before{transform:rotate(45deg)}
+
 .genereti-node-controls[hidden]{display:none!important}
 /* Vue expands DOM widget grid tracks by default. Transport/settings rows
    are content-sized; livecode has its own editor-only expanding track. */

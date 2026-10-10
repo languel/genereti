@@ -44,7 +44,7 @@ function makeCaptureWidget(node, inputName, kind) {
   node.properties??={};node.properties.genereti_capture_frame??={mode:'fixed',width:512,height:288};
   const visibility=observeSurface(canvas);const output=previewControls(canvas,status,node,()=>{}, {fitTarget:null,onFitChange:()=>void sample(true)});
   const dimensions=frameControls(node,sampled,async()=>{if(camera&&state.stream){const [width,height]=dimensions.size(video.videoWidth,video.videoHeight,output.getViewport());try{await state.stream.getVideoTracks()[0]?.applyConstraints?.({width:{ideal:width},height:{ideal:height}});}catch(e){status.textContent='Camera resolution: '+e.message;}}await sample(true);},'genereti_capture_frame');
-  container.append(output.actions,controls,canvas,status);
+
   function paintFrame(){
     const changed=canvas.width!==sampled.width||canvas.height!==sampled.height;
     if(changed){canvas.width=sampled.width;canvas.height=sampled.height;canvas.style.aspectRatio=`${sampled.width} / ${sampled.height}`;}
@@ -53,6 +53,7 @@ function makeCaptureWidget(node, inputName, kind) {
   }
   const preview=previewState(node,canvas,{resize:()=>{if(state.hasFrame&&preview.visible)paintFrame();node.graph?.setDirtyCanvas?.(true,true);}});
   for(const row of [preview.actions,output.toolbar,dimensions.row])row.style.display='contents';output.actions.append(preview.actions,output.toolbar,dimensions.row);
+ output.actions.prepend(preview.minimize);container.append(output.actions,controls,canvas,status);
   Object.assign(state,{video,canvas:sampled});node._generetiCapture=state;
   node.properties??={};
   let prefs={size:512,fps:30,flip:false,...node.properties.genereti_capture};

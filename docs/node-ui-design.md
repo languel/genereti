@@ -331,3 +331,5 @@ Comfy Open workflow; use the existing Option/Alt viewing shortcuts. See the
 [Webview quick reference](../help/docs/GeneretiDocument.md) for the user contract.
 
 D uses the same node-under-pointer priority as Alt-O, falling back to selection. Image surfaces share explicit width/height and Match source / Match output choices, plus Contain, Cover, Stretch and Native pixels. Capture framing applies to sampled output; viewer framing leaves passthrough IMAGE batches unchanged.
+
+For image/stream preview toolbars, minimize comes first, followed by window/overlay/visual/backdrop controls, freeze, fit and dimensions. Keep compact glyph sizes. Performance diagnostics belong in the dedicated performance probe; local errors remain on their node. Use a chevron disclosure, not the browser-native filled triangle, for expandable measurements.

@@ -1,5 +1,8 @@
 # Unreleased — media streams, webview and UI consistency follow-up
 
+- New performance probe accepts any output: live image FPS/dimensions, CHOP update rate/channel metadata, interval jitter and bounded queued metadata. Detailed measurements use a chevron; routine image-preview timings move to the probe.
+- Preview minimize is first on the shared toolbar and correctly hides explicitly displayed canvases; freeze, fit, dimensions and window controls retain compact glyphs.
+- Queued image-preview resolution is a global Genereti setting with an explanatory hover tip; full-resolution IMAGE input/output and live delivery remain unchanged.
 - D backdrop shortcut follows the node under the pointer, then selection.
 - Preview and webcam surfaces support independent width/height, source/output matching and shared fit controls. Webcam framing applies before live and queued delivery.
 - New 2D stream source and live image compare, with authored Help and a self-contained paper-stage comparison demo.

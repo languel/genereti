@@ -17,6 +17,7 @@ app.registerExtension({name:'Genereti.ImageCompare',nodeCreated(node){
  function accept(i,image){const w=image.naturalWidth||image.width,h=image.naturalHeight||image.height;if(buffers[i].width!==w||buffers[i].height!==h){buffers[i].width=w;buffers[i].height=h;}buffers[i].getContext('2d').clearRect(0,0,w,h);buffers[i].getContext('2d').drawImage(image,0,0);ready[i]=true;publishLive(node,buffers[i],i);draw();}
  function sync(){mode.value=node.properties.genereti_compare_mode||'wipe';split.value=node.properties.genereti_compare_split??.5;draw();}mode.onchange=()=>{node.properties.genereti_compare_mode=mode.value;draw();};split.oninput=()=>{node.properties.genereti_compare_split=Number(split.value);draw();};sync();
  for(const row of [preview.actions,output.toolbar,dimensions.row])row.style.display='contents';output.actions.append(preview.actions,output.toolbar,dimensions.row);
+ output.actions.prepend(preview.minimize);
  root.append(output.actions,mode,canvas,split,status);const widget=node.addDOMWidget('compare','GENERETI_COMPARE',root,{serialize:false});widget.computeSize=width=>[width,preview.minimized?110:(width-24)*canvas.height/canvas.width+140];
  node._generetiLiveSource={retain(){},release(){}};
  node._generetiSetExecutionMode=mode=>{releases.splice(0).forEach(r=>r());if(mode==='Live')for(const [i,inputName] of ['a','b'].entries())releases.push(subscribeLive(node,({bitmap})=>accept(i,bitmap),text=>{status.textContent=text;},{inputName}));};node._generetiSetExecutionMode(node._generetiExecutionMode||'Live');

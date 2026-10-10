@@ -13,3 +13,9 @@ Local files are browser-session resources and must be reselected after a page re
 Tested in Comfy at localhost:8188 with separate browser workflows: live PNG and alternating GIF frames, a generated WebM video, direct SVG URLs, queued media snapshots and A/B comparison, explicit 200 × 100 stream framing, and hovered D backdrop with another node selected. Webcam verification used a synthetic 80 × 40 stream: 100 × 100 Contain produced black bars, Cover filled the frame, Queue succeeded, and Stop released the test track. Physical camera/device behavior was not verified.
 
 The bundled **ꘇ-2D-Stream-Compare** workflow uses two authored SVG paper stages; it needs no model downloads or camera access. Help pages describe each node's output and persistence contract. Validation passed 195 JavaScript tests and 81 Python tests, with current reference/template mirrors and package allowlist checks. These changes remain unreleased.
+
+## Performance probe
+
+Connect **ꘇ performance probe** to any output for delivery-rate diagnostics. IMAGE shows dimensions and FPS; CHOP control events show updates/s, channels, samples and declared sample rate. Detailed intervals, jitter, delivery and counts expand with a chevron. Queued results report metadata without copying tensor pixels. A connected live image probe keeps its source active. Routine Image Preview timings are now consolidated here; local errors remain visible.
+
+Probe validation in Comfy: a CHOP expression delivered about 30 updates/s with a declared 60 Hz sample rate; a 512 × 512 GPU texture delivered about 30 FPS without pixel readback. These are observations from the test workflow, not guaranteed performance. Preview minimize explicitly hides canvases with an existing display style, and its button is first on the shared toolbar.
