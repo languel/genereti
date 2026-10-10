@@ -17,6 +17,7 @@ function mount(host){
   button.onclick=()=>item.id==='Welcome'?void showWelcome():showReferenceDocument({title:item.title,markdown:item.markdown||guideMarkdown(item.guide),...(item.kind==='node'?{nodeType:item.id}:{}),...(item.guide?{guideId:item.id}:{})});results.append(button);
  }if(!matches.length){const empty=document.createElement('p');empty.textContent='No matching references. Try a node name, control, or topic.';results.append(empty);}}
  async function refresh(){count.textContent='Loading contents…';try{const [documents,guides]=await Promise.all([loadReferences(),window.generetiGuides?.list?.()??Promise.resolve([])]);items=buildReferenceIndex(referenceDefinitions(),documents,guides);render();}catch(error){count.textContent=error.message;}}
+ window.addEventListener('genereti-reference-catalog-changed',refresh);
  search.oninput=()=>{clearTimeout(timer);timer=setTimeout(render,120);};filter.onchange=render;void refresh();
 }
 registerHelpView('contents','Contents',mount);

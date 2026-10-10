@@ -13,6 +13,7 @@ export function buildNodeReference(definition){
 export function buildReferenceIndex(definitions,documents,guides){
  const items=[{id:'Welcome',kind:'overview',title:'Welcome to ꘇ Genereti',summary:'Project overview and getting started',markdown:documents.Welcome||''}];
  for(const definition of definitions){if(!definition.name?.startsWith('Genereti'))continue;items.push({id:definition.name,kind:'node',title:definition.display_name||definition.name,summary:definition.description||'Quickref · detailed guide in progress',category:definition.category||'',markdown:documents[definition.name]||buildNodeReference(definition)});}
+ for(const [id,markdown] of Object.entries(documents)){if(id==='Welcome'||definitions.some(d=>d.name===id))continue;const title=markdown.match(/^# (.+)/m)?.[1]||id;items.push({id,kind:'overview',title,summary:'Companion guide',markdown});}
  for(const guide of guides)items.push({id:guide.id,kind:guide.steps.some(step=>step.actions?.length)?'tutorial':'lesson',title:guide.title,summary:guide.summary,guide,nodeTypes:[...new Set(guide.steps.map(step=>step.target?.nodeType).filter(Boolean))]});
  return items;
 }

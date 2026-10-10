@@ -24,10 +24,13 @@ const definitions=new Map();
 const lessons={GeneretiTextureExpression:'noise-dimensions',GeneretiTextureNoise:'noise-dimensions',GeneretiChopExpression:'opentouch-basics',GeneretiChopNoise:'opentouch-basics',GeneretiDatLesson:'lesson-authoring'};
 let panel,body,title,lessonButton,workflowButton,askButton,opener,request=0,currentReference;
 let references,autoButton,lastSelected;
+const companionDocuments = {};
+export function registerReferenceDocuments(documents){Object.assign(companionDocuments,documents);window.dispatchEvent(new Event("genereti-reference-catalog-changed"));}
+export function toggleReference(node,button){if(opener===button&&isHelpPanelOpen())close();else void showReference(node,button);}
 let auto=localStorage.getItem('genereti.reference.auto')==='true';
 function followSelection(){if(!auto||!panel)return;const node=selectedReferenceNode(app);if(!node||node===lastSelected)return;lastSelected=node;void updateReference(node);}
 function selectionFollowing(){const previous=app.canvas.onSelectionChange;app.canvas.onSelectionChange=function(){const result=previous?.apply(this,arguments);queueMicrotask(followSelection);return result;};}
-export function loadReferences(){references??=fetch('/extensions/genereti_comfy_agent/lessons/node-references.json',{cache:'no-store'}).then(async response=>{if(!response.ok)throw Error('Bundled references could not be loaded');return response.json();}).catch(error=>{references=undefined;throw error;});return references;}
+export async function loadReferences(){references??=fetch('/extensions/genereti_comfy_agent/lessons/node-references.json',{cache:'no-store'}).then(async response=>{if(!response.ok)throw Error('Bundled references could not be loaded');return response.json();}).catch(error=>{references=undefined;throw error;});return {...await references,...companionDocuments};}
 export function referenceDefinitions(){return [...definitions.values()];}
 function markdownText(markdown){const render=app.extensionManager?.renderMarkdownToHtml;if(render){body.style.whiteSpace='normal';body.innerHTML=render(markdown);}else plainText(markdown);}
 function plainText(text){body.style.whiteSpace='pre-wrap';body.textContent=text;}
@@ -61,11 +64,11 @@ async function updateReference(node){
  try{const documents=await loadReferences();if(current!==request)return;renderReference({nodeId:node.id,nodeType:name,title:node.title,markdown:documents[name]||buildNodeReference(definition),guideId:lessons[name]});}
  catch(error){if(current===request)plainText(`Reference unavailable: ${error.message}`);}
 }
-app.registerExtension({name:'Genereti.NodeReference',setup(){watchNodeHeaders();selectionFollowing();void import('./reference-contents.js');},
+app.registerExtension({name:'Genereti.NodeReference',setup(){watchNodeHeaders();selectionFollowing();window.generetiReference={registerDocuments:registerReferenceDocuments,toggle:toggleReference,showDocument:showReferenceDocument};window.dispatchEvent(new Event('genereti-reference-ready'));void import('./reference-contents.js');},
 
  beforeRegisterNodeDef(_type,data){if(data.name)definitions.set(data.name,data);},
  nodeCreated(node){
-  if(!node.comfyClass?.startsWith('Genereti')||node.comfyClass.startsWith('GeneretiCore'))return;
+  if(!node.comfyClass?.startsWith('Genereti')||node.comfyClass.startsWith('GeneretiCore')||['GeneretiSDXSGenerate','GeneretiSDTurboGenerate'].includes(node.comfyClass))return;
   requestAnimationFrame(()=>{
    if(!node.graph)return;
    const button=document.createElement('button');button.type='button';button.textContent='?';button.title='Quick reference';button.setAttribute('aria-label',`Quick reference for ${node.title}`);

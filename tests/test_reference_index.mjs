@@ -18,3 +18,11 @@ test('reference search includes controls, lesson text and semantic node targets'
  assert.equal(searchReferences(items,'','lesson')[0].id,'intro');
  assert.equal(searchReferences(items,'does not exist').length,0);
 });
+
+test('companion documents are searchable without overwriting installed quickrefs',()=>{
+ const core={name:'GeneretiCoreText',display_name:'ꘅ Local Text'};
+ const items=buildReferenceIndex([core],{Welcome:'Welcome',GeneretiCoreText:'# Local Text\nmacOS 27',GeneretiCoreWelcome:'# Welcome to ꘅ GeneretiCore\nLocal inference requirements'},[]);
+ assert.equal(items.filter(i=>i.id==='GeneretiCoreText').length,1);
+ assert.equal(searchReferences(items,'macos 27','node')[0].id,core.name);
+ assert.equal(searchReferences(items,'local inference')[0].id,'GeneretiCoreWelcome');
+});
