@@ -3,6 +3,9 @@ from comfy_api.latest import ComfyExtension, io
 from . import ops
 from .expression import parameter_inputs,prepare_expression
 
+
+from . import switching
+
 WEB_DIRECTORY='./web'
 CATEGORY='ꘇ / TOP'
 
@@ -171,7 +174,44 @@ class Channels(io.ComfyNode):
     def execute(cls,image,red,green,blue,alpha,channels,image_b=None):
         return io.NodeOutput(ops.channels(image,image_b,red,green,blue,alpha,channels))
 
+class Cleanup(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return schema('Cleanup',[io.Image.Input('image'),
+            io.Int.Input('width',default=1024,min=1,max=4096),io.Int.Input('height',default=1024,min=1,max=4096),
+            io.Combo.Input('method',options=['bilinear','bicubic'],default='bicubic'),
+            number('smoothing',0,0,1,'3×3 edge-preserving bilateral blend, before enlargement. Start around 0.2.'),
+            number('color_threshold',.12,.001,1,'Bilateral color/alpha threshold. Lower values protect boundaries.'),
+            number('antialias',0,0,1,'Short luminance-edge directional filter after resize; FXAA-style, not full NVIDIA FXAA.'),
+            number('sharpen',0,0,1,'Local-envelope-clamped sharpening after antialiasing. Start around 0.1.')],
+            'Model-free cleanup and explicit resize. Bilinear/bicubic, bilateral smoothing, edge antialiasing and mild sharpening. Live stays on WebGPU; Queue uses the same spatial stages. Width/height are independent; match the source aspect ratio. No model downloads.')
+    @classmethod
+    def execute(cls,image,**values):
+        from .cleanup import cleanup
+        return io.NodeOutput(cleanup(image,**values))
+
+class Temporal(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return schema('Temporal',[io.Image.Input('image'),
+            number('strength',0,0,.95,'History blend; zero disables history. Start around 0.3; higher values can lag motion.'),
+            number('change_threshold',.12,.001,1,'Reject changing pixels; lower values reduce ghosting. Broad scene cuts also reject history.')],
+            'Live normalized temporal cleanup with per-pixel change rejection, neighborhood clamping and scene-cut rejection. Advances on new source dispatches only. Reset on rewire, size/settings changes, seek or ↺. Queue returns current image without history; independent of artistic top.feedback.')
+    @classmethod
+    def execute(cls,image,**values): return io.NodeOutput(ops.rgba(image))
+
+
+class Switch(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):return schema('Switch',[io.Autogrow.Input('sources',template=io.Autogrow.TemplatePrefix(io.Image.Input('source',optional=True),prefix='source',min=1,max=64),optional=True),io.Combo.Input('mode',options=['int','float']),io.Float.Input('index',default=0,min=0,max=63,step=.01,tooltip='Zero-based index of connected sources; int floors, float blends adjacent sources. Clamped to available sources.')],'Dynamic source switch. Float mode blends adjacent images with premultiplied alpha; B resizes to A.')
+    @classmethod
+    def execute(cls,mode,index,sources=None):
+        items=switching.sources(sources or {});i,j,t=switching.pair(index,mode,len(items));a,b=items[i],items[j]
+        return io.NodeOutput(a if not t else ops.composite(a,b,'cross',1-t))
+
+from .utility_nodes import NODES as UTILITY_NODES
+
 class TextureExtension(ComfyExtension):
-    async def get_node_list(self): return [Composite,Math,Filter,Transform,Crop,CornerPin,Feedback,FeedbackRef,Bloom,Displace,Channels,Expression,Noise]
+    async def get_node_list(self): return [Switch,Composite,Math,Filter,Transform,Crop,CornerPin,Feedback,FeedbackRef,Bloom,Displace,Channels,Expression,Noise,Cleanup,Temporal,*UTILITY_NODES]
 
 async def comfy_entrypoint(): return TextureExtension()

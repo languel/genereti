@@ -1,3 +1,5 @@
+import {captureEditorInput} from '/extensions/genereti_comfy_p5/js/editor-input.js';
+import {attachEditorFill} from '/extensions/genereti_comfy_p5/js/widget-layout.js';
 import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import {app} from '../../scripts/app.js';
@@ -8,9 +10,9 @@ import {documentExportControls} from '/extensions/genereti_comfy_p5/js/document-
 import {display} from './inspect-value.js';
 app.registerExtension({name:'Genereti.Inspect',nodeCreated(node){
  if(node.comfyClass!=='GeneretiDatInspect')return;ensureControlStyle();
- const surface=document.createElement('div'),tools=document.createElement('div'),body=document.createElement('div'),status=document.createElement('span');surface.style.cssText='width:100%;display:flex;flex-direction:column;gap:4px';tools.className='genereti-node-controls';body.style.cssText='height:220px;min-height:0;overflow:hidden';status.style.cssText='font:11px monospace;opacity:.8';surface.append(tools,body,status);
+ const surface=document.createElement('div'),tools=document.createElement('div'),body=document.createElement('div'),status=document.createElement('span');surface.style.cssText='width:100%;display:flex;flex-direction:column;gap:4px;min-height:0;overflow:hidden';tools.className='genereti-node-controls';body.style.cssText='height:0;flex:1 1 0;min-height:0;overflow:hidden';status.style.cssText='font:11px monospace;opacity:.8';surface.append(tools,body,status);
  visualNodeControls(node,body,tools);
- const appearance=()=>({...editorAppearance(node),readOnly:true,autocomplete:false,hoverDocs:false});
+ const appearance=()=>({...editorAppearance(node),fillHeight:true,readOnly:true,autocomplete:false,hoverDocs:false});
  const editor=createEditor(body,'Connect an input to inspect its value.','javascript',()=>{},()=>{},appearance());editor.dom.style.height='100%';editor.contentDOM.setAttribute('aria-label','Inspected value');
  let frozen=false,text='',queued='',sourceKey='',disposed=false;
  const freeze=document.createElement('button');freeze.textContent='❄';freeze.title='Freeze display only · upstream keeps running';freeze.setAttribute('aria-label',freeze.title);freeze.setAttribute('aria-pressed','false');freeze.onclick=()=>{frozen=!frozen;freeze.setAttribute('aria-pressed',String(frozen));};tools.append(freeze);
@@ -28,10 +30,10 @@ app.registerExtension({name:'Genereti.Inspect',nodeCreated(node){
   if(value===undefined){set(queued||`Connected: ${upstream.title} · ${type}\nQueue to inspect this output.`,queued?'Queued value':'Waiting for queued value');return;}
   set(display(value,node.widgets.find(w=>w.name==='format')?.value,Number(node.widgets.find(w=>w.name==='limit')?.value)||32),'Live value');
  }catch(e){status.textContent=e.message;}};
- body.addEventListener('wheel',e=>{e.stopPropagation();if(e.ctrlKey)e.preventDefault();},{passive:false});surface.addEventListener('pointerdown',e=>e.stopPropagation());
+ const releaseInput=captureEditorInput(editor,appearance);surface.addEventListener('pointerdown',e=>e.stopPropagation());
  const unsub=subscribeEditorAppearance(()=>editor.setAppearance(appearance())),font=captureFontShortcut(node,body,()=>editor.setAppearance(appearance()));
  const timer=setInterval(tick,200);const executed=node.onExecuted;node.onExecuted=function(data){const result=executed?.apply(this,arguments);queued=data.genereti_inspect?.[0]??'';set(queued,'Queued value');return result;};
  node._generetiLiveValue=slot=>slot===0?text:undefined;
- const previewWidget=node.addDOMWidget('inspect_display','GENERETI_INSPECT',surface,{serialize:false,hideOnZoom:false});previewWidget.computeSize=w=>[w,260];previewFirst(node,previewWidget);
- const removed=node.onRemoved;node.onRemoved=function(){disposed=true;clearInterval(timer);unsub();font();editor.destroy();return removed?.apply(this,arguments);};
+ const previewWidget=node.addDOMWidget('inspect_display','GENERETI_INSPECT',surface,{serialize:false,hideOnZoom:false});previewWidget.computeSize=w=>[w,260];previewFirst(node,previewWidget);const fill=attachEditorFill(node,previewWidget,surface,{minimum:()=>260});
+ const removed=node.onRemoved;node.onRemoved=function(){disposed=true;clearInterval(timer);unsub();font();releaseInput();fill.dispose();editor.destroy();return removed?.apply(this,arguments);};
 }});

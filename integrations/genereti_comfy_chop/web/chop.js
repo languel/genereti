@@ -1,3 +1,4 @@
+import {sourceSlots,switchPair,switchChop} from '/extensions/genereti_comfy_texture/switching.js';
 import './preview-appearance.js';
 import {previewFirst} from '/extensions/genereti_comfy_p5/js/preview-order.js';
 import {visualNodeControls} from '/extensions/genereti_comfy_stream/js/node-output-view.js';
@@ -24,7 +25,13 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
  const state={node,kind,status,running:true,memory:{},latest:null,connected:false,deviceChannels:{},dead:false,update(now,run){
   const v=values(node);if(kind==='Expression')v.performanceValues=window.generetiPerformance?.expressionValues();const signature=JSON.stringify(v),link=name=>{const slot=node.inputs?.findIndex(i=>i.name===name),l=slot>=0?node.getInputLink?.(slot):null;const upstream=node.graph?.getNodeById(l?.origin_id);const s=upstream?._generetiChop;run(s);return s?.latest??upstream?._generetiDatSignal?.();};
   v.performanceValues=window.generetiPerformance?.expressionValues();const input=link('input'),other=link('other');let data;
-  if(kind==='MidiIn'||kind==='OscIn'){
+  if(kind==='Switch'){
+   const slots=sourceSlots(node);if(!slots.length){status.textContent='Connect CHOP sources';return;}
+   const [i,j,t]=switchPair(v.index,v.mode,slots.length),a=link(slots[i].name),b=t?link(slots[j].name):a;
+   if(!a||!b){status.textContent='Waiting for selected CHOP source';return;}
+   if(a===state.switchA&&b===state.switchB&&signature===state.signature)return;
+   data=switchChop(t?[a,b]:[a],t,'float');state.switchA=a;state.switchB=b;
+  }else if(kind==='MidiIn'||kind==='OscIn'){
    data={channels:Object.fromEntries(Object.entries(state.deviceChannels).map(([k,x])=>[k,new Float32Array([x])])),sampleRate:60,start:now/1000};
    if(state.deviceRevision===state.lastDeviceRevision&&state.latest)return;state.lastDeviceRevision=state.deviceRevision;
   }else if(input){
@@ -43,7 +50,7 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
   if(!previewFrozen&&!previewMinimized){const history=state.history??=new Map();for(const [name,samples] of Object.entries(data.channels)){const line=history.get(name)??[];for(const x of samples)line.push(x);if(line.length>256)line.splice(0,line.length-256);history.set(name,line);}for(const name of history.keys())if(!(name in data.channels))history.delete(name);}
   if(!previewFrozen&&!previewMinimized&&previewVisible&&!document.hidden){
    // Keep inexpensive canvas motion at signal cadence, but DOM readouts at 10 Hz.
-   if(now-(state.lastReadout??0)>100){previewColor=getComputedStyle(surface).color||'#ddd';const text=`${Object.keys(data.channels).length} channels · ${data.sampleRate} Hz · ${first(data).toFixed(3)}${state.connected?' · connected':''}`;if(status.textContent!==text)status.textContent=text;state.lastReadout=now;}
+   if(now-(state.lastReadout??0)>100){previewColor=getComputedStyle(surface).color||'#ddd';const count=Object.values(data.channels)[0]?.length??1;const text=`${Object.keys(data.channels).length} channels · ${data.sampleRate} samples/s · ${(data.sampleRate/count).toFixed(1)} blocks/s target · ${first(data).toFixed(3)}${state.connected?' · connected':''}`;if(status.textContent!==text)status.textContent=text;state.lastReadout=now;}
    paint(data);
   }
  }};

@@ -1,7 +1,8 @@
 # Genereti textures
 
-Thirteen V3 IMAGE operators, with a shared WebGPU live renderer and PyTorch queued
-implementations. See [the operator guide](../../docs/texture-operators.md) for
+Twenty-eight V3 IMAGE operators, with a shared WebGPU live renderer and PyTorch queued
+implementations, including model-free color, convolution, mask, optical-flow
+and blob-tracking utilities. Blob tracking also exposes a DAT output. See [the operator guide](../../docs/texture-operators.md) for
 installation, controls, performance boundaries and tests.
 
 Install alongside `genereti_comfy_p5` (live bus and controls) and

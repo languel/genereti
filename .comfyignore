@@ -44,6 +44,7 @@
 !/integrations/genereti_comfy_dat/
 !/integrations/genereti_comfy_projector/
 !/integrations/genereti_comfy_performance/
+!/integrations/genereti_comfy_perception/
 !/integrations/genereti_comfy_agent/
 !/integrations/comfyui_genereti/
 /integrations/comfyui_genereti/*
@@ -59,6 +60,7 @@
 **/*.pth
 **/*.bin
 **/*.task
+**/*.tflite
 **/*.wav
 **/*.mp4
 **/*.mov

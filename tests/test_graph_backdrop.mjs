@@ -5,7 +5,8 @@ test('Backdrop draws in viewport pixels, preserves the previous renderer and clo
  const context=vm.createContext({app:{canvas:graph},document:{createElement(){return {width:300,height:150,getContext(){return {clearRect(){},drawImage(){}};}};}}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/graph-backdrop.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export function','function'),context);
  const first=context.graphBackdrop({},v=>changes.push(v));await first.open();first.publish({bitmap:{width:100,height:100}});
- const ctx={save(){},restore(){},setTransform(...args){assert.deepEqual(args,[1,0,0,1,0,0]);},fillRect(){},drawImage(...args){draws.push(args);}};
+ const ctx={save(){},restore(){},setTransform(...args){assert.deepEqual(args,[1,0,0,1,0,0]);},fillRect(){},beginPath(){},rect(){},clip(){},drawImage(...args){draws.push(args);}};
  graph.onRenderBackground({width:800,height:600},ctx);assert.deepEqual(draws[0].slice(1),[100,0,600,600]);
+ const grid=context.graphBackdrop({});await grid.open({grid:true});grid.publish({bitmap:{width:100,height:100}});draws.length=0;graph.onRenderBackground({width:800,height:600},ctx);assert.equal(draws.length,2);assert.deepEqual(draws[0].slice(1),[4,104,392,392]);assert.deepEqual(draws[1].slice(1),[404,104,392,392]);assert.equal(first.gridMode,true);grid.close();assert.notEqual(graph.onRenderBackground,previous);
  const second=context.graphBackdrop({});await second.open();assert.deepEqual(changes,[true,false]);second.close();assert.equal(graph.onRenderBackground,previous);assert.ok(dirty>=4);
 });

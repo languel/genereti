@@ -1,7 +1,10 @@
 import { app } from '../../../../scripts/app.js';
 
 const shortcuts=[
-  ['D','Toggle backdrop','One selected preview-capable node'],
+  ['Ctrl+right-drag','Cut crossed connections','Start on blank canvas; release applies one undoable edit; Escape cancels'],
+  ['Shift+right-drag','Insert reroutes','Cross connections on blank canvas; preserves existing reroutes and shared branches'],
+  ['D','Solo backdrop','One selected preview-capable node'],
+  ['Shift+D','Toggle backdrop grid source','Add/remove hovered or selected image; automatically tile backgrounds'],
   ['Alt+O','Toggle output-only node','Selected node, or output-only node under the pointer; reveal restore control just outside an edge'],
   ['Cmd+[ / ]','Stack backward / forward','Hovered or last interacted view; Cmd+Shift+[ / ] sends back / front; Ctrl on other hosts'],
   ['Shift-click overlay glyph','Output-only node','Regular click opens a floating overlay'],
@@ -37,7 +40,7 @@ function reference(){
   // Editor-local and pointer gestures retain their editor context; do not
   // present them as globally editable commands.
   const local=document.createElement('details');const summary=document.createElement('summary');summary.textContent='Editor and pointer gestures';local.append(summary);
-  for(const [keys,label,scope] of shortcuts.filter(row=>['Shift-click overlay glyph','Escape','Alt+Z','Cmd/Ctrl+Enter','Ctrl+.','Cmd/Ctrl+Shift+F','Cmd/Ctrl+Shift+Plus / Minus','Alt+Shift+Right'].includes(row[0]))){
+  for(const [keys,label,scope] of shortcuts.filter(row=>['Ctrl+right-drag','Shift+right-drag','Shift-click overlay glyph','Escape','Alt+Z','Cmd/Ctrl+Enter','Ctrl+.','Cmd/Ctrl+Shift+F','Cmd/Ctrl+Shift+Plus / Minus','Alt+Shift+Right'].includes(row[0]))){
     const line=document.createElement('div');line.style.cssText='display:flex;gap:12px;padding:6px 0';line.title=scope;const kbd=document.createElement('kbd');kbd.textContent=keys;const text=document.createElement('span');text.textContent=label;line.append(kbd,text);local.append(line);
   }
   root.append(local);return root;

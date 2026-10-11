@@ -1,0 +1,312 @@
+{
+  "last_node_id": 6,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiMediaStream",
+      "pos": [
+        40,
+        100
+      ],
+      "size": [
+        380,
+        500
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "capture",
+          "name": "capture",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "capture"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "generetiPerformanceVersion": 1,
+        "Node name for S&R": "GeneretiMediaStream",
+        "genereti_preview_fit": "contain",
+        "genereti_media_url": "",
+        "genereti_media_kind": "image",
+        "genereti_media_fps": 30
+      },
+      "widgets_values": [
+        "GENERETI_OFF:2D stream"
+      ],
+      "title": "ꘇ Local movie · + load GIF/video · ▶ play"
+    },
+    {
+      "id": 2,
+      "type": "GeneretiPerceptionProvider",
+      "pos": [
+        460,
+        100
+      ],
+      "size": [
+        380,
+        620
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask / overlay",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionProvider"
+      },
+      "widgets_values": [
+        "body",
+        "pose",
+        15,
+        "Live"
+      ],
+      "title": "ꘇ Body tracking · ↑ load pose · ▶ start"
+    },
+    {
+      "id": 3,
+      "type": "GeneretiPerceptionFeatures",
+      "pos": [
+        880,
+        100
+      ],
+      "size": [
+        420,
+        620
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "features",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "landmarks",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionFeatures"
+      },
+      "widgets_values": [
+        "body",
+        "pose.right_wrist pose.left_wrist",
+        "selected",
+        0.4,
+        500,
+        "Live"
+      ],
+      "title": "ꘇ Pick features · click point · Shift adds"
+    },
+    {
+      "id": 4,
+      "type": "GeneretiPerceptionRead",
+      "pos": [
+        1340,
+        100
+      ],
+      "size": [
+        300,
+        280
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "slot_index": 0,
+          "links": null
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "slot_index": 1,
+          "links": null
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "slot_index": 2,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionRead"
+      },
+      "widgets_values": [
+        "selected",
+        "pointer.x",
+        500,
+        "Live"
+      ],
+      "title": "ꘇ Selected cursor · pointer.x"
+    },
+    {
+      "id": 5,
+      "type": "GeneretiDatInspect",
+      "pos": [
+        1340,
+        430
+      ],
+      "size": [
+        350,
+        450
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "*",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatInspect"
+      },
+      "widgets_values": [
+        "json",
+        64
+      ],
+      "title": "ꘇ Selected features · DAT inspect"
+    },
+    {
+      "id": 6,
+      "type": "GeneretiLivecode",
+      "pos": [
+        1740,
+        100
+      ],
+      "size": [
+        500,
+        700
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "image",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode"
+      },
+      "widgets_values": [
+        "p5",
+        640,
+        360,
+        true,
+        "// Sample stage: a blue rectangle and orange triangle; a body-driven cursor draws over it.\n// Select another landmark in perception.features: its first selected point drives pointer.x/y.\nlet previous=null, revision='', lastFrame=-1, armed=false?false:true, hue=30;\nfunction setup(){createCanvas(windowWidth,windowHeight);colorMode(HSB,360,100,100,1);background(225,50,12);noStroke();fill(220,70,55);rect(30,30,width-60,height-60);fill(30,75,85);triangle(width*.5,40,width-60,height*.55,60,height*.55);if(false)__.events.on('brush.down',e=>{armed=e.phase==='entry';if(armed)hue=(hue+75)%360;previous=null})}\nfunction draw(){const r=__.streams.read('selected',500),f=r?.features,x=f?.['pointer.x'],y=f?.['pointer.y'];if(!r||!armed||!Number.isFinite(x)||!Number.isFinite(y)){previous=null;return}const key=JSON.stringify([r.source.id,r.source.output_slot,r.source.revision,r.source.width,r.source.height,r.selection?.names]);if(key!==revision){revision=key;previous=null;lastFrame=-1}if(lastFrame===r.source.frame_timestamp_ms)return;lastFrame=r.source.frame_timestamp_ms;const p={x,y};if(previous&&dist(x,y,previous.x,previous.y)<.3){stroke(hue,75,95,.8);strokeWeight(false?8:3);line(previous.x*width,previous.y*height,x*width,y*height);if(false){noStroke();fill(hue,50,100,.65);circle(x*width,y*height,12)}}previous=p}\nfunction keyPressed(){if(key==='r'||key==='R'){background(225,50,12);previous=null}}\n",
+        "{}",
+        "Live"
+      ],
+      "title": "ꘇ Stream pen · start editor ▶"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      3,
+      1,
+      5,
+      0,
+      "GENERETI_DAT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.55,
+      "offset": [
+        50,
+        40
+      ]
+    }
+  },
+  "version": 0.4
+}

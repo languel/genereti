@@ -1,0 +1,7 @@
+<!doctype html><meta charset="utf-8"><title>Genereti utility TOP GPU checks</title>
+<style>body{background:#1b1b1b;color:#ddd;font:14px system-ui;margin:24px}main{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}canvas{width:100%;image-rendering:pixelated;background:repeating-conic-gradient(#222 0% 25%,#333 0% 50%) 0/16px 16px}pre{white-space:pre-wrap}button{padding:8px 16px}</style>
+<h1>Model-free utility TOPs</h1><p>WebGPU outputs, checked against queued torch results. Checkerboard shows transparency.</p><button id="run">Run GPU checks</button><pre id="result">Ready</pre><main></main>
+<script type="module">
+import {runChecks} from './texture-utilities.mjs';
+document.querySelector('#run').onclick=async()=>{const result=document.querySelector('#result');result.textContent='Running…';try{result.textContent=JSON.stringify(await runChecks(),null,2);}catch(e){result.textContent=e.stack;throw e;}};
+</script>

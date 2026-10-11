@@ -6,4 +6,8 @@ Live IMAGE shows received FPS, dimensions, frame interval, interval jitter, brow
 
 Rates use a rolling two-second window. Idle sources show zero. Queued outputs show type, tensor shape/dtype/storage size or bounded collection metadata; queued update rate is not model inference FPS. Browser delivery delay is not GPU execution or inference time. Outputs without live events require Comfy Queue for metadata.
 
+For CHOP generators, block cadence targets sample_rate ÷ samples. Eight samples
+at 60 Hz deliver 7.5 updates/s; one sample at 60 Hz targets 60 updates/s, limited
+by browser frames. The probe counts block events, not individual samples.
+
 An attached image probe keeps its upstream live source active, including offscreen. Remove the probe when finished measuring. It does not change the measured output.

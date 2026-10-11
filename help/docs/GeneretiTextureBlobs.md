@@ -1,0 +1,5 @@
+# ꘇ top.blobs
+
+Threshold luma×alpha or alpha; optionally invert. IMAGE output is an opaque binary mask. GPU mask processing is followed by one bounded analysis-mask readback and CPU 8-connected components. Analysis width caps the longest axis. min_area is a fraction of analysis pixels; max_blobs retains the largest components. Live DAT contains batch, id, x, y, width, height, area, vx, vy, age, plus a JSON blobs array. Coordinates/bounds are normalized, origin at top left; x/y are centroids, not box corners. Velocity is normalized units/second; age is observed frames. Nearest-centroid one-to-one matching retains IDs within track_distance and hold_frames missing analyses. IDs may swap when blobs cross, merge or split. Queue labels each image batch independently, velocity zero. Reset with ↺; rewire/settings/seek also reset. This is blob tracking, not object recognition.
+
+Model-free WebGPU in Live mode; queued PyTorch implementation. Uses shared preview, output window, overlay and backdrop controls. No model downloads.

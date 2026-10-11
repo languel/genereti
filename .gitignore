@@ -40,3 +40,6 @@ integrations/comfyui_genereti/workflows/LTX-*.json
 # Browser runtime libraries are redistributable source assets required by the app
 !web/vendor/
 !web/vendor/**
+
+# Optional browser perception model assets stay outside the package
+*.tflite

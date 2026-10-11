@@ -5,11 +5,17 @@ from .music import MUSIC
 from .modular import MODULAR
 from .modulation import MODULATION
 from .osc import register
+
+import importlib.util as _switch_import
+from pathlib import Path as _SwitchPath
+_switch_spec=_switch_import.spec_from_file_location('genereti_switching',_SwitchPath(__file__).resolve().parents[1]/'genereti_comfy_texture/switching.py')
+switching=_switch_import.module_from_spec(_switch_spec);_switch_spec.loader.exec_module(switching)
+
 WEB_DIRECTORY='./web'
 CHOP=io.Custom('GENERETI_CHOP')
 
 def number(name,value=0,low=-100000,high=100000):return io.Float.Input(name,default=value,min=low,max=high,step=.01)
-def common():return [io.Int.Input('channels',default=1,min=1,max=64),io.Int.Input('samples',default=1,min=1,max=4096),number('sample_rate',60,1,1000),number('time',0)]
+def common():return [io.Int.Input('channels',default=1,min=1,max=64),io.Int.Input('samples',default=1,min=1,max=4096,tooltip='Samples per delivered block. Live updates/s = sample_rate / samples, limited by browser frames. Use 1 for responsive scalar control; 8 at 60 Hz delivers 7.5 blocks/s.'),io.Float.Input('sample_rate',default=60,min=1,max=1000,step=.01,tooltip='Samples per second, not blocks per second. A block contains samples values; use samples=1 for updates near this rate.'),number('time',0)]
 def domain_offsets():return [io.Float.Input("offset_"+axis,default=0,min=-100000,max=100000,step=.01,optional=True) for axis in ("x","y","z","t")]
 def schema(kind,inputs,output=False):return io.Schema(node_id='GeneretiChop'+kind,display_name='ꘇ '+('chop.'+kind.lower()),search_aliases=['genereti', 'chop', 'genereti chop'],category='ꘇ / CHOP',inputs=inputs,outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')],is_output_node=output,description='Named sampled control channels and last value of first channel. Live in browser; Queue evaluates explicit samples/time. Device I/O only runs after its Connect button, never on opening or Queue.')
 
@@ -83,7 +89,17 @@ class OscOut(MidiOut):
     _OUTPUT_NODE = None
     @classmethod
     def define_schema(cls):return schema('OscOut',[CHOP.Input('input'),io.Int.Input('port',default=9001,min=1024,max=65535),io.String.Input('address',default='/genereti')],True)
+
+class Switch(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):return schema('Switch',[io.Autogrow.Input('sources',template=io.Autogrow.TemplatePrefix(CHOP.Input('source',optional=True),prefix='source',min=1,max=64),optional=True),io.Combo.Input('mode',options=['int','float']),io.Float.Input('index',default=0,min=0,max=63,step=.01,tooltip='Zero-based index of connected sources; int floors, float blends adjacent sources. Clamped to available sources.')])
+    @classmethod
+    def execute(cls,mode,index,sources=None):
+        items=switching.sources(sources or {});i,j,t=switching.pair(index,mode,len(items));a,b=items[i],items[j]
+        data=a if not t else signals.switch_blend(a,b,t)
+        return io.NodeOutput(data,signals.first(data))
+
 class ChopExtension(ComfyExtension):
-    async def get_node_list(self):return [Constant,Oscillator,Noise,Expression,Math,Lag,Logic,Speed,Slope,Select,Merge,MidiIn,MidiOut,OscIn,OscOut,*MUSIC,*MODULAR,*MODULATION]
+    async def get_node_list(self):return [Switch,Constant,Oscillator,Noise,Expression,Math,Lag,Logic,Speed,Slope,Select,Merge,MidiIn,MidiOut,OscIn,OscOut,*MUSIC,*MODULAR,*MODULATION]
 async def comfy_entrypoint():
     register();return ChopExtension()

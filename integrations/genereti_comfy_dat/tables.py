@@ -15,7 +15,7 @@ def text(data):
     out=io.StringIO();csv.writer(out,lineterminator='\n').writerows(data['rows']);return out.getvalue()
 def parse(source,delimiter=','):
     rows=list(csv.reader(io.StringIO(source),delimiter=delimiter,strict=True));return table(rows)
-def from_json(source):
+def _from_json(source):
     value=json.loads(source)
     if isinstance(value,dict):return table([['key','value'],*[[k,v] for k,v in value.items()]])
     if not isinstance(value,list):return table([[value]])
@@ -60,3 +60,35 @@ def cell_value(data,row,column):
 def from_chop(data):
     names=list(data['channels']);arrays=list(data['channels'].values())
     return table([names,*zip(*arrays)]) if names else table([])
+
+
+def from_json(source):
+    data=_from_json(source);data['jsonValue']=json.loads(source);return data
+
+def switch_blend(a,b,t,interpolate):
+    if 'jsonValue' in a and 'jsonValue' in b:return from_json(json.dumps(interpolate(a['jsonValue'],b['jsonValue'],t)))
+    def decode(value):
+        try:return json.loads(value)
+        except (ValueError,TypeError):return value
+    rows=interpolate([[decode(v) for v in r] for r in a['rows']],[[decode(v) for v in r] for r in b['rows']],t)
+    return table(rows)
+
+
+def select_json(data,filter='',selection=''):
+    if not filter and not selection.strip():return data
+    value=data.get('jsonValue',data['rows'])
+    entries=list(enumerate(value.items())) if isinstance(value,dict) else list(enumerate(value if isinstance(value,list) else [value]))
+    chosen=None
+    if selection.strip():
+        import re
+        tokens=re.split(r'[\s,]+',selection.strip())
+        if any(not re.fullmatch(r'[0-9]+',t) for t in tokens):raise ValueError('Selection must contain zero-based row indices')
+        chosen={int(t) for t in tokens}
+    def matches(item):
+        values=list(item) if isinstance(item,(list,tuple)) else [item]
+        return any(filter.lower() in (v if isinstance(v,str) else json.dumps(v,ensure_ascii=False,separators=(',',':'))).lower() for v in values)
+    result=[item for index,item in entries if matches(item) and (chosen is None or index in chosen)]
+    if 'jsonValue' not in data:return {'rows':result}
+    if isinstance(value,dict):result=dict(result)
+    elif not isinstance(value,list):result=value if result else None
+    return from_json(json.dumps(result,ensure_ascii=False))

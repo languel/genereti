@@ -1,31 +1,36 @@
 import { app } from '../../../scripts/app.js';
 
 // Draw in LiteGraph's background pass: fixed to the viewport, behind nodes/links.
-let active;
+const entries=new Set();let graphCanvas,previous,hook;
+function installBackdrop(){
+ if(hook)return;graphCanvas=app.canvas;previous=graphCanvas.onRenderBackground;
+ hook=function(target,ctx){previous?.call(this,target,ctx);ctx.save();ctx.setTransform(1,0,0,1,0,0);
+  ctx.fillStyle=graphCanvas.clear_background_color||'#111';ctx.fillRect(0,0,target.width,target.height);
+  const items=[...entries],columns=Math.ceil(Math.sqrt(items.length)),rows=Math.ceil(items.length/Math.max(1,columns));
+  items.forEach((entry,i)=>entry.draw(ctx,{x:(i%columns)*target.width/columns,y:Math.floor(i/columns)*target.height/rows,width:target.width/columns,height:target.height/rows}));
+  ctx.restore();return true;
+ };graphCanvas.onRenderBackground=hook;
+}
+function removeBackdrop(entry){entries.delete(entry);if(!entries.size&&hook){if(graphCanvas.onRenderBackground===hook)graphCanvas.onRenderBackground=previous;hook=undefined;}}
 export function graphBackdrop(status,onStateChange=()=>{}) {
-  let canvas,context,graphCanvas,previous,hook,opened=false,revision=0,fit='contain';
+  let canvas,context,opened=false,gridMode=false,revision=0,fit='contain';
   const dirty=()=>graphCanvas?.setDirty?.(true,true);
   return {
-    async open(){
-      if(opened)return true;
+    async open({grid=false}={}){
+      if(opened&&grid===gridMode&&(grid||entries.size===1))return true;
       graphCanvas=app.canvas;
       if(!graphCanvas){status.textContent='Backdrop: graph canvas unavailable';return false;}
-      active?.close();
-      canvas=document.createElement('canvas');context=canvas.getContext('2d');
-      previous=graphCanvas.onRenderBackground;
-      hook=function(target,ctx){
-        const handled=previous?.call(this,target,ctx);
-        ctx.save();ctx.setTransform(1,0,0,1,0,0);
-        if(!handled){ctx.fillStyle=graphCanvas.clear_background_color||'#111';ctx.fillRect(0,0,target.width,target.height);}
-        if(canvas.width&&canvas.height){
-          const scale=fit==='cover'?Math.max(target.width/canvas.width,target.height/canvas.height):Math.min(target.width/canvas.width,target.height/canvas.height);
-          const w=fit==='fill'?target.width:fit==='native'?canvas.width:canvas.width*scale;
-          const h=fit==='fill'?target.height:fit==='native'?canvas.height:canvas.height*scale;
-          ctx.drawImage(canvas,(target.width-w)/2,(target.height-h)/2,w,h);
-        }
-        ctx.restore();return true;
-      };
-      graphCanvas.onRenderBackground=hook;opened=true;active=this;dirty();onStateChange(true);return true;
+      if(!grid)for(const entry of [...entries])if(entry!==this)entry.close();
+      if(!canvas){canvas=document.createElement('canvas');context=canvas.getContext('2d');}
+      gridMode=grid;opened=true;entries.add(this);installBackdrop();dirty();onStateChange(true);return true;
+    },
+    get gridMode(){return gridMode||entries.size>1;},
+    draw(ctx,cell){
+      if(!canvas?.width||!canvas?.height)return;
+      const gap=entries.size>1?4:0,x=cell.x+gap,y=cell.y+gap,width=cell.width-gap*2,height=cell.height-gap*2;
+      const scale=fit==='cover'?Math.max(width/canvas.width,height/canvas.height):Math.min(width/canvas.width,height/canvas.height);
+      const w=fit==='fill'?width:fit==='native'?canvas.width:canvas.width*scale,h=fit==='fill'?height:fit==='native'?canvas.height:canvas.height*scale;
+      ctx.save();ctx.beginPath();ctx.rect(x,y,width,height);ctx.clip();ctx.drawImage(canvas,x+(width-w)/2,y+(height-h)/2,w,h);ctx.restore();
     },
     publish(frame){
       if(!opened)return;const current=++revision;
@@ -33,8 +38,8 @@ export function graphBackdrop(status,onStateChange=()=>{}) {
       if(frame.bitmap){draw(frame.bitmap);return;}
       (async()=>{let bitmap;try{bitmap=await createImageBitmap(frame.blob||await(await fetch(frame.src)).blob());if(opened&&current===revision)draw(bitmap);}catch(error){status.textContent=`Backdrop: ${error.message}`;}finally{bitmap?.close();}})();
     },
-    getViewport(){if(!opened)return null;const rect=graphCanvas.canvas?.getBoundingClientRect();return rect?{width:rect.width,height:rect.height}:null;},
+    getViewport(){if(!opened)return null;const rect=graphCanvas.canvas?.getBoundingClientRect();if(!rect)return null;const columns=Math.ceil(Math.sqrt(entries.size)),rows=Math.ceil(entries.size/columns);return {width:rect.width/columns,height:rect.height/rows};},
     setFit(value){fit=value;dirty();},
-    close(){if(!opened)return;opened=false;revision++;if(graphCanvas.onRenderBackground===hook)graphCanvas.onRenderBackground=previous;if(active===this)active=null;canvas=null;context=null;dirty();onStateChange(false);},
+    close(){if(!opened)return;opened=false;revision++;removeBackdrop(this);canvas=null;context=null;dirty();onStateChange(false);},
   };
 }

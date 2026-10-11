@@ -1,6 +1,10 @@
 const svg=path=>`<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
 export function choiceGlyph(value,label,kind=''){
  const text=String(label).toLowerCase();
+ if(/frame editor presets/i.test(kind))return svg('<path d="M3 6h7l2 3h9v11H3Z"/><path d="M7 13h10M7 16h7"/>');
+ if(/crop aspect ratio/i.test(kind))return svg('<rect x="3" y="6" width="18" height="12"/><path d="M7 10h10M7 14h10"/>');
+ if(/edit framing/i.test(kind))return svg('<path d="M7 4H4v3m13-3h3v3M4 17v3h3m13-3v3h-3"/><path d="m7 7 10 1-1 9-9-1Z"/>');
+ if(/stream output framing/i.test(kind))return svg(value==='quad'?'<path d="m5 4 15 2-3 14-14-2Z"/>':'<rect x="4" y="4" width="16" height="16"/><path d="M8 8h8v8H8Z"/>');
  if(/camera|device/i.test(kind))return svg('<path d="M4 7h4l2-3h4l2 3h4v13H4Z"/><circle cx="12" cy="13" r="4"/>');
  if(/fps|frame rate/i.test(kind))return svg('<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>');
  if(/^(input |capture )?(resolution|size)/i.test(kind)||/\d+ px/.test(text))return svg('<rect x="4" y="4" width="16" height="16"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16"/>');

@@ -10,7 +10,7 @@ function fixture(){
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/keybinding-router.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function'),context);
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_stream/web/js/preview-shortcuts.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replaceAll('export function','function'),context);
  const node={id:1,graph:app.graph},other={id:2,graph:app.graph};app.canvas.selected_nodes={1:node};
- const controls={toggleBackdrop:()=>calls.push('backdrop'),toggleOverlay:()=>calls.push('overlay'),isHovered:()=>false};
+ const controls={toggleBackdrop:()=>calls.push('backdrop'),toggleBackdropGrid:()=>calls.push('grid'),toggleOverlay:()=>calls.push('overlay'),isHovered:()=>false};
  const unregister=context.registerPreviewShortcuts(node,controls);
  const key=(code,options={})=>{const event={code,key:code.slice(3).toLowerCase(),preventDefault(){this.defaultPrevented=true;},stopPropagation(){},stopImmediatePropagation(){},...options};listeners.keydown(event);return event;};
  return {hover(id){hoveredId=id;listeners.pointermove({clientX:20,clientY:20});},app,context,node,other,controls,unregister,key,calls,listeners};
@@ -20,7 +20,7 @@ test('selected preview shortcuts use physical keys including Option-W',()=>{
  f.key('KeyD',{altKey:true});f.key('KeyW');f.key('KeyD',{repeat:true});assert.equal(f.calls.length,2);
 });
 test('typing, composition and modified keys remain untouched',()=>{
- const f=fixture();for(const options of [{target:{isContentEditable:true}},{composedPath:()=>[{matches:()=>true}]},{ctrlKey:true},{metaKey:true},{shiftKey:true},{isComposing:true},{defaultPrevented:true}])assert.ok(!f.key('KeyD',options).defaultPrevented||options.defaultPrevented);
+ const f=fixture();for(const options of [{target:{isContentEditable:true}},{composedPath:()=>[{matches:()=>true}]},{ctrlKey:true},{metaKey:true},{isComposing:true},{defaultPrevented:true}])assert.ok(!f.key('KeyD',options).defaultPrevented||options.defaultPrevented);
  assert.deepEqual(f.calls,[]);
 });
 test('hovered overlay takes priority; ambiguous selection and disposed nodes do nothing',()=>{
@@ -95,3 +95,5 @@ test('D prioritizes the pointer node and falls back to selection outside nodes',
  f.hover('2');f.key('KeyD');assert.deepEqual(f.calls,['hovered']);
  f.hover(undefined);f.key('KeyD');assert.deepEqual(f.calls,['hovered','backdrop']);
 });
+
+test('Shift D adds the selected or hovered output to the background grid',()=>{const f=fixture();f.key('KeyD',{shiftKey:true});assert.deepEqual(f.calls,['grid']);});

@@ -52,3 +52,10 @@ def process(kind,data,values,other=None):
             else:result=v
             out[name]=np.nan_to_num(result,nan=0,posinf=0,neginf=0)
     return signal(out,rate,data['start'])
+
+
+def switch_blend(a,b,t):
+    if set(a['channels'])!=set(b['channels']):raise ValueError('CHOP switch requires matching channel names')
+    n=len(next(iter(a['channels'].values()),[0]))
+    out={k:np.asarray(v)*(1-t)+np.interp(np.linspace(0,len(b['channels'][k])-1,n),np.arange(len(b['channels'][k])),b['channels'][k])*t for k,v in a['channels'].items()}
+    return signal(out,a['sample_rate'],a['start'])

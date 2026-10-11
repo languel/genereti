@@ -53,7 +53,10 @@ paper is the default for new drawings, with a glyph to choose solid paper.
 Embedded drawing iframes explicitly use `color-scheme: normal` to match their
 document. In a dark Comfy host, inheriting its scheme can otherwise make Chromium
 add an opaque white backing despite transparent CSS and canvas pixels. Editor
-tool colors still follow Excalidraw's own theme.
+tool colors still follow Excalidraw's own theme. Livecode preview iframes use
+the same explicit scheme and transparent stage by default, so alpha shows the
+node background rather than a browser-supplied white backing. Sketches can still
+paint their own opaque background.
 
 Keep inference and display separate: **ꘇ generator** owns model parameters and
 start/pause, while **ꘇ image preview** owns its canvas and local window controls. Projector links
@@ -73,6 +76,21 @@ or pauses inference. Queue still runs through Comfy's Run action.
 Generator prompt submission has a glyph toggle with hover text: live typing or a
 held draft. The send glyph and Cmd/Ctrl+Enter commit a held draft. Save drafts and
 the applied prompt separately, so reopening a workflow preserves that choice.
+
+### Connection gestures
+
+Start on blank canvas and drag with the right mouse button: **Ctrl** cuts each
+crossed connection; **Shift** inserts a native reroute at each crossed segment.
+Release applies one undoable transaction. Escape cancels before release.
+Cut gestures show a dashed red trail and highlight pending connections red;
+canceling or releasing restores their original colors and clears the trail.
+Existing
+reroute chains and shared cable trunks are handled through Comfy's native APIs;
+normal right-click menus and canvas panning remain available without modifiers.
+Enable or disable both under **Settings → Genereti → Shortcuts → Connection
+drag gestures**, beside Keyboard shortcuts. The saved toggle defaults to on;
+disabling it also cancels an uncommitted drag. Refresh the frontend after updating
+the extension to load the setting; no backend restart is required.
 
 ### Comfy shell Satori
 
@@ -333,3 +351,18 @@ Comfy Open workflow; use the existing Option/Alt viewing shortcuts. See the
 D uses the same node-under-pointer priority as Alt-O, falling back to selection. Image surfaces share explicit width/height and Match source / Match output choices, plus Contain, Cover, Stretch and Native pixels. Capture framing applies to sampled output; viewer framing leaves passthrough IMAGE batches unchanged.
 
 For image/stream preview toolbars, minimize comes first, followed by window/overlay/visual/backdrop controls, freeze, fit and dimensions. Keep compact glyph sizes. Performance diagnostics belong in the dedicated performance probe; local errors remain on their node. Use a chevron disclosure, not the browser-native filled triangle, for expandable measurements.
+
+Editor DOM widgets (livecode, operator text/expressions, and webview source/output)
+expand into the node's remaining height. Their Vue grid rows grow; toolbars,
+scalar controls, and collapsed editor rows retain intrinsic heights. CodeMirror
+fills the editor surface and scrolls internally. Minimum editor height and the
+assigned node height remain separate so resizing cannot feed back into node size.
+
+CodeMirror hints and completion popups render in a body-level tooltip layer,
+outside transformed/clipped node widgets. Documentation hints use up to 420px
+and clamp to the viewport; their theme follows the originating editor.
+
+For image outputs, **D** toggles a solo graph background; **Shift+D** adds or
+removes the hovered/selected output in a viewport-fixed background grid. The
+grid reflows on source removal and viewport resizing, clips each tile, and
+preserves each source's image-fit setting. Selecting solo replaces the grid.

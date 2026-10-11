@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {joinStreams} from '../integrations/genereti_comfy_perception/web/join.js';
+import {RuleEngine} from '../integrations/genereti_comfy_perception/web/rules.js';
+const doc={version:1,rules:[{name:'touch',steps:[{distance:['body::pose.nose','hand::hands.0.index_tip'],op:'<',value:.1,hold_ms:100}],within_ms:1000,cooldown_ms:0}]};
+const r=(time,id=1)=>({source:{id,output_slot:0,revision:1,width:640,height:360,frame_timestamp_ms:time},coordinates:{mirrored:false},features:{'pose.nose.x':.5,'pose.nose.y':.5,'hands.0.index_tip.x':.51,'hands.0.index_tip.y':.5}});
+test('join associates source geometry, timestamps and qualified landmarks',()=>{let a=r(0),b=r(0),reg={read:n=>n==='body'?a:b};let result=joinStreams(reg,doc,'body');assert.equal(result.features['hand::hands.0.index_tip.x'],.51);const engine=new RuleEngine(doc);assert.equal(engine.tick(result,0).length,0);a=r(120);assert.equal(engine.tick(joinStreams(reg,doc,'body'),120).length,0);b=r(120);assert.equal(engine.tick(joinStreams(reg,doc,'body'),120)[0].phase,'entry');b=r(300);assert.equal(joinStreams(reg,doc,'body'),null);b=r(120,2);assert.equal(joinStreams(reg,doc,'body'),null);b=null;assert.equal(joinStreams(reg,doc,'body'),null);});

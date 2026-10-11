@@ -1,4 +1,6 @@
 import {parseExpressionParameters} from './expression-parameters.js';
+import {UTILITY_WGSL,UTILITY_KINDS,utilityParameters} from './utilities.js';
+import {CLEANUP_WGSL} from './cleanup.js';
 import {NOISE_WGSL} from './noise.js';
 import {parseExpression,expressionWGSL} from './expression.js';
 // One device per module/Comfy page. Intermediate frames are borrowed GPUTexture
@@ -55,8 +57,12 @@ fn channel(code:i32,x:vec4f,y:vec4f)->f32 {
  if(code==5){return 0.;}if(code==6){return 1.;}if(code<11){return y[code-7];}
  return dot(y.rgb,vec3f(.2126,.7152,.0722));
 }
+${CLEANUP_WGSL}
+${UTILITY_WGSL}
 @fragment fn fragment(in:Vertex)->@location(0) vec4f {
  let op=i32(p.v[0].x);let mode=i32(p.v[0].y);let k=p.v[0].z;let uv=in.uv;
+ if(op>=15&&op<=19){return cleanupPixel(op,uv);}
+ if(op>=20&&op<=31){return utilityPixel(op,uv);}
  var x=sample(a,uv);var y=sample(b,uv);
  if(op==1){return over(x,y,mode,k);}
  if(op==2){if(p.v[0].w==0){y=vec4f(k);}
@@ -206,13 +212,15 @@ fn pigment(t:f32,x:f32,y:f32,c:f32)->f32 {
 }
 
 export function parameters(kind,values){
+ if(UTILITY_KINDS.includes(kind))return utilityParameters(kind,values);
  const p=new Float32Array(112);p[8]=p[9]=1;
  const modes={Composite:['over','under','add','multiply','screen','difference','cross'],Math:['multiply','add','subtract','divide','difference','minimum','maximum'],Filter:['level','invert','monochrome','threshold','opacity','blur','edge']};
- const codes={FeedbackRef:0,Composite:1,Math:2,Filter:3,Transform:4,Crop:5,CornerPin:6,Feedback:7,Bloom:13,Displace:10,Channels:14};
+ const codes={Cleanup:15,Temporal:19,FeedbackRef:0,Composite:1,Math:2,Filter:3,Transform:4,Crop:5,CornerPin:6,Feedback:7,Bloom:13,Displace:10,Channels:14};
  p[0]=codes[kind];p[1]=Math.max(0,modes[kind]?.indexOf(values.operation)??0);p[2]=values.opacity??values.value??values.amount??values.decay??1;
  if(kind==='Filter'&&[1,2,3,4].includes(p[1]))p[2]=Math.min(p[2],1);
  if(kind==='Feedback')p[1]=['over','add','screen'].indexOf(values.blend??'screen');
  if(kind==='Bloom')p[2]=values.strength;
+ if(kind==='Temporal'){p[2]=values.strength??0;p[3]=values.change_threshold??.12;}
  if(kind==='Displace')p.set([values.amount_x,values.amount_y,values.center],4);
  if(kind==='Channels'){const choices=['r','g','b','a','luma','zero','one','br','bg','bb','ba','bluma'];p[3]=values.channels==='RGB'?3:4;p.set(['red','green','blue','alpha'].map(name=>choices.indexOf(values[name])),4);}
  if(kind==='Transform'||kind==='Feedback'){p[4]=values.translate_x;p[5]=values.translate_y;p[6]=values.scale;p[7]=values.rotate*Math.PI/180;p[8]=values.flip_x?-1:1;p[9]=values.flip_y?-1:1;}

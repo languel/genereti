@@ -1,0 +1,313 @@
+{
+  "version": 0.4,
+  "last_node_id": 6,
+  "last_link_id": 5,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiLivecode",
+      "pos": [
+        0,
+        30
+      ],
+      "size": [
+        340,
+        630
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "IMAGE",
+          "name": "image",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            1,
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode"
+      },
+      "widgets_values": [
+        "p5",
+        256,
+        256,
+        true,
+        "// A luminous abstract performance stage made from hand-cut paper shapes, cobalt blue and orange light, energetic theatrical composition\nfunction setup(){createCanvas(windowWidth,windowHeight)}\nfunction draw(){background(22,28,46);noStroke();fill(35,90,205);rect(30,30,170,180);fill(235,130,40);triangle(55,210,210,210,130+40*sin(frameCount*.02),45);stroke(250);strokeWeight(1);line(20,40,230,190);noStroke();fill(250);circle(128+75*sin(frameCount*.03),130,9);for(let y=0;y<height;y+=3)for(let x=0;x<width;x+=3){fill(255,((x*73+y*151+frameCount)%13)*2);rect(x,y,1,1)}}",
+        "{}",
+        "Live"
+      ],
+      "title": "ꘇ 256px moving stage"
+    },
+    {
+      "id": 2,
+      "type": "GeneretiTextureCleanup",
+      "title": "ꘇ bilinear baseline",
+      "pos": [
+        400,
+        30
+      ],
+      "size": [
+        300,
+        540
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureCleanup"
+      },
+      "widgets_values": [
+        512,
+        512,
+        "bilinear",
+        0,
+        0.12,
+        0,
+        0,
+        "Live"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "GeneretiTextureCleanup",
+      "title": "ꘇ spatial cleanup",
+      "pos": [
+        750,
+        30
+      ],
+      "size": [
+        300,
+        540
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            3
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureCleanup"
+      },
+      "widgets_values": [
+        512,
+        512,
+        "bicubic",
+        0.25,
+        0.12,
+        0.3,
+        0.1,
+        "Live"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "GeneretiTextureTemporal",
+      "title": "ꘇ temporal · start with strength 0",
+      "pos": [
+        1100,
+        30
+      ],
+      "size": [
+        300,
+        540
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiTextureTemporal"
+      },
+      "widgets_values": [
+        0,
+        0.12,
+        "Live"
+      ]
+    },
+    {
+      "id": 5,
+      "type": "GeneretiLiveImagePreview",
+      "pos": [
+        400,
+        620
+      ],
+      "size": [
+        340,
+        490
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview"
+      },
+      "widgets_values": [
+        512
+      ],
+      "title": "ꘇ baseline view"
+    },
+    {
+      "id": 6,
+      "type": "GeneretiLiveImagePreview",
+      "pos": [
+        1100,
+        620
+      ],
+      "size": [
+        340,
+        490
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview"
+      },
+      "widgets_values": [
+        512
+      ],
+      "title": "ꘇ cleanup view"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      1,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      3,
+      0,
+      4,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      2,
+      0,
+      5,
+      0,
+      "IMAGE"
+    ],
+    [
+      5,
+      4,
+      0,
+      6,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.65,
+      "offset": [
+        30,
+        20
+      ]
+    },
+    "workflowName": "ꘇ-Realtime-Cleanup"
+  }
+}

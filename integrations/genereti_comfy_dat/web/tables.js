@@ -5,4 +5,6 @@ export function parseCSV(source,delimiter=','){
 }
 export function csv(data){return data.rows.map(row=>row.map(cell=>/[",\n\r]/.test(cell)?'"'+String(cell).replaceAll('"','""')+'"':cell).join(',')).join('\n')+(data.rows.length?'\n':'');}
 const cell=v=>v===null||typeof v==='object'||typeof v==='boolean'?JSON.stringify(v):String(v);
-export function fromJSON(source){const value=JSON.parse(source);if(Array.isArray(value)){if(value.length&&value.every(v=>v&&typeof v==='object'&&!Array.isArray(v))){const keys=[...new Set(value.flatMap(Object.keys))];return {rows:[keys,...value.map(row=>keys.map(k=>cell(Object.hasOwn(row,k)?row[k]:'')))]};}return {rows:value.map(v=>(Array.isArray(v)?v:[v]).map(cell))};}if(value&&typeof value==='object')return {rows:[['key','value'],...Object.entries(value).map(([k,v])=>[k,cell(v)])]};return {rows:[[cell(value)]]};}
+function tableFromJSON(source){const value=JSON.parse(source);if(Array.isArray(value)){if(value.length&&value.every(v=>v&&typeof v==='object'&&!Array.isArray(v))){const keys=[...new Set(value.flatMap(Object.keys))];return {rows:[keys,...value.map(row=>keys.map(k=>cell(Object.hasOwn(row,k)?row[k]:'')))]};}return {rows:value.map(v=>(Array.isArray(v)?v:[v]).map(cell))};}if(value&&typeof value==='object')return {rows:[['key','value'],...Object.entries(value).map(([k,v])=>[k,cell(v)])]};return {rows:[[cell(value)]]};}
+
+export function fromJSON(source){return {...tableFromJSON(source),jsonValue:JSON.parse(source)};}

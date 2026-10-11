@@ -1,0 +1,268 @@
+{
+  "last_node_id": 5,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiMediaStream",
+      "pos": [
+        40,
+        100
+      ],
+      "size": [
+        380,
+        500
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "localized_name": "capture",
+          "name": "capture",
+          "shape": 7,
+          "type": "STRING",
+          "widget": {
+            "name": "capture"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "localized_name": "image",
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "generetiPerformanceVersion": 1,
+        "Node name for S&R": "GeneretiMediaStream",
+        "genereti_preview_fit": "contain",
+        "genereti_media_url": "",
+        "genereti_media_kind": "image",
+        "genereti_media_fps": 30
+      },
+      "widgets_values": [
+        "GENERETI_OFF:2D stream"
+      ],
+      "title": "ꘇ Local movie · + load GIF/video · ▶ play"
+    },
+    {
+      "id": 2,
+      "type": "GeneretiPerceptionProvider",
+      "pos": [
+        460,
+        100
+      ],
+      "size": [
+        380,
+        620
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask / overlay",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": null
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "slot_index": 1,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionProvider"
+      },
+      "widgets_values": [
+        "body",
+        "pose",
+        15,
+        "Live"
+      ],
+      "title": "ꘇ Body tracking · ↑ load pose · ▶ start"
+    },
+    {
+      "id": 3,
+      "type": "GeneretiPerceptionFeatures",
+      "pos": [
+        880,
+        100
+      ],
+      "size": [
+        420,
+        620
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "features",
+          "type": "GENERETI_CHOP",
+          "links": null
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "landmarks",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionFeatures"
+      },
+      "widgets_values": [
+        "body",
+        "pose.right_wrist pose.left_wrist",
+        "selected",
+        0.4,
+        500,
+        "Live"
+      ],
+      "title": "ꘇ Pick features · click point · Shift adds"
+    },
+    {
+      "id": 4,
+      "type": "GeneretiPerceptionRead",
+      "pos": [
+        1340,
+        100
+      ],
+      "size": [
+        300,
+        280
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "slot_index": 0,
+          "links": null
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "slot_index": 1,
+          "links": null
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "slot_index": 2,
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionRead"
+      },
+      "widgets_values": [
+        "selected",
+        "pointer.x",
+        500,
+        "Live"
+      ],
+      "title": "ꘇ Selected cursor · pointer.x"
+    },
+    {
+      "id": 5,
+      "type": "GeneretiDatInspect",
+      "pos": [
+        1340,
+        430
+      ],
+      "size": [
+        350,
+        450
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "*",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatInspect"
+      },
+      "widgets_values": [
+        "json",
+        64
+      ],
+      "title": "ꘇ Selected features · DAT inspect"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      3,
+      1,
+      5,
+      0,
+      "GENERETI_DAT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.55,
+      "offset": [
+        50,
+        40
+      ]
+    }
+  },
+  "version": 0.4
+}

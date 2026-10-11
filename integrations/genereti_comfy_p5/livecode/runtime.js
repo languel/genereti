@@ -23,11 +23,14 @@ let active=null,candidate=null,users=false,pending=false,raf=0,startTime=perform
 // One persistent texture surface; input frames never recompile the sketch.
 const inputCanvas=document.createElement('canvas');inputCanvas.width=inputCanvas.height=1;
 const bridge=window.__={params:Object.create(null),image:inputCanvas,inputSize:{width:0,height:0},render};
+let perceptionRecords=[],perceptionReceived=0;const perceptionHandlers=new Map();
+bridge.streams={list:()=>perceptionRecords.map(({result,...descriptor})=>descriptor),read:(name,maxAgeMs=500)=>{const r=perceptionRecords.find(d=>d.name===name)?.result;if(!r)return null;const age=r.age_ms+Math.max(0,performance.now()-perceptionReceived);return age<=maxAgeMs?{...r,age_ms:age}:null;}};
+bridge.events={on:(name,fn)=>{if(typeof fn!=='function')throw Error('Event callback must be a function');let set=perceptionHandlers.get(name);if(!set)perceptionHandlers.set(name,set=new Set());set.add(fn);return ()=>set.delete(fn);}};
 const sharedTime=performanceBridge(bridge,(type,values)=>send(type,values));
 window.katex=katex;window.renderMathInElement=renderHtmlMath;ensureMathStyle(mathCss);
 let definitions=[],inputVersion=0;
 function setParameters(values){Object.assign(bridge.params,parameterValues(definitions,values));active?.changed?.();window.dispatchEvent(new CustomEvent('genereti-parameters',{detail:bridge.params}));}
-function configureSource(source,mode,values){definitions=parseParameters(source);bridge.params=parameterValues(definitions,values);bridge.render=render;window.windowWidth=render.width;window.windowHeight=render.height;
+function configureSource(source,mode,values){perceptionHandlers.clear();definitions=parseParameters(source);bridge.params=parameterValues(definitions,values);bridge.render=render;window.windowWidth=render.width;window.windowHeight=render.height;
  for(const p of definitions)if(!Object.getOwnPropertyDescriptor(window,p.name)||Object.getOwnPropertyDescriptor(window,p.name).configurable)Object.defineProperty(window,p.name,{configurable:true,get:()=>bridge.params[p.name]});
  return prepareParameterSource(source,mode,definitions);
 }
@@ -111,6 +114,8 @@ async function renderFrame(now,clock='raf'){try{active?.sample?.();active?.paint
 }
 // Transfer ownership rather than cloning every frame.
 window.addEventListener('message',async e=>{if(e.source!==parent)return;const d=e.data;
+ if(d.type==='perception-state'){perceptionRecords=d.records??[];perceptionReceived=performance.now();}
+ if(d.type==='perception-event'){for(const fn of perceptionHandlers.get(d.event.name)??[]){try{fn(d.event);}catch(error){diagnostic(error);}}}
  if(d.type==='performance-state')sharedTime.update(d);
  if(d.type==='compile'){render={width:512,height:512,...d.render};newestRevision=d.revision;compileQueue=compileQueue.then(()=>{if(d.revision===newestRevision)return compile(d.mode,d.source,d.revision,d.parameters);});}
  if(d.type==='display-viewport'){responsiveDisplay=!!d.responsive;fitDom();}

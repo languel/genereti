@@ -6,7 +6,7 @@
 
 ## Student getting started
 
-The bundled demos need **no model downloads, separate model server, or extra node packs**. Use a recent ComfyUI installation and a modern browser; GPU texture demos require WebGPU support.
+The standard classroom demos need **no model downloads, separate model server, or extra node packs**. The separately labeled optional MediaPipe demo downloads its browser runtime and selected task only when you request it. Use a recent ComfyUI installation and a modern browser; GPU texture demos require WebGPU support.
 
 1. Install **ꘇ Genereti** through Comfy's Extensions / Manager, then restart and refresh the browser. For a GitHub installation, stop Comfy and run this from your ComfyUI directory:
 
@@ -35,13 +35,14 @@ Continue with the [student quickstart](docs/student-quickstart.md), [shader, p5 
 - **OpenTouch:** `top.*` textures, `chop.*` signals and `dat.*` data/lessons.
 - **Sound:** `mod.*` browser instruments, effects, analysis and visualizers.
 - **Performance:** shared time, musical timing, scale, automation and a docked timeline.
+- **Optional perception:** globally named pose, hand, face and person-mask streams, numeric node readers and an interactive event-rule editor. See the [browser perception guide](docs/browser-perception-plan.md).
 - **Assistant:** optional local/hosted provider connections; no assistant service is needed for the bundled demos.
 
 See the [node catalog](docs/opentouch-catalog.md), [audio guide](docs/modular-audio.md), [performance guide](docs/performance-time.md) and [keyboard shortcuts](docs/shortcuts.md).
 
 ## AI inference is moving to GeneretiCore
 
-Model generation, conversion and downloads belong in the separate experimental [GeneretiCore repository](https://github.com/languel/genereticore). It is not yet an installable replacement. Genereti's current classroom demos use the lightweight performance framework only.
+Heavy model generation, conversion and model catalogs belong in the separate experimental [GeneretiCore repository](https://github.com/languel/genereticore). It is not yet an installable replacement. Genereti's current classroom demos use the lightweight performance framework only.
 
 Old standalone apps, inference packs, conversion scripts and model-dependent demos are preserved in [the migration archive](integrations/legacy-generator/README.md). They are unsupported here and excluded from the distributed package.
 

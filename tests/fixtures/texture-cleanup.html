@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8"><title>Genereti cleanup GPU check</title>
+<style>body{font:14px system-ui;background:#222;color:#ddd;margin:24px}canvas{width:384px;height:384px;image-rendering:auto}pre{white-space:pre-wrap}</style>
+<h1>Model-free cleanup comparison</h1><p>Moving edges, thin lines and grain. Left: bilinear baseline. Right: bilateral + bicubic + edge AA + mild sharpening.</p>
+<button id="start">Run GPU checks and benchmark</button><div><canvas id="baseline"></canvas><canvas id="clean"></canvas></div><pre id="result">Ready. No models, camera or audio.</pre>
+<script type="module">
+import {runChecks} from './texture-cleanup.mjs';
+document.querySelector('#start').onclick=async()=>{const r=document.querySelector('#result');r.textContent='Running…';try{r.textContent=JSON.stringify(await runChecks(),null,2);}catch(e){r.textContent=e.stack;throw e;}};
+</script>

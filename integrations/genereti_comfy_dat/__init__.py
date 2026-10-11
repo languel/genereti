@@ -4,6 +4,12 @@ from . import tables
 from .conversions import CONVERTERS
 from .lesson import Lesson
 from .inspect import Inspect
+
+import importlib.util as _switch_import
+from pathlib import Path as _SwitchPath
+_switch_spec=_switch_import.spec_from_file_location('genereti_switching',_SwitchPath(__file__).resolve().parents[1]/'genereti_comfy_texture/switching.py')
+switching=_switch_import.module_from_spec(_switch_spec);_switch_spec.loader.exec_module(switching)
+
 WEB_DIRECTORY='./web'
 DAT=io.Custom('GENERETI_DAT');CHOP=io.Custom('GENERETI_CHOP')
 def code(name,default):return io.String.Input(name,default=default,multiline=True,extra_dict={'widgetType':'GENERETI_OPERATOR_TEXT'})
@@ -21,9 +27,9 @@ class Table(Text):
     def execute(cls,text,delimiter):return output(tables.parse(text,'\t' if delimiter=='tab' else delimiter))
 class JSON(Text):
     @classmethod
-    def define_schema(cls):return schema('JSON',[code('text','[{"speed":0.5,"influence":0.8}]')])
+    def define_schema(cls):return schema('JSON',[code('text','[{"speed":0.5,"influence":0.8}]'),DAT.Input('input',optional=True),io.String.Input('json',optional=True,force_input=True),io.String.Input('filter',default='',optional=True),io.String.Input('selection',default='',optional=True,tooltip='Zero-based entry indices, separated by commas; empty selects all matches')])
     @classmethod
-    def execute(cls,text):return output(tables.from_json(text))
+    def execute(cls,text,input=None,json=None,filter='',selection=''):return output(tables.select_json(input if input is not None else tables.from_json(json if json is not None else text),filter,selection))
 class Select(Text):
     @classmethod
     def define_schema(cls):return schema('Select',[DAT.Input('input'),io.Int.Input('start',default=0,min=0,max=100000),io.Int.Input('count',default=100000,min=0,max=100000),io.String.Input('columns',default='')])
@@ -61,6 +67,15 @@ class FromChop(io.ComfyNode):
         result=schema('FromChop',[CHOP.Input('input')]);result.display_name='ꘇ chop.todat';result.search_aliases=['genereti','chop','genereti chop','chop.todat'];result.category='ꘇ / CHOP';return result
     @classmethod
     def execute(cls,input):return output(tables.from_chop(input))
+
+class Switch(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):return schema('Switch',[io.Autogrow.Input('sources',template=io.Autogrow.TemplatePrefix(DAT.Input('source',optional=True),prefix='source',min=1,max=64),optional=True),io.Combo.Input('mode',options=['int','float']),io.Float.Input('index',default=0,min=0,max=63,step=.01,tooltip='Zero-based index of connected sources; int floors, float blends adjacent sources. Clamped to available sources.')])
+    @classmethod
+    def execute(cls,mode,index,sources=None):
+        items=switching.sources(sources or {});i,j,t=switching.pair(index,mode,len(items));a,b=items[i],items[j]
+        return output(a if not t else tables.switch_blend(a,b,t,switching.interpolate))
+
 class DatExtension(ComfyExtension):
-    async def get_node_list(self):return [Text,Table,JSON,Select,Merge,Transpose,Replace,Expression,ToChop,Cell,FromChop,Lesson,Inspect,*CONVERTERS]
+    async def get_node_list(self):return [Switch,Text,Table,JSON,Select,Merge,Transpose,Replace,Expression,ToChop,Cell,FromChop,Lesson,Inspect,*CONVERTERS]
 async def comfy_entrypoint():return DatExtension()
