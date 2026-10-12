@@ -329,3 +329,44 @@ Genereti wraps `mainImage` with `main`. For WebGL 2, start with `#version 300 es
 Performance uniforms are floats: `u_generetiTime`, `u_generetiBeat`, `u_generetiBar`, `u_generetiBpm`, `u_generetiTicks`, `u_generetiPhase`, `u_generetiRoot`, `u_generetiTuning`, `u_generetiPlaying`, and `u_generetiRate`. They correspond to the shared `__` performance values described above. Shader `iTime`/`u_time` is render time; `u_generetiTime` is the shared performance clock.
 
 [Twigl](https://github.com/doxas/twigl#regulation) uses GLSL too, with compact aliases such as `t` (time), `r` (resolution), `m` (mouse), `f` (frame), `b` (backbuffer), `FC` (pixel coordinates), and `o` (WebGL 2 output). Those aliases and Twigl's helper snippets are not currently provided by Genereti. Genereti does not currently expose Shadertoy `iFrame`, `iTimeDelta`, `iDate`, `iChannel1`–`iChannel3`, or previous-frame feedback in Livecode GLSL. Start with the supported names in this table when adapting a shader.
+
+## p5 versions, libraries and exports
+
+Genereti Settings → Livecode → p5 version selects the bundled default: p5 2.3.4
+or legacy p5 1.11.11. Livecode's gear panel offers a per-node version override
+and optional p5.sound 0.4.1 / p5.brush 2.2.3. Changes apply on Run. Libraries
+load before the sketch and are vendored in exports. Brush requires p5 2 and
+`createCanvas(w, h, WEBGL)`; Livecode binds it to the p5 instance automatically.
+Audio still needs a user gesture (for example `userStartAudio()` in a click
+handler). p5 2 uses asynchronous loading/setup; old preload-based sketches may
+need adapting. The editor's type declarations currently describe p5 1 APIs.
+
+- **Source script** saves the current draft with its parameter annotations.
+- **p5 project ZIP** saves the current draft as `sketch.js`, `index.html`,
+  `style.css`, vendored libraries and licenses. It also includes the original
+  annotated `sketch-source.js`, parameter/version metadata, a README and a small
+  `genereti-bridge.js` with empty standalone defaults.
+- **HTML in p5 mode** embeds the last successfully evaluated sketch and its
+  evaluated library versions, plus current parameters, CSS and the same small
+  bridge. It does **not** embed the shared multi-language Livecode runtime.
+- **HTML in other modes** uses the selected renderer only: WebGL for GLSL,
+  Three.js for Three, the matching engine for Tixy/Play Core/Orca, composition
+  timing for Hyperframes, and Manim plus its animation library for Manim.
+  HTML/SVG are direct documents; Markdown/LaTeX export rendered documents with
+  math fonts. Strudel remains external and cannot be exported as a working
+  embedded runtime. None of these paths bundles every Livecode language.
+
+Neither p5 export includes the Comfy graph, connected images/video, MediaPipe
+inference or streams, nor external assets referenced by the sketch. Supply
+those sources separately; a stream-driven sketch cannot reproduce the graph
+merely by exporting its source. ZIPs are intended for a local web server or an
+editable p5 project. The gear panel also accepts classic-script library URLs, one per line, loaded
+in order before the sketch. These need CORS when fetched from another origin;
+their JavaScript is included in both exports. Add their licenses yourself. ESM
+imports and automatic asset-file packaging are not implemented.
+
+Multi-file/tabbed p5 projects are **not implemented** in Livecode yet: each node
+has one source document. The multi-pass design describes future editable tabs
+and graph interoperability; it is not an existing p5 project-file editor.
+For now helper classes/functions can share the single source document, and ZIP
+exports can be split into additional script files in an external editor.

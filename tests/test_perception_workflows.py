@@ -34,3 +34,13 @@ class HolisticWorkflows(unittest.TestCase):
                     slot = next(i for i, item in enumerate(node['inputs']) if item['name'] == 'image')
                     link = next(l for l in graph['links'] if l[0] == node['inputs'][slot]['link'])
                     self.assertEqual(link[1:5], [provider['id'], 0, node['id'], slot])
+
+    def test_drawing_uses_four_joints_and_clean_underlay(self):
+        graph = json.loads((ROOT / 'integrations/comfyui_genereti/workflows/ꘇ-Perception-02-Drawing.json').read_text())
+        features = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionFeatures')
+        self.assertEqual(set(features['widgets_values'][1].split()), {'pose.left_wrist', 'pose.right_wrist', 'pose.left_ankle', 'pose.right_ankle'})
+        drawing = next(n for n in graph['nodes'] if n['type'] == 'GeneretiLivecode')
+        self.assertEqual(drawing['widgets_values'][4], (ROOT / 'docs/examples/perception-drawing.js').read_text())
+        link = next(l for l in graph['links'] if l[0] == drawing['inputs'][0]['link'])
+        provider = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionProvider')
+        self.assertEqual(link[1:5], [provider['id'], 0, drawing['id'], 0])

@@ -21,7 +21,7 @@ RECIPES = {
 def wire_clean_underlay(graph):
     provider = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionProvider')
     for node in graph['nodes']:
-        if node['type'] != 'GeneretiPerceptionFeatures':
+        if node['type'] != 'GeneretiPerceptionFeatures' and not (node['type'] == 'GeneretiLivecode' and 'Four pens' in node.get('title', '')):
             continue
         inputs = node.setdefault('inputs', [])
         slot = next((i for i, item in enumerate(inputs) if item['name'] == 'image'), None)
@@ -62,6 +62,15 @@ def rebuild():
         if '01-Streams' in path.name:
             selected = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionFeatures')
             selected['widgets_values'][1] = '@pose.torso @face.face_oval @hands.left.index'
+        if '02-Drawing' in path.name:
+            selected = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionFeatures')
+            joints = ['pose.left_wrist', 'pose.right_wrist', 'pose.left_ankle', 'pose.right_ankle']
+            selected['widgets_values'][1] = ' '.join(joints)
+            selected['properties']['generetiSelectionSets'][-1] = {'name': 'Four body-driven pens', 'selectors': joints}
+            drawing = next(n for n in graph['nodes'] if n['type'] == 'GeneretiLivecode')
+            drawing['title'] = 'ꘇ Four pens · wrists + ankles · R clears trails'
+            drawing['widgets_values'][4] = (ROOT / 'docs/examples/perception-drawing.js').read_text()
+            drawing['widgets_values'][5] = '{}'
         if '04-Nose-Touch' in path.name:
             graph['nodes'] = [n for n in graph['nodes'] if n['id'] not in [8, 9]]
             graph['links'] = [link for link in graph['links'] if link[1] not in [8, 9] and link[3] not in [8, 9]]

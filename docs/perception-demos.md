@@ -8,9 +8,12 @@ The examples sample at 15 fps, limit input to 512 px, and play at half speed.
 
 1. **ꘇ-Perception-01-Streams**: coordinated body, hand and face observations,
    visual region selection, scalar reader and DAT inspection.
-2. **ꘇ-Perception-02-Drawing**: the first selected wrist drives a pen on the
-   cobalt/orange sample stage. Start Livecode explicitly; R clears the canvas.
-   Source timestamps prevent a held frame from drawing repeatedly.
+2. **ꘇ-Perception-02-Drawing**: four colored pens follow both wrists and ankles over
+   the clean source image. Start Livecode explicitly. Adjust `trail_seconds`,
+   `smoothing` (0 = direct, 1 = strongest smoothing), `source_opacity`, and
+   `stroke_width` in Livecode. R clears trails. Pausing holds the drawing; missing
+   joints break their strokes. Source and pens share an aspect-preserving frame.
+   The editable sketch is in [examples/perception-drawing.js](examples/perception-drawing.js).
 3. **ꘇ-Perception-03-Event-Brushes**: a `pointer.y > 0.5` half-plane rule arms a
    brush after 100 ms. Start Livecode and the event node explicitly. Edit the
    threshold/hold in the event editor. This is a simple example gate.

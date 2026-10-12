@@ -41,3 +41,12 @@ notices ship beside the browser bundles in `web/lib/`. KaTeX WOFF2 fonts are
 embedded in the runtime stylesheet for offline previews and captures. Manim's
 MathJax math renderer is bundled with the separate, lazily loaded Manim library.
 These notices do not change the license of other Genereti integrations.
+
+
+Optional p5 add-ons and versioned browser assets:
+- p5 2.3.4 and p5 1.11.11: LGPL-2.1, https://github.com/processing/p5.js
+- p5.sound 0.4.1: LGPL-2.1, https://github.com/processing/p5.sound.js
+- p5.brush 2.2.3: MIT, https://github.com/acamposuribe/p5.brush
+
+These libraries are unmodified vendored browser distributions. Their license
+texts are shipped alongside the assets and included when exporting them.

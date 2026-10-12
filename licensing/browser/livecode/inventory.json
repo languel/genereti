@@ -349,6 +349,15 @@
     }
   },
   {
+    "name": "fflate",
+    "version": "0.8.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/livecode/fflate-0.8.3/LICENSE"
+    ],
+    "repository": "https://github.com/101arrowz/fflate"
+  },
+  {
     "name": "html-to-image",
     "version": "1.11.13",
     "license": "MIT",
@@ -395,6 +404,45 @@
       "type": "git",
       "url": "git://github.com/markedjs/marked.git"
     }
+  },
+  {
+    "name": "p5",
+    "version": "2.3.4",
+    "license": "LGPL-2.1",
+    "notices": [
+      "licensing/browser/livecode/p5-2.3.4/license.txt"
+    ],
+    "repository": "processing/p5.js"
+  },
+  {
+    "name": "p5",
+    "version": "1.11.11",
+    "license": "LGPL-2.1",
+    "notices": [
+      "licensing/browser/livecode/p5-1.11.11/license.txt"
+    ],
+    "repository": "processing/p5.js"
+  },
+  {
+    "name": "p5.brush",
+    "version": "2.2.3",
+    "license": "MIT",
+    "notices": [
+      "licensing/browser/livecode/p5.brush-2.2.3/LICENSE.md"
+    ],
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/acamposuribe/p5.brush.git"
+    }
+  },
+  {
+    "name": "p5.sound",
+    "version": "0.4.1",
+    "license": "LGPL-2.1",
+    "notices": [
+      "licensing/browser/livecode/p5.sound-0.4.1/LICENSE"
+    ],
+    "repository": null
   },
   {
     "name": "prettier",

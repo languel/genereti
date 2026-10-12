@@ -42,6 +42,17 @@ for(const [pkg,file] of [['@mathjax/src','LICENSE'],['opentype.js','LICENSE'],['
 await copyFile('integrations/genereti_comfy_p5/livecode/UNDERSCORES-LICENSE',`${out}/UNDERSCORES-LICENSE`);
 await copyFile('integrations/genereti_comfy_p5/livecode/THIRD-PARTY-NOTICES.md',`${out}/THIRD-PARTY-NOTICES.md`);
 await build({entryPoints:['integrations/genereti_comfy_p5/livecode/formatter.js'],outfile:`${out}/formatter.mjs`,bundle:true,minify:true,format:'esm',legalComments:'linked',target:'es2022'});
+await build({entryPoints:['integrations/genereti_comfy_p5/livecode/project-zip.js'],outfile:`${out}/project-zip.mjs`,bundle:true,minify:true,format:'esm',legalComments:'linked',target:'es2022'});
+for(const [from,to] of [
+ ['p5/lib/p5.min.js','p5-2.min.js'],['p5/license.txt','p5-2-LICENSE'],
+ ['p5-v1/license.txt','p5-1-LICENSE'],['p5.sound/dist/p5.sound.min.js','p5.sound.min.js'],['p5.sound/LICENSE','p5.sound-LICENSE'],
+ ['p5.brush/dist/p5.brush.js','p5.brush.js'],['p5.brush/LICENSE.md','p5.brush-LICENSE']])await copyFile('node_modules/'+from,`${out}/${to}`);
+await copyFile('node_modules/p5-v1/lib/p5.min.js','integrations/genereti_comfy_p5/web/p5.min.js');
+// Standalone exports bundle only their selected renderer, not the preview host.
+for(const mode of ['glsl','three','tixy','playcore','orca','manim','hyperframes']){
+ const setup=mode==='glsl'?"import {glslRuntime as engine} from './standalone-glsl.js';const runtime=engine(source,bridge,definitions,inputCanvas);":mode==='three'?"import {threeRuntime as engine} from './standalone-three.js';const runtime=engine(source,bridge,inputCanvas);":mode==='manim'?"import {manimRuntime as engine} from './manim-runtime.js';const runtime=await engine(source,bridge,(type,detail)=>{if(type==='error')console.error(detail.message)});if(bridge.params.stepThrough){const button=document.createElement('button');button.textContent='Next cue';button.onclick=()=>runtime.next();document.body.append(button);}":mode==='hyperframes'?"import {compositionClock} from './composition-clock.js';const root=document.createElement('main');root.innerHTML=source;document.body.append(root);const clock=compositionClock(bridge);for(const script of root.querySelectorAll('script')){const next=document.createElement('script');for(const attr of script.attributes)next.setAttribute(attr.name,attr.value);next.textContent=script.textContent;script.replaceWith(next);}const runtime={root,paint:clock.paint,dispose:clock.dispose};":`import {${mode}Runtime as engine} from './grid-runtimes.js';const runtime=engine(source,bridge);`;
+ await build({stdin:{contents:`import {standaloneContext,animate} from './standalone-common.js';${setup.match(/import[^;]+;/g)?.join('')||''}async function start(){const {data,definitions,bridge,inputCanvas,source}=standaloneContext();${setup.replace(/import[^;]+;/g,'')}animate(runtime,bridge);}start();`,resolveDir:'integrations/genereti_comfy_p5/livecode',sourcefile:`export-${mode}.js`},outfile:`${out}/export-${mode}.txt`,bundle:true,minify:true,format:'iife',legalComments:'inline',target:'es2022',define:{'process.env.NODE_ENV':'"production"'}});
+}
 const typeFiles={};
 async function collectTypes(directory){for(const entry of await readdir(directory,{withFileTypes:true})){const path=directory+'/'+entry.name;if(entry.isDirectory())await collectTypes(path);else if(entry.name.endsWith('.d.ts')||entry.name==='package.json')typeFiles['/'+path]=await readFile(path,'utf8');}}
 for(const dir of ['typescript/lib','@types/p5','@types/three','@types/webxr','@types/stats.js','fflate','meshoptimizer','@tweenjs/tween.js'])await collectTypes('node_modules/'+dir);
@@ -66,4 +77,5 @@ await writeFile(webviewEditor,(await readFile(webviewEditor,'utf8')).replace(/ed
 const editorSettings="integrations/genereti_comfy_p5/web/js/editor-settings.js";
 await writeFile(editorSettings,(await readFile(editorSettings,"utf8")).replace(/editor\.mjs\?v=[^']+/,`editor.mjs?v=${version}`));
 
+licenseMetas.push({inputs:Object.fromEntries(['p5/lib/p5.min.js','p5-v1/lib/p5.min.js','p5.sound/dist/p5.sound.min.js','p5.brush/dist/p5.brush.js'].map(path=>['node_modules/'+path,{}]))});
 await recordBrowserLicenses(licenseMetas,'livecode');
