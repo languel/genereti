@@ -1,65 +1,72 @@
-# MediaMime / perception demo series
+# Holistic perception demo series
 
-The reusable chain is **2D stream → mediapipe.stream → perception.features**.
-Pick a local movie/GIF with `+`, explicitly press Play, load the pose task with
-`↑`, then start inference with `▶`. A source no larger than 1024 px per side is
-required. Optional downloads are selected explicitly; models remain in Comfy's
-local cache. Nothing starts capture automatically.
+The baseline is **2D stream → mediapipe.stream (Holistic) → perception.features**.
+Load a local film with `+`, press Play, download Holistic once if necessary, then
+press Start. Start loads the installed model automatically. Models and media
+remain outside Git; camera and screen capture remain explicit browser actions.
+The examples sample at 15 fps, limit input to 512 px, and play at half speed.
 
-1. **ꘇ-Perception-01-Streams**: source, pose overlay, clickable landmark map,
-   scalar reader and DAT inspection. Click selects one landmark; Shift-click
-   extends the selection. Edit the source/task/feature names for hands or face.
-2. **ꘇ-Perception-02-Drawing**: the first selected point drives a canvas cursor
-   and pen. Start the Livecode editor explicitly. Select another landmark while
-   running to redirect the pen; stale/missing results break the stroke. R clears
-   the drawing while its editor has focus.
-3. **ꘇ-Perception-03-Event-Brushes**: a `pointer.y > 0.5` region gate holds for
-   100 ms before `brush.down` enters. Start Livecode first, then start the event node explicitly.
-   Entry arms the brush and changes color; exit stops it. Edit the threshold,
-   holds or sequence in the existing event editor. This is a simple half-plane
-   region, not a complete MediaMime drawn-region editor.
+1. **ꘇ-Perception-01-Streams**: coordinated body, hand and face observations,
+   visual region selection, scalar reader and DAT inspection.
+2. **ꘇ-Perception-02-Drawing**: the first selected wrist drives a pen on the
+   cobalt/orange sample stage. Start Livecode explicitly; R clears the canvas.
+   Source timestamps prevent a held frame from drawing repeatedly.
+3. **ꘇ-Perception-03-Event-Brushes**: a `pointer.y > 0.5` half-plane rule arms a
+   brush after 100 ms. Start Livecode and the event node explicitly. Edit the
+   threshold/hold in the event editor. This is a simple example gate.
+4. **ꘇ-Perception-04-Nose-Touch**: one Holistic stream compares `pose.nose`
+   with `hands.left.index_tip`. The distance rule is an editable starting point,
+   not a claim that the supplied film performs a nose touch. Detection quality,
+   distance threshold and hold duration need calibration for a live performance.
+5. **ꘇ-Perception-05-Region-Study**: face outline, left eyebrow and outer lips;
+   the face map is open for comparing semantic groups with individual vertices.
 
-The selected global stream carries original source coordinates and frame times.
-Drawing consumes each source frame once, rejects large jumps, and breaks strokes
-on stale data, low confidence, pause or source/geometry changes. It draws onto the
-node's canvas; it does not move the OS pointer or dispatch privileged input.
+## Navigating selections
 
-## Local test media
+In Features, open ◉ for the combined body map or choose Pose, stylized Face,
+static Face mesh, Left hand or Right hand. Stream publishes all observations and
+has no selection map. Its clean image output is wired to the Features underlay.
+Colored dots identify modality/side. Click dots for individual landmarks, click
+contour strokes for regions, or use the searchable text toggles. Selection sets
+save/recall combinations and export/import portable JSON. The map uses adapted
+Threegrease schematic geometry; the optional static face mesh uses a frontal
+canonical MediaPipe reference. Neither view changes detection coordinates.
 
-The user's Muybridge files under `~/Desktop/_tmpassets/Muybridge` are local-only
-fixtures. The current files are animated GIFs, played through the existing
-ImageDecoder path. Select them in the browser; do not copy them into the repository
-or encode them into workflows. Demos ship empty media inputs and remain reusable
-with another person's movies. Browser-picked files must be selected again after
-reload. User media rights/provenance are not inferred from filenames.
+Wheel/pinch zooms, background or middle-drag pans, and Fit resets the view. Focus
+selection frames the selected regions. The live feature viewer offers Regions
+or Vertices picking, selected-only display, and crisp vector zoom; Shift-click adds/removes selections. Its navigation does
+not alter exported IMAGE geometry or normalized feature coordinates. Ctrl-drag selects a box; Option/Alt-drag paints, Shift adds, and Escape cancels.
+The mode dropdown defaults to ordinary picking. Optional IDs show numbers or
+initials such as LRT. Small preview points are sized independently from the map.
+The grid remains toggleable. Paused playback and Hold input retain the last observations;
+clearing or disconnecting invalidates them, and held frames do not advance events.
 
-## Cross-project design notes
+Stable group/point selectors remain the seam for later relation editors: distances,
+contact and region area. The existing event editor already supports distances
+between point prefixes. New visual relation/area authoring is not implemented here.
 
-Reviewed the local MediaMime mapping and MediaPipe modules, Underscores' landmark
-ontology/gesture tracks, Artist–Model Studio's gesture recognizers, ThreeGrease's
-stream pens and landmark pickers, and SketchCam's live ink/routing code.
-Their reusable ideas are named features, coordinate adapters, confidence-gated
-tracking, enter/exit events, selected landmarks driving pens, and explicit routing
-to cursor/brush parameters. This implementation is original; sibling application
-source code and licensing obligations are not copied into Genereti.
+## Local early-film test assets
 
-Further milestones: editable drawn-region triggers like MediaMime, a reusable
-brush parameter router, hand identity and calibration, recorded stream replay,
-and destination adapters for other applications. The current shared perception-v1
-contract and JSON event-rule format are the integration seam.
+Portable workflows ship empty media URLs. The local preparation script makes
+short 15-fps proxies from the user's early-film files in Comfy's input assets,
+and writes ready-to-load local workflows under ignored `output/perception-demos`:
 
-## 04 — Multiple streams: nose touch
+```sh
+python3 scripts/prepare_perception_demos.py \
+  --source-dir "$HOME/Desktop/_tmpassets/earlyfilm" \
+  --input-dir "$HOME/ComfyUI-Shared/input"
+```
 
-`ꘇ-Perception-04-Nose-Touch.json` fans one 2D source into pose (`body`) and hands
-(`hand`) providers. Load and start both tasks explicitly. In the hand feature
-viewer select the left index tip, confirming handedness visually; the derived
-`finger` stream exposes it as `pointer`. The event compares
-`body::pose.nose` with `finger::pointer` and emits `touch.nose` after 150 ms within
-0.08 image-height units. This is an editable starting rule, not a guarantee of
-anatomical hand identity or detection on historical movies. A live nose-touch
-performance still needs calibration and validation.
+Local recipes use Sandow (streams/regions), discus throwing (drawing), and shot
+put (event brushes). Originals are preserved, and neither proxies nor local
+workflow URLs are committed. Model detections vary by frame, framing and source
+quality; absence of landmarks remains visible. Media rights are not inferred
+from filenames. Built-in crop/four-corner framing and the bounded looper can
+prepare more useful fixtures and export them outside Git.
 
-Every 2D stream now has built-in crop/four-corner framing and a bounded still/clip
-looper. Use local test movies, record a segment, replay it while editing selection
-or events, and save/export useful fixtures outside Git. See
-`help/docs/GeneretiMediaStream.md` for controls and capture limits.
+The ontology and schematic geometry adapt the user's Underscores and Threegrease
+work; MediaMime, Artist–Model Studio and SketchCam informed event/brush routing.
+
+On this machine the prepared variants are also installed in Comfy's workflow
+picker under `Genereti`. Save your active workflow and refresh
+the frontend before opening the rebuilt examples.

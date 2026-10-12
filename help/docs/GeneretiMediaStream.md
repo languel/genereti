@@ -58,3 +58,11 @@ The presets menu recalls named editor states; the save glyph adds or updates a
 named preset, and the trash glyph removes the selected preset. Presets include
 crop, quad, orientation, flip, output mode, constraints, edit mode, and view; they
 travel with the workflow and do not include media or loop recordings.
+
+Playback speed (0.1×–4×) changes video, GIF and captured-loop playback time.
+Sampling independently chooses Hold input or 0.2–60 fps for the preview and live
+output. Input resolution limits the longest side without upscaling; existing
+frame/output dimensions remain available for explicit framing. These choices
+are saved in the workflow. Pausing playback or holding sampling keeps the last
+perception features available as a held frame, with their original timestamp.
+Clearing the source invalidates them.

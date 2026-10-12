@@ -14,7 +14,7 @@ def choice(name, options, default=None):
 def define(kind, inputs, description, dat=False):
     return io.Schema(node_id='GeneretiTexture'+kind,
         display_name='ꘇ top.'+{'OpticalFlow':'opticalflow','ColorMap':'colormap'}.get(kind,kind.lower()),
-        category='ꘇ / TOP', search_aliases=['genereti','top'], description=description,
+        category='Genereti / TOP', search_aliases=['genereti','top'], description=description,
         inputs=[io.Image.Input('image'), *inputs],
         outputs=[io.Image.Output(display_name='image'), *([io.Custom('GENERETI_DAT').Output(display_name='blobs')] if dat else [])])
 

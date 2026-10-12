@@ -82,3 +82,20 @@ class WorkflowInstallTests(unittest.TestCase):
             self.assertFalse((workflows / 'genereti-Output-Views.json').exists())
             installer.install(examples, workflows)
             self.assertEqual(len(list((workflows / 'Genereti').glob('*.json'))),1)
+
+    def test_local_holistic_folder_moves_without_losing_either_variant(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); examples = root / 'examples'; workflows = root / 'user/workflows'
+            examples.mkdir(); (workflows / 'Genereti').mkdir(parents=True); local = workflows / 'Genereti-Holistic-Local'; local.mkdir()
+            name = 'ꘇ-Perception-01-Streams.json'
+            (examples / name).write_text('{"portable":true}')
+            (workflows / 'Genereti' / name).write_text('{"user_edit":"preserve"}')
+            (local / name).write_text('{"local_media":"/view?filename=local.webm"}')
+            destination = installer.install(examples, workflows)
+            self.assertFalse(local.exists())
+            self.assertEqual(json.loads((destination / name).read_text()), {'local_media': '/view?filename=local.webm'})
+            backups = list((workflows.parent / '.genereti-workflow-backups').rglob('*.json'))
+            self.assertTrue(any(json.loads(p.read_text()) == {'user_edit': 'preserve'} for p in backups))
+            installer.install(examples, workflows)
+            self.assertEqual(len(list(destination.glob('*.json'))), 1)
+            self.assertEqual(json.loads((destination / name).read_text()), {'local_media': '/view?filename=local.webm'})

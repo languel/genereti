@@ -10,7 +10,7 @@ def f(name, default, low=0, high=1):
 
 def schema(kind, inputs, outputs=None, endpoint=False):
     return io.Schema(node_id='GeneretiAudio'+kind, display_name='ꘇ mod.'+kind.lower(),
-        category='ꘇ / Modular audio', search_aliases=['mod', 'genereti mod', 'genereti audio', 'synth', 'music', kind.lower()],
+        category='Genereti / Modular audio', search_aliases=['mod', 'genereti mod', 'genereti audio', 'synth', 'music', kind.lower()],
         inputs=inputs, outputs=outputs if outputs is not None else [BUS.Output(display_name='audio')],
         is_output_node=endpoint,
         description='Live browser Web Audio route. Connect to mod.output and press Start there. Queue returns a route description, not a Comfy AUDIO tensor, and never plays sound.')

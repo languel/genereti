@@ -4,6 +4,11 @@
 
 **Super alpha — early classroom testing.** Back up your workflows before updating. Expect bugs and changing interfaces.
 
+Holistic demos share one provider across independent feature selections. The provider
+outputs a clean image and a separate diagnostic overlay; feature selection, named sets,
+box/paint picking and source underlays live in Features. All nodes appear under the
+Genereti catalog, and examples under Workflows → Genereti. See [perception demos](docs/perception-demos.md).
+
 ## Student getting started
 
 The standard classroom demos need **no model downloads, separate model server, or extra node packs**. The separately labeled optional MediaPipe demo downloads its browser runtime and selected task only when you request it. Use a recent ComfyUI installation and a modern browser; GPU texture demos require WebGPU support.

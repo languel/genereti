@@ -28,8 +28,8 @@ export class RuleEngine {
  set(doc){this.doc=parseRules(doc);this.reset();}
  reset(){this.states=this.doc.rules.map(()=>({step:0,since:null,began:null,firedAt:-Infinity,armed:true,active:false,progress:0,value:null}));this.source=null;this.lastFrame=null;}
  tick(result,now){
-  if(!result){this.reset();return [];}
-  const source=JSON.stringify([result.source.id,result.source.output_slot,result.source.revision,result.source.width,result.source.height,result.selection?.names]);
+  if(!result||result.held){this.reset();return [];}
+  const source=JSON.stringify([result.source.id,result.source.output_slot,result.source.revision,result.source.width,result.source.height,result.selection?.names??result.selection?.selectors,result.selection?.regions]);
   if(source!==this.source){this.reset();this.source=source;}
   // A held old frame cannot complete a hold. Time is source frame time.
   const t=result.source.frame_timestamp_ms;if(t===this.lastFrame)return [];this.lastFrame=t;

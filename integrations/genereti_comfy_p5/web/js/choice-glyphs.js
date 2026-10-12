@@ -1,12 +1,19 @@
 const svg=path=>`<svg aria-hidden="true" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
 export function choiceGlyph(value,label,kind=''){
  const text=String(label).toLowerCase();
+ if(/selection gesture/i.test(kind))return svg(value==='box'?'<rect x="3" y="3" width="18" height="18" stroke-dasharray="3 2"/>':value==='paint'?'<circle cx="9" cy="15" r="6"/><path d="m12 12 8-8 2 2-8 8"/>':'<circle cx="12" cy="12" r="3"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/>');
+ if(/preview point size/i.test(kind))return svg(`<circle cx="12" cy="12" r="${Number(value)<=.75?2:Number(value)<=1.25?3:Number(value)<=2?4:5}"/>`);
+ if(/feature picking/i.test(kind))return svg(value==='regions'?'<path d="M4 6 12 3l8 3v12l-8 3-8-3Z"/><circle cx="12" cy="12" r="4"/>':'<circle cx="12" cy="12" r="3"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/>');
+ if(/tracking pipeline/i.test(kind))return svg(value==='holistic'?'<circle cx="12" cy="4" r="2"/><path d="M12 6v9M5 9h14m-7 6-5 7m5-7 5 7"/><circle cx="5" cy="9" r="2"/><circle cx="19" cy="9" r="2"/>':'<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/>');
+ if(/selection sets/i.test(kind))return svg('<path d="M3 6h7l2 3h9v11H3Z"/><path d="M7 13h10M7 16h7"/>');
+ if(/anatomical selection map/i.test(kind))return svg(['face','facemesh'].includes(value)?'<ellipse cx="12" cy="12" rx="8" ry="10"/><path d="M7 10h2m6 0h2m-5 1v4m-3 2h6"/>':['body','combined'].includes(value)?'<circle cx="12" cy="4" r="2"/><path d="M12 6v9M5 9h14m-7 6-5 7m5-7 5 7"/>':'<path d="M7 12V5a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-7a1.5 1.5 0 0 1 3 0v8-5a1.5 1.5 0 0 1 3 0v8l-4 6H9l-6-8a1.5 1.5 0 0 1 2-2Z"/>');
  if(/frame editor presets/i.test(kind))return svg('<path d="M3 6h7l2 3h9v11H3Z"/><path d="M7 13h10M7 16h7"/>');
  if(/crop aspect ratio/i.test(kind))return svg('<rect x="3" y="6" width="18" height="12"/><path d="M7 10h10M7 14h10"/>');
  if(/edit framing/i.test(kind))return svg('<path d="M7 4H4v3m13-3h3v3M4 17v3h3m13-3v3h-3"/><path d="m7 7 10 1-1 9-9-1Z"/>');
  if(/stream output framing/i.test(kind))return svg(value==='quad'?'<path d="m5 4 15 2-3 14-14-2Z"/>':'<rect x="4" y="4" width="16" height="16"/><path d="M8 8h8v8H8Z"/>');
  if(/camera|device/i.test(kind))return svg('<path d="M4 7h4l2-3h4l2 3h4v13H4Z"/><circle cx="12" cy="13" r="4"/>');
- if(/fps|frame rate/i.test(kind))return svg('<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>');
+ if(/playback speed/i.test(kind))return svg('<circle cx="12" cy="12" r="9"/><path d="m9 8 6 4-6 4ZM3 12h3"/>');
+ if(/fps|frame rate|sampling rate/i.test(kind))return svg('<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>');
  if(/^(input |capture )?(resolution|size)/i.test(kind)||/\d+ px/.test(text))return svg('<rect x="4" y="4" width="16" height="16"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16"/>');
  if(text==='split'||value==='both')return svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/>');
  if(text==='overlay'||value==='overlay')return svg('<rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/>');

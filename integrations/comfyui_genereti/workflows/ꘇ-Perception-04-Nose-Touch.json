@@ -1,5 +1,5 @@
 {
-  "last_node_id": 9,
+  "last_node_id": 7,
   "last_link_id": 3,
   "nodes": [
     {
@@ -41,8 +41,7 @@
           "name": "image",
           "type": "IMAGE",
           "links": [
-            1,
-            3
+            1
           ]
         }
       ],
@@ -51,13 +50,15 @@
         "Node name for S&R": "GeneretiMediaStream",
         "genereti_preview_fit": "contain",
         "genereti_media_url": "",
-        "genereti_media_kind": "image",
-        "genereti_media_fps": 30
+        "genereti_media_kind": "video",
+        "genereti_media_fps": 15,
+        "genereti_media_speed": 0.5,
+        "genereti_media_size": 512
       },
       "widgets_values": [
         "GENERETI_OFF:2D stream"
       ],
-      "title": "ꘇ Local movie · + load GIF/video · ▶ play"
+      "title": "ꘇ Film source · + load · ▶ play"
     },
     {
       "id": 2,
@@ -67,8 +68,8 @@
         100
       ],
       "size": [
-        380,
-        620
+        420,
+        540
       ],
       "flags": {},
       "order": 1,
@@ -82,28 +83,46 @@
       ],
       "outputs": [
         {
-          "name": "mask / overlay",
+          "name": "image",
           "type": "IMAGE",
           "slot_index": 0,
-          "links": null
+          "links": [
+            3
+          ]
         },
         {
           "name": "observations",
           "type": "GENERETI_DAT",
           "slot_index": 1,
           "links": null
+        },
+        {
+          "name": "overlay",
+          "type": "IMAGE",
+          "links": null,
+          "slot_index": 2
         }
       ],
       "properties": {
-        "Node name for S&R": "GeneretiPerceptionProvider"
+        "Node name for S&R": "GeneretiPerceptionProvider",
+        "genereti_widget_values": {
+          "stream": "body",
+          "task": "pose",
+          "max_fps": 15,
+          "tasks": "holistic",
+          "features": ""
+        },
+        "generetiProviderOverlay": false
       },
       "widgets_values": [
         "body",
         "pose",
         15,
+        "holistic",
+        "",
         "Live"
       ],
-      "title": "ꘇ Body tracking · ↑ load pose · ▶ start"
+      "title": "ꘇ Holistic · ▶ starts installed model"
     },
     {
       "id": 3,
@@ -113,13 +132,19 @@
         100
       ],
       "size": [
-        420,
-        620
+        500,
+        920
       ],
       "flags": {},
       "order": 2,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
       "outputs": [
         {
           "name": "features",
@@ -140,17 +165,44 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "GeneretiPerceptionFeatures"
+        "Node name for S&R": "GeneretiPerceptionFeatures",
+        "generetiSelectionMap": "combined",
+        "generetiSelectionMapOpen": true,
+        "generetiFeatureGrid": false,
+        "generetiFeaturePick": "regions",
+        "generetiSelectionSets": [
+          {
+            "name": "Face outline and brow",
+            "selectors": [
+              "@face.face_oval",
+              "@face.left_eyebrow"
+            ]
+          },
+          {
+            "name": "Left index and nose",
+            "selectors": [
+              "hands.left.index_tip",
+              "pose.nose"
+            ]
+          },
+          {
+            "name": "Body-driven pen",
+            "selectors": [
+              "pose.right_wrist",
+              "pose.left_wrist"
+            ]
+          }
+        ]
       },
       "widgets_values": [
         "body",
-        "pose.right_wrist pose.left_wrist",
+        "hands.left.index_tip pose.nose",
         "selected",
         0.4,
         500,
         "Live"
       ],
-      "title": "ꘇ Pick features · click point · Shift adds"
+      "title": "ꘇ Features · regions / vertices · zoom / pan"
     },
     {
       "id": 4,
@@ -270,101 +322,10 @@
       "widgets_values": [
         "body",
         500,
-        "{\"version\": 1, \"rules\": [{\"name\": \"touch.nose\", \"steps\": [{\"distance\": [\"body::pose.nose\", \"finger::pointer\"], \"op\": \"<\", \"value\": 0.08, \"hold_ms\": 150}], \"within_ms\": 1500, \"cooldown_ms\": 500}]}",
+        "{\"version\": 1, \"rules\": [{\"name\": \"touch.nose\", \"steps\": [{\"distance\": [\"pose.nose\", \"hands.left.index_tip\"], \"op\": \"<\", \"value\": 0.08, \"hold_ms\": 150}], \"within_ms\": 1500, \"cooldown_ms\": 500}]}",
         "Live"
       ],
-      "title": "ꘇ Nose touch · pose + selected fingertip"
-    },
-    {
-      "id": 8,
-      "type": "GeneretiPerceptionProvider",
-      "pos": [
-        40,
-        920
-      ],
-      "size": [
-        380,
-        620
-      ],
-      "flags": {},
-      "order": 1,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 3
-        }
-      ],
-      "outputs": [
-        {
-          "name": "mask / overlay",
-          "type": "IMAGE",
-          "slot_index": 0,
-          "links": null
-        },
-        {
-          "name": "observations",
-          "type": "GENERETI_DAT",
-          "slot_index": 1,
-          "links": null
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "GeneretiPerceptionProvider"
-      },
-      "widgets_values": [
-        "hand",
-        "hands",
-        15,
-        "Live"
-      ],
-      "title": "ꘇ Hand tracking · ↑ load hands · ▶ start"
-    },
-    {
-      "id": 9,
-      "type": "GeneretiPerceptionFeatures",
-      "pos": [
-        460,
-        920
-      ],
-      "size": [
-        420,
-        620
-      ],
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "features",
-          "type": "GENERETI_CHOP",
-          "links": null
-        },
-        {
-          "name": "observations",
-          "type": "GENERETI_DAT",
-          "links": null
-        },
-        {
-          "name": "landmarks",
-          "type": "IMAGE",
-          "links": null
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "GeneretiPerceptionFeatures"
-      },
-      "widgets_values": [
-        "hand",
-        "hands.0.index_tip",
-        "finger",
-        0.4,
-        500,
-        "Live"
-      ],
-      "title": "ꘇ Select left index tip · confirm handedness"
+      "title": "ꘇ Left index near nose · editable distance rule"
     }
   ],
   "links": [
@@ -386,9 +347,9 @@
     ],
     [
       3,
-      1,
+      2,
       0,
-      8,
+      3,
       0,
       "IMAGE"
     ]

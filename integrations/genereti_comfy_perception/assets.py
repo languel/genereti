@@ -9,7 +9,7 @@ from urllib.parse import urlparse
 from aiohttp import web
 
 CATALOG = json.loads(Path(__file__).with_name('assets.json').read_text())
-MODELS = {'segment': 'selfie_segmenter.tflite', 'pose': 'pose.task', 'hands': 'hands.task', 'face': 'face.task'}
+MODELS = {'holistic': 'holistic.task', 'segment': 'selfie_segmenter.tflite', 'pose': 'pose.task', 'hands': 'hands.task', 'face': 'face.task', 'multiclass': 'selfie_multiclass.tflite'}
 LOCK = threading.Lock()
 TASKS = set()
 STATE = {'phase': 'idle', 'done': 0, 'total': 0}
@@ -81,7 +81,7 @@ def register_routes(routes):
             if len(raw) > 1024 or not isinstance(data, dict) or set(data) != {'task'}: raise ValueError('Expected one task')
             kind = data['task']; names(kind)
         except (ValueError, TypeError):
-            raise web.HTTPBadRequest(text='Expected task: segment, pose, hands or face')
+            raise web.HTTPBadRequest(text='Expected task: holistic, segment, multiclass, pose, hands or face')
         if not LOCK.acquire(blocking=False): raise web.HTTPConflict(text='Download already running')
         async def run():
             try: await asyncio.to_thread(download, kind)

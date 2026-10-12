@@ -7,7 +7,7 @@ import { ensureControlStyle } from './control-style.js';
 export function publishLive(node, bitmap, outputSlot=0) {
   if(node._generetiExecutionMode==='Comfy Queue'||node._generetiLivePaused)return;
   window.dispatchEvent(new CustomEvent('genereti-live-frame', {
-    detail: { nodeId: node.id, outputSlot, bitmap, sourceRevision:node._generetiSourceRevision??0, producedAt: performance.now() },
+    detail: { nodeId: node.id, outputSlot, bitmap, held:node._generetiSourceState==='paused', sourceRevision:node._generetiSourceRevision??0, producedAt: performance.now() },
   }));
 }
 

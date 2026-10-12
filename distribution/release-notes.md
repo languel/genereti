@@ -1,4 +1,14 @@
-# Unreleased — media streams, webview and UI consistency follow-up
+# ꘇ Genereti 0.1.4 — Holistic streams and feature selection
+
+- Holistic is the default coordinated pose/hand/face provider. Start loads installed models; observations hold when the source is deliberately paused.
+- Providers publish all observations. Selection belongs in Features; old provider selections are ignored. Clean image and diagnostic overlay outputs are separate, with diagnostic preview off by default. Existing image and observations socket indices are preserved.
+- Anatomical selectors include stylized body/face/hand maps, a static frontal 478-point face map, named selection sets, compact outline labels, optional point IDs, zoom/pan, box and paint selection. Ctrl-drag selects a box, Option/Alt-drag paints, Shift adds, and Escape cancels.
+- Features supports source underlays with opacity and independent small preview-point sizing. Segmentation has independent mask/cutout outputs and category selections.
+- Media sources have playback-speed and sampling controls. Five portable Holistic teaching examples cover stream visualization, drawings, event brushes, nose contact and region studies. Local film assets remain outside Git and packages.
+- One Genereti catalog root replaces the split Genereti/glyph categories; capture inputs no longer appear under Local Core ML. All examples install in Workflows → Genereti, including migrated local Holistic examples. Separate GeneretiCore nodes remain owned by that companion installation.
+- MediaPipe assets remain explicit optional local downloads. Camera and screen capture are user-started. No inference weights, captured media or private experiments ship in this release.
+
+# Included UI and stream improvements
 
 - New performance probe accepts any output: live image FPS/dimensions, CHOP update rate/channel metadata, interval jitter and bounded queued metadata. Detailed measurements use a chevron; routine image-preview timings move to the probe.
 - Preview minimize is first on the shared toolbar and correctly hides explicitly displayed canvases; freeze, fit, dimensions and window controls retain compact glyphs.
@@ -13,7 +23,7 @@
 - Dynamic parameter edits remove binary numeric noise and follow declared step precision.
 - Documents shared visual/help conventions and a portable GeneretiCore UI handoff.
 
-These changes follow 0.1.3; this Git update does not publish another Registry version.
+These improvements are included in 0.1.4.
 
 # ꘇ Genereti 0.1.3 — reference and performance UI
 

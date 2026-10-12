@@ -43,3 +43,6 @@ integrations/comfyui_genereti/workflows/LTX-*.json
 
 # Optional browser perception model assets stay outside the package
 *.tflite
+
+# Machine-local film-backed perception demo variants
+output/perception-demos/

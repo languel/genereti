@@ -21,7 +21,7 @@ def channels(s):
     return {'channels':{k:np.asarray([float(s[k])],dtype=np.float32) for k in ['seconds','quarterNotes','beat','bar','beatInBar','ticks','phase','bpm','playing','iteration']},'sample_rate':25.,'start':s['seconds']}
 
 def schema(kind,name,inputs,outputs):
-    return io.Schema(node_id='GeneretiPerformance'+kind,display_name='ꘇ '+name,category='ꘇ / Performance',search_aliases=['genereti',name.split('.')[0], 'time','timeline','transport','scale','music'],inputs=inputs,outputs=outputs,description='Shared browser performance time. Queue uses an explicit frozen snapshot; never starts browser audio.')
+    return io.Schema(node_id='GeneretiPerformance'+kind,display_name='ꘇ '+name,category='Genereti / Performance',search_aliases=['genereti',name.split('.')[0], 'time','timeline','transport','scale','music'],inputs=inputs,outputs=outputs,description='Shared browser performance time. Queue uses an explicit frozen snapshot; never starts browser audio.')
 class Time(io.ComfyNode):
     @classmethod
     def define_schema(cls):return schema('Time','chop.time',[io.Combo.Input('unit',options=['seconds','quarterNotes','beat','bar','ticks','phase','bpm','playing','iteration','wallTime']),CLOCK.Input('clock',optional=True),io.String.Input('performance',default='{}',optional=True)], [io.Float.Output(display_name='value'),CHOP.Output(display_name='channels'),io.String.Output(display_name='json'),CLOCK.Output(display_name='clock')])

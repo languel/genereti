@@ -5,13 +5,19 @@ DAT = io.Custom('GENERETI_DAT')
 CHOP = io.Custom('GENERETI_CHOP')
 
 def schema(kind, label, inputs, outputs):
-    return io.Schema(node_id='GeneretiPerception'+kind, display_name='ꘇ '+label, category='ꘇ / Perception', inputs=inputs, outputs=outputs, search_aliases=['mediapipe','perception','streams','events'], description='Local browser perception. Explicit download/load/start; camera capture is started separately. Queue requires a captured snapshot instead.')
+    return io.Schema(node_id='GeneretiPerception'+kind, display_name='ꘇ '+label, category='Genereti / Perception', inputs=inputs, outputs=outputs, search_aliases=['mediapipe','perception','streams','events'], description='Local browser perception. Explicit download/load/start; camera capture is started separately. Queue requires a captured snapshot instead.')
 class Provider(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return schema('Provider','mediapipe.stream',[io.Image.Input('image'),io.String.Input('stream',default='body'),io.Combo.Input('task',options=['pose','hands','face','segment'],default='pose'),io.Float.Input('max_fps',default=15,min=1,max=60)],[io.Image.Output(display_name='mask / overlay'),DAT.Output(display_name='observations')])
+        return schema('Provider','mediapipe.stream',[io.Image.Input('image'),io.String.Input('stream',default='body'),io.Combo.Input('task',options=['pose','hands','face','segment'],default='pose'),io.Float.Input('max_fps',default=15,min=1,max=60),io.String.Input('tasks',default='holistic'),io.String.Input('features',default='')],[io.Image.Output(display_name='image'),DAT.Output(display_name='observations'),io.Image.Output(display_name='overlay')])
     @classmethod
     def execute(cls, **kwargs): raise ValueError('MediaPipe runs in the active browser. Use Live and download/load/start explicitly; capture its IMAGE for queued processing.')
+class Segments(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return schema('Segments','mediapipe.segments',[io.Image.Input('image'),io.String.Input('stream',default='segments'),io.Combo.Input('model',options=['segment','multiclass'],default='segment'),io.String.Input('regions',default='person'),io.Float.Input('threshold',default=.5,min=0,max=1),io.Float.Input('softness',default=.1,min=0,max=1),io.Boolean.Input('invert',default=False),io.Float.Input('max_fps',default=15,min=1,max=60)],[io.Image.Output(display_name='mask'),io.Image.Output(display_name='cutout'),DAT.Output(display_name='observations')])
+    @classmethod
+    def execute(cls,**kwargs):raise ValueError('Segmentation runs in browser Live. Download/load/start explicitly; camera capture is started separately.')
 class Read(io.ComfyNode):
     @classmethod
     def define_schema(cls):
@@ -28,7 +34,7 @@ class Events(io.ComfyNode):
 class Features(io.ComfyNode):
     @classmethod
     def define_schema(cls):
-        return schema('Features','perception.features',[io.String.Input('stream',default='body'),io.String.Input('features',default='pose.right_wrist pose.left_wrist'),io.String.Input('selection_stream',default='selected'),io.Float.Input('min_confidence',default=.4,min=0,max=1),io.Float.Input('max_age_ms',default=500,min=50,max=10000)],[CHOP.Output(display_name='features'),DAT.Output(display_name='observations'),io.Image.Output(display_name='landmarks')])
+        return schema('Features','perception.features',[io.String.Input('stream',default='body'),io.String.Input('features',default='pose.right_wrist pose.left_wrist'),io.String.Input('selection_stream',default='selected'),io.Float.Input('min_confidence',default=.4,min=0,max=1),io.Float.Input('max_age_ms',default=500,min=50,max=10000),io.Image.Input('image',optional=True)],[CHOP.Output(display_name='features'),DAT.Output(display_name='observations'),io.Image.Output(display_name='landmarks')])
     @classmethod
     def execute(cls,**kwargs):raise ValueError('Feature selection reads browser Live streams. Start a provider and use Live.')
 class Extension(ComfyExtension):
@@ -36,5 +42,5 @@ class Extension(ComfyExtension):
         from server import PromptServer
         from .assets import register_routes
         register_routes(PromptServer.instance.routes)
-    async def get_node_list(self): return [Provider,Read,Events,Features]
+    async def get_node_list(self): return [Provider,Segments,Read,Events,Features]
 async def comfy_entrypoint(): return Extension()

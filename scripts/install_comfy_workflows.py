@@ -51,6 +51,25 @@ def install(examples, workflows):
         shutil.move(str(path), str(archive / path.name))
         print(f'Archived example copy: {path.name}')
 
+    # Consolidate local film variants into the same user-facing folder. Their
+    # media URLs remain local and their contents are treated as customized demos.
+    local_folder = workflows / 'Genereti-Holistic-Local'
+    for local in sorted(local_folder.glob('*.json')):
+        name = display_name(local.name)
+        if name not in names:
+            continue
+        target = destination / name
+        if target.exists():
+            if same(local, target):
+                backup(local)
+                continue
+            backup(target)
+        shutil.move(str(local), str(target))
+        manifest.pop(name, None)
+        print(f'Moved local example into Genereti: {name}')
+    if local_folder.is_dir() and not any(local_folder.iterdir()):
+        local_folder.rmdir()
+
     # Rename installed examples, including customized copies, without replacing
     # their contents. Move the managed checksum with its filename as well.
     for old in sorted(destination.glob('*.json')):

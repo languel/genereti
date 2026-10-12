@@ -33,10 +33,12 @@ The current explicit backend is **WASM CPU**. GPU execution is not claimed.
 
 ## Nodes and scripting
 
-- Provider IMAGE: continuous person-confidence grayscale mask for `segment`,
-  source with landmark points for other tasks. DAT: structured observations.
-  Segmentation stretches its mask back over the entire source geometry; there
-  is no cover crop or coordinate-space change. Use `top.mask` for an actual cutout.
+- Landmark provider outputs a clean analyzed IMAGE, structured observations DAT,
+  and a separate diagnostic overlay IMAGE. The preview is clean by default;
+  its diagnostic toggle does not change either output or filter the global stream.
+  Selection belongs in Features. Old provider selection fields are ignored.
+- Segments outputs a grayscale mask and the source with that mask applied as alpha
+  (cutout). Both retain source geometry; there is no implicit cover crop.
 - **perception.read**: name a global stream and feature. CHOP channels include
   `value`, `valid`, `age_ms`; Float can wire into ordinary parameters; DAT carries
   the complete structured result. Missing/stale values have `valid=0` and zero
@@ -157,3 +159,50 @@ concurrently. Qualified feature names (`stream::feature`) join fresh results
 from matching image geometry with up to 150 ms frame skew; the slower source
 time advances gesture holds. Demo 04 provides a configurable nose/finger
 proximity rule. Anatomical handedness must still be verified during calibration.
+
+## Combined landmark streams and selection sets
+
+`mediapipe.stream` now supports simultaneous Pose/Hands/Face task toggles.
+A single worker evaluates selected detectors on the same untouched frame, then
+publishes one coherent result with task timings. This avoids joining unrelated
+completion times for interactions such as a finger touching the nose.
+Existing single-task workflows remain compatible.
+
+`selection.js` defines portable semantic selectors; `selection-editor.js`
+provides schematic body/face/hand maps, fine vertices and named JSON selection
+sets. Group topology follows Underscores' landmark ontology; schematic pose and
+hand geometry follows Threegrease. The independent region controls follow
+Sketchcam's face/body/finger approach. These maps are selection diagrams rather
+than synthetic detector output. Live previews always use inferred coordinates.
+
+`mediapipe.segments` separates binary selfie segmentation and the optional
+six-category selfie model from landmarks. Category unions, threshold, softness,
+inversion, mask and cutout outputs share the bounded worker lifecycle.
+The optional multiclass model is pinned by size and SHA-256 in assets.json;
+no model weights or user fixtures are tracked. Official category definitions:
+https://developers.google.com/edge/mediapipe/solutions/vision/image_segmenter
+
+Holistic is the default for new `mediapipe.stream` nodes. It uses the pinned
+MediaPipe Tasks Holistic bundle (approximately 13.7 MB), optionally downloaded
+and verified outside the repository, and maps coordinated pose, face, and
+left/right hand observations into the existing feature ontology. Independent
+models remain available for narrower pipelines; installed model changes can
+reload and resume without a second transport action. Start loads installed
+models automatically, without starting camera or screen capture. Holistic is
+a coordinated graph of component models; performance and close-up detection
+should be measured rather than assumed to match independent task behavior.
+
+## 0.1.4 interface checkpoint
+
+One provider publishes all active-task detections to a named global stream. Several
+Features, read, event and drawing consumers share that result without extra inference.
+Separate provider nodes still have separate workers. Features' optional IMAGE input
+is a source underlay, not an inference source; connect the clean image output to avoid
+doubled landmarks. Its point-size control affects only the live preview.
+
+The Features map also offers a static canonical front-facing 478-point reference
+with no connections; the stylized map remains the default. Outline icons, compact
+L/R labels, optional numeric/initial IDs, and Ctrl-box/Option-paint selection support
+dense picking. Shift adds, Escape cancels, and view transforms never change data.
+All package node categories share the Genereti root. Local Holistic workflows migrate
+into Workflows → Genereti with conflicts backed up and local media URLs preserved.

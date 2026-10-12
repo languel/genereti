@@ -7,7 +7,7 @@ from .expression import parameter_inputs,prepare_expression
 from . import switching
 
 WEB_DIRECTORY='./web'
-CATEGORY='ꘇ / TOP'
+CATEGORY='Genereti / TOP'
 
 def schema(name,inputs,description):
     return io.Schema(node_id='GeneretiTexture'+name,display_name='ꘇ '+('top.'+('cornerpin' if name=='CornerPin' else name.lower())),search_aliases=['genereti', 'top', 'genereti top'],category=CATEGORY,

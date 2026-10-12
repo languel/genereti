@@ -24,7 +24,7 @@ class GeneretiInputSelect(io.ComfyNode):
         return io.Schema(
             node_id="GeneretiInputSelect",
             display_name='ꘇ Input Source',search_aliases=['genereti', 'Input Source', 'genereti Input Source'],
-            category="Genereti / Local Core ML",
+            category="Genereti / Inputs",
             description=(
                 "Choose the guide image sent to Genereti. Doodle uses ComfyUI Painter, "
                 "Webcam uses ComfyUI Webcam Capture, and Window / Screen uses the "
@@ -108,7 +108,7 @@ class GeneretiCameraCapture(_GeneretiBrowserCapture):
         return io.Schema(
             node_id="GeneretiCameraCapture",
             display_name='ꘇ Webcam Capture',search_aliases=['genereti', 'Webcam Capture', 'genereti Webcam Capture'],
-            category="Genereti / Local Core ML",
+            category="Genereti / Inputs",
             description="Start the selected camera with the top play control. GPU resize and horizontal flip apply before sampling; Queue uses the latest sampled frame.",
             inputs=[cls.capture_input()],
             outputs=[io.Image.Output(display_name="image")],
@@ -124,7 +124,7 @@ class GeneretiScreenCapture(_GeneretiBrowserCapture):
         return io.Schema(
             node_id="GeneretiScreenCapture",
             display_name='ꘇ Window / Screen Capture',search_aliases=['genereti', 'Window / Screen Capture', 'genereti Window / Screen Capture'],
-            category="Genereti / Local Core ML",
+            category="Genereti / Inputs",
             description=(
                 "Start sharing with the top play control. Choose a window, browser tab, or display; Queue uses the latest sampled frame. "
                 "Capture is uploaded only when Window / Screen is the selected Genereti input."

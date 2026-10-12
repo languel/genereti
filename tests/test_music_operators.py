@@ -15,6 +15,6 @@ class MusicTests(unittest.TestCase):
         np.testing.assert_equal(data['channels']['note'],[60,64,72,76,72,64])
     def test_schema_metadata_does_not_leak(self):
         Text.GET_SCHEMA();Constant.GET_SCHEMA()
-        self.assertEqual(ToChop.RETURN_TYPES,['GENERETI_CHOP','FLOAT']);self.assertEqual(Cell.RETURN_TYPES,['STRING','FLOAT']);self.assertEqual(FromChop.CATEGORY,'ꘇ / CHOP')
+        self.assertEqual(ToChop.RETURN_TYPES,['GENERETI_CHOP','FLOAT']);self.assertEqual(Cell.RETURN_TYPES,['STRING','FLOAT']);self.assertEqual(FromChop.CATEGORY,'Genereti / CHOP')
         self.assertTrue(MidiOut.OUTPUT_NODE);self.assertTrue(OscOut.OUTPUT_NODE)
 if __name__=='__main__':unittest.main()

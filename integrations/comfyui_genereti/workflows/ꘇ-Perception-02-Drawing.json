@@ -1,6 +1,6 @@
 {
   "last_node_id": 6,
-  "last_link_id": 2,
+  "last_link_id": 3,
   "nodes": [
     {
       "id": 1,
@@ -50,13 +50,15 @@
         "Node name for S&R": "GeneretiMediaStream",
         "genereti_preview_fit": "contain",
         "genereti_media_url": "",
-        "genereti_media_kind": "image",
-        "genereti_media_fps": 30
+        "genereti_media_kind": "video",
+        "genereti_media_fps": 15,
+        "genereti_media_speed": 0.5,
+        "genereti_media_size": 512
       },
       "widgets_values": [
         "GENERETI_OFF:2D stream"
       ],
-      "title": "ꘇ Local movie · + load GIF/video · ▶ play"
+      "title": "ꘇ Film source · + load · ▶ play"
     },
     {
       "id": 2,
@@ -66,8 +68,8 @@
         100
       ],
       "size": [
-        380,
-        620
+        420,
+        540
       ],
       "flags": {},
       "order": 1,
@@ -81,28 +83,46 @@
       ],
       "outputs": [
         {
-          "name": "mask / overlay",
+          "name": "image",
           "type": "IMAGE",
           "slot_index": 0,
-          "links": null
+          "links": [
+            3
+          ]
         },
         {
           "name": "observations",
           "type": "GENERETI_DAT",
           "slot_index": 1,
           "links": null
+        },
+        {
+          "name": "overlay",
+          "type": "IMAGE",
+          "links": null,
+          "slot_index": 2
         }
       ],
       "properties": {
-        "Node name for S&R": "GeneretiPerceptionProvider"
+        "Node name for S&R": "GeneretiPerceptionProvider",
+        "genereti_widget_values": {
+          "stream": "body",
+          "task": "pose",
+          "max_fps": 15,
+          "tasks": "holistic",
+          "features": ""
+        },
+        "generetiProviderOverlay": false
       },
       "widgets_values": [
         "body",
         "pose",
         15,
+        "holistic",
+        "",
         "Live"
       ],
-      "title": "ꘇ Body tracking · ↑ load pose · ▶ start"
+      "title": "ꘇ Holistic · ▶ starts installed model"
     },
     {
       "id": 3,
@@ -112,13 +132,19 @@
         100
       ],
       "size": [
-        420,
-        620
+        500,
+        920
       ],
       "flags": {},
       "order": 2,
       "mode": 0,
-      "inputs": [],
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        }
+      ],
       "outputs": [
         {
           "name": "features",
@@ -139,7 +165,34 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "GeneretiPerceptionFeatures"
+        "Node name for S&R": "GeneretiPerceptionFeatures",
+        "generetiSelectionMap": "combined",
+        "generetiSelectionMapOpen": true,
+        "generetiFeatureGrid": false,
+        "generetiFeaturePick": "regions",
+        "generetiSelectionSets": [
+          {
+            "name": "Face outline and brow",
+            "selectors": [
+              "@face.face_oval",
+              "@face.left_eyebrow"
+            ]
+          },
+          {
+            "name": "Left index and nose",
+            "selectors": [
+              "hands.left.index_tip",
+              "pose.nose"
+            ]
+          },
+          {
+            "name": "Body-driven pen",
+            "selectors": [
+              "pose.right_wrist",
+              "pose.left_wrist"
+            ]
+          }
+        ]
       },
       "widgets_values": [
         "body",
@@ -149,7 +202,7 @@
         500,
         "Live"
       ],
-      "title": "ꘇ Pick features · click point · Shift adds"
+      "title": "ꘇ Features · regions / vertices · zoom / pan"
     },
     {
       "id": 4,
@@ -295,6 +348,14 @@
       5,
       0,
       "GENERETI_DAT"
+    ],
+    [
+      3,
+      2,
+      0,
+      3,
+      0,
+      "IMAGE"
     ]
   ],
   "groups": [],
