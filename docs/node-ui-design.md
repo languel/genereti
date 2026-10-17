@@ -25,8 +25,10 @@ and portable adoption checklist.
 - Show status text for loading, errors or useful running feedback. Avoid repeated
   headings and labels already supplied by the node title or sockets.
 - Let connected sockets determine output formats. **Live / Comfy Queue** chooses
-  delivery, rather than which outputs exist. Put drawing delivery above its
-  editor alongside the theme glyph.
+  delivery, rather than which outputs exist. Interactive editors (drawing,
+  poliplan) use the same transport row above the editor as every other browser
+  node: delivery and pause, then the output window / overlay / visual / backdrop
+  glyphs; freeze, minimize and fit sit in the row directly above the editor.
 
 Use `integrations/genereti_comfy_p5/web/js/control-style.js` and the
 `genereti-node-controls` class for shared node controls. The drawing theme toggle
@@ -159,14 +161,19 @@ The output-window and overlay glyphs are independent toggles: their pressed stat
 Output toolbar glyphs share 18px SVG bounds, 1.5px strokes and centered 30px hit targets. Overlay geometry is stored per node in workflow properties and reused on reopen. The backdrop toggle beside the overlay draws output in Comfy’s background pass, fixed to the viewport, behind nodes and links; it does not capture pointer input. Only one Genereti backdrop is active at a time. Closing restores the previous background renderer.
 
 
-The drawing node's overlay glyph after delivery moves the **active Excalidraw
-editor** into a viewport overlay; drawing and live outputs continue there. Toggle
-it again, or close the overlay, to return the editor to its node. It shares image
-output's edge-revealed controls, opacity, lock, click-through and remembered
+The overlay glyph (Alt+W) of an interactive editor (drawing, poliplan) moves the
+**active editor** into a viewport overlay; drawing and live outputs continue there
+and the node mirrors the last frame, with Freeze holding the mirror and delivery.
+Toggle it again, or close the overlay, to return the editor to its node. It shares
+image output's edge-revealed controls, opacity, lock, click-through and remembered
 placement. Use transparent paper to annotate over the graph; solid paper stays
 solid. Alt+Z exposes drawing tools, and Alt+Shift+C switches between drawing and
 interacting underneath. Modern Chromium hosts preserve the iframe runtime and
 undo history when moving; older hosts reload it and restore the saved scene.
+Alt+O (the visual node view) and Alt+W also work with the focus inside the editor
+(the host forwards the editor's keys to Comfy's shortcuts). The editor iframe is
+`color-scheme: normal`, so a transparent workspace and paper really are transparent
+in a dark Comfy.
 
 Livecode render width/height and code-defined values are regular node controls above the editor. Source parameters expose typed sockets; appearance stays in the settings menu. Shared dropdowns use customizable native selects where supported: popup text follows the control font and graph zoom, surfaces follow Comfy theme tokens, and selection/hover highlights use a neutral text-color tint. Older hosts retain native option menus with explicit host surface/text colors.
 

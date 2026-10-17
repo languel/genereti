@@ -1,13 +1,13 @@
-import { nodeOutputView } from '/extensions/genereti_comfy_stream/js/node-output-view.js';
 import { app } from '../../../scripts/app.js';
 import { api } from '../../../scripts/api.js';
 import { publishLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
+import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
 import { ensureControlStyle } from '/extensions/genereti_comfy_p5/js/control-style.js';
+import { previewControls } from '/extensions/genereti_comfy_stream/js/preview-controls.js';
+import { routePreviewShortcut } from '/extensions/genereti_comfy_stream/js/preview-shortcuts.js';
 
 import { connectedOutputs,sceneJSON } from './output-demand.js';
 import { renderSettings } from './render-settings.js';
-import { registerPreviewShortcuts } from '/extensions/genereti_comfy_stream/js/preview-shortcuts.js';
-import { overlayShell } from '/extensions/genereti_comfy_stream/js/overlay-shell.js';
 
 const CHANNEL = 'genereti-drawing-v1';
 function makeDrawing(node, name) {
@@ -16,14 +16,6 @@ function makeDrawing(node, name) {
   const container = document.createElement('div');
   const controls = document.createElement('div');
   controls.className='genereti-node-controls';
-  const deliverySlot=document.createElement('div');
-  const deliverySelect=document.createElement('select');deliverySelect.setAttribute('aria-label','Output delivery');
-  deliverySelect.title='Output delivery';
-  for(const mode of ['Live','Comfy Queue'])deliverySelect.add(new Option(mode,mode));
-  deliverySelect.onchange=()=>{if(node._generetiExecutionModeWidget)node._generetiExecutionModeWidget.value=deliverySelect.value;};
-  deliverySlot.append(deliverySelect);
-  node._generetiMountExecutionMode=element=>{element.style.display='none';};
-  if(node._generetiExecutionModeElement)node._generetiMountExecutionMode(node._generetiExecutionModeElement);
   let matchEditorTheme=false;
   const matchTheme=document.createElement('button');matchTheme.type='button';
   matchTheme.setAttribute('aria-label','Match editor theme');
@@ -43,22 +35,29 @@ function makeDrawing(node, name) {
   // canvas backing even when every CSS background and canvas pixel has alpha.
   Object.assign(frame.style, {width:'100%', flex:'1 1 auto', height:'560px', minHeight:'560px', border:'0',pointerEvents:'auto',background:'transparent',colorScheme:'normal'});
   status.textContent = 'Loading drawing tools…';
-  const overlayButton=document.createElement('button');overlayButton.type='button';
-  overlayButton.innerHTML='<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="9" y="9" width="10" height="10" rx="1"/></svg>';
-  let overlay=null;
-  const paintOverlay=()=>{overlayButton.setAttribute('aria-pressed',String(!!overlay));overlayButton.title=overlay?'Return drawing to node':'Open interactive drawing overlay · annotate over the graph';overlayButton.setAttribute('aria-label',overlayButton.title);overlayButton.title+=' (Alt+W · Shift-click / Alt+O: output-only node)';};
-  paintOverlay();
-  overlayButton.onclick=(event={})=>{
-    if(event.shiftKey){nodeView.toggle();return;}
-    if(overlay){overlay.close();return;}
-    nodeView.close();
-    node.properties ||= {};node.properties.genereti_drawing_overlay_layout ||= {};
-    overlay=overlayShell(frame,node.properties.genereti_drawing_overlay_layout,()=>{overlay=null;paintOverlay();node.graph?.change?.(node);send({type:'edit-frame',kind:'image'});},{node,position:event.position});
-    paintOverlay();send({type:'edit-frame',kind:'image',freehand:true});
-  };
-  const nodeView=nodeOutputView(node,frame,{beforeOpen:()=>overlay?.close()});
-  const unregisterShortcuts=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:options=>overlayButton.onclick(options),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay?.toggleClickThrough(),toggleFill:()=>{if(!overlay)overlayButton.onclick();overlay?.toggleFill();},isFilled:()=>overlay?.filled,isHovered:()=>overlay?.element.matches(':hover')});
-  controls.append(deliverySlot,overlayButton,render.element,matchTheme,status); container.append(controls, frame);
+  controls.append(render.element,matchTheme,status); container.append(controls, frame);
+  // The node behaves like the other live nodes: delivery and pause, the output window / overlay / visual / backdrop glyphs,
+  // freeze, minimize and fit. Alt+W moves this editor into an overlay window you draw in, and the node mirrors it (the last
+  // frame); Freeze holds delivery and the mirror, and the editor stays usable.
+  let viewers=0,local=null,output=null;
+  const preview=document.createElement('canvas');preview.width=preview.height=1;
+  const mirror=document.createElement('div');
+  Object.assign(mirror.style,{flex:'1 1 auto',minHeight:'560px',display:'none',alignItems:'center',justifyContent:'center',overflow:'hidden'});
+  Object.assign(preview.style,{maxWidth:'100%',maxHeight:'100%',objectFit:'contain',background:'transparent'});
+  mirror.append(preview);frame.after(mirror);
+  const showFrame=bitmap=>{preview.width=bitmap.width;preview.height=bitmap.height;preview.getContext('2d').drawImage(bitmap,0,0);output.publish({bitmap:preview});};
+  output=previewControls(frame,status,node,()=>{},{
+    fitTarget:null,initialFrame:()=>({bitmap:preview}),getRenderSize:()=>preview,
+    getFit:()=>node.properties?.genereti_preview_fit??'contain',onFitChange:value=>local?.setFit(value),
+    interactiveSurface:frame,publishOnOpen:false,
+    onViewerChange:opened=>{viewers=Math.max(0,viewers+(opened?1:-1));demandSignature='';syncDemand();},
+    onSurfaceChange:open=>{mirror.style.display=open?'flex':'none';if(!open)status.textContent='';send({type:'edit-frame',kind:'image',...(open?{freehand:true}:{})});},
+  });
+  node._generetiMountTransport=()=>node._generetiExecutionModeElement?.append(output.actions);
+  local=previewState(node,frame,{getFit:()=>node.properties?.genereti_preview_fit??'contain'});
+  local.actions.append(output.toolbar);
+  // Alt+O, Alt+W and the other preview shortcuts also work with the focus inside the (same-origin) editor.
+  frame.addEventListener('load',()=>{try{frame.contentWindow.addEventListener('keydown',routePreviewShortcut,true);}catch{/* not reachable */}});
   controls.addEventListener('pointerdown',event=>event.stopPropagation());
   const send = data => frame.contentWindow?.postMessage({channel:CHANNEL, ...data}, location.origin);
   const restore = () => {
@@ -92,7 +91,7 @@ function makeDrawing(node, name) {
     }
     if(data.type==='frame'&&data.kind==='mask'&&ready&&!loading&&connectedOutputs(node).includes('MASK'))void publishDrawing(data.image,1);
     if(data.svg&&ready&&!loading&&connectedOutputs(node).includes('SVG'))publishValue(2,data.svg);
-    if(data.type==='frame'&&data.kind==='image'&&ready&&!loading){latestImage=data.image;if(connectedOutputs(node).includes('IMAGE'))void publishDrawing(data.image,0);}
+    if(data.type==='frame'&&data.kind==='image'&&ready&&!loading){latestImage=data.image;if(connectedOutputs(node).includes('IMAGE')||viewers>0)void publishDrawing(data.image,0);}
     if(data.type==='error'){loading=false;status.textContent=data.message;}
   };
   window.addEventListener('message',receive);
@@ -104,16 +103,23 @@ function makeDrawing(node, name) {
   let demandSignature='';
   const syncDemand=()=>{
     if(!ready||loading)return;
-    const outputs=node._generetiExecutionMode==='Comfy Queue'?[]:connectedOutputs(node);
+    // Image frames are also wanted by the output windows and the node's mirror, with or without a connected IMAGE.
+    const wanted=node._generetiExecutionMode==='Comfy Queue'?[]:connectedOutputs(node);
+    const outputs=viewers>0&&!wanted.includes('IMAGE')?['IMAGE',...wanted]:wanted;
     const signature=JSON.stringify(outputs);if(signature===demandSignature)return;demandSignature=signature;send({type:'output-demand',outputs});
     if(outputs.includes('JSON')&&value){const saved=JSON.parse(value);publishValue(3,sceneJSON(saved.scene,saved.frameId,saved.maskFrameId));}
   };
   const demandTimer=setInterval(syncDemand,250);
-  node._generetiSetExecutionMode=()=>{deliverySelect.value=node._generetiExecutionMode||'Live';demandSignature='';syncDemand();};
+  node._generetiSetExecutionMode=()=>{demandSignature='';syncDemand();};
   async function publishDrawing(image,slot=0){
     if(livePending.has(slot))return;livePending.add(slot);const epoch=liveEpoch;
     try{const bitmap=await createImageBitmap(await(await fetch(image)).blob());
-      try{if(epoch===liveEpoch&&connectedOutputs(node).includes(['IMAGE','MASK'][slot]))publishLive(node,bitmap,slot);}finally{bitmap.close();}
+      try{
+        if(epoch===liveEpoch&&!local?.frozen){   // (Freeze holds delivery and the node's mirror; the editor stays usable)
+          if(connectedOutputs(node).includes(['IMAGE','MASK'][slot]))publishLive(node,bitmap,slot);
+          if(slot===0&&viewers>0)showFrame(bitmap);
+        }
+      }finally{bitmap.close();}
     }catch(error){status.textContent=error.message;}finally{livePending.delete(slot);}
   }
   let requestChain=Promise.resolve();
@@ -161,7 +167,7 @@ function makeDrawing(node, name) {
       if(outputs.includes('JSON'))result.json=sceneJSON(snapshot.scene,snapshot.frameId,snapshot.maskFrameId);
       return JSON.stringify(result);
     },
-    dispose(){nodeView.dispose();unregisterShortcuts();overlay?.close();clearInterval(demandTimer);liveUsers=0;liveEpoch++;window.removeEventListener('message',receive);if(pending){clearTimeout(pending.timer);pending.reject(new Error('Drawing node removed.'));pending=null;}frame.remove();},
+    dispose(){output?.close();clearInterval(demandTimer);liveUsers=0;liveEpoch++;window.removeEventListener('message',receive);if(pending){clearTimeout(pending.timer);pending.reject(new Error('Drawing node removed.'));pending=null;}frame.remove();},
   };
   return {widget};
 }
@@ -176,7 +182,7 @@ app.registerExtension({
   getCustomWidgets(){return {GENERETI_DRAWING:makeDrawing,GENERETI_DRAWING_CAPTURE:makeCapture};},
   nodeCreated(node){
     if(node.comfyClass!=='GeneretiDrawing')return;
-    node.size=[960,680];
+    node.size=[960,720];
     const removed=node.onRemoved;
     node.onRemoved=function(){node._generetiDrawing?.dispose();return removed?.apply(this,arguments);};
   },

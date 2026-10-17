@@ -38,9 +38,21 @@ server. The example workflow's Core ML generator still requires the macOS
 Apple silicon app. Rebuild the shared editor after source changes with
 `npm run build:editor`.
 
+## Node controls
+
+The node has the same toolbar and behaviour as the other live nodes (and as
+**ꘇ poliplan**): delivery and pause, then the output window / overlay / visual /
+backdrop glyphs, and freeze, minimize and fit above the editor. **Alt+W** (the
+overlay glyph) moves the live Excalidraw editor into an overlay window that you
+draw in, above the graph, while the node mirrors the drawing; Alt+W again, or the
+close glyph, returns the editor to the node. **Alt+O** shows the editor alone,
+without the node's controls. Both keys also work with the focus inside the editor.
+Freeze holds live delivery and the mirror; the editor stays usable. The editor
+keeps transparent paper in a dark Comfy (the frame is `color-scheme: normal`).
+
 ## Live or Comfy Queue
 
-The dropdown above the editor selects **Live** or **Comfy Queue**.
+The dropdown in the transport row above the editor selects **Live** or **Comfy Queue**.
 **Live** (default) publishes the framed drawing directly to connected browser
 viewers. Connect IMAGE to **ꘇ live image preview** to see edits immediately,
 or to **Genereti Projector** for a projector view. No Genereti model server, Python

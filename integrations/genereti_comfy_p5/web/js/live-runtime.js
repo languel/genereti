@@ -115,10 +115,10 @@ export function attachExecutionMode(node){
   element.addEventListener('pointerdown',event=>event.stopPropagation());
   const widget=node.addDOMWidget('genereti_delivery','GENERETI_DELIVERY',element,{serialize:true,hideOnZoom:false,getValue:()=>mode,setValue:apply});
   // Keep the workflow choice, but exclude browser delivery state from Python inputs.
-  widget.serializeValue=()=>undefined;widget.computeSize=width=>[width,node.comfyClass==='GeneretiDrawing'?0:Math.max(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator'].includes(node.comfyClass)?64:32,intrinsicRowHeight(element))];
+  widget.serializeValue=()=>undefined;widget.computeSize=width=>[width,Math.max(['GeneretiSDXSGenerate','GeneretiSDTurboGenerate','GeneretiLiveGenerator'].includes(node.comfyClass)?64:32,intrinsicRowHeight(element))];
   node._generetiExecutionModeWidget=widget;node._generetiExecutionModeElement=element;
   node._generetiMountExecutionMode?.(element);node._generetiMountPreviewControls?.();node._generetiMountTransport?.();apply(mode);
-  if(node.comfyClass!=='GeneretiDrawing'){
+  {
     // Canonical serialization follows the original widget order, even though
     // the browser-only transport row is displayed first.
     const original=[...(node._generetiCanonicalWidgets??node.widgets)].filter(w=>w!==widget);
