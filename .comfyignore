@@ -33,11 +33,13 @@
 !/web/vendor/
 /web/vendor/*
 !/web/vendor/excalidraw/
+!/web/vendor/poliplan/
 !/integrations/
 /integrations/*
 !/integrations/genereti_comfy_inputs/
 !/integrations/genereti_comfy_p5/
 !/integrations/genereti_comfy_drawing/
+!/integrations/genereti_comfy_poliplan/
 !/integrations/genereti_comfy_stream/
 !/integrations/genereti_comfy_texture/
 !/integrations/genereti_comfy_chop/

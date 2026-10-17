@@ -1,0 +1,114 @@
+"""ꘇ poliplan: the Poliplan drawing editor as an interactive source node.
+
+An image board and a mask board (the sizes are the node's width and height) become the IMAGE and MASK outputs, the
+document the JSON, and the image board's vector drawing the SVG. An optional IMAGE input appears under the image
+board as a reference to draw over, and can be composited under the drawing. Independent of the Core ML generator.
+"""
+import hashlib
+import json
+from pathlib import Path
+
+import folder_paths
+import numpy as np
+import torch
+from PIL import Image
+from aiohttp import web
+from server import PromptServer
+from comfy_api.latest import ComfyExtension, io
+
+ROOT = Path(__file__).resolve().parents[2]
+VENDOR = ROOT / 'web/vendor/poliplan'
+
+
+@PromptServer.instance.routes.get('/genereti/poliplan/{asset:.*}')
+async def poliplan_asset(request):
+    """The vendored Poliplan build (embed.html, its assets and the ams-editor.js client)."""
+    root = VENDOR.resolve()
+    path = (root / (request.match_info['asset'] or 'embed.html')).resolve()
+    if not path.is_relative_to(root) or not path.is_file():
+        raise web.HTTPNotFound()
+    return web.FileResponse(path, headers={'Cache-Control': 'no-cache'})
+
+
+def _load(captured, key, mode):
+    if not captured.get(key):
+        return None
+    with Image.open(folder_paths.get_annotated_filepath(captured[key])) as image:
+        return image.convert(mode)
+
+
+def _tensor(array):
+    return torch.from_numpy((np.asarray(array, dtype=np.float32) / 255.0).copy()).unsqueeze(0)
+
+
+class GeneretiPoliplan(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(
+            node_id='GeneretiPoliplan', display_name='ꘇ poliplan',
+            search_aliases=['Genereti Poliplan', 'Poliplan', 'Drawing', 'Painter'],
+            category='Genereti / Interactive Sources',
+            description='Poliplan drawing editor with an image board and a mask board. Queue outputs IMAGE and MASK '
+                        'of the configured size, the image board as SVG, and the editable document as JSON. An optional '
+                        'IMAGE input is shown under the image board to draw over.',
+            inputs=[
+                io.Image.Input('image', optional=True,
+                               tooltip='Shown under the image board as a reference to draw over; see over_input.'),
+                io.String.Input('poliplan', default='', socketless=True,
+                                extra_dict={'widgetType': 'GENERETI_POLIPLAN'}),
+                io.String.Input('capture', default='', socketless=True,
+                                extra_dict={'widgetType': 'GENERETI_POLIPLAN_CAPTURE'}),
+                io.Int.Input('width', default=512, min=64, max=4096, step=8,
+                             tooltip='Width of the image and mask boards, in pixels.'),
+                io.Int.Input('height', default=512, min=64, max=4096, step=8,
+                             tooltip='Height of the image and mask boards, in pixels.'),
+                io.Boolean.Input('over_input', default=False,
+                                 tooltip='Composite the drawing over the input image (the board has no paper then).'),
+            ],
+            outputs=[io.Image.Output(display_name='image'), io.Mask.Output(display_name='mask'),
+                     io.String.Output(display_name='svg'), io.String.Output(display_name='json')],
+        )
+
+    @classmethod
+    def execute(cls, poliplan, capture, width, height, over_input, image=None):
+        if not capture:
+            raise ValueError('Open the ꘇ poliplan editor before queueing.')
+        captured = json.loads(capture)
+        drawing = _load(captured, 'image', 'RGBA')
+        pixels = mask = None
+        if drawing is not None:
+            if over_input and image is not None:
+                base = Image.fromarray((image[0].cpu().numpy()[..., :3] * 255).clip(0, 255).astype(np.uint8)).convert('RGBA')
+                if base.size != drawing.size:
+                    base = base.resize(drawing.size, Image.BILINEAR)
+                drawing = Image.alpha_composite(base, drawing)
+            # Preserve alpha for transparent drawings; opaque images stay RGB.
+            mode = 'RGBA' if drawing.getchannel('A').getextrema()[0] < 255 else 'RGB'
+            pixels = _tensor(drawing.convert(mode))
+        grey = _load(captured, 'mask', 'L')
+        if grey is not None:
+            mask = _tensor(grey)
+        ui = {}
+        if image is not None:
+            # The frontend shows the input under the image board: a small PNG in Comfy's temp folder.
+            preview = Image.fromarray((image[0].cpu().numpy()[..., :3] * 255).clip(0, 255).astype(np.uint8))
+            digest = hashlib.sha1(preview.tobytes()).hexdigest()[:16]
+            folder = Path(folder_paths.get_temp_directory()) / 'genereti-poliplan'
+            folder.mkdir(parents=True, exist_ok=True)
+            name = f'reference-{digest}.png'
+            if not (folder / name).exists():
+                preview.save(folder / name)
+            ui = {'poliplan_reference': [{'filename': name, 'subfolder': 'genereti-poliplan', 'type': 'temp'}]}
+        return io.NodeOutput(pixels, mask, captured.get('svg', ''), captured.get('json', ''), ui=ui)
+
+
+class GeneretiPoliplanExtension(ComfyExtension):
+    async def get_node_list(self):
+        return [GeneretiPoliplan]
+
+
+async def comfy_entrypoint():
+    return GeneretiPoliplanExtension()
+
+
+WEB_DIRECTORY = './web'

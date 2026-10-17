@@ -21,6 +21,7 @@ link_node() {
   echo "Linked $name"
 }
 link_node genereti_comfy_drawing "$ROOT/integrations/genereti_comfy_drawing"
+link_node genereti_comfy_poliplan "$ROOT/integrations/genereti_comfy_poliplan"
 link_node genereti_comfy_agent "$ROOT/integrations/genereti_comfy_agent"
 link_node genereti_comfy_stream "$ROOT/integrations/genereti_comfy_stream"
 link_node genereti_comfy_inputs "$ROOT/integrations/genereti_comfy_inputs"
