@@ -1,0 +1,1595 @@
+{
+  "last_node_id": 14,
+  "last_link_id": 14,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiMediaStream",
+      "title": "ꘇ Dancer · + load a film or camera · ▶ play",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        450,
+        620
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            1,
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiMediaStream",
+        "generetiLessonRef": "7c4d609d-a60c-56c0-b017-409eb96818bc",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "capture": "GENERETI_OFF:2D stream"
+        },
+        "genereti_media_kind": "video",
+        "genereti_media_url": "",
+        "genereti_media_fps": 15,
+        "genereti_media_speed": 0.75,
+        "genereti_media_size": 640
+      },
+      "widgets_values": [
+        "GENERETI_OFF:2D stream"
+      ],
+      "widgets_values_named": {
+        "capture": "GENERETI_OFF:2D stream"
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiPerceptionProvider",
+      "title": "ꘇ One Holistic provider · dancer",
+      "pos": [
+        500,
+        0
+      ],
+      "size": [
+        470,
+        680
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 1
+        },
+        {
+          "name": "stream",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "stream"
+          }
+        },
+        {
+          "name": "task",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "task"
+          }
+        },
+        {
+          "name": "max_fps",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "max_fps"
+          }
+        },
+        {
+          "name": "tasks",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "tasks"
+          }
+        },
+        {
+          "name": "features",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "features"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            3,
+            5
+          ]
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "name": "overlay",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionProvider",
+        "generetiLessonRef": "65172625-9441-5fcb-9bf7-0f7dbd7bbe5e",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "stream": "dancer",
+          "task": "pose",
+          "max_fps": 15,
+          "tasks": "holistic",
+          "features": ""
+        },
+        "generetiProviderOverlay": false
+      },
+      "widgets_values": [
+        "dancer",
+        "pose",
+        15,
+        "holistic",
+        ""
+      ],
+      "widgets_values_named": {
+        "stream": "dancer",
+        "task": "pose",
+        "max_fps": 15,
+        "tasks": "holistic",
+        "features": ""
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiPerceptionSegments",
+      "title": "ꘇ Body mask · selfie segmentation",
+      "pos": [
+        500,
+        760
+      ],
+      "size": [
+        470,
+        560
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "name": "stream",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "stream"
+          }
+        },
+        {
+          "name": "model",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "model"
+          }
+        },
+        {
+          "name": "regions",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "regions"
+          }
+        },
+        {
+          "name": "threshold",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "threshold"
+          }
+        },
+        {
+          "name": "softness",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "softness"
+          }
+        },
+        {
+          "name": "invert",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "invert"
+          }
+        },
+        {
+          "name": "max_fps",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "max_fps"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "mask",
+          "type": "IMAGE",
+          "links": [
+            4
+          ]
+        },
+        {
+          "name": "cutout",
+          "type": "IMAGE",
+          "links": []
+        },
+        {
+          "name": "observations",
+          "type": "GENERETI_DAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionSegments",
+        "generetiLessonRef": "da00e03e-30af-51df-b690-bee8bfb0c3e8",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "stream": "dancerMask",
+          "model": "segment",
+          "regions": "person",
+          "threshold": 0.5,
+          "softness": 0.1,
+          "invert": false,
+          "max_fps": 15
+        }
+      },
+      "widgets_values": [
+        "dancerMask",
+        "segment",
+        "person",
+        0.5,
+        0.1,
+        false,
+        15
+      ],
+      "widgets_values_named": {
+        "stream": "dancerMask",
+        "model": "segment",
+        "regions": "person",
+        "threshold": 0.5,
+        "softness": 0.1,
+        "invert": false,
+        "max_fps": 15
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiPerceptionMime",
+      "title": "ꘇ mediamime · body drum + stage gates",
+      "pos": [
+        1020,
+        0
+      ],
+      "size": [
+        1300,
+        840
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "stream",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "stream"
+          }
+        },
+        {
+          "name": "publish",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "publish"
+          }
+        },
+        {
+          "name": "min_confidence",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "min_confidence"
+          }
+        },
+        {
+          "name": "max_age_ms",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "max_age_ms"
+          }
+        },
+        {
+          "name": "score",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "score"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 3
+        },
+        {
+          "name": "mask",
+          "type": "IMAGE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            7,
+            8
+          ]
+        },
+        {
+          "name": "events",
+          "type": "GENERETI_DAT",
+          "links": [
+            14
+          ]
+        },
+        {
+          "name": "overlay",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerceptionMime",
+        "generetiLessonRef": "9a972566-12a1-53f1-b75a-882045a233f4",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "stream": "dancer",
+          "publish": "mime",
+          "min_confidence": 0.4,
+          "max_age_ms": 500,
+          "score": "{\"version\":1,\"stage\":{\"width\":640,\"height\":480},\"document\":{\"type\":\"ams-process\",\"version\":1,\"title\":\"Body drum\",\"artboard\":{\"width\":640,\"height\":480,\"ground\":\"transparent\",\"title\":\"stage\"},\"stages\":[{\"id\":\"construction\",\"name\":\"Construction\",\"kind\":\"construction\",\"visible\":true,\"locked\":false},{\"id\":\"marks\",\"name\":\"Marks\",\"kind\":\"marks\",\"visible\":true,\"locked\":false},{\"id\":\"notes\",\"name\":\"Notes\",\"kind\":\"notes\",\"visible\":true,\"locked\":false}],\"elements\":[{\"id\":\"el_mvcxxlhz1kbx\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[920,60,0,0.5],[934,63.751288694035715,16,0.5],[944.2487113059643,74,32,0.5],[948,88,48,0.5],[944.2487113059643,102,64,0.5],[934,112.24871130596429,80,0.5],[920,116,96,0.5],[906,112.24871130596429,112,0.5],[895.7512886940358,102.00000000000001,128,0.5],[892,88,144,0.5],[895.7512886940357,74,160,0.5],[906,63.75128869403572,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f5c26b\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":847842881,\"created\":1792274451479,\"board\":\"body\"},{\"id\":\"el_mvcxxli03j8v\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[888,208,0,0.5],[952,208,16,0.5],[952,258,32,0.5],[888,258,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f28ca8\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":978195349,\"created\":1792274451480,\"board\":\"body\",\"path\":\"straight\"},{\"id\":\"el_mvcxxli159xe\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[892,268,0,0.5],[948,268,16,0.5],[948,318,32,0.5],[892,318,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#ff9b6b\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":158090676,\"created\":1792274451481,\"board\":\"body\",\"path\":\"straight\"},{\"id\":\"el_mvcxxli17ouq\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[965,362,0,0.5],[975.5,365.0814157129579,16,0.5],[983.1865334794732,373.5,32,0.5],[986,385,48,0.5],[983.1865334794732,396.5,64,0.5],[975.5,404.9185842870421,80,0.5],[965,408,96,0.5],[954.5,404.9185842870421,112,0.5],[946.8134665205268,396.5,128,0.5],[944,385,144,0.5],[946.8134665205268,373.5,160,0.5],[954.5,365.0814157129579,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#71d9c2\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":456796942,\"created\":1792274451481,\"board\":\"body\"},{\"id\":\"el_mvcxxli298ml\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[875,362,0,0.5],[885.5,365.0814157129579,16,0.5],[893.1865334794732,373.5,32,0.5],[896,385,48,0.5],[893.1865334794732,396.5,64,0.5],[885.5,404.9185842870421,80,0.5],[875,408,96,0.5],[864.5,404.9185842870421,112,0.5],[856.8134665205268,396.5,128,0.5],[854,385,144,0.5],[856.8134665205268,373.5,160,0.5],[864.5,365.0814157129579,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#79b4ff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":128894870,\"created\":1792274451482,\"board\":\"body\"},{\"id\":\"el_mvcxxli2bvru\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[975,176,0,0.5],[984.5,178.54551732809566,16,0.5],[991.4544826719043,185.5,32,0.5],[994,195,48,0.5],[991.4544826719043,204.5,64,0.5],[984.5,211.45448267190434,80,0.5],[975,214,96,0.5],[965.5,211.45448267190434,112,0.5],[958.5455173280957,204.5,128,0.5],[956,195,144,0.5],[958.5455173280957,185.5,160,0.5],[965.5,178.54551732809568,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#c59cff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":207790172,\"created\":1792274451483,\"board\":\"body\"},{\"id\":\"el_mvcxxli3dlz3\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[865,176,0,0.5],[874.5,178.54551732809566,16,0.5],[881.4544826719043,185.5,32,0.5],[884,195,48,0.5],[881.4544826719043,204.5,64,0.5],[874.5,211.45448267190434,80,0.5],[865,214,96,0.5],[855.5,211.45448267190434,112,0.5],[848.5455173280957,204.5,128,0.5],[846,195,144,0.5],[848.5455173280957,185.5,160,0.5],[855.5,178.54551732809568,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#9be07a\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":784488325,\"created\":1792274451483,\"board\":\"body\"},{\"id\":\"el_mvcxxli4frse\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[24,24,0,0.5],[200,24,16,0.5],[200,180,32,0.5],[24,180,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#6be0e0\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":434895568,\"created\":1792274451484,\"path\":\"straight\"},{\"id\":\"el_mvcxxli4hqwi\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[440,24,0,0.5],[616,24,16,0.5],[616,180,32,0.5],[440,180,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f5e978\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":392366947,\"created\":1792274451484,\"path\":\"straight\"},{\"id\":\"el_mvcxxli5j2d6\",\"stage\":\"notes\",\"role\":\"line\",\"points\":[[60,420,0,0.5],[580,420,16,0.5]],\"closed\":false,\"realize\":{\"brush\":\"ink\",\"params\":{}},\"color\":\"#ffffff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":844558368,\"created\":1792274451485,\"path\":\"straight\"},{\"id\":\"el_mime_wingL\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[24,220,0,0.5],[170,220,16,0.5],[170,460,32,0.5],[24,460,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#c59cff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":5150,\"created\":1792274451484,\"path\":\"straight\"}],\"decisions\":[],\"meta\":{\"created\":\"2026-10-17T22:00:49.479Z\"},\"lines\":{},\"groups\":{},\"brushes\":{},\"boards\":[{\"id\":\"body\",\"title\":\"body\",\"x\":760,\"y\":0,\"width\":320,\"height\":600,\"ground\":\"transparent\"}]},\"regions\":{\"el_mvcxxlhz1kbx\":{\"name\":\"head\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":51,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli03j8v\":{\"name\":\"chest\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":38,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli159xe\":{\"name\":\"belly\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":36,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli17ouq\":{\"name\":\"thighL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":42,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli298ml\":{\"name\":\"thighR\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":46,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli2bvru\":{\"name\":\"shoulderL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":49,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli3dlz3\":{\"name\":\"shoulderR\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":57,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli4frse\":{\"name\":\"gateL\",\"hitters\":\"pose.left_index pose.right_index pose.left_wrist pose.right_wrist\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":250,\"hold_ms\":60,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"gate.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":60,\"velocity\":\"constant\",\"value\":90,\"duration_ms\":400},{\"type\":\"midiCc\",\"trigger\":\"inside\",\"channel\":1,\"cc\":74,\"value_mode\":\"normY\",\"value\":64},{\"type\":\"osc\",\"trigger\":\"inside\",\"address\":\"/mime/{region}/y\",\"value_mode\":\"normY\",\"value\":1}]},\"el_mvcxxli4hqwi\":{\"name\":\"gateR\",\"hitters\":\"pose.left_index pose.right_index pose.left_wrist pose.right_wrist\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":250,\"hold_ms\":60,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"gate.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":67,\"velocity\":\"constant\",\"value\":90,\"duration_ms\":400},{\"type\":\"midiCc\",\"trigger\":\"inside\",\"channel\":1,\"cc\":74,\"value_mode\":\"normY\",\"value\":64},{\"type\":\"osc\",\"trigger\":\"inside\",\"address\":\"/mime/{region}/y\",\"value_mode\":\"normY\",\"value\":1}]},\"el_mvcxxli5j2d6\":{\"name\":\"floor\",\"hitters\":\"pose.left_foot_index pose.right_foot_index pose.left_heel pose.right_heel\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":300,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"cross\",\"name\":\"floor.cross\"},{\"type\":\"midiNote\",\"trigger\":\"cross\",\"channel\":1,\"note\":48,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":300}]},\"el_mime_wingL\":{\"name\":\"wingL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"body\",\"threshold\":0.12,\"cooldown_ms\":600,\"hold_ms\":120,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"wing.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":55,\"velocity\":\"constant\",\"value\":70,\"duration_ms\":400}]}},\"outputs\":{\"midi\":{\"port\":\"\"},\"osc\":{\"port\":9000},\"ws\":{\"url\":\"ws://127.0.0.1:8765\"}}}"
+        }
+      },
+      "widgets_values": [
+        "dancer",
+        "mime",
+        0.4,
+        500,
+        "{\"version\":1,\"stage\":{\"width\":640,\"height\":480},\"document\":{\"type\":\"ams-process\",\"version\":1,\"title\":\"Body drum\",\"artboard\":{\"width\":640,\"height\":480,\"ground\":\"transparent\",\"title\":\"stage\"},\"stages\":[{\"id\":\"construction\",\"name\":\"Construction\",\"kind\":\"construction\",\"visible\":true,\"locked\":false},{\"id\":\"marks\",\"name\":\"Marks\",\"kind\":\"marks\",\"visible\":true,\"locked\":false},{\"id\":\"notes\",\"name\":\"Notes\",\"kind\":\"notes\",\"visible\":true,\"locked\":false}],\"elements\":[{\"id\":\"el_mvcxxlhz1kbx\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[920,60,0,0.5],[934,63.751288694035715,16,0.5],[944.2487113059643,74,32,0.5],[948,88,48,0.5],[944.2487113059643,102,64,0.5],[934,112.24871130596429,80,0.5],[920,116,96,0.5],[906,112.24871130596429,112,0.5],[895.7512886940358,102.00000000000001,128,0.5],[892,88,144,0.5],[895.7512886940357,74,160,0.5],[906,63.75128869403572,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f5c26b\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":847842881,\"created\":1792274451479,\"board\":\"body\"},{\"id\":\"el_mvcxxli03j8v\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[888,208,0,0.5],[952,208,16,0.5],[952,258,32,0.5],[888,258,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f28ca8\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":978195349,\"created\":1792274451480,\"board\":\"body\",\"path\":\"straight\"},{\"id\":\"el_mvcxxli159xe\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[892,268,0,0.5],[948,268,16,0.5],[948,318,32,0.5],[892,318,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#ff9b6b\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":158090676,\"created\":1792274451481,\"board\":\"body\",\"path\":\"straight\"},{\"id\":\"el_mvcxxli17ouq\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[965,362,0,0.5],[975.5,365.0814157129579,16,0.5],[983.1865334794732,373.5,32,0.5],[986,385,48,0.5],[983.1865334794732,396.5,64,0.5],[975.5,404.9185842870421,80,0.5],[965,408,96,0.5],[954.5,404.9185842870421,112,0.5],[946.8134665205268,396.5,128,0.5],[944,385,144,0.5],[946.8134665205268,373.5,160,0.5],[954.5,365.0814157129579,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#71d9c2\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":456796942,\"created\":1792274451481,\"board\":\"body\"},{\"id\":\"el_mvcxxli298ml\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[875,362,0,0.5],[885.5,365.0814157129579,16,0.5],[893.1865334794732,373.5,32,0.5],[896,385,48,0.5],[893.1865334794732,396.5,64,0.5],[885.5,404.9185842870421,80,0.5],[875,408,96,0.5],[864.5,404.9185842870421,112,0.5],[856.8134665205268,396.5,128,0.5],[854,385,144,0.5],[856.8134665205268,373.5,160,0.5],[864.5,365.0814157129579,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#79b4ff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":128894870,\"created\":1792274451482,\"board\":\"body\"},{\"id\":\"el_mvcxxli2bvru\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[975,176,0,0.5],[984.5,178.54551732809566,16,0.5],[991.4544826719043,185.5,32,0.5],[994,195,48,0.5],[991.4544826719043,204.5,64,0.5],[984.5,211.45448267190434,80,0.5],[975,214,96,0.5],[965.5,211.45448267190434,112,0.5],[958.5455173280957,204.5,128,0.5],[956,195,144,0.5],[958.5455173280957,185.5,160,0.5],[965.5,178.54551732809568,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#c59cff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":207790172,\"created\":1792274451483,\"board\":\"body\"},{\"id\":\"el_mvcxxli3dlz3\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[865,176,0,0.5],[874.5,178.54551732809566,16,0.5],[881.4544826719043,185.5,32,0.5],[884,195,48,0.5],[881.4544826719043,204.5,64,0.5],[874.5,211.45448267190434,80,0.5],[865,214,96,0.5],[855.5,211.45448267190434,112,0.5],[848.5455173280957,204.5,128,0.5],[846,195,144,0.5],[848.5455173280957,185.5,160,0.5],[855.5,178.54551732809568,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#9be07a\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":784488325,\"created\":1792274451483,\"board\":\"body\"},{\"id\":\"el_mvcxxli4frse\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[24,24,0,0.5],[200,24,16,0.5],[200,180,32,0.5],[24,180,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#6be0e0\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":434895568,\"created\":1792274451484,\"path\":\"straight\"},{\"id\":\"el_mvcxxli4hqwi\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[440,24,0,0.5],[616,24,16,0.5],[616,180,32,0.5],[440,180,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f5e978\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":392366947,\"created\":1792274451484,\"path\":\"straight\"},{\"id\":\"el_mvcxxli5j2d6\",\"stage\":\"notes\",\"role\":\"line\",\"points\":[[60,420,0,0.5],[580,420,16,0.5]],\"closed\":false,\"realize\":{\"brush\":\"ink\",\"params\":{}},\"color\":\"#ffffff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":844558368,\"created\":1792274451485,\"path\":\"straight\"},{\"id\":\"el_mime_wingL\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[24,220,0,0.5],[170,220,16,0.5],[170,460,32,0.5],[24,460,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#c59cff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":5150,\"created\":1792274451484,\"path\":\"straight\"}],\"decisions\":[],\"meta\":{\"created\":\"2026-10-17T22:00:49.479Z\"},\"lines\":{},\"groups\":{},\"brushes\":{},\"boards\":[{\"id\":\"body\",\"title\":\"body\",\"x\":760,\"y\":0,\"width\":320,\"height\":600,\"ground\":\"transparent\"}]},\"regions\":{\"el_mvcxxlhz1kbx\":{\"name\":\"head\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":51,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli03j8v\":{\"name\":\"chest\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":38,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli159xe\":{\"name\":\"belly\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":36,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli17ouq\":{\"name\":\"thighL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":42,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli298ml\":{\"name\":\"thighR\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":46,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli2bvru\":{\"name\":\"shoulderL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":49,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli3dlz3\":{\"name\":\"shoulderR\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":57,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli4frse\":{\"name\":\"gateL\",\"hitters\":\"pose.left_index pose.right_index pose.left_wrist pose.right_wrist\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":250,\"hold_ms\":60,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"gate.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":60,\"velocity\":\"constant\",\"value\":90,\"duration_ms\":400},{\"type\":\"midiCc\",\"trigger\":\"inside\",\"channel\":1,\"cc\":74,\"value_mode\":\"normY\",\"value\":64},{\"type\":\"osc\",\"trigger\":\"inside\",\"address\":\"/mime/{region}/y\",\"value_mode\":\"normY\",\"value\":1}]},\"el_mvcxxli4hqwi\":{\"name\":\"gateR\",\"hitters\":\"pose.left_index pose.right_index pose.left_wrist pose.right_wrist\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":250,\"hold_ms\":60,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"gate.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":67,\"velocity\":\"constant\",\"value\":90,\"duration_ms\":400},{\"type\":\"midiCc\",\"trigger\":\"inside\",\"channel\":1,\"cc\":74,\"value_mode\":\"normY\",\"value\":64},{\"type\":\"osc\",\"trigger\":\"inside\",\"address\":\"/mime/{region}/y\",\"value_mode\":\"normY\",\"value\":1}]},\"el_mvcxxli5j2d6\":{\"name\":\"floor\",\"hitters\":\"pose.left_foot_index pose.right_foot_index pose.left_heel pose.right_heel\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":300,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"cross\",\"name\":\"floor.cross\"},{\"type\":\"midiNote\",\"trigger\":\"cross\",\"channel\":1,\"note\":48,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":300}]},\"el_mime_wingL\":{\"name\":\"wingL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"body\",\"threshold\":0.12,\"cooldown_ms\":600,\"hold_ms\":120,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"wing.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":55,\"velocity\":\"constant\",\"value\":70,\"duration_ms\":400}]}},\"outputs\":{\"midi\":{\"port\":\"\"},\"osc\":{\"port\":9000},\"ws\":{\"url\":\"ws://127.0.0.1:8765\"}}}"
+      ],
+      "widgets_values_named": {
+        "stream": "dancer",
+        "publish": "mime",
+        "min_confidence": 0.4,
+        "max_age_ms": 500,
+        "score": "{\"version\":1,\"stage\":{\"width\":640,\"height\":480},\"document\":{\"type\":\"ams-process\",\"version\":1,\"title\":\"Body drum\",\"artboard\":{\"width\":640,\"height\":480,\"ground\":\"transparent\",\"title\":\"stage\"},\"stages\":[{\"id\":\"construction\",\"name\":\"Construction\",\"kind\":\"construction\",\"visible\":true,\"locked\":false},{\"id\":\"marks\",\"name\":\"Marks\",\"kind\":\"marks\",\"visible\":true,\"locked\":false},{\"id\":\"notes\",\"name\":\"Notes\",\"kind\":\"notes\",\"visible\":true,\"locked\":false}],\"elements\":[{\"id\":\"el_mvcxxlhz1kbx\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[920,60,0,0.5],[934,63.751288694035715,16,0.5],[944.2487113059643,74,32,0.5],[948,88,48,0.5],[944.2487113059643,102,64,0.5],[934,112.24871130596429,80,0.5],[920,116,96,0.5],[906,112.24871130596429,112,0.5],[895.7512886940358,102.00000000000001,128,0.5],[892,88,144,0.5],[895.7512886940357,74,160,0.5],[906,63.75128869403572,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f5c26b\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":847842881,\"created\":1792274451479,\"board\":\"body\"},{\"id\":\"el_mvcxxli03j8v\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[888,208,0,0.5],[952,208,16,0.5],[952,258,32,0.5],[888,258,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f28ca8\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":978195349,\"created\":1792274451480,\"board\":\"body\",\"path\":\"straight\"},{\"id\":\"el_mvcxxli159xe\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[892,268,0,0.5],[948,268,16,0.5],[948,318,32,0.5],[892,318,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#ff9b6b\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":158090676,\"created\":1792274451481,\"board\":\"body\",\"path\":\"straight\"},{\"id\":\"el_mvcxxli17ouq\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[965,362,0,0.5],[975.5,365.0814157129579,16,0.5],[983.1865334794732,373.5,32,0.5],[986,385,48,0.5],[983.1865334794732,396.5,64,0.5],[975.5,404.9185842870421,80,0.5],[965,408,96,0.5],[954.5,404.9185842870421,112,0.5],[946.8134665205268,396.5,128,0.5],[944,385,144,0.5],[946.8134665205268,373.5,160,0.5],[954.5,365.0814157129579,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#71d9c2\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":456796942,\"created\":1792274451481,\"board\":\"body\"},{\"id\":\"el_mvcxxli298ml\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[875,362,0,0.5],[885.5,365.0814157129579,16,0.5],[893.1865334794732,373.5,32,0.5],[896,385,48,0.5],[893.1865334794732,396.5,64,0.5],[885.5,404.9185842870421,80,0.5],[875,408,96,0.5],[864.5,404.9185842870421,112,0.5],[856.8134665205268,396.5,128,0.5],[854,385,144,0.5],[856.8134665205268,373.5,160,0.5],[864.5,365.0814157129579,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#79b4ff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":128894870,\"created\":1792274451482,\"board\":\"body\"},{\"id\":\"el_mvcxxli2bvru\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[975,176,0,0.5],[984.5,178.54551732809566,16,0.5],[991.4544826719043,185.5,32,0.5],[994,195,48,0.5],[991.4544826719043,204.5,64,0.5],[984.5,211.45448267190434,80,0.5],[975,214,96,0.5],[965.5,211.45448267190434,112,0.5],[958.5455173280957,204.5,128,0.5],[956,195,144,0.5],[958.5455173280957,185.5,160,0.5],[965.5,178.54551732809568,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#c59cff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":207790172,\"created\":1792274451483,\"board\":\"body\"},{\"id\":\"el_mvcxxli3dlz3\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[865,176,0,0.5],[874.5,178.54551732809566,16,0.5],[881.4544826719043,185.5,32,0.5],[884,195,48,0.5],[881.4544826719043,204.5,64,0.5],[874.5,211.45448267190434,80,0.5],[865,214,96,0.5],[855.5,211.45448267190434,112,0.5],[848.5455173280957,204.5,128,0.5],[846,195,144,0.5],[848.5455173280957,185.5,160,0.5],[855.5,178.54551732809568,176,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#9be07a\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":784488325,\"created\":1792274451483,\"board\":\"body\"},{\"id\":\"el_mvcxxli4frse\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[24,24,0,0.5],[200,24,16,0.5],[200,180,32,0.5],[24,180,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#6be0e0\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":434895568,\"created\":1792274451484,\"path\":\"straight\"},{\"id\":\"el_mvcxxli4hqwi\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[440,24,0,0.5],[616,24,16,0.5],[616,180,32,0.5],[440,180,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#f5e978\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":392366947,\"created\":1792274451484,\"path\":\"straight\"},{\"id\":\"el_mvcxxli5j2d6\",\"stage\":\"notes\",\"role\":\"line\",\"points\":[[60,420,0,0.5],[580,420,16,0.5]],\"closed\":false,\"realize\":{\"brush\":\"ink\",\"params\":{}},\"color\":\"#ffffff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":844558368,\"created\":1792274451485,\"path\":\"straight\"},{\"id\":\"el_mime_wingL\",\"stage\":\"notes\",\"role\":\"plane\",\"points\":[[24,220,0,0.5],[170,220,16,0.5],[170,460,32,0.5],[24,460,48,0.5]],\"closed\":true,\"realize\":{\"brush\":\"flat\",\"params\":{}},\"color\":\"#c59cff\",\"why\":\"\",\"by\":{\"kind\":\"model\",\"name\":\"agent\"},\"seed\":5150,\"created\":1792274451484,\"path\":\"straight\"}],\"decisions\":[],\"meta\":{\"created\":\"2026-10-17T22:00:49.479Z\"},\"lines\":{},\"groups\":{},\"brushes\":{},\"boards\":[{\"id\":\"body\",\"title\":\"body\",\"x\":760,\"y\":0,\"width\":320,\"height\":600,\"ground\":\"transparent\"}]},\"regions\":{\"el_mvcxxlhz1kbx\":{\"name\":\"head\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":51,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli03j8v\":{\"name\":\"chest\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":38,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli159xe\":{\"name\":\"belly\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":36,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli17ouq\":{\"name\":\"thighL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":42,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli298ml\":{\"name\":\"thighR\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":46,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli2bvru\":{\"name\":\"shoulderL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":49,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli3dlz3\":{\"name\":\"shoulderR\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":160,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enter\",\"name\":\"drum.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enter\",\"channel\":10,\"note\":57,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":120},{\"type\":\"osc\",\"trigger\":\"enter\",\"address\":\"/mime/drum/{region}\",\"value_mode\":\"speed\",\"value\":1}]},\"el_mvcxxli4frse\":{\"name\":\"gateL\",\"hitters\":\"pose.left_index pose.right_index pose.left_wrist pose.right_wrist\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":250,\"hold_ms\":60,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"gate.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":60,\"velocity\":\"constant\",\"value\":90,\"duration_ms\":400},{\"type\":\"midiCc\",\"trigger\":\"inside\",\"channel\":1,\"cc\":74,\"value_mode\":\"normY\",\"value\":64},{\"type\":\"osc\",\"trigger\":\"inside\",\"address\":\"/mime/{region}/y\",\"value_mode\":\"normY\",\"value\":1}]},\"el_mvcxxli4hqwi\":{\"name\":\"gateR\",\"hitters\":\"pose.left_index pose.right_index pose.left_wrist pose.right_wrist\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":250,\"hold_ms\":60,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"gate.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":67,\"velocity\":\"constant\",\"value\":90,\"duration_ms\":400},{\"type\":\"midiCc\",\"trigger\":\"inside\",\"channel\":1,\"cc\":74,\"value_mode\":\"normY\",\"value\":64},{\"type\":\"osc\",\"trigger\":\"inside\",\"address\":\"/mime/{region}/y\",\"value_mode\":\"normY\",\"value\":1}]},\"el_mvcxxli5j2d6\":{\"name\":\"floor\",\"hitters\":\"pose.left_foot_index pose.right_foot_index pose.left_heel pose.right_heel\",\"mode\":\"points\",\"threshold\":0.08,\"cooldown_ms\":300,\"hold_ms\":0,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"cross\",\"name\":\"floor.cross\"},{\"type\":\"midiNote\",\"trigger\":\"cross\",\"channel\":1,\"note\":48,\"velocity\":\"speed\",\"value\":100,\"duration_ms\":300}]},\"el_mime_wingL\":{\"name\":\"wingL\",\"hitters\":\"pose.left_index pose.right_index\",\"mode\":\"body\",\"threshold\":0.12,\"cooldown_ms\":600,\"hold_ms\":120,\"muted\":false,\"actions\":[{\"type\":\"event\",\"trigger\":\"enterExit\",\"name\":\"wing.{region}\"},{\"type\":\"midiNote\",\"trigger\":\"enterExit\",\"channel\":1,\"note\":55,\"velocity\":\"constant\",\"value\":70,\"duration_ms\":400}]}},\"outputs\":{\"midi\":{\"port\":\"\"},\"osc\":{\"port\":9000},\"ws\":{\"url\":\"ws://127.0.0.1:8765\"}}}"
+      }
+    },
+    {
+      "id": 5,
+      "type": "GeneretiChopSelect",
+      "title": "ꘇ drums · MIDI channel 10",
+      "pos": [
+        1020,
+        900
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 7
+        },
+        {
+          "name": "pattern",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "pattern"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            9
+          ]
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopSelect",
+        "generetiLessonRef": "bd3a49fc-0338-581a-9413-dc91efef56f2",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "pattern": "ch10.*"
+        }
+      },
+      "widgets_values": [
+        "ch10.*"
+      ],
+      "widgets_values_named": {
+        "pattern": "ch10.*"
+      }
+    },
+    {
+      "id": 6,
+      "type": "GeneretiChopSelect",
+      "title": "ꘇ synth · MIDI channel 1",
+      "pos": [
+        1360,
+        900
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_CHOP",
+          "link": 8
+        },
+        {
+          "name": "pattern",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "pattern"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": [
+            10
+          ]
+        },
+        {
+          "name": "value",
+          "type": "FLOAT",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiChopSelect",
+        "generetiLessonRef": "01205d26-f3a1-5717-8a72-192a8de8a8a2",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "pattern": "ch1.*"
+        }
+      },
+      "widgets_values": [
+        "ch1.*"
+      ],
+      "widgets_values_named": {
+        "pattern": "ch1.*"
+      }
+    },
+    {
+      "id": 7,
+      "type": "GeneretiAudioDrumKit",
+      "title": "ꘇ body drum kit",
+      "pos": [
+        1020,
+        1140
+      ],
+      "size": [
+        320,
+        260
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 9
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "decay",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "name": "tone",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "tone"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDrumKit",
+        "generetiLessonRef": "e1a91524-7252-5878-8577-268d8992252a",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level": 0.85,
+          "decay": 0.25,
+          "tone": 1
+        }
+      },
+      "widgets_values": [
+        0.85,
+        0.25,
+        1
+      ],
+      "widgets_values_named": {
+        "level": 0.85,
+        "decay": 0.25,
+        "tone": 1
+      }
+    },
+    {
+      "id": 8,
+      "type": "GeneretiAudioSynth",
+      "title": "ꘇ gate synth",
+      "pos": [
+        1360,
+        1140
+      ],
+      "size": [
+        320,
+        420
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 10
+        },
+        {
+          "name": "voice",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "voice"
+          }
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "attack",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "attack"
+          }
+        },
+        {
+          "name": "decay",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "name": "sustain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "sustain"
+          }
+        },
+        {
+          "name": "release",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "release"
+          }
+        },
+        {
+          "name": "cutoff",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cutoff"
+          }
+        },
+        {
+          "name": "resonance",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "resonance"
+          }
+        },
+        {
+          "name": "glide",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "glide"
+          }
+        },
+        {
+          "name": "vibrato",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato"
+          }
+        },
+        {
+          "name": "vibrato_rate",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato_rate"
+          }
+        },
+        {
+          "name": "polyphony",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "polyphony"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSynth",
+        "generetiLessonRef": "bc53f063-1be8-5796-9280-cb6bcb913e90",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "voice": "sine",
+          "level": 0.3,
+          "attack": 0.02,
+          "decay": 0.15,
+          "sustain": 0.6,
+          "release": 0.6,
+          "cutoff": 2400,
+          "resonance": 0.7,
+          "glide": 0.015,
+          "vibrato": 0,
+          "vibrato_rate": 5,
+          "polyphony": 8
+        }
+      },
+      "widgets_values": [
+        "sine",
+        0.3,
+        0.02,
+        0.15,
+        0.6,
+        0.6,
+        2400,
+        0.7,
+        0.015,
+        0,
+        5,
+        8
+      ],
+      "widgets_values_named": {
+        "voice": "sine",
+        "level": 0.3,
+        "attack": 0.02,
+        "decay": 0.15,
+        "sustain": 0.6,
+        "release": 0.6,
+        "cutoff": 2400,
+        "resonance": 0.7,
+        "glide": 0.015,
+        "vibrato": 0,
+        "vibrato_rate": 5,
+        "polyphony": 8
+      }
+    },
+    {
+      "id": 9,
+      "type": "GeneretiAudioMixer",
+      "title": "ꘇ mix",
+      "pos": [
+        1700,
+        900
+      ],
+      "size": [
+        420,
+        420
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "level_1",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_1"
+          }
+        },
+        {
+          "name": "pan_1",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_1"
+          }
+        },
+        {
+          "name": "mute_1",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_1"
+          }
+        },
+        {
+          "name": "solo_1",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_1"
+          }
+        },
+        {
+          "name": "level_2",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_2"
+          }
+        },
+        {
+          "name": "pan_2",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_2"
+          }
+        },
+        {
+          "name": "mute_2",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_2"
+          }
+        },
+        {
+          "name": "solo_2",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_2"
+          }
+        },
+        {
+          "name": "level_3",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_3"
+          }
+        },
+        {
+          "name": "pan_3",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_3"
+          }
+        },
+        {
+          "name": "mute_3",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_3"
+          }
+        },
+        {
+          "name": "solo_3",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_3"
+          }
+        },
+        {
+          "name": "level_4",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_4"
+          }
+        },
+        {
+          "name": "pan_4",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_4"
+          }
+        },
+        {
+          "name": "mute_4",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_4"
+          }
+        },
+        {
+          "name": "solo_4",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_4"
+          }
+        },
+        {
+          "name": "master",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "master"
+          }
+        },
+        {
+          "name": "input_1",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 11
+        },
+        {
+          "name": "input_2",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 12
+        },
+        {
+          "name": "input_3",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        },
+        {
+          "name": "input_4",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            13
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioMixer",
+        "generetiLessonRef": "278deafe-4c22-5acb-8489-742654d47209",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level_1": 0.9,
+          "pan_1": 0,
+          "mute_1": false,
+          "solo_1": false,
+          "level_2": 0.6,
+          "pan_2": 0.0,
+          "mute_2": false,
+          "solo_2": false,
+          "level_3": 0.7,
+          "pan_3": 0,
+          "mute_3": false,
+          "solo_3": false,
+          "level_4": 0.7,
+          "pan_4": 0,
+          "mute_4": false,
+          "solo_4": false,
+          "master": 0.8
+        }
+      },
+      "widgets_values": [
+        0.9,
+        0,
+        false,
+        false,
+        0.6,
+        0.0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.8
+      ],
+      "widgets_values_named": {
+        "level_1": 0.9,
+        "pan_1": 0,
+        "mute_1": false,
+        "solo_1": false,
+        "level_2": 0.6,
+        "pan_2": 0.0,
+        "mute_2": false,
+        "solo_2": false,
+        "level_3": 0.7,
+        "pan_3": 0,
+        "mute_3": false,
+        "solo_3": false,
+        "level_4": 0.7,
+        "pan_4": 0,
+        "mute_4": false,
+        "solo_4": false,
+        "master": 0.8
+      }
+    },
+    {
+      "id": 10,
+      "type": "GeneretiAudioOutput",
+      "title": "ꘇ speakers · press Start",
+      "pos": [
+        2160,
+        900
+      ],
+      "size": [
+        320,
+        200
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 13
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "mute",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioOutput",
+        "generetiLessonRef": "63a7789b-53e1-5637-b84e-6e4f8885716d",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level": 0.8,
+          "mute": false
+        }
+      },
+      "widgets_values": [
+        0.8,
+        false
+      ],
+      "widgets_values_named": {
+        "level": 0.8,
+        "mute": false
+      }
+    },
+    {
+      "id": 11,
+      "type": "GeneretiLivecode",
+      "title": "ꘇ Body drum particles · R clears",
+      "pos": [
+        2380,
+        0
+      ],
+      "size": [
+        690,
+        900
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "language",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "language"
+          }
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "height"
+          }
+        },
+        {
+          "name": "auto_update",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "auto_update"
+          }
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 5
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        },
+        {
+          "name": "controls.value0",
+          "type": "FLOAT",
+          "label": "source_opacity",
+          "link": null,
+          "widget": {
+            "name": "controls.value0"
+          }
+        },
+        {
+          "name": "controls.value1",
+          "type": "FLOAT",
+          "label": "burst_size",
+          "link": null,
+          "widget": {
+            "name": "controls.value1"
+          }
+        },
+        {
+          "name": "controls.value2",
+          "type": "FLOAT",
+          "label": "trail_emission",
+          "link": null,
+          "widget": {
+            "name": "controls.value2"
+          }
+        },
+        {
+          "name": "controls.value3",
+          "type": "FLOAT",
+          "label": "gravity",
+          "link": null,
+          "widget": {
+            "name": "controls.value3"
+          }
+        },
+        {
+          "name": "controls.value4",
+          "type": "FLOAT",
+          "label": "drag",
+          "link": null,
+          "widget": {
+            "name": "controls.value4"
+          }
+        },
+        {
+          "name": "controls.value5",
+          "type": "FLOAT",
+          "label": "life_seconds",
+          "link": null,
+          "widget": {
+            "name": "controls.value5"
+          }
+        },
+        {
+          "name": "controls.value6",
+          "type": "FLOAT",
+          "label": "glow",
+          "link": null,
+          "widget": {
+            "name": "controls.value6"
+          }
+        },
+        {
+          "name": "controls.value7",
+          "type": "BOOLEAN",
+          "label": "show_zones",
+          "link": null,
+          "widget": {
+            "name": "controls.value7"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLivecode",
+        "generetiLessonRef": "1aa22206-394a-50c4-abd9-1b7b71fa301b",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "language": "p5",
+          "width": 960,
+          "height": 720,
+          "auto_update": true,
+          "code": "// Body drum particles. ꘇ mediamime publishes the \"mime\" stream (zones and their activity) and a \"mime\" event for\n// every hit; the Holistic provider publishes the dancer's landmarks as \"dancer\".\n// Hits burst into sparks at the struck point, sized by the strike speed and colored by the region.\n// Fast hands and feet trail sparks of their own. Zones are drawn faintly, following the body.\nlet source_opacity = 0.55; /* 0..1 step:0.05 */\nlet burst_size = 60; /* 0..300 step:5 */\nlet trail_emission = 1.2; /* 0..6 step:0.1 */\nlet gravity = 0.18; /* -1..1 step:0.01 */\nlet drag = 0.04; /* 0..0.3 step:0.005 */\nlet life_seconds = 1.6; /* 0.2..6 step:0.1 */\nlet glow = 0.8; /* 0..2 step:0.05 */\nlet show_zones = true; /* toggle */\nconst particles = [], hits = [], last = new Map();\nconst hueOf = name => { let h = 0; for (const c of String(name)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };\nfunction setup() {\n  createCanvas(windowWidth, windowHeight); colorMode(HSB, 360, 100, 100, 1); noStroke();\n  __.events.on('mime', e => { if (e.phase === 'entry') { hits.push(e); if (hits.length > 64) hits.shift(); } });\n}\nfunction spawn(x, y, hue, n, speed) {\n  for (let i = 0; i < n && particles.length < 4000; i++) {\n    const a = random(TWO_PI), v = random(.5, 1) * (1.5 + speed * 9);\n    particles.push({ x, y, vx: cos(a) * v, vy: sin(a) * v - speed * 2, life: 1, hue: (hue + random(-18, 18) + 360) % 360, size: random(1.5, 4) * (1 + speed) });\n  }\n}\nfunction draw() {\n  background(0, 0, 4);\n  const dancer = __.streams.read('dancer', 500), mime = __.streams.read('mime', 500), f = dancer?.features;\n  const iw = inputImage?.width || dancer?.source?.width || width, ih = inputImage?.height || dancer?.source?.height || height;\n  const fit = Math.min(width / iw, height / ih), fw = iw * fit, fh = ih * fit, ox = (width - fw) / 2, oy = (height - fh) / 2;\n  const at = (x, y) => [ox + x * fw, oy + y * fh];\n  if (inputImage && source_opacity > 0) { tint(0, 0, 100, source_opacity); image(inputImage, ox, oy, fw, fh); noTint(); }\n  if (show_zones && mime?.regions) for (const r of mime.regions) {\n    if (!r.polygon) continue; const hue = hueOf(r.name);\n    stroke(hue, 60, 100, r.active ? .9 : .25); strokeWeight(r.active ? 3 : 1); r.active ? fill(hue, 70, 100, .18) : noFill();\n    beginShape(); for (const [x, y] of r.polygon) vertex(...at(x, y)); r.kind === 'wire' ? endShape() : endShape(CLOSE);\n  }\n  noStroke();\n  while (hits.length) { const e = hits.shift(); if (!Number.isFinite(e.x)) continue; const [x, y] = at(e.x, e.y); spawn(x, y, hueOf(e.region), burst_size * (.4 + (e.speed ?? 0)), e.speed ?? .3); }\n  // Hands and feet trail sparks with their speed.\n  const dt = Math.min(.1, deltaTime / 1000);\n  for (const name of ['pose.left_index', 'pose.right_index', 'pose.left_foot_index', 'pose.right_foot_index']) {\n    const x = f?.[name + '.x'], y = f?.[name + '.y'];\n    if (!Number.isFinite(x) || !Number.isFinite(y) || (f[name + '.visibility'] ?? 1) < .4) { last.delete(name); continue; }\n    const p = at(x, y), q = last.get(name); last.set(name, p);\n    if (!q || dancer?.held) continue;\n    const speed = Math.hypot(p[0] - q[0], p[1] - q[1]) / fh / Math.max(dt, .001);\n    const n = Math.floor(trail_emission * Math.min(6, speed * 2));\n    for (let i = 0; i < n; i++) { const k = random(); spawn(q[0] + (p[0] - q[0]) * k, q[1] + (p[1] - q[1]) * k, name.includes('left') ? 168 : 335, 1, Math.min(.6, speed * .2)); }\n  }\n  blendMode(ADD);\n  for (let i = particles.length - 1; i >= 0; i--) {\n    const p = particles[i];\n    p.vx *= 1 - drag; p.vy = p.vy * (1 - drag) + gravity; p.x += p.vx; p.y += p.vy; p.life -= dt / life_seconds;\n    if (p.life <= 0) { particles.splice(i, 1); continue; }\n    fill(p.hue, 70, 100, p.life * .8); circle(p.x, p.y, p.size * (1 + glow * p.life));\n    fill(p.hue, 20, 100, p.life * glow * .25); circle(p.x, p.y, p.size * 4 * glow);\n  }\n  blendMode(BLEND);\n}\nfunction keyPressed() { if (key === 'r' || key === 'R') particles.length = 0; }\n",
+          "parameters": "{\"source_opacity\": 0.55, \"burst_size\": 60, \"trail_emission\": 1.2, \"gravity\": 0.18, \"drag\": 0.04, \"life_seconds\": 1.6, \"glow\": 0.8, \"show_zones\": true}",
+          "performance": "{}"
+        },
+        "generetiLivecodeParameters": {
+          "values": {
+            "source_opacity": 0.55,
+            "burst_size": 60,
+            "trail_emission": 1.2,
+            "gravity": 0.18,
+            "drag": 0.04,
+            "life_seconds": 1.6,
+            "glow": 0.8,
+            "show_zones": true
+          },
+          "slots": {
+            "source_opacity": 0,
+            "burst_size": 1,
+            "trail_emission": 2,
+            "gravity": 3,
+            "drag": 4,
+            "life_seconds": 5,
+            "glow": 6,
+            "show_zones": 7
+          }
+        },
+        "generetiLivecodeLastGood": {
+          "mode": "p5",
+          "source": "// Body drum particles. ꘇ mediamime publishes the \"mime\" stream (zones and their activity) and a \"mime\" event for\n// every hit; the Holistic provider publishes the dancer's landmarks as \"dancer\".\n// Hits burst into sparks at the struck point, sized by the strike speed and colored by the region.\n// Fast hands and feet trail sparks of their own. Zones are drawn faintly, following the body.\nlet source_opacity = 0.55; /* 0..1 step:0.05 */\nlet burst_size = 60; /* 0..300 step:5 */\nlet trail_emission = 1.2; /* 0..6 step:0.1 */\nlet gravity = 0.18; /* -1..1 step:0.01 */\nlet drag = 0.04; /* 0..0.3 step:0.005 */\nlet life_seconds = 1.6; /* 0.2..6 step:0.1 */\nlet glow = 0.8; /* 0..2 step:0.05 */\nlet show_zones = true; /* toggle */\nconst particles = [], hits = [], last = new Map();\nconst hueOf = name => { let h = 0; for (const c of String(name)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };\nfunction setup() {\n  createCanvas(windowWidth, windowHeight); colorMode(HSB, 360, 100, 100, 1); noStroke();\n  __.events.on('mime', e => { if (e.phase === 'entry') { hits.push(e); if (hits.length > 64) hits.shift(); } });\n}\nfunction spawn(x, y, hue, n, speed) {\n  for (let i = 0; i < n && particles.length < 4000; i++) {\n    const a = random(TWO_PI), v = random(.5, 1) * (1.5 + speed * 9);\n    particles.push({ x, y, vx: cos(a) * v, vy: sin(a) * v - speed * 2, life: 1, hue: (hue + random(-18, 18) + 360) % 360, size: random(1.5, 4) * (1 + speed) });\n  }\n}\nfunction draw() {\n  background(0, 0, 4);\n  const dancer = __.streams.read('dancer', 500), mime = __.streams.read('mime', 500), f = dancer?.features;\n  const iw = inputImage?.width || dancer?.source?.width || width, ih = inputImage?.height || dancer?.source?.height || height;\n  const fit = Math.min(width / iw, height / ih), fw = iw * fit, fh = ih * fit, ox = (width - fw) / 2, oy = (height - fh) / 2;\n  const at = (x, y) => [ox + x * fw, oy + y * fh];\n  if (inputImage && source_opacity > 0) { tint(0, 0, 100, source_opacity); image(inputImage, ox, oy, fw, fh); noTint(); }\n  if (show_zones && mime?.regions) for (const r of mime.regions) {\n    if (!r.polygon) continue; const hue = hueOf(r.name);\n    stroke(hue, 60, 100, r.active ? .9 : .25); strokeWeight(r.active ? 3 : 1); r.active ? fill(hue, 70, 100, .18) : noFill();\n    beginShape(); for (const [x, y] of r.polygon) vertex(...at(x, y)); r.kind === 'wire' ? endShape() : endShape(CLOSE);\n  }\n  noStroke();\n  while (hits.length) { const e = hits.shift(); if (!Number.isFinite(e.x)) continue; const [x, y] = at(e.x, e.y); spawn(x, y, hueOf(e.region), burst_size * (.4 + (e.speed ?? 0)), e.speed ?? .3); }\n  // Hands and feet trail sparks with their speed.\n  const dt = Math.min(.1, deltaTime / 1000);\n  for (const name of ['pose.left_index', 'pose.right_index', 'pose.left_foot_index', 'pose.right_foot_index']) {\n    const x = f?.[name + '.x'], y = f?.[name + '.y'];\n    if (!Number.isFinite(x) || !Number.isFinite(y) || (f[name + '.visibility'] ?? 1) < .4) { last.delete(name); continue; }\n    const p = at(x, y), q = last.get(name); last.set(name, p);\n    if (!q || dancer?.held) continue;\n    const speed = Math.hypot(p[0] - q[0], p[1] - q[1]) / fh / Math.max(dt, .001);\n    const n = Math.floor(trail_emission * Math.min(6, speed * 2));\n    for (let i = 0; i < n; i++) { const k = random(); spawn(q[0] + (p[0] - q[0]) * k, q[1] + (p[1] - q[1]) * k, name.includes('left') ? 168 : 335, 1, Math.min(.6, speed * .2)); }\n  }\n  blendMode(ADD);\n  for (let i = particles.length - 1; i >= 0; i--) {\n    const p = particles[i];\n    p.vx *= 1 - drag; p.vy = p.vy * (1 - drag) + gravity; p.x += p.vx; p.y += p.vy; p.life -= dt / life_seconds;\n    if (p.life <= 0) { particles.splice(i, 1); continue; }\n    fill(p.hue, 70, 100, p.life * .8); circle(p.x, p.y, p.size * (1 + glow * p.life));\n    fill(p.hue, 20, 100, p.life * glow * .25); circle(p.x, p.y, p.size * 4 * glow);\n  }\n  blendMode(BLEND);\n}\nfunction keyPressed() { if (key === 'r' || key === 'R') particles.length = 0; }\n"
+        },
+        "generetiP5": {
+          "version": "2.3.4"
+        }
+      },
+      "widgets_values": [
+        "p5",
+        960,
+        720,
+        true,
+        "// Body drum particles. ꘇ mediamime publishes the \"mime\" stream (zones and their activity) and a \"mime\" event for\n// every hit; the Holistic provider publishes the dancer's landmarks as \"dancer\".\n// Hits burst into sparks at the struck point, sized by the strike speed and colored by the region.\n// Fast hands and feet trail sparks of their own. Zones are drawn faintly, following the body.\nlet source_opacity = 0.55; /* 0..1 step:0.05 */\nlet burst_size = 60; /* 0..300 step:5 */\nlet trail_emission = 1.2; /* 0..6 step:0.1 */\nlet gravity = 0.18; /* -1..1 step:0.01 */\nlet drag = 0.04; /* 0..0.3 step:0.005 */\nlet life_seconds = 1.6; /* 0.2..6 step:0.1 */\nlet glow = 0.8; /* 0..2 step:0.05 */\nlet show_zones = true; /* toggle */\nconst particles = [], hits = [], last = new Map();\nconst hueOf = name => { let h = 0; for (const c of String(name)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };\nfunction setup() {\n  createCanvas(windowWidth, windowHeight); colorMode(HSB, 360, 100, 100, 1); noStroke();\n  __.events.on('mime', e => { if (e.phase === 'entry') { hits.push(e); if (hits.length > 64) hits.shift(); } });\n}\nfunction spawn(x, y, hue, n, speed) {\n  for (let i = 0; i < n && particles.length < 4000; i++) {\n    const a = random(TWO_PI), v = random(.5, 1) * (1.5 + speed * 9);\n    particles.push({ x, y, vx: cos(a) * v, vy: sin(a) * v - speed * 2, life: 1, hue: (hue + random(-18, 18) + 360) % 360, size: random(1.5, 4) * (1 + speed) });\n  }\n}\nfunction draw() {\n  background(0, 0, 4);\n  const dancer = __.streams.read('dancer', 500), mime = __.streams.read('mime', 500), f = dancer?.features;\n  const iw = inputImage?.width || dancer?.source?.width || width, ih = inputImage?.height || dancer?.source?.height || height;\n  const fit = Math.min(width / iw, height / ih), fw = iw * fit, fh = ih * fit, ox = (width - fw) / 2, oy = (height - fh) / 2;\n  const at = (x, y) => [ox + x * fw, oy + y * fh];\n  if (inputImage && source_opacity > 0) { tint(0, 0, 100, source_opacity); image(inputImage, ox, oy, fw, fh); noTint(); }\n  if (show_zones && mime?.regions) for (const r of mime.regions) {\n    if (!r.polygon) continue; const hue = hueOf(r.name);\n    stroke(hue, 60, 100, r.active ? .9 : .25); strokeWeight(r.active ? 3 : 1); r.active ? fill(hue, 70, 100, .18) : noFill();\n    beginShape(); for (const [x, y] of r.polygon) vertex(...at(x, y)); r.kind === 'wire' ? endShape() : endShape(CLOSE);\n  }\n  noStroke();\n  while (hits.length) { const e = hits.shift(); if (!Number.isFinite(e.x)) continue; const [x, y] = at(e.x, e.y); spawn(x, y, hueOf(e.region), burst_size * (.4 + (e.speed ?? 0)), e.speed ?? .3); }\n  // Hands and feet trail sparks with their speed.\n  const dt = Math.min(.1, deltaTime / 1000);\n  for (const name of ['pose.left_index', 'pose.right_index', 'pose.left_foot_index', 'pose.right_foot_index']) {\n    const x = f?.[name + '.x'], y = f?.[name + '.y'];\n    if (!Number.isFinite(x) || !Number.isFinite(y) || (f[name + '.visibility'] ?? 1) < .4) { last.delete(name); continue; }\n    const p = at(x, y), q = last.get(name); last.set(name, p);\n    if (!q || dancer?.held) continue;\n    const speed = Math.hypot(p[0] - q[0], p[1] - q[1]) / fh / Math.max(dt, .001);\n    const n = Math.floor(trail_emission * Math.min(6, speed * 2));\n    for (let i = 0; i < n; i++) { const k = random(); spawn(q[0] + (p[0] - q[0]) * k, q[1] + (p[1] - q[1]) * k, name.includes('left') ? 168 : 335, 1, Math.min(.6, speed * .2)); }\n  }\n  blendMode(ADD);\n  for (let i = particles.length - 1; i >= 0; i--) {\n    const p = particles[i];\n    p.vx *= 1 - drag; p.vy = p.vy * (1 - drag) + gravity; p.x += p.vx; p.y += p.vy; p.life -= dt / life_seconds;\n    if (p.life <= 0) { particles.splice(i, 1); continue; }\n    fill(p.hue, 70, 100, p.life * .8); circle(p.x, p.y, p.size * (1 + glow * p.life));\n    fill(p.hue, 20, 100, p.life * glow * .25); circle(p.x, p.y, p.size * 4 * glow);\n  }\n  blendMode(BLEND);\n}\nfunction keyPressed() { if (key === 'r' || key === 'R') particles.length = 0; }\n",
+        "{\"source_opacity\": 0.55, \"burst_size\": 60, \"trail_emission\": 1.2, \"gravity\": 0.18, \"drag\": 0.04, \"life_seconds\": 1.6, \"glow\": 0.8, \"show_zones\": true}",
+        "{}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "language": "p5",
+        "width": 960,
+        "height": 720,
+        "auto_update": true,
+        "code": "// Body drum particles. ꘇ mediamime publishes the \"mime\" stream (zones and their activity) and a \"mime\" event for\n// every hit; the Holistic provider publishes the dancer's landmarks as \"dancer\".\n// Hits burst into sparks at the struck point, sized by the strike speed and colored by the region.\n// Fast hands and feet trail sparks of their own. Zones are drawn faintly, following the body.\nlet source_opacity = 0.55; /* 0..1 step:0.05 */\nlet burst_size = 60; /* 0..300 step:5 */\nlet trail_emission = 1.2; /* 0..6 step:0.1 */\nlet gravity = 0.18; /* -1..1 step:0.01 */\nlet drag = 0.04; /* 0..0.3 step:0.005 */\nlet life_seconds = 1.6; /* 0.2..6 step:0.1 */\nlet glow = 0.8; /* 0..2 step:0.05 */\nlet show_zones = true; /* toggle */\nconst particles = [], hits = [], last = new Map();\nconst hueOf = name => { let h = 0; for (const c of String(name)) h = (h * 31 + c.charCodeAt(0)) % 360; return h; };\nfunction setup() {\n  createCanvas(windowWidth, windowHeight); colorMode(HSB, 360, 100, 100, 1); noStroke();\n  __.events.on('mime', e => { if (e.phase === 'entry') { hits.push(e); if (hits.length > 64) hits.shift(); } });\n}\nfunction spawn(x, y, hue, n, speed) {\n  for (let i = 0; i < n && particles.length < 4000; i++) {\n    const a = random(TWO_PI), v = random(.5, 1) * (1.5 + speed * 9);\n    particles.push({ x, y, vx: cos(a) * v, vy: sin(a) * v - speed * 2, life: 1, hue: (hue + random(-18, 18) + 360) % 360, size: random(1.5, 4) * (1 + speed) });\n  }\n}\nfunction draw() {\n  background(0, 0, 4);\n  const dancer = __.streams.read('dancer', 500), mime = __.streams.read('mime', 500), f = dancer?.features;\n  const iw = inputImage?.width || dancer?.source?.width || width, ih = inputImage?.height || dancer?.source?.height || height;\n  const fit = Math.min(width / iw, height / ih), fw = iw * fit, fh = ih * fit, ox = (width - fw) / 2, oy = (height - fh) / 2;\n  const at = (x, y) => [ox + x * fw, oy + y * fh];\n  if (inputImage && source_opacity > 0) { tint(0, 0, 100, source_opacity); image(inputImage, ox, oy, fw, fh); noTint(); }\n  if (show_zones && mime?.regions) for (const r of mime.regions) {\n    if (!r.polygon) continue; const hue = hueOf(r.name);\n    stroke(hue, 60, 100, r.active ? .9 : .25); strokeWeight(r.active ? 3 : 1); r.active ? fill(hue, 70, 100, .18) : noFill();\n    beginShape(); for (const [x, y] of r.polygon) vertex(...at(x, y)); r.kind === 'wire' ? endShape() : endShape(CLOSE);\n  }\n  noStroke();\n  while (hits.length) { const e = hits.shift(); if (!Number.isFinite(e.x)) continue; const [x, y] = at(e.x, e.y); spawn(x, y, hueOf(e.region), burst_size * (.4 + (e.speed ?? 0)), e.speed ?? .3); }\n  // Hands and feet trail sparks with their speed.\n  const dt = Math.min(.1, deltaTime / 1000);\n  for (const name of ['pose.left_index', 'pose.right_index', 'pose.left_foot_index', 'pose.right_foot_index']) {\n    const x = f?.[name + '.x'], y = f?.[name + '.y'];\n    if (!Number.isFinite(x) || !Number.isFinite(y) || (f[name + '.visibility'] ?? 1) < .4) { last.delete(name); continue; }\n    const p = at(x, y), q = last.get(name); last.set(name, p);\n    if (!q || dancer?.held) continue;\n    const speed = Math.hypot(p[0] - q[0], p[1] - q[1]) / fh / Math.max(dt, .001);\n    const n = Math.floor(trail_emission * Math.min(6, speed * 2));\n    for (let i = 0; i < n; i++) { const k = random(); spawn(q[0] + (p[0] - q[0]) * k, q[1] + (p[1] - q[1]) * k, name.includes('left') ? 168 : 335, 1, Math.min(.6, speed * .2)); }\n  }\n  blendMode(ADD);\n  for (let i = particles.length - 1; i >= 0; i--) {\n    const p = particles[i];\n    p.vx *= 1 - drag; p.vy = p.vy * (1 - drag) + gravity; p.x += p.vx; p.y += p.vy; p.life -= dt / life_seconds;\n    if (p.life <= 0) { particles.splice(i, 1); continue; }\n    fill(p.hue, 70, 100, p.life * .8); circle(p.x, p.y, p.size * (1 + glow * p.life));\n    fill(p.hue, 20, 100, p.life * glow * .25); circle(p.x, p.y, p.size * 4 * glow);\n  }\n  blendMode(BLEND);\n}\nfunction keyPressed() { if (key === 'r' || key === 'R') particles.length = 0; }\n",
+        "parameters": "{\"source_opacity\": 0.55, \"burst_size\": 60, \"trail_emission\": 1.2, \"gravity\": 0.18, \"drag\": 0.04, \"life_seconds\": 1.6, \"glow\": 0.8, \"show_zones\": true}",
+        "performance": "{}",
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 12,
+      "type": "GeneretiLiveImagePreview",
+      "title": "ꘇ Particles · output",
+      "pos": [
+        3120,
+        0
+      ],
+      "size": [
+        700,
+        580
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 6
+        },
+        {
+          "name": "preview_size",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "preview_size"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiLiveImagePreview",
+        "generetiLessonRef": "212825a9-235f-59bf-8120-ef6d5833cc70",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "preview_size": 512
+        }
+      },
+      "widgets_values": [
+        512,
+        "Live"
+      ],
+      "widgets_values_named": {
+        "preview_size": 512,
+        "genereti_delivery": "Live"
+      }
+    },
+    {
+      "id": 13,
+      "type": "GeneretiDatInspect",
+      "title": "ꘇ Hit ledger",
+      "pos": [
+        2160,
+        1160
+      ],
+      "size": [
+        520,
+        380
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "*",
+          "link": 14
+        },
+        {
+          "name": "format",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "format"
+          }
+        },
+        {
+          "name": "limit",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "limit"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatInspect",
+        "generetiLessonRef": "7d6ec01f-5e19-59c5-8d23-b4f002fa996b",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "format": "text",
+          "limit": 64
+        }
+      },
+      "widgets_values": [
+        "text",
+        64
+      ],
+      "widgets_values_named": {
+        "format": "text",
+        "limit": 64
+      }
+    },
+    {
+      "id": 14,
+      "type": "GeneretiDatLesson",
+      "title": "ꘇ walkthrough · start here",
+      "pos": [
+        2380,
+        960
+      ],
+      "size": [
+        630,
+        590
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "guide",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiLessonRef": "865179a4-151c-5a18-8607-332dd299d872",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"mediamime-body-drum\",\n  \"title\": \"Mediamime · the body as a drum\",\n  \"summary\": \"Draw trigger zones on the homunculus and over the stage. Strikes play Genereti instruments, send MIDI/OSC/__ events and burst into particles.\",\n  \"steps\": [\n    {\n      \"title\": \"Load a dancer\",\n      \"text\": \"Use + on the source to load a film (early films such as Sandow work well) or start a camera, then press ▶.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiMediaStream\",\n        \"ref\": \"7c4d609d-a60c-56c0-b017-409eb96818bc\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"No camera, playback, download or inference starts until you press it.\"\n    },\n    {\n      \"title\": \"Start the Holistic provider\",\n      \"text\": \"Press ▶ on the provider (↓ downloads the pinned model once if needed). It publishes the shared \\\"dancer\\\" stream.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionProvider\",\n        \"ref\": \"65172625-9441-5fcb-9bf7-0f7dbd7bbe5e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Mediamime, the particles and any other consumer reuse this one stream.\"\n    },\n    {\n      \"title\": \"Add the body outline\",\n      \"text\": \"Optionally start the segmentation node too (▶). Its mask outlines the body on the stage and drives the wingL zone, which fires when the body itself enters the left wing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionSegments\",\n        \"ref\": \"da00e03e-30af-51df-b690-bee8bfb0c3e8\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Segmentation zones measure how much of the zone the body covers (threshold), not where a landmark is.\"\n    },\n    {\n      \"title\": \"Read the score\",\n      \"text\": \"The stage board shows the film with the skeleton; the body board is the homunculus. Seven drum zones sit on the body, two gates high on the stage, a tripwire on the floor.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"☺ frames the body board, ▭ the stage. Dashed outlines on the stage are the body zones following the dancer.\"\n    },\n    {\n      \"title\": \"Play the body\",\n      \"text\": \"Press ▶ in mediamime, then Start on the speakers node. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"A zone on an arm or shoulder cannot be struck by that same arm. Cooldowns stop a single strike from repeating.\"\n    },\n    {\n      \"title\": \"Draw your own instrument\",\n      \"text\": \"Draw closed shapes on the homunculus or over the stage, lines for tripwires, or points for small targets. Each new mark gets a region with an event and a note; edit them in the panel.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Body marks anchor to the nearest bone and move with the performer; stage marks stay in image coordinates.\"\n    },\n    {\n      \"title\": \"Route events anywhere\",\n      \"text\": \"Each region can send __ events (Livecode: __.events.on), MIDI (connect MIDI), OSC (arm OSC, loopback UDP) and WebSocket messages. The channels output carries ch10.noteNN / ch1.noteNN for Genereti instruments.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"MIDI and WebSocket only open after their buttons; OSC goes to 127.0.0.1 only.\"\n    },\n    {\n      \"title\": \"Particles from movement\",\n      \"text\": \"Every hit bursts into sparks at the struck point; fast hands and feet trail sparks. Adjust burst_size, trail_emission and gravity.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"1aa22206-394a-50c4-abd9-1b7b71fa301b\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The sketch reads __.streams.read(\\\"mime\\\") for the live zones and __.events.on(\\\"mime\\\") for hits.\"\n    }\n  ]\n}"
+        }
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"mediamime-body-drum\",\n  \"title\": \"Mediamime · the body as a drum\",\n  \"summary\": \"Draw trigger zones on the homunculus and over the stage. Strikes play Genereti instruments, send MIDI/OSC/__ events and burst into particles.\",\n  \"steps\": [\n    {\n      \"title\": \"Load a dancer\",\n      \"text\": \"Use + on the source to load a film (early films such as Sandow work well) or start a camera, then press ▶.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiMediaStream\",\n        \"ref\": \"7c4d609d-a60c-56c0-b017-409eb96818bc\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"No camera, playback, download or inference starts until you press it.\"\n    },\n    {\n      \"title\": \"Start the Holistic provider\",\n      \"text\": \"Press ▶ on the provider (↓ downloads the pinned model once if needed). It publishes the shared \\\"dancer\\\" stream.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionProvider\",\n        \"ref\": \"65172625-9441-5fcb-9bf7-0f7dbd7bbe5e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Mediamime, the particles and any other consumer reuse this one stream.\"\n    },\n    {\n      \"title\": \"Add the body outline\",\n      \"text\": \"Optionally start the segmentation node too (▶). Its mask outlines the body on the stage and drives the wingL zone, which fires when the body itself enters the left wing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionSegments\",\n        \"ref\": \"da00e03e-30af-51df-b690-bee8bfb0c3e8\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Segmentation zones measure how much of the zone the body covers (threshold), not where a landmark is.\"\n    },\n    {\n      \"title\": \"Read the score\",\n      \"text\": \"The stage board shows the film with the skeleton; the body board is the homunculus. Seven drum zones sit on the body, two gates high on the stage, a tripwire on the floor.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"☺ frames the body board, ▭ the stage. Dashed outlines on the stage are the body zones following the dancer.\"\n    },\n    {\n      \"title\": \"Play the body\",\n      \"text\": \"Press ▶ in mediamime, then Start on the speakers node. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"A zone on an arm or shoulder cannot be struck by that same arm. Cooldowns stop a single strike from repeating.\"\n    },\n    {\n      \"title\": \"Draw your own instrument\",\n      \"text\": \"Draw closed shapes on the homunculus or over the stage, lines for tripwires, or points for small targets. Each new mark gets a region with an event and a note; edit them in the panel.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Body marks anchor to the nearest bone and move with the performer; stage marks stay in image coordinates.\"\n    },\n    {\n      \"title\": \"Route events anywhere\",\n      \"text\": \"Each region can send __ events (Livecode: __.events.on), MIDI (connect MIDI), OSC (arm OSC, loopback UDP) and WebSocket messages. The channels output carries ch10.noteNN / ch1.noteNN for Genereti instruments.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"MIDI and WebSocket only open after their buttons; OSC goes to 127.0.0.1 only.\"\n    },\n    {\n      \"title\": \"Particles from movement\",\n      \"text\": \"Every hit bursts into sparks at the struck point; fast hands and feet trail sparks. Adjust burst_size, trail_emission and gravity.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"1aa22206-394a-50c4-abd9-1b7b71fa301b\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The sketch reads __.streams.read(\\\"mime\\\") for the live zones and __.events.on(\\\"mime\\\") for hits.\"\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"mediamime-body-drum\",\n  \"title\": \"Mediamime · the body as a drum\",\n  \"summary\": \"Draw trigger zones on the homunculus and over the stage. Strikes play Genereti instruments, send MIDI/OSC/__ events and burst into particles.\",\n  \"steps\": [\n    {\n      \"title\": \"Load a dancer\",\n      \"text\": \"Use + on the source to load a film (early films such as Sandow work well) or start a camera, then press ▶.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiMediaStream\",\n        \"ref\": \"7c4d609d-a60c-56c0-b017-409eb96818bc\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"No camera, playback, download or inference starts until you press it.\"\n    },\n    {\n      \"title\": \"Start the Holistic provider\",\n      \"text\": \"Press ▶ on the provider (↓ downloads the pinned model once if needed). It publishes the shared \\\"dancer\\\" stream.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionProvider\",\n        \"ref\": \"65172625-9441-5fcb-9bf7-0f7dbd7bbe5e\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Mediamime, the particles and any other consumer reuse this one stream.\"\n    },\n    {\n      \"title\": \"Add the body outline\",\n      \"text\": \"Optionally start the segmentation node too (▶). Its mask outlines the body on the stage and drives the wingL zone, which fires when the body itself enters the left wing.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionSegments\",\n        \"ref\": \"da00e03e-30af-51df-b690-bee8bfb0c3e8\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Segmentation zones measure how much of the zone the body covers (threshold), not where a landmark is.\"\n    },\n    {\n      \"title\": \"Read the score\",\n      \"text\": \"The stage board shows the film with the skeleton; the body board is the homunculus. Seven drum zones sit on the body, two gates high on the stage, a tripwire on the floor.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"☺ frames the body board, ▭ the stage. Dashed outlines on the stage are the body zones following the dancer.\"\n    },\n    {\n      \"title\": \"Play the body\",\n      \"text\": \"Press ▶ in mediamime, then Start on the speakers node. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"A zone on an arm or shoulder cannot be struck by that same arm. Cooldowns stop a single strike from repeating.\"\n    },\n    {\n      \"title\": \"Draw your own instrument\",\n      \"text\": \"Draw closed shapes on the homunculus or over the stage, lines for tripwires, or points for small targets. Each new mark gets a region with an event and a note; edit them in the panel.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Body marks anchor to the nearest bone and move with the performer; stage marks stay in image coordinates.\"\n    },\n    {\n      \"title\": \"Route events anywhere\",\n      \"text\": \"Each region can send __ events (Livecode: __.events.on), MIDI (connect MIDI), OSC (arm OSC, loopback UDP) and WebSocket messages. The channels output carries ch10.noteNN / ch1.noteNN for Genereti instruments.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerceptionMime\",\n        \"ref\": \"9a972566-12a1-53f1-b75a-882045a233f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"MIDI and WebSocket only open after their buttons; OSC goes to 127.0.0.1 only.\"\n    },\n    {\n      \"title\": \"Particles from movement\",\n      \"text\": \"Every hit bursts into sparks at the struck point; fast hands and feet trail sparks. Adjust burst_size, trail_emission and gravity.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiLivecode\",\n        \"ref\": \"1aa22206-394a-50c4-abd9-1b7b71fa301b\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The sketch reads __.streams.read(\\\"mime\\\") for the live zones and __.events.on(\\\"mime\\\") for hits.\"\n    }\n  ]\n}",
+        "genereti_delivery": "Live"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      1,
+      0,
+      3,
+      0,
+      "IMAGE"
+    ],
+    [
+      3,
+      2,
+      0,
+      4,
+      5,
+      "IMAGE"
+    ],
+    [
+      4,
+      3,
+      0,
+      4,
+      6,
+      "IMAGE"
+    ],
+    [
+      5,
+      2,
+      0,
+      11,
+      4,
+      "IMAGE"
+    ],
+    [
+      6,
+      11,
+      0,
+      12,
+      0,
+      "IMAGE"
+    ],
+    [
+      7,
+      4,
+      0,
+      5,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      8,
+      4,
+      0,
+      6,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      9,
+      5,
+      0,
+      7,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      10,
+      6,
+      0,
+      8,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      11,
+      7,
+      0,
+      9,
+      17,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      12,
+      8,
+      0,
+      9,
+      18,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      13,
+      9,
+      0,
+      10,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      14,
+      4,
+      1,
+      13,
+      0,
+      "GENERETI_DAT"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.42,
+      "offset": [
+        70,
+        90
+      ]
+    }
+  },
+  "version": 0.4
+}

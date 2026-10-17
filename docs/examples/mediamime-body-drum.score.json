@@ -1,0 +1,1153 @@
+{
+ "version": 1,
+ "stage": {
+  "width": 640,
+  "height": 480
+ },
+ "document": {
+  "type": "ams-process",
+  "version": 1,
+  "title": "Body drum",
+  "artboard": {
+   "width": 640,
+   "height": 480,
+   "ground": "transparent",
+   "title": "stage"
+  },
+  "stages": [
+   {
+    "id": "construction",
+    "name": "Construction",
+    "kind": "construction",
+    "visible": true,
+    "locked": false
+   },
+   {
+    "id": "marks",
+    "name": "Marks",
+    "kind": "marks",
+    "visible": true,
+    "locked": false
+   },
+   {
+    "id": "notes",
+    "name": "Notes",
+    "kind": "notes",
+    "visible": true,
+    "locked": false
+   }
+  ],
+  "elements": [
+   {
+    "id": "el_mvcxxlhz1kbx",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      920,
+      60,
+      0,
+      0.5
+     ],
+     [
+      934,
+      63.751288694035715,
+      16,
+      0.5
+     ],
+     [
+      944.2487113059643,
+      74,
+      32,
+      0.5
+     ],
+     [
+      948,
+      88,
+      48,
+      0.5
+     ],
+     [
+      944.2487113059643,
+      102,
+      64,
+      0.5
+     ],
+     [
+      934,
+      112.24871130596429,
+      80,
+      0.5
+     ],
+     [
+      920,
+      116,
+      96,
+      0.5
+     ],
+     [
+      906,
+      112.24871130596429,
+      112,
+      0.5
+     ],
+     [
+      895.7512886940358,
+      102.00000000000001,
+      128,
+      0.5
+     ],
+     [
+      892,
+      88,
+      144,
+      0.5
+     ],
+     [
+      895.7512886940357,
+      74,
+      160,
+      0.5
+     ],
+     [
+      906,
+      63.75128869403572,
+      176,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#f5c26b",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 847842881,
+    "created": 1792274451479,
+    "board": "body"
+   },
+   {
+    "id": "el_mvcxxli03j8v",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      888,
+      208,
+      0,
+      0.5
+     ],
+     [
+      952,
+      208,
+      16,
+      0.5
+     ],
+     [
+      952,
+      258,
+      32,
+      0.5
+     ],
+     [
+      888,
+      258,
+      48,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#f28ca8",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 978195349,
+    "created": 1792274451480,
+    "board": "body",
+    "path": "straight"
+   },
+   {
+    "id": "el_mvcxxli159xe",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      892,
+      268,
+      0,
+      0.5
+     ],
+     [
+      948,
+      268,
+      16,
+      0.5
+     ],
+     [
+      948,
+      318,
+      32,
+      0.5
+     ],
+     [
+      892,
+      318,
+      48,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#ff9b6b",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 158090676,
+    "created": 1792274451481,
+    "board": "body",
+    "path": "straight"
+   },
+   {
+    "id": "el_mvcxxli17ouq",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      965,
+      362,
+      0,
+      0.5
+     ],
+     [
+      975.5,
+      365.0814157129579,
+      16,
+      0.5
+     ],
+     [
+      983.1865334794732,
+      373.5,
+      32,
+      0.5
+     ],
+     [
+      986,
+      385,
+      48,
+      0.5
+     ],
+     [
+      983.1865334794732,
+      396.5,
+      64,
+      0.5
+     ],
+     [
+      975.5,
+      404.9185842870421,
+      80,
+      0.5
+     ],
+     [
+      965,
+      408,
+      96,
+      0.5
+     ],
+     [
+      954.5,
+      404.9185842870421,
+      112,
+      0.5
+     ],
+     [
+      946.8134665205268,
+      396.5,
+      128,
+      0.5
+     ],
+     [
+      944,
+      385,
+      144,
+      0.5
+     ],
+     [
+      946.8134665205268,
+      373.5,
+      160,
+      0.5
+     ],
+     [
+      954.5,
+      365.0814157129579,
+      176,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#71d9c2",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 456796942,
+    "created": 1792274451481,
+    "board": "body"
+   },
+   {
+    "id": "el_mvcxxli298ml",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      875,
+      362,
+      0,
+      0.5
+     ],
+     [
+      885.5,
+      365.0814157129579,
+      16,
+      0.5
+     ],
+     [
+      893.1865334794732,
+      373.5,
+      32,
+      0.5
+     ],
+     [
+      896,
+      385,
+      48,
+      0.5
+     ],
+     [
+      893.1865334794732,
+      396.5,
+      64,
+      0.5
+     ],
+     [
+      885.5,
+      404.9185842870421,
+      80,
+      0.5
+     ],
+     [
+      875,
+      408,
+      96,
+      0.5
+     ],
+     [
+      864.5,
+      404.9185842870421,
+      112,
+      0.5
+     ],
+     [
+      856.8134665205268,
+      396.5,
+      128,
+      0.5
+     ],
+     [
+      854,
+      385,
+      144,
+      0.5
+     ],
+     [
+      856.8134665205268,
+      373.5,
+      160,
+      0.5
+     ],
+     [
+      864.5,
+      365.0814157129579,
+      176,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#79b4ff",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 128894870,
+    "created": 1792274451482,
+    "board": "body"
+   },
+   {
+    "id": "el_mvcxxli2bvru",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      975,
+      176,
+      0,
+      0.5
+     ],
+     [
+      984.5,
+      178.54551732809566,
+      16,
+      0.5
+     ],
+     [
+      991.4544826719043,
+      185.5,
+      32,
+      0.5
+     ],
+     [
+      994,
+      195,
+      48,
+      0.5
+     ],
+     [
+      991.4544826719043,
+      204.5,
+      64,
+      0.5
+     ],
+     [
+      984.5,
+      211.45448267190434,
+      80,
+      0.5
+     ],
+     [
+      975,
+      214,
+      96,
+      0.5
+     ],
+     [
+      965.5,
+      211.45448267190434,
+      112,
+      0.5
+     ],
+     [
+      958.5455173280957,
+      204.5,
+      128,
+      0.5
+     ],
+     [
+      956,
+      195,
+      144,
+      0.5
+     ],
+     [
+      958.5455173280957,
+      185.5,
+      160,
+      0.5
+     ],
+     [
+      965.5,
+      178.54551732809568,
+      176,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#c59cff",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 207790172,
+    "created": 1792274451483,
+    "board": "body"
+   },
+   {
+    "id": "el_mvcxxli3dlz3",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      865,
+      176,
+      0,
+      0.5
+     ],
+     [
+      874.5,
+      178.54551732809566,
+      16,
+      0.5
+     ],
+     [
+      881.4544826719043,
+      185.5,
+      32,
+      0.5
+     ],
+     [
+      884,
+      195,
+      48,
+      0.5
+     ],
+     [
+      881.4544826719043,
+      204.5,
+      64,
+      0.5
+     ],
+     [
+      874.5,
+      211.45448267190434,
+      80,
+      0.5
+     ],
+     [
+      865,
+      214,
+      96,
+      0.5
+     ],
+     [
+      855.5,
+      211.45448267190434,
+      112,
+      0.5
+     ],
+     [
+      848.5455173280957,
+      204.5,
+      128,
+      0.5
+     ],
+     [
+      846,
+      195,
+      144,
+      0.5
+     ],
+     [
+      848.5455173280957,
+      185.5,
+      160,
+      0.5
+     ],
+     [
+      855.5,
+      178.54551732809568,
+      176,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#9be07a",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 784488325,
+    "created": 1792274451483,
+    "board": "body"
+   },
+   {
+    "id": "el_mvcxxli4frse",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      24,
+      24,
+      0,
+      0.5
+     ],
+     [
+      200,
+      24,
+      16,
+      0.5
+     ],
+     [
+      200,
+      180,
+      32,
+      0.5
+     ],
+     [
+      24,
+      180,
+      48,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#6be0e0",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 434895568,
+    "created": 1792274451484,
+    "path": "straight"
+   },
+   {
+    "id": "el_mvcxxli4hqwi",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      440,
+      24,
+      0,
+      0.5
+     ],
+     [
+      616,
+      24,
+      16,
+      0.5
+     ],
+     [
+      616,
+      180,
+      32,
+      0.5
+     ],
+     [
+      440,
+      180,
+      48,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#f5e978",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 392366947,
+    "created": 1792274451484,
+    "path": "straight"
+   },
+   {
+    "id": "el_mvcxxli5j2d6",
+    "stage": "notes",
+    "role": "line",
+    "points": [
+     [
+      60,
+      420,
+      0,
+      0.5
+     ],
+     [
+      580,
+      420,
+      16,
+      0.5
+     ]
+    ],
+    "closed": false,
+    "realize": {
+     "brush": "ink",
+     "params": {}
+    },
+    "color": "#ffffff",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 844558368,
+    "created": 1792274451485,
+    "path": "straight"
+   },
+   {
+    "id": "el_mime_wingL",
+    "stage": "notes",
+    "role": "plane",
+    "points": [
+     [
+      24,
+      220,
+      0,
+      0.5
+     ],
+     [
+      170,
+      220,
+      16,
+      0.5
+     ],
+     [
+      170,
+      460,
+      32,
+      0.5
+     ],
+     [
+      24,
+      460,
+      48,
+      0.5
+     ]
+    ],
+    "closed": true,
+    "realize": {
+     "brush": "flat",
+     "params": {}
+    },
+    "color": "#c59cff",
+    "why": "",
+    "by": {
+     "kind": "model",
+     "name": "agent"
+    },
+    "seed": 5150,
+    "created": 1792274451484,
+    "path": "straight"
+   }
+  ],
+  "decisions": [],
+  "meta": {
+   "created": "2026-10-17T22:00:49.479Z"
+  },
+  "lines": {},
+  "groups": {},
+  "brushes": {},
+  "boards": [
+   {
+    "id": "body",
+    "title": "body",
+    "x": 760,
+    "y": 0,
+    "width": 320,
+    "height": 600,
+    "ground": "transparent"
+   }
+  ]
+ },
+ "regions": {
+  "el_mvcxxlhz1kbx": {
+   "name": "head",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 160,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enter",
+     "name": "drum.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enter",
+     "channel": 10,
+     "note": 51,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 120
+    },
+    {
+     "type": "osc",
+     "trigger": "enter",
+     "address": "/mime/drum/{region}",
+     "value_mode": "speed",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli03j8v": {
+   "name": "chest",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 160,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enter",
+     "name": "drum.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enter",
+     "channel": 10,
+     "note": 38,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 120
+    },
+    {
+     "type": "osc",
+     "trigger": "enter",
+     "address": "/mime/drum/{region}",
+     "value_mode": "speed",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli159xe": {
+   "name": "belly",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 160,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enter",
+     "name": "drum.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enter",
+     "channel": 10,
+     "note": 36,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 120
+    },
+    {
+     "type": "osc",
+     "trigger": "enter",
+     "address": "/mime/drum/{region}",
+     "value_mode": "speed",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli17ouq": {
+   "name": "thighL",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 160,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enter",
+     "name": "drum.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enter",
+     "channel": 10,
+     "note": 42,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 120
+    },
+    {
+     "type": "osc",
+     "trigger": "enter",
+     "address": "/mime/drum/{region}",
+     "value_mode": "speed",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli298ml": {
+   "name": "thighR",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 160,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enter",
+     "name": "drum.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enter",
+     "channel": 10,
+     "note": 46,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 120
+    },
+    {
+     "type": "osc",
+     "trigger": "enter",
+     "address": "/mime/drum/{region}",
+     "value_mode": "speed",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli2bvru": {
+   "name": "shoulderL",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 160,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enter",
+     "name": "drum.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enter",
+     "channel": 10,
+     "note": 49,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 120
+    },
+    {
+     "type": "osc",
+     "trigger": "enter",
+     "address": "/mime/drum/{region}",
+     "value_mode": "speed",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli3dlz3": {
+   "name": "shoulderR",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 160,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enter",
+     "name": "drum.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enter",
+     "channel": 10,
+     "note": 57,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 120
+    },
+    {
+     "type": "osc",
+     "trigger": "enter",
+     "address": "/mime/drum/{region}",
+     "value_mode": "speed",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli4frse": {
+   "name": "gateL",
+   "hitters": "pose.left_index pose.right_index pose.left_wrist pose.right_wrist",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 250,
+   "hold_ms": 60,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enterExit",
+     "name": "gate.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enterExit",
+     "channel": 1,
+     "note": 60,
+     "velocity": "constant",
+     "value": 90,
+     "duration_ms": 400
+    },
+    {
+     "type": "midiCc",
+     "trigger": "inside",
+     "channel": 1,
+     "cc": 74,
+     "value_mode": "normY",
+     "value": 64
+    },
+    {
+     "type": "osc",
+     "trigger": "inside",
+     "address": "/mime/{region}/y",
+     "value_mode": "normY",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli4hqwi": {
+   "name": "gateR",
+   "hitters": "pose.left_index pose.right_index pose.left_wrist pose.right_wrist",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 250,
+   "hold_ms": 60,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enterExit",
+     "name": "gate.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enterExit",
+     "channel": 1,
+     "note": 67,
+     "velocity": "constant",
+     "value": 90,
+     "duration_ms": 400
+    },
+    {
+     "type": "midiCc",
+     "trigger": "inside",
+     "channel": 1,
+     "cc": 74,
+     "value_mode": "normY",
+     "value": 64
+    },
+    {
+     "type": "osc",
+     "trigger": "inside",
+     "address": "/mime/{region}/y",
+     "value_mode": "normY",
+     "value": 1
+    }
+   ]
+  },
+  "el_mvcxxli5j2d6": {
+   "name": "floor",
+   "hitters": "pose.left_foot_index pose.right_foot_index pose.left_heel pose.right_heel",
+   "mode": "points",
+   "threshold": 0.08,
+   "cooldown_ms": 300,
+   "hold_ms": 0,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "cross",
+     "name": "floor.cross"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "cross",
+     "channel": 1,
+     "note": 48,
+     "velocity": "speed",
+     "value": 100,
+     "duration_ms": 300
+    }
+   ]
+  },
+  "el_mime_wingL": {
+   "name": "wingL",
+   "hitters": "pose.left_index pose.right_index",
+   "mode": "body",
+   "threshold": 0.12,
+   "cooldown_ms": 600,
+   "hold_ms": 120,
+   "muted": false,
+   "actions": [
+    {
+     "type": "event",
+     "trigger": "enterExit",
+     "name": "wing.{region}"
+    },
+    {
+     "type": "midiNote",
+     "trigger": "enterExit",
+     "channel": 1,
+     "note": 55,
+     "velocity": "constant",
+     "value": 70,
+     "duration_ms": 400
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "midi": {
+   "port": ""
+  },
+  "osc": {
+   "port": 9000
+  },
+  "ws": {
+   "url": "ws://127.0.0.1:8765"
+  }
+ }
+}

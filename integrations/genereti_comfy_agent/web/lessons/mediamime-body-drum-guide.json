@@ -1,0 +1,89 @@
+{
+  "format": "genereti-guide",
+  "version": 1,
+  "id": "mediamime-body-drum",
+  "title": "Mediamime · the body as a drum",
+  "summary": "Draw trigger zones on the homunculus and over the stage. Strikes play Genereti instruments, send MIDI/OSC/__ events and burst into particles.",
+  "steps": [
+    {
+      "title": "Load a dancer",
+      "text": "Use + on the source to load a film (early films such as Sandow work well) or start a camera, then press ▶.",
+      "target": {
+        "nodeType": "GeneretiMediaStream",
+        "ref": "7c4d609d-a60c-56c0-b017-409eb96818bc",
+        "part": "node"
+      },
+      "hint": "No camera, playback, download or inference starts until you press it."
+    },
+    {
+      "title": "Start the Holistic provider",
+      "text": "Press ▶ on the provider (↓ downloads the pinned model once if needed). It publishes the shared \"dancer\" stream.",
+      "target": {
+        "nodeType": "GeneretiPerceptionProvider",
+        "ref": "65172625-9441-5fcb-9bf7-0f7dbd7bbe5e",
+        "part": "node"
+      },
+      "hint": "Mediamime, the particles and any other consumer reuse this one stream."
+    },
+    {
+      "title": "Add the body outline",
+      "text": "Optionally start the segmentation node too (▶). Its mask outlines the body on the stage and drives the wingL zone, which fires when the body itself enters the left wing.",
+      "target": {
+        "nodeType": "GeneretiPerceptionSegments",
+        "ref": "da00e03e-30af-51df-b690-bee8bfb0c3e8",
+        "part": "node"
+      },
+      "hint": "Segmentation zones measure how much of the zone the body covers (threshold), not where a landmark is."
+    },
+    {
+      "title": "Read the score",
+      "text": "The stage board shows the film with the skeleton; the body board is the homunculus. Seven drum zones sit on the body, two gates high on the stage, a tripwire on the floor.",
+      "target": {
+        "nodeType": "GeneretiPerceptionMime",
+        "ref": "9a972566-12a1-53f1-b75a-882045a233f4",
+        "part": "node"
+      },
+      "hint": "☺ frames the body board, ▭ the stage. Dashed outlines on the stage are the body zones following the dancer."
+    },
+    {
+      "title": "Play the body",
+      "text": "Press ▶ in mediamime, then Start on the speakers node. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.",
+      "target": {
+        "nodeType": "GeneretiPerceptionMime",
+        "ref": "9a972566-12a1-53f1-b75a-882045a233f4",
+        "part": "node"
+      },
+      "hint": "A zone on an arm or shoulder cannot be struck by that same arm. Cooldowns stop a single strike from repeating."
+    },
+    {
+      "title": "Draw your own instrument",
+      "text": "Draw closed shapes on the homunculus or over the stage, lines for tripwires, or points for small targets. Each new mark gets a region with an event and a note; edit them in the panel.",
+      "target": {
+        "nodeType": "GeneretiPerceptionMime",
+        "ref": "9a972566-12a1-53f1-b75a-882045a233f4",
+        "part": "node"
+      },
+      "hint": "Body marks anchor to the nearest bone and move with the performer; stage marks stay in image coordinates."
+    },
+    {
+      "title": "Route events anywhere",
+      "text": "Each region can send __ events (Livecode: __.events.on), MIDI (connect MIDI), OSC (arm OSC, loopback UDP) and WebSocket messages. The channels output carries ch10.noteNN / ch1.noteNN for Genereti instruments.",
+      "target": {
+        "nodeType": "GeneretiPerceptionMime",
+        "ref": "9a972566-12a1-53f1-b75a-882045a233f4",
+        "part": "node"
+      },
+      "hint": "MIDI and WebSocket only open after their buttons; OSC goes to 127.0.0.1 only."
+    },
+    {
+      "title": "Particles from movement",
+      "text": "Every hit bursts into sparks at the struck point; fast hands and feet trail sparks. Adjust burst_size, trail_emission and gravity.",
+      "target": {
+        "nodeType": "GeneretiLivecode",
+        "ref": "1aa22206-394a-50c4-abd9-1b7b71fa301b",
+        "part": "node"
+      },
+      "hint": "The sketch reads __.streams.read(\"mime\") for the live zones and __.events.on(\"mime\") for hits."
+    }
+  ]
+}

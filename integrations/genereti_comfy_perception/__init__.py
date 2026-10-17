@@ -37,10 +37,33 @@ class Features(io.ComfyNode):
         return schema('Features','perception.features',[io.String.Input('stream',default='body'),io.String.Input('features',default='pose.right_wrist pose.left_wrist'),io.String.Input('selection_stream',default='selected'),io.Float.Input('min_confidence',default=.4,min=0,max=1),io.Float.Input('max_age_ms',default=500,min=50,max=10000),io.Image.Input('image',optional=True)],[CHOP.Output(display_name='features'),DAT.Output(display_name='observations'),io.Image.Output(display_name='landmarks')])
     @classmethod
     def execute(cls,**kwargs):raise ValueError('Feature selection reads browser Live streams. Start a provider and use Live.')
+DEFAULT_MEASURES='{"version":1,"locators":[{"name":"handL","points":["hands.left.thumb_tip"]},{"name":"fingerL","points":["hands.left.index_tip"]}],"measures":[{"name":"nose","type":"point","a":"pose.nose"},{"name":"pinch","type":"distance","a":"$handL","b":"$fingerL"}],"events":[],"contacts":[{"name":"pinch","feature":"pinch.distance","close":0.04,"open":0.07,"hold_ms":40,"tap_ms":350,"click_ms":700,"cooldown_ms":200}]}'
+class Measures(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(node_id='GeneretiPerceptionMeasures',display_name='ꘇ perception.measures',category='Genereti / Perception',description='Select landmarks, create named locators, measures and gesture events. Reads one shared provider without additional inference; publishes a named global stream.',inputs=[io.String.Input('stream',default='body'),io.String.Input('features',default='hands.left.thumb_tip hands.left.index_tip'),io.String.Input('selection_stream',default='measures'),io.Float.Input('min_confidence',default=.4,min=0,max=1),io.Float.Input('max_age_ms',default=500,min=50,max=10000),io.String.Input('definitions',default=DEFAULT_MEASURES,multiline=True),io.Image.Input('image',optional=True)],outputs=[CHOP.Output(display_name='measures'),DAT.Output(display_name='observations'),io.Image.Output(display_name='landmarks')])
+    @classmethod
+    def execute(cls,**kwargs):raise ValueError('Measures read shared browser Live perception. No camera or model runs in this node.')
+class Regions(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(node_id='GeneretiPerceptionRegions',display_name='ꘇ perception.regions',category='Genereti / Perception',description='Edit named global normalized bounding boxes. Drag to move and use corner handles to resize. No inference.',inputs=[io.String.Input('region_stream',default='stage'),io.String.Input('boxes',default='{"version":1,"boxes":[{"name":"center","box":[0.25,0.25,0.5,0.5]}]}',multiline=True),io.Image.Input('image',optional=True)],outputs=[DAT.Output(display_name='regions'),io.Image.Output(display_name='preview')])
+    @classmethod
+    def execute(cls,**kwargs):raise ValueError('Global region definitions are browser Live state; save the workflow or export JSON.')
+class Mime(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(node_id='GeneretiPerceptionMime',display_name='ꘇ mediamime',category='Genereti / Perception',search_aliases=['mediamime','mime','triggers','zones','homunculus','body drum','midi','osc'],
+            description='Draw trigger zones over a live perception stream in Poliplan: stage zones and tripwires over the image, body zones on the homunculus that follow the performer. Fires __ events, MIDI, OSC and WebSocket messages and note channels for mod.synth / mod.drumkit. No inference.',
+            inputs=[io.String.Input('stream',default='body'),io.String.Input('publish',default='mime'),io.Float.Input('min_confidence',default=.4,min=0,max=1),io.Float.Input('max_age_ms',default=500,min=50,max=10000),
+                    io.String.Input('score',default='{"version":1}',multiline=True),io.Image.Input('image',optional=True),io.Image.Input('mask',optional=True)],
+            outputs=[CHOP.Output(display_name='channels'),DAT.Output(display_name='events'),io.Image.Output(display_name='overlay')])
+    @classmethod
+    def execute(cls,**kwargs):raise ValueError('Mediamime evaluates browser Live perception streams; press ▶ in the node. Save the workflow to keep its score.')
 class Extension(ComfyExtension):
     async def on_load(self):
         from server import PromptServer
         from .assets import register_routes
         register_routes(PromptServer.instance.routes)
-    async def get_node_list(self): return [Provider,Segments,Read,Events,Features]
+    async def get_node_list(self): return [Provider,Segments,Read,Events,Features,Measures,Regions,Mime]
 async def comfy_entrypoint(): return Extension()
