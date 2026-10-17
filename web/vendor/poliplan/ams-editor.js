@@ -85,7 +85,11 @@ export function createEditor(container, { src, ns = 'ams-embed', theme = 'host',
     loadExcalidraw: scene => request('loadExcalidraw', { scene }),
     /** { rev, document }: the whole drawing as plain JSON. */
     getDocument: () => request('get-document'),
-    /** { format: png | svg | json | excalidraw, blob | text | document | scene, … } for one board, or with `ids` just those marks as png or svg (a blob, on no paper). */
+    /**
+     * { format: png | svg | json | excalidraw, blob | text | document | scene, … } for one board, or with `ids` just those marks as png or svg (a blob, on no paper).
+     * `draft: true` (png) also draws the stroke still being drawn, which is not in the document until the pointer is released:
+     * answer the `draft` event with it for a live view (`change` only follows the release).
+     */
     export: opts => request('export', opts),
     /** Any studio tool call (ams_add, ams_board, ams_view, …); editor.listTools() lists them. */
     callTool: (name, args) => request('call', { name, args }),

@@ -4,7 +4,11 @@ An interactive source node like **ꘇ drawing**, with the **Poliplan** engine (t
 
 ## The node
 
-Two boards live in the editor, side by side: **image** (white paper) and **mask** (black paper, draw white). Their size is the node's `width` and `height` (the boards follow the widgets). At queue time the boards that the connected outputs need are exported at 1:1, uploaded to Comfy's temp folder and read by the python node.
+Two boards live in the editor, the **image** board with the **mask** board (draw white) below it, both on transparent paper with their titles hidden, as in ꘇ drawing. Alt+1 / Alt+2 only move the camera to a board (they do not select it, so a hidden title or border stays hidden). There is no "trains" mark: nothing here learns from a board. **Alt+O** (or the ▣ glyph) shows the editor alone, without the node's controls. Their size is the node's `width` and `height` (the boards follow the widgets). At queue time the boards that the connected outputs need are exported at 1:1, uploaded to Comfy's temp folder and read by the python node. Unpainted mask paper is 0 and antialiased edges are weighted by their alpha.
+
+Like the other browser nodes it has the shared toolbar: delivery (Live / Comfy Queue) with pause, the output window / overlay / visual / backdrop glyphs, freeze, minimize and fit. In Live delivery, edits are published to connected IMAGE and MASK outputs and to the output windows; Freeze holds delivery (the editor stays usable). A stroke shows in the live frames while it is drawn (the editor announces it with `draft` events and the export `draft: true` includes it); `over_input` compositing and the SVG and JSON outputs apply at queue time only.
+
+**Alt+W** (the overlay glyph) moves the live editor itself into an overlay window that you draw in, above the graph, while the node mirrors the drawing; close it (Alt+W again, or its close glyph) and the editor returns to the node with its state. With a transparent workspace and paper the overlay is transparent, so you can draw over other nodes. **Alt+O** nodes also sit above ordinary nodes (Cmd/Ctrl+[ and ] reorder them).
 
 | Output | What it is |
 | --- | --- |
@@ -19,7 +23,7 @@ The drawing is saved in the workflow (the `poliplan` widget). The editor's own m
 
 ## Not yet
 
-Live delivery (the drawing node's Live mode), more outputs (bounding boxes of marks for image generation, timing information, events), overlay over the graph, and passing an input image as a mark rather than a reference.
+More outputs (bounding boxes of marks for image generation, timing information, events), live `over_input` compositing and live SVG / JSON, an editor that stays active in both the node and the overlay at once (today there is one editor, in the node or in the overlay), and passing an input image as a mark rather than a reference.
 
 ## Updating Poliplan
 

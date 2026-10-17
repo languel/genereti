@@ -11,7 +11,7 @@ from pathlib import Path
 import folder_paths
 import numpy as np
 import torch
-from PIL import Image
+from PIL import Image, ImageChops
 from aiohttp import web
 from server import PromptServer
 from comfy_api.latest import ComfyExtension, io
@@ -35,6 +35,13 @@ def _load(captured, key, mode):
         return None
     with Image.open(folder_paths.get_annotated_filepath(captured[key])) as image:
         return image.convert(mode)
+
+
+def _grey_mask(captured):
+    """The mask board as 'L': white marks on transparent (or black) paper. Grey is weighted by alpha, so unpainted
+    areas are 0 and antialiased edges stay soft."""
+    image = _load(captured, 'mask', 'RGBA')
+    return None if image is None else ImageChops.multiply(image.convert('L'), image.getchannel('A'))
 
 
 def _tensor(array):
@@ -85,7 +92,7 @@ class GeneretiPoliplan(io.ComfyNode):
             # Preserve alpha for transparent drawings; opaque images stay RGB.
             mode = 'RGBA' if drawing.getchannel('A').getextrema()[0] < 255 else 'RGB'
             pixels = _tensor(drawing.convert(mode))
-        grey = _load(captured, 'mask', 'L')
+        grey = _grey_mask(captured)
         if grey is not None:
             mask = _tensor(grey)
         ui = {}

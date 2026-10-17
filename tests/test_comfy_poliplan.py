@@ -68,6 +68,19 @@ class PoliplanTests(unittest.TestCase):
         self.assertEqual((svg, text), ('<svg/>', '{"document":{}}'))
         self.assertEqual(result.ui, {})
 
+    def test_transparent_mask_paper_is_black_and_edges_are_weighted_by_alpha(self):
+        with tempfile.TemporaryDirectory() as temp:
+            mask = Path(temp) / 'mask.png'
+            board = Image.new('RGBA', (3, 1), (0, 0, 0, 0))   # transparent paper
+            board.putpixel((1, 0), (255, 255, 255, 128))       # a soft white edge
+            board.putpixel((2, 0), (255, 255, 255, 255))       # a solid white mark
+            board.save(mask)
+            result = self.node.execute('', json.dumps({'mask': str(mask)}), 3, 1, False)
+        grey = result.values[1]
+        self.assertEqual(grey[0, 0, 0].item(), 0.0)
+        self.assertAlmostEqual(grey[0, 0, 1].item(), 128 / 255, places=2)
+        self.assertEqual(grey[0, 0, 2].item(), 1.0)
+
     def test_text_only_outputs_need_no_raster_files(self):
         with patch.object(self.module.Image, 'open', side_effect=AssertionError('Unexpected raster load')):
             result = self.run_node({'svg': '<svg/>', 'json': '{}'})
