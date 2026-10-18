@@ -32,6 +32,7 @@ export function resolvePoints(features, spec, { virtual = {}, minConfidence = MI
       const rest = key.slice(head.length, -2);
       const at = tail ? rest.indexOf(tail) : rest.length;
       if (at < 0 || (tail && rest.slice(at) !== tail)) continue;
+      if (!/^\d+$/.test(rest.slice(0, at))) continue;   // hands.0 and hands.left are the same hand: the wildcard means the numbered ones
       seen.add(head + rest.slice(0, at) + tail);
     }
     return [...seen].sort().flatMap(id => { const p = pointOf(features, id, minConfidence); return p ? [{ id, ...p }] : []; });

@@ -430,8 +430,6 @@ function makeMediamime(node, name) {
       let saved = null;
       try { saved = value ? JSON.parse(value) : null; } catch { saved = null; }
       try { score = parseScore(saved?.score ?? defaultScore()); } catch { score = defaultScore(); }
-      const w = widgetOf(node, 'stream');
-      if (w && saved?.score?.streams?.primary) { w.value = score.streams.primary; }
       documentJson = saved?.document ?? null;
       stage.board = { ...score.board };
       stage.scene.regions = score.regions;
