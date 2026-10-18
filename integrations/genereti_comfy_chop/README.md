@@ -7,3 +7,7 @@ See the [operator catalog](../../docs/opentouch-catalog.md), [report and perform
 Signal processors run in browser Float32Array blocks in Live mode; queued nodes evaluate explicit samples/time using NumPy. MIDI requires Connect/Web MIDI, OSC is explicit loopback UDP, and synth/drum audio requires Start. Opening or queuing a graph never opens devices or plays audio. Musical note/gate/velocity CHOPs feed MIDI Out, Synth and DrumKit. They are control signals, not audio-buffer streams or sample-accurate sequencing.
 
 The full Core ML generator remains macOS 14+ on Apple silicon. These source/control nodes do not require Core ML; browser feature availability governs their live paths.
+
+## Key and MIDI bindings
+
+`web/bindings.js` is the input hub (keyboard, Web MIDI). Nodes register actions with `window.generetiBindings.register(node, label, actions)`; bindings save per workflow in `graph.extra.genereti_bindings`, with a global map in `localStorage`. Pure matching and value logic is in `web/bindings-core.js` (`tests/test_bindings_core.mjs`). See `help/docs/GeneretiInputBindings.md`.

@@ -15,7 +15,12 @@ parameter recording and seeking. The example needs no models or capture devices.
 
 **Alt+Shift+T** toggles the native bottom panel. **Alt+Space** plays/pauses project
 time outside text editors. These are editable in Comfy's native Keybinding panel.
-`ꘇ mod.timeline` opens the same dock or a draggable, resizable floating view.
+`ꘇ mod.timeline` is the timeline as a node, built like poliplan: the full timeline
+and transport live inside the node. **Alt+W** (or the overlay glyph) moves it into a
+draggable, resizable overlay window that floats over the graph while the node
+mirrors it; **Alt+O** shows the node without its controls. Leave it in overlay mode
+and move it wherever you need it. The ▥ glyph docks the same timeline in the bottom
+panel, and the dock and floating views share the node's clock and document.
 
 The active Timeline tab uses a compact native header: transport controls occupy
 the space beside Logs/Timeline, wrapping below them in narrow windows. Logs

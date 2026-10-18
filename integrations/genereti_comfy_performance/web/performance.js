@@ -1,4 +1,5 @@
 import {app} from '../../scripts/app.js';
+import {previewControls} from '/extensions/genereti_comfy_stream/js/preview-controls.js';
 import {PerformanceService} from './service.js';
 import {SCALES,quantizeNote} from './core/music.js';
 import {resolveTimeValue,parseTimeValue,formatSecondsAsBBU} from './core/timeValue.js';
@@ -20,6 +21,23 @@ function mountDock(container){
 }
 function button(glyph,title,action){const b=document.createElement('button');b.textContent=glyph;b.title=b.ariaLabel=title;b.style.cssText='border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:5px';b.onclick=action;return b;}
 service.openFloating=()=>{if(floating){floating.box.hidden=false;return;}const box=document.createElement('div'),bar=document.createElement('div'),body=document.createElement('div');box.style.cssText='position:fixed;left:5vw;top:65vh;width:90vw;height:30vh;min-height:180px;z-index:1100;resize:both;overflow:hidden;display:flex;flex-direction:column;background:var(--comfy-menu-bg,#222);color:var(--input-text,#ddd);border:1px solid var(--border-color,#444);border-radius:8px;box-shadow:0 8px 35px #0006';bar.style.cssText='display:flex;justify-content:space-between;align-items:center;cursor:move;padding:3px 9px';bar.append('ꘇ Timeline',button('×','Hide floating timeline',()=>box.hidden=true));body.style.cssText='flex:1;min-height:0';box.append(bar,body);document.body.append(box);floating={box,dispose:mountTimeline(body,service,{visible:()=>!box.hidden})};bar.onpointerdown=e=>{if(e.target.tagName==='BUTTON')return;const x=e.clientX,y=e.clientY,r=box.getBoundingClientRect();bar.setPointerCapture(e.pointerId);bar.onpointermove=event=>{box.style.left=Math.max(0,Math.min(innerWidth-80,r.x+event.clientX-x))+'px';box.style.top=Math.max(0,Math.min(innerHeight-40,r.y+event.clientY-y))+'px';};bar.onpointerup=()=>bar.onpointermove=null;};};
+// The timeline as a node, like poliplan: the React timeline lives in the node, Alt+W moves it into a draggable overlay window,
+// Alt+O shows the node without its controls. The bottom dock and floating view stay available and share the same service.
+function mountTimelineNode(node){
+ const wrap=document.createElement('div'),bar=document.createElement('div'),host=document.createElement('div'),status=document.createElement('div');
+ wrap.className='genereti-timeline-node';wrap.style.cssText='display:flex;flex-direction:column;width:100%;height:100%;min-height:0';
+ host.className='genereti-timeline-host';host.style.cssText='flex:1;min-height:0;overflow:hidden;position:relative;background:var(--comfy-menu-bg,#222);color:var(--input-text,#ddd)';
+ status.style.cssText='font:11px monospace;opacity:.8;padding:0 6px;color:var(--input-text,#ddd)';
+ const controls=previewControls(host,status,node,()=>{},{fitTarget:null,fitControl:false,interactiveSurface:host,publishOnOpen:false,initialFrame:()=>null,getRenderSize:()=>({width:Math.max(host.clientWidth,900),height:Math.max(host.clientHeight+120,380)})});
+ const [,overlay,visual]=[...controls.actions.children];
+ bar.className='genereti-node-controls';bar.append(overlay,visual,button('▥','Dock the timeline in the bottom panel',toggle));
+ bar.addEventListener('pointerdown',e=>e.stopPropagation());
+ wrap.append(bar,host,status);
+ const dispose=mountTimeline(host,service,{visible:()=>host.isConnected});
+ node.addDOMWidget('timeline','GENERETI_TIMELINE',wrap,{serialize:false,hideOnZoom:false}).computeSize=w=>{const h=Math.max(340,(node.size?.[1]??480)-70);wrap.style.height=h+'px';return [w,h];};
+ if((node.size?.[0]??0)<760)node.size=[920,480];
+ const removed=node.onRemoved;node.onRemoved=function(){dispose();return removed?.apply(this,arguments);};
+}
 const classes=new Set(['GeneretiLivecode','GeneretiTextureExpression','GeneretiTextureNoise','GeneretiChopExpression','GeneretiChopNoise','GeneretiChopOscillator','GeneretiTextureFeedback','GeneretiTextureFeedbackRef']);
 function setupNode(node){
  if(node._generetiPerformanceSetup)return;node._generetiPerformanceSetup=true;node.properties??={};node.properties.generetiPerformanceVersion=1;
@@ -29,7 +47,7 @@ function setupNode(node){
  if(classes.has(node.comfyClass)){
   node.properties??={};const row=document.createElement('div');row.className='genereti-node-controls';row.style.cssText='display:flex;font-size:12px;color:var(--input-text,#ddd)';const choice=document.createElement('select');choice.title=choice.ariaLabel='Time source · independent of Live / Comfy Queue delivery';choice.style.cssText='border:0;background:transparent;color:inherit;font:inherit';for(const [value,label] of [['free','Free time'],['linked','Project time']]){const o=document.createElement('option');o.value=value;o.textContent=label;choice.append(o);}choice.value=node.properties.generetiTimeMode??'free';choice.onchange=()=>{node.properties.generetiTimeMode=choice.value;service.save();node._generetiPerformanceSeek?.({type:'binding'});node.setDirtyCanvas?.(true,true);};row.append(choice,button('▥','Open project timeline',toggle));node.addDOMWidget('performance_binding','GENERETI_PERFORMANCE_BINDING',row,{serialize:false,hideOnZoom:false}).computeSize=w=>[w,row.childElementCount?28:0];requestAnimationFrame(()=>{const elements=node.widgets?.map(w=>w.element).filter(Boolean)??[];const toolbar=elements.map(e=>e.querySelector('.genereti-preview-actions')).find(Boolean);if(toolbar){toolbar.append(...row.childNodes);row.style.display='none';node.setDirtyCanvas?.(true,true);}});const unbind=service.bind(node,event=>node._generetiPerformanceSeek?.(event));const configured=node.onConfigure;node.onConfigure=function(){const result=configured?.apply(this,arguments);choice.value=this.properties?.generetiTimeMode??'free';return result;};const removed=node.onRemoved;node.onRemoved=function(){unbind();return removed?.apply(this,arguments);};
  }
- if(node.comfyClass==='GeneretiPerformanceTimeline'){const row=document.createElement('div');row.className='genereti-node-controls';row.append(button('▥','Open the project timeline',toggle),button('▣','Open a floating timeline',service.openFloating));node.addDOMWidget('timeline_controls','GENERETI_TIMELINE',row,{serialize:false}).computeSize=w=>[w,35];}
+ if(node.comfyClass==='GeneretiPerformanceTimeline')mountTimelineNode(node);
  if(node.comfyClass==='GeneretiPerformanceScale'){const row=document.createElement('div');row.className='genereti-node-controls';row.append(button('✓','Set the global musical scale from this node',()=>{const v=Object.fromEntries(node.widgets.map(w=>[w.name,w.value]));service.edit(d=>d.music={...d.music,root:v.root,scale:v.scale,tuning:v.tuning,degrees:SCALES[v.scale]});}));node.addDOMWidget('scale_controls','GENERETI_SCALE',row,{serialize:false}).computeSize=w=>[w,35];node._generetiLiveValue=slot=>slot===0?JSON.stringify({...service.document.music,...Object.fromEntries(node.widgets.filter(w=>['root','scale','tuning'].includes(w.name)).map(w=>[w.name,w.value])),degrees:SCALES[node.widgets.find(w=>w.name==='scale')?.value]}):undefined;}
  if(['GeneretiPerformanceTime','GeneretiAudioTransport','GeneretiPerformanceQuantize'].includes(node.comfyClass)){
   const prior=node._generetiLiveValue;node._generetiLiveValue=slot=>{if(node.comfyClass==='GeneretiAudioTransport'){const s=service.transportFor(node).read();return slot===0?s:slot===1?clockChannels(s):slot===2?s.seconds:slot===3?s.beat:slot===4?JSON.stringify(s):prior?.(slot);}
