@@ -88,7 +88,7 @@ class Mixer(Route):
     @classmethod
     def define_schema(cls):
         inputs=[]
-        for i in range(1,5):
+        for i in range(1,9):
             inputs.extend([BUS.Input('input_'+str(i),optional=True),f('level_'+str(i),.7,0,2),f('pan_'+str(i),0,-1,1),io.Boolean.Input('mute_'+str(i),default=False),io.Boolean.Input('solo_'+str(i),default=False)])
         inputs.append(f('master',.7,0,1))
         return schema('Mixer', inputs)

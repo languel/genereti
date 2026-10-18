@@ -40,5 +40,5 @@ test('synth takes waveform, filter mode, detune and a filter envelope without cl
 });
 test('mixer reports per-strip and master levels for the meters',()=>{
  const p=new AudioPatch(context());p.sync(new Map([[1,{kind:'Mixer',settings:{level_1:.7,level_2:.7,level_3:.7,level_4:.7,pan_1:0,pan_2:0,pan_3:0,pan_4:0,master:.7},inputs:{}}]]),new Set([1]));
- const levels=p.levels(1);assert.equal(levels.strips.length,4);assert.ok(levels.strips.every(x=>Math.abs(x-.2)<1e-6));assert.ok(Math.abs(levels.master-.2)<1e-6);assert.equal(p.levels(99),null);p.stop();
+ const levels=p.levels(1);assert.equal(levels.strips.length,8);assert.ok(levels.strips.every(x=>Math.abs(x-.2)<1e-6));assert.ok(Math.abs(levels.master-.2)<1e-6);assert.equal(p.levels(99),null);p.stop();
 });

@@ -1,7 +1,7 @@
 // Visual panels for the modular-audio nodes. Each panel edits the node's own widgets, so linked inputs and
 // workflow files keep working. buildPanel(kind, ctx) returns {el, refresh, height, meter?} or null.
 import {knob, fader, toggle, segmented, envelope, filterGraph, row, group, grow, panelRoot, assemble, el, setValue, getValue} from './audio-ui.js';
-import {noteName, isBlackKey, DRUM_ROWS} from './audio-ui-core.js';
+import {noteName, isBlackKey, DRUM_ROWS, clamp} from './audio-ui-core.js';
 import {drumSequencerPanel, noteSequencerPanel} from './audio-sequencers.js';
 
 const KEY_NOTES = Array.from({length: 13}, (_, i) => 60 + i);
@@ -57,24 +57,33 @@ function drumKitPanel({node, trigger}) {
   return {...assemble(root, parts), height: 150, width: 430};
 }
 
-function mixerPanel({node}) {
-  const root = panelRoot(), parts = [], faders = [];
+const STRIP_W = 58;
+function mixerPanel({node, resize}) {
+  const root = panelRoot(), parts = [], faders = [], cells = [];
   const add = c => { parts.push(c); return c.el; };
+  const count = () => clamp(Number(node.properties?.genereti_mixer_channels ?? 4), 1, 8);
   const strips = row();
   strips.style.alignItems = 'flex-start'; strips.style.flexWrap = 'nowrap'; strips.style.gap = '8px';
-  for (let i = 1; i <= 4; i++) {
+  for (let i = 1; i <= 8; i++) {
     const f = fader(node, {name: `level_${i}`, label: `${i}`, height: 104});
     faders.push(f);
     const strip = el('div', {className: 'gap-cell'});
     strip.append(add(knob(node, {name: `pan_${i}`, label: 'pan', min: -1, max: 1, size: 26, step: .01, unit: 'pan', def: 0})), add(f),
       row(add(toggle(node, {name: `mute_${i}`, label: 'M', title: `Mute ${i}`})), add(toggle(node, {name: `solo_${i}`, label: 'S', title: `Solo ${i}`}))));
-    strips.append(strip);
+    cells.push(strip); strips.append(strip);
   }
   const master = fader(node, {name: 'master', label: 'master', max: 1, height: 104, width: 34}); faders.push(master);
-  const masterCell = el('div', {className: 'gap-cell'}); masterCell.style.marginLeft = 'auto'; masterCell.append(el('div', {style: 'height:40px'}), add(master));
+  const masterCell = el('div', {className: 'gap-cell'}); masterCell.style.marginLeft = 'auto';
+  const more = el('div', {className: 'gap-seg'});
+  const mk = (label, title, d) => { const b = el('button', {textContent: label, title}); b.type = 'button'; b.onpointerdown = e => e.stopPropagation(); b.onclick = () => { node.properties ??= {}; node.properties.genereti_mixer_channels = clamp(count() + d, 1, 8); show(); node.graph?.change?.(); resize?.(panel.width); }; return b; };
+  more.append(mk('−', 'Fewer channels', -1), mk('+', 'More channels (up to 8)', 1)); more.style.height = '40px';
+  masterCell.append(more, add(master));
   strips.append(masterCell);
   root.append(strips);
-  return {...assemble(root, parts), height: 220, width: 340, meter(levels) { for (let i = 0; i < 4; i++) faders[i].setMeter(levels?.strips?.[i] ?? 0); master.setMeter(levels?.master ?? 0); }};
+  const show = () => { const n = count(); cells.forEach((c, i) => { c.style.display = i < n ? '' : 'none'; }); panel.width = 130 + n * STRIP_W; };
+  const panel = {...assemble(root, parts), height: 220, width: 340, meter(levels) { for (let i = 0; i < 8; i++) faders[i].setMeter(levels?.strips?.[i] ?? 0); master.setMeter(levels?.master ?? 0); }};
+  show();
+  return panel;
 }
 
 function filterPanel({node}) {
@@ -97,6 +106,19 @@ function delayPanel({node}) {
   const add = c => { parts.push(c); return c.el; };
   root.append(row(add(knob(node, {name: 'seconds', label: 'time', min: .01, max: 2, curve: 'log', unit: 's', step: .005})), add(knob(node, {name: 'feedback', label: 'feedback', min: 0, max: .85, step: .01})), add(knob(node, {name: 'mix', label: 'mix', min: 0, max: 1, step: .01}))));
   return {...assemble(root, parts), height: 90, width: 300};
+}
+
+// Tempo and swing for mod.transport; the play / reset buttons stay in the node's own toolbar.
+export function transportExtras({node}) {
+  const root = panelRoot(), parts = [];
+  const add = c => { parts.push(c); return c.el; };
+  let taps = [], tapTempo;
+  import('/extensions/genereti_comfy_performance/core/timeformat.js').then(m => { tapTempo = m.tapTempo; }).catch(() => {});
+  const tap = el('button', {className: 'gap-btn', textContent: 'tap', title: 'Tap tempo · a pause over 2 s starts again'}); tap.type = 'button';
+  tap.onpointerdown = e => e.stopPropagation();
+  tap.onclick = () => { if (!tapTempo) return; const r = tapTempo(taps, performance.now()); taps = r.taps; if (r.bpm) setValue(node, 'bpm', Math.min(300, r.bpm)); };
+  root.append(row(add(knob(node, {name: 'bpm', label: 'bpm', min: 20, max: 300, step: .1, size: 42})), add(knob(node, {name: 'swing', label: 'swing', min: 0, max: .45, step: .01, size: 34})), tap));
+  return {...assemble(root, parts), height: 84};
 }
 
 const BUILDERS = {DrumSequence: drumSequencerPanel, Sequence: noteSequencerPanel, Synth: synthPanel, DrumKit: drumKitPanel, Mixer: mixerPanel, Filter: filterPanel, Gain: gainPanel, Delay: delayPanel};
