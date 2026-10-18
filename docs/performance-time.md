@@ -26,6 +26,15 @@ The active Timeline tab uses a compact native header: transport controls occupy
 the space beside Logs/Timeline, wrapping below them in narrow windows. Logs
 retains its own header, and the native close control and panel resizing remain.
 
+The transport bar has a **position field** and **loop in / out fields** that take any
+time expression (`2 bars`, `250 ms`, `00:00:04:12`, `480 ticks`, `44100 samples`):
+type and press Enter, or drag sideways to scrub (Shift for fine steps, Esc reverts,
+Shift+Backspace resets). The **time format** select (timecode, seconds, bars ·
+beats · ticks, frames, samples, ticks) sets how these fields and the ruler display
+time, and the **frame rate** select (24, 25, 30, 50, 60) is saved in the document.
+**tap** sets the tempo from your taps (the last eight; a pause over two seconds
+starts again).
+
 The dock includes play/pause/stop, tempo, meter, loop handles, seconds/BBU/frame
 rulers, zoom/follow, numeric automation tracks, clip editing, global scale/tuning
 and JSON import/export. Time is derived from a monotonic anchor, so a stalled

@@ -27,3 +27,10 @@
 @media(max-width:900px){.genereti-dock-transport{flex-basis:100%;order:2}}
 
 .bottom-panel.genereti-timeline-dock:has([role="tab"][id$="_tab_genereti-timeline"][aria-selected="true"]) .genereti-dock-transport{display:block}
+
+.genereti-performance input.genereti-time-input{width:92px;font-variant-numeric:tabular-nums;cursor:ew-resize}
+.genereti-performance input.genereti-time-input:focus{cursor:text}
+.genereti-performance input.genereti-time-input[aria-invalid=true]{outline:1px solid #e0605a}
+.genereti-performance input.genereti-position{width:104px}
+.genereti-loop-points{display:inline-flex;align-items:center;gap:3px}
+.genereti-performance-header input.genereti-time-input{width:84px}

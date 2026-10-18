@@ -2,7 +2,7 @@ import {Transport,MusicalCursor} from './core/clock.js';
 import * as time from './core/timeValue.js';
 import {normalizeMusic,quantizeNote,noteFrequency} from './core/music.js';
 import {evaluateAutomation,addKey,clipTime} from './core/automation.js';
-export const freshDocument=()=>({version:1,duration:32,transport:{bpm:110,signature:{numerator:4,denominator:4},loop:{enabled:false,start:0,end:8}},music:normalizeMusic(),tracks:[],clips:[],data:{}});
+export const freshDocument=()=>({version:1,duration:32,transport:{bpm:110,fps:30,signature:{numerator:4,denominator:4},loop:{enabled:false,start:0,end:8}},music:normalizeMusic(),tracks:[],clips:[],data:{}});
 export function validateDocument(value){
  if(value?.version!==1||!Array.isArray(value.tracks)||!Array.isArray(value.clips))throw Error('Expected a version 1 Genereti performance document');
  if(value.tracks.some(t=>!t||typeof t.id!=='string'||typeof t.target?.ref!=='string'||typeof t.target?.param!=='string'))throw Error('Tracks require a node reference and parameter');
