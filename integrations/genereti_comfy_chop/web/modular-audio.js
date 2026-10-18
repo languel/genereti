@@ -16,7 +16,7 @@ export class AudioPatch {
  }
  create(kind){const c=this.ctx,m={kind,nodes:[],inputs:{},voices:new Set(),held:new Map()};const make=method=>{const n=c[method]();m.nodes.push(n);return n;};m.output=make('createGain');
   if(kind==='Synth'||kind==='DrumKit')return m;
-  if(kind==='Mixer'){for(let i=1;i<=4;i++){const gain=make('createGain'),pan=make('createStereoPanner');gain.connect(pan);pan.connect(m.output);m.inputs[`input_${i}`]=gain;m[`pan_${i}`]=pan;}return m;}
+  if(kind==='Mixer'){m.meters=[];for(let i=1;i<=4;i++){const gain=make('createGain'),pan=make('createStereoPanner'),meter=make('createAnalyser');meter.fftSize=256;gain.connect(pan);pan.connect(m.output);pan.connect(meter);m.inputs[`input_${i}`]=gain;m[`pan_${i}`]=pan;m.meters.push(meter);}m.masterMeter=make('createAnalyser');m.masterMeter.fftSize=256;m.output.connect(m.masterMeter);m.meterBuffer=new Float32Array(256);return m;}
   const input=make('createGain');m.inputs.input=input;
   if(kind==='Gain'){m.pan=make('createStereoPanner');input.connect(m.pan);m.pan.connect(m.output);}
   else if(kind==='Filter'){m.filter=make('createBiquadFilter');input.connect(m.filter);m.filter.connect(m.output);}
@@ -29,21 +29,31 @@ export class AudioPatch {
   else if(m.kind==='Gain'||m.kind==='Output'){smooth(m.output.gain,s.mute?0:clamp(s.level,0,2),now);if(m.pan)smooth(m.pan.pan,clamp(s.pan,-1,1),now);}
   else if(m.kind==='Filter'){m.filter.type=s.mode;smooth(m.filter.frequency,clamp(s.cutoff,20,18000),now);smooth(m.filter.Q,clamp(s.resonance,.1,12),now);}
   else if(m.kind==='Delay'){smooth(m.delay.delayTime,clamp(s.seconds,.01,2),now);smooth(m.feedback.gain,clamp(s.feedback,0,.85),now);smooth(m.wet.gain,clamp(s.mix,0,1),now);smooth(m.dry.gain,1-clamp(s.mix,0,1),now);}
-  else if(m.kind==='Synth'||m.kind==='DrumKit'){smooth(m.output.gain,clamp(s.level,0,1)*.3,now);for(const v of m.voices)if(v.filter&&m.kind==='Synth'){smooth(v.filter.frequency,clamp(s.cutoff,20,18000),now);smooth(v.filter.Q,clamp(s.resonance,.1,12),now);}}
+  else if(m.kind==='Synth'||m.kind==='DrumKit'){smooth(m.output.gain,clamp(s.level,0,1)*.3,now);for(const v of m.voices)if(v.filter&&m.kind==='Synth'){if(['lowpass','highpass','bandpass'].includes(s.filter_mode))v.filter.type=s.filter_mode;if(!(v.filterEnvUntil>now))smooth(v.filter.frequency,clamp(s.cutoff,20,18000),now);smooth(v.filter.Q,clamp(s.resonance,.1,12),now);if(v.carrier&&v.carrier.detune)smooth(v.carrier.detune,clamp(s.detune,-100,100),now);}}
  }
  trigger(id,note,time,duration,velocity=1){const m=this.modules.get(id);if(!m||!['Synth','DrumKit'].includes(m.kind))return;const c=this.ctx,s=m.settings,t=Math.max(c.currentTime,time),v={sources:[],nodes:[],ended:false,time:t};m.voices.add(v);while(m.voices.size>clamp(s.polyphony??24,1,32))this.destroyVoice(m,m.voices.values().next().value);
-  const gain=c.createGain(),filter=c.createBiquadFilter();v.gain=gain;v.filter=filter;v.nodes.push(gain,filter);filter.connect(gain);gain.connect(m.output);filter.frequency.value=clamp(s.cutoff??18000,20,18000);filter.Q.value=clamp(s.resonance??.7,.1,12);
+  const gain=c.createGain(),filter=c.createBiquadFilter();v.gain=gain;v.filter=filter;v.nodes.push(gain,filter);filter.connect(gain);gain.connect(m.output);filter.type=['lowpass','highpass','bandpass'].includes(s.filter_mode)&&m.kind==='Synth'?s.filter_mode:'lowpass';filter.frequency.value=clamp(s.cutoff??18000,20,18000);filter.Q.value=clamp(s.resonance??.7,.1,12);
   const osc=(type,freq,dest=filter)=>{const o=c.createOscillator();o.type=type;o.frequency.value=freq;o.connect(dest);o.start(t);v.sources.push(o);return o;};
   if(m.kind==='DrumKit'){
-   const decay=clamp(s.decay,.03,2),tone=clamp(s.tone,.25,2);duration=decay;
-   if(note===35||note===36){const o=osc('sine',150*tone);o.frequency.exponentialRampToValueAtTime(45*tone,t+decay);}
-   else{this.noise??=c.createBuffer(1,c.sampleRate,c.sampleRate);if(!this.noiseFilled){const a=this.noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;this.noiseFilled=true;}const n=c.createBufferSource();n.buffer=this.noise;n.connect(filter);n.start(t);v.sources.push(n);filter.type='highpass';filter.frequency.value=(note===38||note===40?1000:6500)*tone;if(note===38||note===40)osc('triangle',180*tone);}
+   let decay=clamp(s.decay,.03,2);const tone=clamp(s.tone,.25,2);duration=decay;
+   const noise=()=>{this.noise??=c.createBuffer(1,c.sampleRate,c.sampleRate);if(!this.noiseFilled){const a=this.noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;this.noiseFilled=true;}const n=c.createBufferSource();n.buffer=this.noise;n.connect(filter);n.start(t);v.sources.push(n);return n;};
+   const drop=(type,from,to,len=decay)=>{const o=osc(type,from*tone);o.frequency.exponentialRampToValueAtTime(to*tone,t+len);return o;};
+   if(note===35||note===36)drop('sine',150,45);
+   else if(note===41||note===43)drop('sine',120,60);
+   else if(note===45||note===47)drop('sine',190,100);
+   else if(note===37){decay=Math.min(decay,.05);noise();filter.type='highpass';filter.frequency.value=2500*tone;osc('triangle',420*tone);}
+   else if(note===39){decay=Math.min(Math.max(decay,.12),.3);noise();filter.type='bandpass';filter.frequency.value=1300*tone;filter.Q.value=1.2;for(const d of [.012,.026])gain.gain.setValueAtTime(Math.max(.0001,velocity*.6),t+d);}
+   else if(note===42||note===44){decay=Math.min(decay,.07);noise();filter.type='highpass';filter.frequency.value=6500*tone;}
+   else if(note===46){decay=Math.max(decay,.3)*1.4;noise();filter.type='highpass';filter.frequency.value=6000*tone;}
+   else if(note===51||note===59){decay=Math.max(decay,.5);noise();filter.type='highpass';filter.frequency.value=8000*tone;osc('square',340*tone);}
+   else if(note===56){decay=Math.min(Math.max(decay,.15),.4);filter.type='bandpass';filter.frequency.value=700*tone;filter.Q.value=2;osc('square',540*tone);osc('square',800*tone);}
+   else{noise();filter.type='highpass';filter.frequency.value=(note===38||note===40?1000:6500)*tone;if(note===38||note===40)osc('triangle',180*tone);}
    gain.gain.setValueAtTime(Math.max(.0001,velocity),t);gain.gain.exponentialRampToValueAtTime(.0001,t+decay);this.finish(m,v,t+decay+.02);return v;
   }
-  const carrier=osc(s.voice==='subtractive'?'sawtooth':s.voice==='reed'?'square':'sine',hz(note));v.carrier=carrier;
+  const wave=['sine','triangle','sawtooth','square'].includes(s.wave)?s.wave:s.voice==='subtractive'?'sawtooth':s.voice==='reed'?'square':'sine',carrier=osc(wave,hz(note));v.carrier=carrier;if(carrier.detune)carrier.detune.value=clamp(s.detune,-100,100);
   if(s.voice==='fm'){const g=c.createGain();g.gain.value=hz(note)*.7;g.connect(carrier.frequency);v.nodes.push(g);osc('sine',hz(note)*2,g);}
   if(Number(s.vibrato)>0){const g=c.createGain();g.gain.value=hz(note)*(2**(Number(s.vibrato)/12)-1);g.connect(carrier.frequency);v.nodes.push(g);osc('sine',Number(s.vibrato_rate),g);}
-  const attack=clamp(s.attack,.001,5),decay=clamp(s.decay,.001,5);gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(velocity,t+attack);gain.gain.linearRampToValueAtTime(velocity*clamp(s.sustain,0,1),t+attack+decay);
+  const attack=clamp(s.attack,.001,5),decay=clamp(s.decay,.001,5);const envAmount=clamp(s.filter_env,0,1);if(envAmount>0){const cut=clamp(s.cutoff,20,18000),top=Math.min(18000,cut*(1+envAmount*7)),end=t+attack+decay+.05;filter.frequency.setValueAtTime(cut,t);filter.frequency.linearRampToValueAtTime(top,t+attack);filter.frequency.exponentialRampToValueAtTime(Math.max(20,cut),end);v.filterEnvUntil=end;}gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(velocity,t+attack);gain.gain.linearRampToValueAtTime(velocity*clamp(s.sustain,0,1),t+attack+decay);
   if(Number.isFinite(duration)){const releaseAt=t+Math.max(duration,attack+decay);gain.gain.setValueAtTime(velocity*clamp(s.sustain,0,1),releaseAt);gain.gain.linearRampToValueAtTime(0,releaseAt+clamp(s.release,.005,5));this.finish(m,v,releaseAt+clamp(s.release,.005,5)+.02);}return v;
  }
  finish(m,v,time){let remaining=v.sources.length;for(const source of v.sources){source.onended=()=>{if(--remaining===0)this.destroyVoice(m,v);};source.stop(time);}}
@@ -52,6 +62,7 @@ export class AudioPatch {
  clearVoices(id){const m=this.modules.get(id);if(m){for(const v of [...m.voices])this.destroyVoice(m,v);m.held.clear();}}
  destroyVoice(m,v){if(!v||v.ended)return;v.ended=true;for(const source of v.sources){try{source.stop();}catch{}source.disconnect();}for(const n of v.nodes)n.disconnect();m.voices.delete(v);}
  analyze(id){const m=this.modules.get(id);if(!m?.analysers)return null;m.analysers[0].getFloatTimeDomainData(m.left);m.analysers[1].getFloatTimeDomainData(m.right);m.analysers[0].getFloatFrequencyData(m.db);m.analysers[1].getFloatFrequencyData(m.dbRight);for(let i=0;i<m.db.length;i++){const power=(10**(m.db[i]/10)+10**(m.dbRight[i]/10))*.5;m.db[i]=power>0?10*Math.log10(power):-Infinity;}return analysisFrame(m.kind,m.left,m.right,m.db,this.ctx.sampleRate,this.ctx.currentTime);}
+ levels(id){const m=this.modules.get(id);if(!m?.meters)return null;const peak=a=>{a.getFloatTimeDomainData(m.meterBuffer);let p=0;for(const x of m.meterBuffer)p=Math.max(p,Math.abs(x));return p;};return {strips:m.meters.map(peak),master:peak(m.masterMeter)};}
  meter(id){const m=this.modules.get(id);if(!m?.analyser)return {rms:0,peak:0};m.analyser.getFloatTimeDomainData(m.samples);let sum=0,peak=0;for(const x of m.samples){sum+=x*x;peak=Math.max(peak,Math.abs(x));}return {rms:Math.sqrt(sum/m.samples.length),peak};}
  dispose(m){for(const v of [...m.voices])this.destroyVoice(m,v);for(const n of m.nodes)n.disconnect();}
  stop(){for(const m of this.modules.values())this.dispose(m);this.modules.clear();this.edges.clear();}

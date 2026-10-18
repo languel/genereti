@@ -59,7 +59,10 @@ class Synth(Route):
         return schema('Synth', [CHOP.Input('notes'), io.Combo.Input('voice',options=['sine','subtractive','fm','reed']),
             f('level',.35), f('attack',.02,.001,5), f('decay',.15,.001,5), f('sustain',.6), f('release',.3,.005,5),
             f('cutoff',2200,20,18000), f('resonance',.7,.1,12), f('glide',.015,0,1), f('vibrato',0,0,2), f('vibrato_rate',5,.1,20),
-            io.Int.Input('polyphony',default=8,min=1,max=32)])
+            io.Int.Input('polyphony',default=8,min=1,max=32),
+            io.Combo.Input('wave',options=['auto','sine','triangle','sawtooth','square'],default='auto',tooltip='Oscillator waveform; auto follows the voice.'),
+            io.Combo.Input('filter_mode',options=['lowpass','highpass','bandpass'],default='lowpass'),
+            f('detune',0,-100,100), f('filter_env',0,0,1)])
 
 class DrumKit(Route):
     @classmethod
