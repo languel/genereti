@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class HolisticWorkflows(unittest.TestCase):
     def test_portable_examples_have_one_holistic_provider_and_no_local_media_urls(self):
         paths = list((ROOT / 'integrations/comfyui_genereti/workflows').glob('*Perception-0*.json'))
-        self.assertEqual(len(paths), 5)
+        self.assertEqual(len(paths), 8)
         for path in paths:
             graph = json.loads(path.read_text())
             providers = [n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionProvider']
@@ -44,3 +44,29 @@ class HolisticWorkflows(unittest.TestCase):
         link = next(l for l in graph['links'] if l[0] == drawing['inputs'][0]['link'])
         provider = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionProvider')
         self.assertEqual(link[1:5], [provider['id'], 0, drawing['id'], 0])
+
+    def test_measures_demo_keeps_provider_and_region_definitions_separate(self):
+        graph = json.loads((ROOT / 'integrations/comfyui_genereti/workflows/ꘇ-Perception-06-Measures-Regions.json').read_text())
+        measures = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionMeasures')
+        regions = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionRegions')
+        doc = json.loads(measures['widgets_values'][5])
+        self.assertEqual(doc['version'], 1)
+        self.assertEqual(regions['widgets_values'][0], 'stage')
+        self.assertTrue(any(m.get('region') == 'stage::center' for m in doc['measures']))
+
+    def test_mediamime_demo_routes_notes_to_instruments_and_keeps_its_score(self):
+        graph = json.loads((ROOT / 'integrations/comfyui_genereti/workflows/ꘇ-Perception-08-Mediamime-Body-Drum.json').read_text())
+        mime = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionMime')
+        score = json.loads(mime['properties']['genereti_widget_values']['score'])
+        self.assertEqual(score['version'], 1)
+        names = {r['name'] for r in score['regions'].values()}
+        self.assertTrue({'chest', 'belly', 'gateL', 'floor', 'wingL'} <= names)
+        self.assertEqual(len(score['document']['elements']), len(score['regions']))
+        selects = {n['id']: n['widgets_values'][0] for n in graph['nodes'] if n['type'] == 'GeneretiChopSelect'}
+        self.assertEqual(set(selects.values()), {'ch10.*', 'ch1.*'})
+        for link in graph['links']:
+            if link[3] in selects:
+                self.assertEqual(link[1:3], [mime['id'], 0])
+        segments = next(n for n in graph['nodes'] if n['type'] == 'GeneretiPerceptionSegments')
+        mask_slot = next(i for i, p in enumerate(mime['inputs']) if p['name'] == 'mask')
+        self.assertTrue(any(l[1] == segments['id'] and l[3] == mime['id'] and l[4] == mask_slot for l in graph['links']))

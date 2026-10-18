@@ -24,6 +24,20 @@ The examples sample at 15 fps, limit input to 512 px, and play at half speed.
 5. **ꘇ-Perception-05-Region-Study**: face outline, left eyebrow and outer lips;
    the face map is open for comparing semantic groups with individual vertices.
 
+6. **ꘇ-Perception-06-Measures-Regions**: named locators, positions/centroids,
+   pinch and crossing, hand/face estimates and a separate editable shared box.
+   Use Measures presets or the `{}` JSON editor; inspect its `measures` stream.
+7. **ꘇ-Perception-07-Movement-Painting-Lesson**: one Holistic stream becomes ribbons,
+   stitched steps and face-driven ornament (guided lesson).
+8. **ꘇ-Perception-08-Mediamime-Body-Drum**: the body as a drum, after Laurie Anderson.
+   ꘇ mediamime holds seven zones drawn on the homunculus (head, chest, belly, thighs,
+   shoulders) that follow the dancer, two stage gates, a floor tripwire and a
+   segmentation wing. Strikes play mod.drumkit (MIDI channel 10) and gates mod.synth
+   (channel 1) through chop.select; every hit also bursts into particles in Livecode.
+   Press ▶ in mediamime and Start on the speakers node. MIDI, OSC and WebSocket
+   outputs open from mediamime's own buttons. Rebuild with
+   `python3 scripts/build_mediamime_demo.py` (needs a running Comfy).
+
 ## Navigating selections
 
 In Features, open ◉ for the combined body map or choose Pose, stylized Face,

@@ -206,3 +206,45 @@ L/R labels, optional numeric/initial IDs, and Ctrl-box/Option-paint selection su
 dense picking. Shift adds, Escape cancels, and view transforms never change data.
 All package node categories share the Genereti root. Local Holistic workflows migrate
 into Workflows → Genereti with conflicts backed up and local media URLs preserved.
+
+## Selection-driven measures and interactions
+
+`perception.measures` now reuses the Features selection editor to build named
+locators, numeric geometry/gesture measures and held/sequential events.
+`perception.regions` supplies separately edited global normalized boxes.
+No additional inference runs in either node. The provider remains shared.
+
+The initial measure types are point position, group centroid, aspect-correct
+2D distance, inside/outside a box, finite segment crossing, geometric hand
+poses/counting, mouth/eye aperture and iris-in-eye estimates. Contact envelopes
+support close/hold/separate touch, tap and click pulses. All are saved as a
+versioned JSON document with a visual builder and an optional script-like JSON
+editor. Measures publish to the existing `__.streams` registry; event pulses use
+`__.events`, and boxes are readable through `__.regions`.
+
+Iris positions do not directly report gaze targets. The optional empirical
+range mapping stays invalid until calibrated; guided/head-compensated screen
+gaze and richer layered region geometry are future work. See native help for
+[measures](../help/docs/GeneretiPerceptionMeasures.md) and
+[regions](../help/docs/GeneretiPerceptionRegions.md).
+
+## Mediamime: drawn triggers, the homunculus and outputs
+
+`ꘇ mediamime` brings Mediamime (`~/dev/mediamime`) into Genereti on the Poliplan
+editor. Its **stage** board draws the live image, skeleton, hitters and an optional
+segmentation outline under the editor; its **body** board is a homunculus. Closed
+marks are zones, lines are tripwires and points are targets. Body marks anchor to
+the nearest bone frame (head, torso, limb segments, hands, feet) and are placed on
+the live skeleton every frame, so zones on the body move with the performer; a
+limb cannot strike its own zones. Stage zones can also use segmentation coverage.
+
+Each region has hitters, cooldown, hold and an ordered list of actions with their
+own trigger (enter, exit, enter + exit, while inside, cross): `__` events, MIDI
+note/CC (Web MIDI, explicit connect), OSC (loopback UDP bridge) and WebSocket
+(explicit connect). Notes are also `chC.noteN` CHOP channels, so mod.drumkit and
+mod.synth play them without MIDI hardware. The node publishes a stream with the
+live zone polygons and a catch-all event per hit. The pure engine
+(`mime-engine.js`) is covered by `tests/test_perception_mime.mjs`; it was verified
+live on an early film (Sandow) with Holistic, segmentation, instruments and
+particles. See [help](../help/docs/GeneretiPerceptionMime.md) and demo 08.
+
