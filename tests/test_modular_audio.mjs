@@ -21,3 +21,24 @@ test('analysis taps preserve audio, reuse analysers and expose stereo/control si
  defs.get(2).settings.fft_size=2048;p.sync(defs,new Set([3]));assert.equal(m.left.length,2048);assert.equal(c.made,allocated);
  p.stop();assert.equal(m.output.connections.size,0);
 });
+test('every drum voice triggers and cleans up; muted rows and accents shape pattern events',()=>{
+ const p=new AudioPatch(context());p.sync(new Map([[1,{kind:'DrumKit',settings:{level:.4,decay:.2,tone:1,polyphony:32},inputs:{}}]]),new Set([1]));
+ for(const note of [35,36,37,38,39,41,42,45,46,51,56,60])assert.ok(p.trigger(1,note,0,.2,.8),`note ${note}`);
+ assert.equal(p.modules.get(1).voices.size,12);p.stop();assert.equal(p.modules.size,0);
+ const rows=pattern('kick:123;snare~:111;rim:010',true);
+ assert.deepEqual(events(rows,0,0,.1,.5).map(e=>[e.note,e.velocity]),[[36,.5]]);
+ assert.deepEqual(events(rows,1,0,.1,.5).map(e=>[e.note,+e.velocity.toFixed(3)]),[[36,.675],[37,.5]]);
+ assert.equal(events(rows,2,0,.1,.5)[0].velocity,.5*.4);
+});
+test('synth takes waveform, filter mode, detune and a filter envelope without clobbering it each tick',()=>{
+ const p=new AudioPatch(context());const settings={level:.4,voice:'sine',wave:'square',filter_mode:'bandpass',detune:25,filter_env:.8,cutoff:1000,resonance:1,polyphony:4,attack:.01,decay:.2,sustain:.5,release:.2};
+ p.sync(new Map([[1,{kind:'Synth',settings,inputs:{}}]]),new Set([1]));
+ const v=p.trigger(1,60,0,.5,.7);assert.equal(v.filter.type,'bandpass');assert.ok(v.filterEnvUntil>0);
+ p.sync(new Map([[1,{kind:'Synth',settings:{...settings,filter_mode:'highpass'},inputs:{}}]]),new Set([1]));assert.equal(v.filter.type,'highpass');
+ const without=p.trigger(1,64,0,.5,.7);assert.ok(without.filter.type==='highpass'&&without.filterEnvUntil>0);
+ p.sync(new Map([[1,{kind:'Synth',settings:{...settings,filter_env:0},inputs:{}}]]),new Set([1]));assert.equal(p.trigger(1,67,0,.5,.7).filterEnvUntil,undefined);p.stop();
+});
+test('mixer reports per-strip and master levels for the meters',()=>{
+ const p=new AudioPatch(context());p.sync(new Map([[1,{kind:'Mixer',settings:{level_1:.7,level_2:.7,level_3:.7,level_4:.7,pan_1:0,pan_2:0,pan_3:0,pan_4:0,master:.7},inputs:{}}]]),new Set([1]));
+ const levels=p.levels(1);assert.equal(levels.strips.length,4);assert.ok(levels.strips.every(x=>Math.abs(x-.2)<1e-6));assert.ok(Math.abs(levels.master-.2)<1e-6);assert.equal(p.levels(99),null);p.stop();
+});

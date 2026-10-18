@@ -2,6 +2,7 @@
 // workflow files keep working. buildPanel(kind, ctx) returns {el, refresh, height, meter?} or null.
 import {knob, fader, toggle, segmented, envelope, filterGraph, row, group, grow, panelRoot, assemble, el, setValue, getValue} from './audio-ui.js';
 import {noteName, isBlackKey, DRUM_ROWS} from './audio-ui-core.js';
+import {drumSequencerPanel, noteSequencerPanel} from './audio-sequencers.js';
 
 const KEY_NOTES = Array.from({length: 13}, (_, i) => 60 + i);
 
@@ -98,7 +99,7 @@ function delayPanel({node}) {
   return {...assemble(root, parts), height: 90, width: 300};
 }
 
-const BUILDERS = {Synth: synthPanel, DrumKit: drumKitPanel, Mixer: mixerPanel, Filter: filterPanel, Gain: gainPanel, Delay: delayPanel};
+const BUILDERS = {DrumSequence: drumSequencerPanel, Sequence: noteSequencerPanel, Synth: synthPanel, DrumKit: drumKitPanel, Mixer: mixerPanel, Filter: filterPanel, Gain: gainPanel, Delay: delayPanel};
 export const hasPanel = kind => kind in BUILDERS;
 export function buildPanel(kind, ctx) { return BUILDERS[kind]?.(ctx) ?? null; }
 export {setValue, getValue};
