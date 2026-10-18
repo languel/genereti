@@ -34,7 +34,7 @@ The examples sample at 15 fps, limit input to 512 px, and play at half speed.
    shoulders) that follow the dancer, two stage gates, a floor tripwire and a
    segmentation wing. Strikes play mod.drumkit (MIDI channel 10) and gates mod.synth
    (channel 1) through chop.select; every hit also bursts into particles in Livecode.
-   Press ▶ in mediamime and Start on the speakers node. MIDI, OSC and WebSocket
+   Press ▶ in mediamime (silent until then), Start on the speakers node, and check its meter. MIDI, OSC and WebSocket
    outputs open from mediamime's own buttons. Rebuild with
    `python3 scripts/build_mediamime_demo.py` (needs a running Comfy).
 

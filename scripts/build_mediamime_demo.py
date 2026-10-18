@@ -23,10 +23,10 @@ def build(base_url='http://localhost:8188'):
                   stream='dancer', publish='mime', min_confidence=.4, max_age_ms=500, score=json.dumps(score, separators=(',', ':')))
     drums_only = l.node('GeneretiChopSelect', 'ꘇ drums · MIDI channel 10', (1020, 900), (320, 200), pattern='ch10.*')
     synth_only = l.node('GeneretiChopSelect', 'ꘇ synth · MIDI channel 1', (1360, 900), (320, 200), pattern='ch1.*')
-    drums = l.node('GeneretiAudioDrumKit', 'ꘇ body drum kit', (1020, 1140), (320, 260), level=.85, decay=.25, tone=1)
-    synth = l.node('GeneretiAudioSynth', 'ꘇ gate synth', (1360, 1140), (320, 420), level=.3, attack=.02, release=.6, cutoff=2400)
-    mixer = l.node('GeneretiAudioMixer', 'ꘇ mix', (1700, 900), (420, 420), level_1=.9, level_2=.6, pan_2=.0, master=.8)
-    out = l.node('GeneretiAudioOutput', 'ꘇ speakers · press Start', (2160, 900), (320, 200), level=.8)
+    drums = l.node('GeneretiAudioDrumKit', 'ꘇ body drum kit', (1020, 1140), (320, 260), level=1, decay=.3, tone=1)
+    synth = l.node('GeneretiAudioSynth', 'ꘇ gate synth', (1360, 1140), (320, 420), level=.6, attack=.02, release=.6, cutoff=2400)
+    mixer = l.node('GeneretiAudioMixer', 'ꘇ mix', (1700, 900), (420, 420), level_1=2, level_2=1.2, pan_2=.0, master=1)
+    out = l.node('GeneretiAudioOutput', 'ꘇ speakers · press Start', (2160, 900), (320, 200), level=1)
     particles = l.livecode('ꘇ Body drum particles · R clears', (2380, 0), 'p5', (ROOT / 'docs/examples/mediamime-particles.js').read_text(), PARAMS)
     particles['size'] = [690, 900]
     particles['properties']['generetiP5'] = {'version': '2.3.4'}
@@ -51,7 +51,7 @@ def build(base_url='http://localhost:8188'):
            'Segmentation zones measure how much of the zone the body covers (threshold), not where a landmark is.')
     l.step('Read the score', 'The stage board shows the film with the skeleton; the body board is the homunculus. Seven drum zones sit on the body, two gates high on the stage, a tripwire on the floor.', mime,
            '☺ frames the body board, ▭ the stage. Dashed outlines on the stage are the body zones following the dancer.', part='node')
-    l.step('Play the body', 'Press ▶ in mediamime, then Start on the speakers node. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.', mime,
+    l.step('Play the body', 'Press ▶ in mediamime (it stays silent until then), then Start on the speakers node and raise your system volume; the meter on the speakers shows the level. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.', mime,
            'A zone on an arm or shoulder cannot be struck by that same arm. Cooldowns stop a single strike from repeating.')
     l.step('Draw your own instrument', 'Draw closed shapes on the homunculus or over the stage, lines for tripwires, or points for small targets. Each new mark gets a region with an event and a note; edit them in the panel.', mime,
            'Body marks anchor to the nearest bone and move with the performer; stage marks stay in image coordinates.')
