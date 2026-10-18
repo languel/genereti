@@ -1,0 +1,1831 @@
+{
+  "last_node_id": 14,
+  "last_link_id": 13,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "GeneretiAudioTransport",
+      "title": "ꘇ transport · tempo, swing, tap",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        330,
+        300
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "bpm",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "bpm"
+          }
+        },
+        {
+          "name": "swing",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "swing"
+          }
+        },
+        {
+          "name": "clock_name",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "clock_name"
+          }
+        },
+        {
+          "name": "performance",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "performance"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "links": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "seconds",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "beat",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "json",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioTransport",
+        "generetiLessonRef": "5ab33e7c-5c3b-5d2a-82a8-99d854878487",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "bpm": 112,
+          "swing": 0.1,
+          "clock_name": "local",
+          "performance": "{}"
+        }
+      },
+      "widgets_values": [
+        112,
+        0.1,
+        "local",
+        "{}"
+      ],
+      "widgets_values_named": {
+        "bpm": 112,
+        "swing": 0.1,
+        "clock_name": "local",
+        "performance": "{}"
+      }
+    },
+    {
+      "id": 2,
+      "type": "GeneretiAudioDrumSequence",
+      "title": "ꘇ drums · draw hits, shift = accent",
+      "pos": [
+        380,
+        0
+      ],
+      "size": [
+        470,
+        330
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "link": 1
+        },
+        {
+          "name": "pattern",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "pattern"
+          }
+        },
+        {
+          "name": "division",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "division"
+          }
+        },
+        {
+          "name": "velocity",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "velocity"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDrumSequence",
+        "generetiLessonRef": "dee8db83-2da4-520d-b4c1-13766399dfad",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "pattern": "kick:1000100010001001;snare:0000200000001000;clap:0000000000001000;hat:2131213121312131;openhat:0000000000100000;rim:0100000000010000",
+          "division": 4,
+          "velocity": 0.7
+        }
+      },
+      "widgets_values": [
+        "kick:1000100010001001;snare:0000200000001000;clap:0000000000001000;hat:2131213121312131;openhat:0000000000100000;rim:0100000000010000",
+        4,
+        0.7
+      ],
+      "widgets_values_named": {
+        "pattern": "kick:1000100010001001;snare:0000200000001000;clap:0000000000001000;hat:2131213121312131;openhat:0000000000100000;rim:0100000000010000",
+        "division": 4,
+        "velocity": 0.7
+      }
+    },
+    {
+      "id": 3,
+      "type": "GeneretiAudioSequence",
+      "title": "ꘇ bass line · piano roll",
+      "pos": [
+        380,
+        400
+      ],
+      "size": [
+        520,
+        420
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "link": 2
+        },
+        {
+          "name": "pattern",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "pattern"
+          }
+        },
+        {
+          "name": "division",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "division"
+          }
+        },
+        {
+          "name": "gate",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "gate"
+          }
+        },
+        {
+          "name": "velocity",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "velocity"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSequence",
+        "generetiLessonRef": "5575245a-d743-56e9-bf38-6442e84c3f96",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "pattern": "36 - 36 - 39 - 36 - 34 - 34 - 39 - 41 -",
+          "division": 4,
+          "gate": 0.7,
+          "velocity": 0.8
+        }
+      },
+      "widgets_values": [
+        "36 - 36 - 39 - 36 - 34 - 34 - 39 - 41 -",
+        4,
+        0.7,
+        0.8
+      ],
+      "widgets_values_named": {
+        "pattern": "36 - 36 - 39 - 36 - 34 - 34 - 39 - 41 -",
+        "division": 4,
+        "gate": 0.7,
+        "velocity": 0.8
+      }
+    },
+    {
+      "id": 4,
+      "type": "GeneretiAudioSequence",
+      "title": "ꘇ lead arpeggio · piano roll",
+      "pos": [
+        380,
+        880
+      ],
+      "size": [
+        520,
+        420
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clock",
+          "type": "GENERETI_AUDIO_CLOCK",
+          "link": 3
+        },
+        {
+          "name": "pattern",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "pattern"
+          }
+        },
+        {
+          "name": "division",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "division"
+          }
+        },
+        {
+          "name": "gate",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "gate"
+          }
+        },
+        {
+          "name": "velocity",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "velocity"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSequence",
+        "generetiLessonRef": "7eff5acb-a481-5667-a569-af17ae997b9f",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "pattern": "72 - 67 - 63 67 - 72 70 - 65 - 62 65 - 70",
+          "division": 4,
+          "gate": 0.45,
+          "velocity": 0.6
+        }
+      },
+      "widgets_values": [
+        "72 - 67 - 63 67 - 72 70 - 65 - 62 65 - 70",
+        4,
+        0.45,
+        0.6
+      ],
+      "widgets_values_named": {
+        "pattern": "72 - 67 - 63 67 - 72 70 - 65 - 62 65 - 70",
+        "division": 4,
+        "gate": 0.45,
+        "velocity": 0.6
+      }
+    },
+    {
+      "id": 5,
+      "type": "GeneretiAudioDrumKit",
+      "title": "ꘇ drum kit · pads audition",
+      "pos": [
+        960,
+        0
+      ],
+      "size": [
+        430,
+        270
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 4
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "decay",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "name": "tone",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "tone"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            11
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDrumKit",
+        "generetiLessonRef": "4b5efa62-62b3-5931-8860-60eb618db28d",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level": 0.9,
+          "decay": 0.22,
+          "tone": 1
+        }
+      },
+      "widgets_values": [
+        0.9,
+        0.22,
+        1
+      ],
+      "widgets_values_named": {
+        "level": 0.9,
+        "decay": 0.22,
+        "tone": 1
+      }
+    },
+    {
+      "id": 6,
+      "type": "GeneretiAudioSynth",
+      "title": "ꘇ bass synth · envelope + filter",
+      "pos": [
+        960,
+        340
+      ],
+      "size": [
+        470,
+        430
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 5
+        },
+        {
+          "name": "voice",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "voice"
+          }
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "attack",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "attack"
+          }
+        },
+        {
+          "name": "decay",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "name": "sustain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "sustain"
+          }
+        },
+        {
+          "name": "release",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "release"
+          }
+        },
+        {
+          "name": "cutoff",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cutoff"
+          }
+        },
+        {
+          "name": "resonance",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "resonance"
+          }
+        },
+        {
+          "name": "glide",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "glide"
+          }
+        },
+        {
+          "name": "vibrato",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato"
+          }
+        },
+        {
+          "name": "vibrato_rate",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato_rate"
+          }
+        },
+        {
+          "name": "polyphony",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "polyphony"
+          }
+        },
+        {
+          "name": "wave",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "wave"
+          }
+        },
+        {
+          "name": "filter_mode",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "filter_mode"
+          }
+        },
+        {
+          "name": "detune",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "detune"
+          }
+        },
+        {
+          "name": "filter_env",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "filter_env"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSynth",
+        "generetiLessonRef": "23b43386-5ffa-5a9d-ad3f-d54bfb383d9d",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "voice": "subtractive",
+          "level": 0.55,
+          "attack": 0.005,
+          "decay": 0.22,
+          "sustain": 0.35,
+          "release": 0.14,
+          "cutoff": 650,
+          "resonance": 3,
+          "glide": 0.03,
+          "vibrato": 0,
+          "vibrato_rate": 5,
+          "polyphony": 3,
+          "wave": "sawtooth",
+          "filter_mode": "lowpass",
+          "detune": 0,
+          "filter_env": 0.7
+        }
+      },
+      "widgets_values": [
+        "subtractive",
+        0.55,
+        0.005,
+        0.22,
+        0.35,
+        0.14,
+        650,
+        3,
+        0.03,
+        0,
+        5,
+        3,
+        "sawtooth",
+        "lowpass",
+        0,
+        0.7
+      ],
+      "widgets_values_named": {
+        "voice": "subtractive",
+        "level": 0.55,
+        "attack": 0.005,
+        "decay": 0.22,
+        "sustain": 0.35,
+        "release": 0.14,
+        "cutoff": 650,
+        "resonance": 3,
+        "glide": 0.03,
+        "vibrato": 0,
+        "vibrato_rate": 5,
+        "polyphony": 3,
+        "wave": "sawtooth",
+        "filter_mode": "lowpass",
+        "detune": 0,
+        "filter_env": 0.7
+      }
+    },
+    {
+      "id": 7,
+      "type": "GeneretiAudioSynth",
+      "title": "ꘇ lead synth · fm voice",
+      "pos": [
+        960,
+        840
+      ],
+      "size": [
+        470,
+        430
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "notes",
+          "type": "GENERETI_CHOP",
+          "link": 6
+        },
+        {
+          "name": "voice",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "voice"
+          }
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "attack",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "attack"
+          }
+        },
+        {
+          "name": "decay",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "decay"
+          }
+        },
+        {
+          "name": "sustain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "sustain"
+          }
+        },
+        {
+          "name": "release",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "release"
+          }
+        },
+        {
+          "name": "cutoff",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cutoff"
+          }
+        },
+        {
+          "name": "resonance",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "resonance"
+          }
+        },
+        {
+          "name": "glide",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "glide"
+          }
+        },
+        {
+          "name": "vibrato",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato"
+          }
+        },
+        {
+          "name": "vibrato_rate",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "vibrato_rate"
+          }
+        },
+        {
+          "name": "polyphony",
+          "type": "INT",
+          "link": null,
+          "widget": {
+            "name": "polyphony"
+          }
+        },
+        {
+          "name": "wave",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "wave"
+          }
+        },
+        {
+          "name": "filter_mode",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "filter_mode"
+          }
+        },
+        {
+          "name": "detune",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "detune"
+          }
+        },
+        {
+          "name": "filter_env",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "filter_env"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            8
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSynth",
+        "generetiLessonRef": "5030acbe-bbf1-5ee7-b62a-2d4134c6e7b5",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "voice": "fm",
+          "level": 0.32,
+          "attack": 0.01,
+          "decay": 0.25,
+          "sustain": 0.3,
+          "release": 0.45,
+          "cutoff": 6000,
+          "resonance": 1,
+          "glide": 0.015,
+          "vibrato": 0.12,
+          "vibrato_rate": 5.5,
+          "polyphony": 6,
+          "wave": "auto",
+          "filter_mode": "lowpass",
+          "detune": 6,
+          "filter_env": 0.2
+        }
+      },
+      "widgets_values": [
+        "fm",
+        0.32,
+        0.01,
+        0.25,
+        0.3,
+        0.45,
+        6000,
+        1,
+        0.015,
+        0.12,
+        5.5,
+        6,
+        "auto",
+        "lowpass",
+        6,
+        0.2
+      ],
+      "widgets_values_named": {
+        "voice": "fm",
+        "level": 0.32,
+        "attack": 0.01,
+        "decay": 0.25,
+        "sustain": 0.3,
+        "release": 0.45,
+        "cutoff": 6000,
+        "resonance": 1,
+        "glide": 0.015,
+        "vibrato": 0.12,
+        "vibrato_rate": 5.5,
+        "polyphony": 6,
+        "wave": "auto",
+        "filter_mode": "lowpass",
+        "detune": 6,
+        "filter_env": 0.2
+      }
+    },
+    {
+      "id": 8,
+      "type": "GeneretiAudioFilter",
+      "title": "ꘇ bass filter · drag the point",
+      "pos": [
+        1480,
+        340
+      ],
+      "size": [
+        380,
+        280
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 7
+        },
+        {
+          "name": "mode",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "mode"
+          }
+        },
+        {
+          "name": "cutoff",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "cutoff"
+          }
+        },
+        {
+          "name": "resonance",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "resonance"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            9
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioFilter",
+        "generetiLessonRef": "04204d08-65fa-5a15-8799-630812ac7df8",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "mode": "lowpass",
+          "cutoff": 900,
+          "resonance": 1.4
+        }
+      },
+      "widgets_values": [
+        "lowpass",
+        900,
+        1.4
+      ],
+      "widgets_values_named": {
+        "mode": "lowpass",
+        "cutoff": 900,
+        "resonance": 1.4
+      }
+    },
+    {
+      "id": 9,
+      "type": "GeneretiAudioDelay",
+      "title": "ꘇ lead delay",
+      "pos": [
+        1480,
+        840
+      ],
+      "size": [
+        300,
+        190
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 8
+        },
+        {
+          "name": "seconds",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "seconds"
+          }
+        },
+        {
+          "name": "feedback",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "feedback"
+          }
+        },
+        {
+          "name": "mix",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "mix"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            10
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioDelay",
+        "generetiLessonRef": "30968192-d717-5d1a-8f6b-6bece913e117",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "seconds": 0.4,
+          "feedback": 0.38,
+          "mix": 0.3
+        }
+      },
+      "widgets_values": [
+        0.4,
+        0.38,
+        0.3
+      ],
+      "widgets_values_named": {
+        "seconds": 0.4,
+        "feedback": 0.38,
+        "mix": 0.3
+      }
+    },
+    {
+      "id": 10,
+      "type": "GeneretiAudioMixer",
+      "title": "ꘇ mixer · faders, pan, M/S, meters",
+      "pos": [
+        1910,
+        0
+      ],
+      "size": [
+        340,
+        320
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "level_1",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_1"
+          }
+        },
+        {
+          "name": "pan_1",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_1"
+          }
+        },
+        {
+          "name": "mute_1",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_1"
+          }
+        },
+        {
+          "name": "solo_1",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_1"
+          }
+        },
+        {
+          "name": "level_2",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_2"
+          }
+        },
+        {
+          "name": "pan_2",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_2"
+          }
+        },
+        {
+          "name": "mute_2",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_2"
+          }
+        },
+        {
+          "name": "solo_2",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_2"
+          }
+        },
+        {
+          "name": "level_3",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_3"
+          }
+        },
+        {
+          "name": "pan_3",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_3"
+          }
+        },
+        {
+          "name": "mute_3",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_3"
+          }
+        },
+        {
+          "name": "solo_3",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_3"
+          }
+        },
+        {
+          "name": "level_4",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_4"
+          }
+        },
+        {
+          "name": "pan_4",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_4"
+          }
+        },
+        {
+          "name": "mute_4",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_4"
+          }
+        },
+        {
+          "name": "solo_4",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_4"
+          }
+        },
+        {
+          "name": "level_5",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_5"
+          }
+        },
+        {
+          "name": "pan_5",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_5"
+          }
+        },
+        {
+          "name": "mute_5",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_5"
+          }
+        },
+        {
+          "name": "solo_5",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_5"
+          }
+        },
+        {
+          "name": "level_6",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_6"
+          }
+        },
+        {
+          "name": "pan_6",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_6"
+          }
+        },
+        {
+          "name": "mute_6",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_6"
+          }
+        },
+        {
+          "name": "solo_6",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_6"
+          }
+        },
+        {
+          "name": "level_7",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_7"
+          }
+        },
+        {
+          "name": "pan_7",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_7"
+          }
+        },
+        {
+          "name": "mute_7",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_7"
+          }
+        },
+        {
+          "name": "solo_7",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_7"
+          }
+        },
+        {
+          "name": "level_8",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level_8"
+          }
+        },
+        {
+          "name": "pan_8",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "pan_8"
+          }
+        },
+        {
+          "name": "mute_8",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute_8"
+          }
+        },
+        {
+          "name": "solo_8",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "solo_8"
+          }
+        },
+        {
+          "name": "master",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "master"
+          }
+        },
+        {
+          "name": "input_1",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 9
+        },
+        {
+          "name": "input_2",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 10
+        },
+        {
+          "name": "input_3",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 11
+        },
+        {
+          "name": "input_4",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        },
+        {
+          "name": "input_5",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        },
+        {
+          "name": "input_6",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        },
+        {
+          "name": "input_7",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        },
+        {
+          "name": "input_8",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            12
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioMixer",
+        "generetiLessonRef": "37919c75-a9e7-534f-b93c-06814750a3f4",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level_1": 0.85,
+          "pan_1": 0,
+          "mute_1": false,
+          "solo_1": false,
+          "level_2": 0.7,
+          "pan_2": 0.25,
+          "mute_2": false,
+          "solo_2": false,
+          "level_3": 0.8,
+          "pan_3": 0,
+          "mute_3": false,
+          "solo_3": false,
+          "level_4": 0.7,
+          "pan_4": 0,
+          "mute_4": false,
+          "solo_4": false,
+          "level_5": 0.7,
+          "pan_5": 0,
+          "mute_5": false,
+          "solo_5": false,
+          "level_6": 0.7,
+          "pan_6": 0,
+          "mute_6": false,
+          "solo_6": false,
+          "level_7": 0.7,
+          "pan_7": 0,
+          "mute_7": false,
+          "solo_7": false,
+          "level_8": 0.7,
+          "pan_8": 0,
+          "mute_8": false,
+          "solo_8": false,
+          "master": 0.85
+        },
+        "genereti_mixer_channels": 3
+      },
+      "widgets_values": [
+        0.85,
+        0,
+        false,
+        false,
+        0.7,
+        0.25,
+        false,
+        false,
+        0.8,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.7,
+        0,
+        false,
+        false,
+        0.85
+      ],
+      "widgets_values_named": {
+        "level_1": 0.85,
+        "pan_1": 0,
+        "mute_1": false,
+        "solo_1": false,
+        "level_2": 0.7,
+        "pan_2": 0.25,
+        "mute_2": false,
+        "solo_2": false,
+        "level_3": 0.8,
+        "pan_3": 0,
+        "mute_3": false,
+        "solo_3": false,
+        "level_4": 0.7,
+        "pan_4": 0,
+        "mute_4": false,
+        "solo_4": false,
+        "level_5": 0.7,
+        "pan_5": 0,
+        "mute_5": false,
+        "solo_5": false,
+        "level_6": 0.7,
+        "pan_6": 0,
+        "mute_6": false,
+        "solo_6": false,
+        "level_7": 0.7,
+        "pan_7": 0,
+        "mute_7": false,
+        "solo_7": false,
+        "level_8": 0.7,
+        "pan_8": 0,
+        "mute_8": false,
+        "solo_8": false,
+        "master": 0.85
+      }
+    },
+    {
+      "id": 11,
+      "type": "GeneretiAudioSpectrum",
+      "title": "ꘇ spectrum",
+      "pos": [
+        1910,
+        400
+      ],
+      "size": [
+        430,
+        300
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 12
+        },
+        {
+          "name": "fft_size",
+          "type": "COMBO",
+          "link": null,
+          "widget": {
+            "name": "fft_size"
+          }
+        },
+        {
+          "name": "smoothing",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "smoothing"
+          }
+        },
+        {
+          "name": "display_gain",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "display_gain"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": [
+            13
+          ]
+        },
+        {
+          "name": "channels",
+          "type": "GENERETI_CHOP",
+          "links": []
+        },
+        {
+          "name": "rms",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "peak",
+          "type": "FLOAT",
+          "links": []
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioSpectrum",
+        "generetiLessonRef": "7f95d832-bc39-5381-b3c2-b092b981492e",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "fft_size": 2048,
+          "smoothing": 0.5,
+          "display_gain": 2
+        }
+      },
+      "widgets_values": [
+        2048,
+        0.5,
+        2
+      ],
+      "widgets_values_named": {
+        "fft_size": 2048,
+        "smoothing": 0.5,
+        "display_gain": 2
+      }
+    },
+    {
+      "id": 12,
+      "type": "GeneretiAudioOutput",
+      "title": "ꘇ output · ▷ start · ⏺ record",
+      "pos": [
+        1910,
+        780
+      ],
+      "size": [
+        330,
+        190
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "input",
+          "type": "GENERETI_AUDIO_BUS",
+          "link": 13
+        },
+        {
+          "name": "level",
+          "type": "FLOAT",
+          "link": null,
+          "widget": {
+            "name": "level"
+          }
+        },
+        {
+          "name": "mute",
+          "type": "BOOLEAN",
+          "link": null,
+          "widget": {
+            "name": "mute"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "audio",
+          "type": "GENERETI_AUDIO_BUS",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiAudioOutput",
+        "generetiLessonRef": "b864ba69-b996-5074-b47d-8dac9af37e91",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "level": 0.7,
+          "mute": false
+        }
+      },
+      "widgets_values": [
+        0.7,
+        false
+      ],
+      "widgets_values_named": {
+        "level": 0.7,
+        "mute": false
+      }
+    },
+    {
+      "id": 13,
+      "type": "GeneretiPerformanceTimeline",
+      "title": "ꘇ timeline · Alt+W floats it as an overlay",
+      "pos": [
+        0,
+        1400
+      ],
+      "size": [
+        920,
+        480
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "description",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiPerformanceTimeline",
+        "generetiLessonRef": "2fe76502-3513-5d25-9075-f75a501f0c53",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {}
+      },
+      "widgets_values": [],
+      "widgets_values_named": {}
+    },
+    {
+      "id": 14,
+      "type": "GeneretiDatLesson",
+      "title": "ꘇ walkthrough · start here",
+      "pos": [
+        0,
+        380
+      ],
+      "size": [
+        630,
+        590
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "guide",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "guide"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "document",
+          "type": "GENERETI_DAT",
+          "links": []
+        },
+        {
+          "name": "markdown",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "GeneretiDatLesson",
+        "generetiLessonRef": "98830e2d-95fa-5c1f-a2fb-bd9de5a01999",
+        "generetiPerformanceVersion": 1,
+        "genereti_widget_values": {
+          "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"modular-studio\",\n  \"title\": \"Modular audio studio\",\n  \"summary\": \"A playable patch with transport, three sequencers, two synths, a drum kit, effects, an 8-channel mixer, recording, key/MIDI bindings and the timeline.\",\n  \"steps\": [\n    {\n      \"title\": \"Start the sound\",\n      \"text\": \"Nothing plays until you press ▷ on mod.output; keep your volume low for the first run. The ⏺ button records the output to a WAV file, ■ is panic.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"b864ba69-b996-5074-b47d-8dac9af37e91\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Queue never starts audio. ctrl+alt+space starts and stops it from anywhere, ctrl+alt+. is panic.\"\n    },\n    {\n      \"title\": \"Set the tempo\",\n      \"text\": \"Turn the bpm knob, or tap in your own tempo. Swing delays every second step. All three sequencers share this clock.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioTransport\",\n        \"ref\": \"5ab33e7c-5c3b-5d2a-82a8-99d854878487\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Double-click a knob to reset it. Hold Shift for fine control.\"\n    },\n    {\n      \"title\": \"Play the drums\",\n      \"text\": \"Click or drag cells to draw hits, Shift+click for an accent, Alt+click for a ghost note. Click a row name to mute it, right-click to remove it, + row adds one. Use 8–64 for the length and the note value for the step size.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioDrumSequence\",\n        \"ref\": \"dee8db83-2da4-520d-b4c1-13766399dfad\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The pattern stays a plain text string you can copy: kick:1000…;snare:…. ⚄ randomizes, ↺ ↻ rotate.\"\n    },\n    {\n      \"title\": \"Draw the bass\",\n      \"text\": \"The piano roll is a monophonic melody: click a cell to place a note, click it again for a rest, drag to draw a line. −12 −1 +1 +12 transpose, ⚄ writes a random phrase in the project scale, ♯ snaps drawing to it.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSequence\",\n        \"ref\": \"5575245a-d743-56e9-bf38-6442e84c3f96\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Wheel scrolls the pitch range. Alt-click or right-click makes a rest.\"\n    },\n    {\n      \"title\": \"Shape the bass synth\",\n      \"text\": \"Drag the envelope points for attack, decay + sustain and release. Drag the filter point sideways for cutoff and up for resonance; env sweeps the cutoff on every note. Choose the voice and waveform at the top, and play the keys at the bottom to audition.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSynth\",\n        \"ref\": \"23b43386-5ffa-5a9d-ad3f-d54bfb383d9d\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The ⚙ button shows the plain parameter rows, which stay linkable to other nodes.\"\n    },\n    {\n      \"title\": \"Add the lead\",\n      \"text\": \"The lead is an FM voice with detune and vibrato, repeating through a delay. Try the ◿ saw wave or hp / bp filter modes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSynth\",\n        \"ref\": \"5030acbe-bbf1-5ee7-b62a-2d4134c6e7b5\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Every panel control edits a real widget: link a CHOP or LFO to any of them.\"\n    },\n    {\n      \"title\": \"Mix and watch the meters\",\n      \"text\": \"Each strip has pan, a fader with a live meter, mute and solo. Press + for more channels (up to 8); the master fader is on the right.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioMixer\",\n        \"ref\": \"37919c75-a9e7-534f-b93c-06814750a3f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Double-click a fader to return to unity.\"\n    },\n    {\n      \"title\": \"Bind keys and MIDI\",\n      \"text\": \"Press ⌨ on mod.output to open Bindings. This patch already has ctrl+alt+r (record), ctrl+alt+b / ctrl+alt+d (mute bass / drums) and, with a MIDI controller connected, CC74 on channel 1 for the bass cutoff. Choose any control, press ◉, then press a key or move a knob to learn it.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"b864ba69-b996-5074-b47d-8dac9af37e91\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Workflow bindings are saved with the workflow; global ones (like ctrl+alt+space) stay in this browser.\"\n    },\n    {\n      \"title\": \"Float the timeline\",\n      \"text\": \"The timeline is a node: press Alt+W while hovering it to float it as an overlay window you can drag over the graph, or Alt+O to see only the timeline. Type a position or loop point in any format and tap a tempo.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerformanceTimeline\",\n        \"ref\": \"2fe76502-3513-5d25-9075-f75a501f0c53\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Use it to automate parameters and record your knob moves.\"\n    }\n  ]\n}"
+        }
+      },
+      "widgets_values": [
+        "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"modular-studio\",\n  \"title\": \"Modular audio studio\",\n  \"summary\": \"A playable patch with transport, three sequencers, two synths, a drum kit, effects, an 8-channel mixer, recording, key/MIDI bindings and the timeline.\",\n  \"steps\": [\n    {\n      \"title\": \"Start the sound\",\n      \"text\": \"Nothing plays until you press ▷ on mod.output; keep your volume low for the first run. The ⏺ button records the output to a WAV file, ■ is panic.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"b864ba69-b996-5074-b47d-8dac9af37e91\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Queue never starts audio. ctrl+alt+space starts and stops it from anywhere, ctrl+alt+. is panic.\"\n    },\n    {\n      \"title\": \"Set the tempo\",\n      \"text\": \"Turn the bpm knob, or tap in your own tempo. Swing delays every second step. All three sequencers share this clock.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioTransport\",\n        \"ref\": \"5ab33e7c-5c3b-5d2a-82a8-99d854878487\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Double-click a knob to reset it. Hold Shift for fine control.\"\n    },\n    {\n      \"title\": \"Play the drums\",\n      \"text\": \"Click or drag cells to draw hits, Shift+click for an accent, Alt+click for a ghost note. Click a row name to mute it, right-click to remove it, + row adds one. Use 8–64 for the length and the note value for the step size.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioDrumSequence\",\n        \"ref\": \"dee8db83-2da4-520d-b4c1-13766399dfad\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The pattern stays a plain text string you can copy: kick:1000…;snare:…. ⚄ randomizes, ↺ ↻ rotate.\"\n    },\n    {\n      \"title\": \"Draw the bass\",\n      \"text\": \"The piano roll is a monophonic melody: click a cell to place a note, click it again for a rest, drag to draw a line. −12 −1 +1 +12 transpose, ⚄ writes a random phrase in the project scale, ♯ snaps drawing to it.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSequence\",\n        \"ref\": \"5575245a-d743-56e9-bf38-6442e84c3f96\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Wheel scrolls the pitch range. Alt-click or right-click makes a rest.\"\n    },\n    {\n      \"title\": \"Shape the bass synth\",\n      \"text\": \"Drag the envelope points for attack, decay + sustain and release. Drag the filter point sideways for cutoff and up for resonance; env sweeps the cutoff on every note. Choose the voice and waveform at the top, and play the keys at the bottom to audition.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSynth\",\n        \"ref\": \"23b43386-5ffa-5a9d-ad3f-d54bfb383d9d\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The ⚙ button shows the plain parameter rows, which stay linkable to other nodes.\"\n    },\n    {\n      \"title\": \"Add the lead\",\n      \"text\": \"The lead is an FM voice with detune and vibrato, repeating through a delay. Try the ◿ saw wave or hp / bp filter modes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSynth\",\n        \"ref\": \"5030acbe-bbf1-5ee7-b62a-2d4134c6e7b5\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Every panel control edits a real widget: link a CHOP or LFO to any of them.\"\n    },\n    {\n      \"title\": \"Mix and watch the meters\",\n      \"text\": \"Each strip has pan, a fader with a live meter, mute and solo. Press + for more channels (up to 8); the master fader is on the right.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioMixer\",\n        \"ref\": \"37919c75-a9e7-534f-b93c-06814750a3f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Double-click a fader to return to unity.\"\n    },\n    {\n      \"title\": \"Bind keys and MIDI\",\n      \"text\": \"Press ⌨ on mod.output to open Bindings. This patch already has ctrl+alt+r (record), ctrl+alt+b / ctrl+alt+d (mute bass / drums) and, with a MIDI controller connected, CC74 on channel 1 for the bass cutoff. Choose any control, press ◉, then press a key or move a knob to learn it.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"b864ba69-b996-5074-b47d-8dac9af37e91\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Workflow bindings are saved with the workflow; global ones (like ctrl+alt+space) stay in this browser.\"\n    },\n    {\n      \"title\": \"Float the timeline\",\n      \"text\": \"The timeline is a node: press Alt+W while hovering it to float it as an overlay window you can drag over the graph, or Alt+O to see only the timeline. Type a position or loop point in any format and tap a tempo.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerformanceTimeline\",\n        \"ref\": \"2fe76502-3513-5d25-9075-f75a501f0c53\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Use it to automate parameters and record your knob moves.\"\n    }\n  ]\n}",
+        "Live"
+      ],
+      "widgets_values_named": {
+        "guide": "{\n  \"format\": \"genereti-guide\",\n  \"version\": 1,\n  \"id\": \"modular-studio\",\n  \"title\": \"Modular audio studio\",\n  \"summary\": \"A playable patch with transport, three sequencers, two synths, a drum kit, effects, an 8-channel mixer, recording, key/MIDI bindings and the timeline.\",\n  \"steps\": [\n    {\n      \"title\": \"Start the sound\",\n      \"text\": \"Nothing plays until you press ▷ on mod.output; keep your volume low for the first run. The ⏺ button records the output to a WAV file, ■ is panic.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"b864ba69-b996-5074-b47d-8dac9af37e91\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Queue never starts audio. ctrl+alt+space starts and stops it from anywhere, ctrl+alt+. is panic.\"\n    },\n    {\n      \"title\": \"Set the tempo\",\n      \"text\": \"Turn the bpm knob, or tap in your own tempo. Swing delays every second step. All three sequencers share this clock.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioTransport\",\n        \"ref\": \"5ab33e7c-5c3b-5d2a-82a8-99d854878487\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Double-click a knob to reset it. Hold Shift for fine control.\"\n    },\n    {\n      \"title\": \"Play the drums\",\n      \"text\": \"Click or drag cells to draw hits, Shift+click for an accent, Alt+click for a ghost note. Click a row name to mute it, right-click to remove it, + row adds one. Use 8–64 for the length and the note value for the step size.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioDrumSequence\",\n        \"ref\": \"dee8db83-2da4-520d-b4c1-13766399dfad\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The pattern stays a plain text string you can copy: kick:1000…;snare:…. ⚄ randomizes, ↺ ↻ rotate.\"\n    },\n    {\n      \"title\": \"Draw the bass\",\n      \"text\": \"The piano roll is a monophonic melody: click a cell to place a note, click it again for a rest, drag to draw a line. −12 −1 +1 +12 transpose, ⚄ writes a random phrase in the project scale, ♯ snaps drawing to it.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSequence\",\n        \"ref\": \"5575245a-d743-56e9-bf38-6442e84c3f96\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Wheel scrolls the pitch range. Alt-click or right-click makes a rest.\"\n    },\n    {\n      \"title\": \"Shape the bass synth\",\n      \"text\": \"Drag the envelope points for attack, decay + sustain and release. Drag the filter point sideways for cutoff and up for resonance; env sweeps the cutoff on every note. Choose the voice and waveform at the top, and play the keys at the bottom to audition.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSynth\",\n        \"ref\": \"23b43386-5ffa-5a9d-ad3f-d54bfb383d9d\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"The ⚙ button shows the plain parameter rows, which stay linkable to other nodes.\"\n    },\n    {\n      \"title\": \"Add the lead\",\n      \"text\": \"The lead is an FM voice with detune and vibrato, repeating through a delay. Try the ◿ saw wave or hp / bp filter modes.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioSynth\",\n        \"ref\": \"5030acbe-bbf1-5ee7-b62a-2d4134c6e7b5\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Every panel control edits a real widget: link a CHOP or LFO to any of them.\"\n    },\n    {\n      \"title\": \"Mix and watch the meters\",\n      \"text\": \"Each strip has pan, a fader with a live meter, mute and solo. Press + for more channels (up to 8); the master fader is on the right.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioMixer\",\n        \"ref\": \"37919c75-a9e7-534f-b93c-06814750a3f4\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Double-click a fader to return to unity.\"\n    },\n    {\n      \"title\": \"Bind keys and MIDI\",\n      \"text\": \"Press ⌨ on mod.output to open Bindings. This patch already has ctrl+alt+r (record), ctrl+alt+b / ctrl+alt+d (mute bass / drums) and, with a MIDI controller connected, CC74 on channel 1 for the bass cutoff. Choose any control, press ◉, then press a key or move a knob to learn it.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiAudioOutput\",\n        \"ref\": \"b864ba69-b996-5074-b47d-8dac9af37e91\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Workflow bindings are saved with the workflow; global ones (like ctrl+alt+space) stay in this browser.\"\n    },\n    {\n      \"title\": \"Float the timeline\",\n      \"text\": \"The timeline is a node: press Alt+W while hovering it to float it as an overlay window you can drag over the graph, or Alt+O to see only the timeline. Type a position or loop point in any format and tap a tempo.\",\n      \"target\": {\n        \"nodeType\": \"GeneretiPerformanceTimeline\",\n        \"ref\": \"2fe76502-3513-5d25-9075-f75a501f0c53\",\n        \"part\": \"node\"\n      },\n      \"hint\": \"Use it to automate parameters and record your knob moves.\"\n    }\n  ]\n}",
+        "genereti_delivery": "Live"
+      }
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      2,
+      1,
+      0,
+      3,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      3,
+      1,
+      0,
+      4,
+      0,
+      "GENERETI_AUDIO_CLOCK"
+    ],
+    [
+      4,
+      2,
+      0,
+      5,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      5,
+      3,
+      0,
+      6,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      6,
+      4,
+      0,
+      7,
+      0,
+      "GENERETI_CHOP"
+    ],
+    [
+      7,
+      6,
+      0,
+      8,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      8,
+      7,
+      0,
+      9,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      9,
+      8,
+      0,
+      10,
+      33,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      10,
+      9,
+      0,
+      10,
+      34,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      11,
+      5,
+      0,
+      10,
+      35,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      12,
+      10,
+      0,
+      11,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ],
+    [
+      13,
+      11,
+      0,
+      12,
+      0,
+      "GENERETI_AUDIO_BUS"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.42,
+      "offset": [
+        70,
+        90
+      ]
+    }
+  },
+  "version": 0.4
+}

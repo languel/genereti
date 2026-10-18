@@ -1,0 +1,99 @@
+{
+  "format": "genereti-guide",
+  "version": 1,
+  "id": "modular-studio",
+  "title": "Modular audio studio",
+  "summary": "A playable patch with transport, three sequencers, two synths, a drum kit, effects, an 8-channel mixer, recording, key/MIDI bindings and the timeline.",
+  "steps": [
+    {
+      "title": "Start the sound",
+      "text": "Nothing plays until you press ▷ on mod.output; keep your volume low for the first run. The ⏺ button records the output to a WAV file, ■ is panic.",
+      "target": {
+        "nodeType": "GeneretiAudioOutput",
+        "ref": "b864ba69-b996-5074-b47d-8dac9af37e91",
+        "part": "node"
+      },
+      "hint": "Queue never starts audio. ctrl+alt+space starts and stops it from anywhere, ctrl+alt+. is panic."
+    },
+    {
+      "title": "Set the tempo",
+      "text": "Turn the bpm knob, or tap in your own tempo. Swing delays every second step. All three sequencers share this clock.",
+      "target": {
+        "nodeType": "GeneretiAudioTransport",
+        "ref": "5ab33e7c-5c3b-5d2a-82a8-99d854878487",
+        "part": "node"
+      },
+      "hint": "Double-click a knob to reset it. Hold Shift for fine control."
+    },
+    {
+      "title": "Play the drums",
+      "text": "Click or drag cells to draw hits, Shift+click for an accent, Alt+click for a ghost note. Click a row name to mute it, right-click to remove it, + row adds one. Use 8–64 for the length and the note value for the step size.",
+      "target": {
+        "nodeType": "GeneretiAudioDrumSequence",
+        "ref": "dee8db83-2da4-520d-b4c1-13766399dfad",
+        "part": "node"
+      },
+      "hint": "The pattern stays a plain text string you can copy: kick:1000…;snare:…. ⚄ randomizes, ↺ ↻ rotate."
+    },
+    {
+      "title": "Draw the bass",
+      "text": "The piano roll is a monophonic melody: click a cell to place a note, click it again for a rest, drag to draw a line. −12 −1 +1 +12 transpose, ⚄ writes a random phrase in the project scale, ♯ snaps drawing to it.",
+      "target": {
+        "nodeType": "GeneretiAudioSequence",
+        "ref": "5575245a-d743-56e9-bf38-6442e84c3f96",
+        "part": "node"
+      },
+      "hint": "Wheel scrolls the pitch range. Alt-click or right-click makes a rest."
+    },
+    {
+      "title": "Shape the bass synth",
+      "text": "Drag the envelope points for attack, decay + sustain and release. Drag the filter point sideways for cutoff and up for resonance; env sweeps the cutoff on every note. Choose the voice and waveform at the top, and play the keys at the bottom to audition.",
+      "target": {
+        "nodeType": "GeneretiAudioSynth",
+        "ref": "23b43386-5ffa-5a9d-ad3f-d54bfb383d9d",
+        "part": "node"
+      },
+      "hint": "The ⚙ button shows the plain parameter rows, which stay linkable to other nodes."
+    },
+    {
+      "title": "Add the lead",
+      "text": "The lead is an FM voice with detune and vibrato, repeating through a delay. Try the ◿ saw wave or hp / bp filter modes.",
+      "target": {
+        "nodeType": "GeneretiAudioSynth",
+        "ref": "5030acbe-bbf1-5ee7-b62a-2d4134c6e7b5",
+        "part": "node"
+      },
+      "hint": "Every panel control edits a real widget: link a CHOP or LFO to any of them."
+    },
+    {
+      "title": "Mix and watch the meters",
+      "text": "Each strip has pan, a fader with a live meter, mute and solo. Press + for more channels (up to 8); the master fader is on the right.",
+      "target": {
+        "nodeType": "GeneretiAudioMixer",
+        "ref": "37919c75-a9e7-534f-b93c-06814750a3f4",
+        "part": "node"
+      },
+      "hint": "Double-click a fader to return to unity."
+    },
+    {
+      "title": "Bind keys and MIDI",
+      "text": "Press ⌨ on mod.output to open Bindings. This patch already has ctrl+alt+r (record), ctrl+alt+b / ctrl+alt+d (mute bass / drums) and, with a MIDI controller connected, CC74 on channel 1 for the bass cutoff. Choose any control, press ◉, then press a key or move a knob to learn it.",
+      "target": {
+        "nodeType": "GeneretiAudioOutput",
+        "ref": "b864ba69-b996-5074-b47d-8dac9af37e91",
+        "part": "node"
+      },
+      "hint": "Workflow bindings are saved with the workflow; global ones (like ctrl+alt+space) stay in this browser."
+    },
+    {
+      "title": "Float the timeline",
+      "text": "The timeline is a node: press Alt+W while hovering it to float it as an overlay window you can drag over the graph, or Alt+O to see only the timeline. Type a position or loop point in any format and tap a tempo.",
+      "target": {
+        "nodeType": "GeneretiPerformanceTimeline",
+        "ref": "2fe76502-3513-5d25-9075-f75a501f0c53",
+        "part": "node"
+      },
+      "hint": "Use it to automate parameters and record your knob moves."
+    }
+  ]
+}
