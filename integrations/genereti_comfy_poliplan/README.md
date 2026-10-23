@@ -17,13 +17,13 @@ Like the other browser nodes it has the shared toolbar: delivery (Live / Comfy Q
 | `svg` | the image board as SVG, with its process record |
 | `json` | `{ "poliplan": { "version": 1, "boards": { "image": {…}, "mask": {…} } }, "document": {…} }`: the editable Poliplan document |
 
-**Input `image` (optional).** Shown under the image board, live when the input is a browser source and after a run otherwise, so you can draw over it. It is a *virtual board*: the node draws it behind the transparent editor, in the editor's own view, in the image board's place. It is locked by default. The lock glyph unlocks it; its two corner handles then move and resize it (double-click the move handle to put it back under the image board), and the frame is saved with the workflow. It is not a board of the document, because a real board in the same place would take the marks drawn on it, and it is not composited into any output: use a composite node downstream for that. The input glyph next to the lock frames it.
+**Input `image` (optional).** The first picture of a connection becomes a layer called `input` in its own stage, **Input**, the lowest one, fitted in the image board. It is listed in the **Outliner** like any other mark: Hide, Lock and Delete on the layer, Hide and Unlock on the stage. The stage is locked when created, so the picture stays put until you unlock it, and a visible layer is part of the image like any other mark, so it is composited into the `image` output. Hide the layer or the stage to leave it out. Select the layer to move or resize it. The editor cannot show a board as a picture, so this is a layer, not a board. The picture is taken when it first arrives, for each queued run, and when you press the update glyph beside freeze / fit (live frames are not written continuously: each change is an undo step). Deleting the layer keeps it deleted until the input is connected again. The mask is not affected.
 
 The drawing is saved in the workflow (the `poliplan` widget). The editor's own menu (≡, first in its toolbar) has the view items, import and export, the palette and the panels (Layers, Properties, Boards); zoom controls are optional there. The image and mask glyphs beside freeze / fit frame those boards.
 
 ## Not yet
 
-More outputs (bounding boxes of marks for image generation, timing information, events), live SVG / JSON, and an input that is a real board of the document. The editor is active in one place at a time (the node, the output window or the output overlay; the others show its bitmap). `genereti_multi_ui` on the node's properties opts into synced editors in every window.
+More outputs (bounding boxes of marks for image generation, timing information, events), live SVG / JSON, and an input that follows a live source frame by frame. The editor is active in one place at a time (the node, the output window or the output overlay; the others show its bitmap). `genereti_multi_ui` on the node's properties opts into synced editors in every window.
 
 ## Updating Poliplan
 

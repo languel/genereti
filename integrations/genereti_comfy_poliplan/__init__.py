@@ -1,8 +1,8 @@
 """ꘇ poliplan: the Poliplan drawing editor as an interactive source node.
 
 An image board and a mask board (the sizes are the node's width and height) become the IMAGE and MASK outputs, the
-document the JSON, and the image board's vector drawing the SVG. An optional IMAGE input appears under the image
-board as a locked picture to draw over (unlock it to move or resize it); it is not composited into the outputs.
+document the JSON, and the image board's vector drawing the SVG. An optional IMAGE input becomes a layer called
+"input" in its own locked stage, under the drawing: hide it in the Outliner to leave it out of the IMAGE output.
 Independent of the Core ML generator.
 """
 import hashlib
@@ -58,10 +58,10 @@ class GeneretiPoliplan(io.ComfyNode):
             category='Genereti / Interactive Sources',
             description='Poliplan drawing editor with an image board and a mask board. Queue outputs IMAGE and MASK '
                         'of the configured size, the image board as SVG, and the editable document as JSON. An optional '
-                        'IMAGE input is shown under the image board to draw over (locked until you unlock it); it is not composited into the outputs.',
+                        'IMAGE input becomes a layer under the drawing, in its own locked stage; hide it in the Outliner to leave it out of the IMAGE output.',
             inputs=[
                 io.Image.Input('image', optional=True,
-                               tooltip='Shown under the image board as a locked picture to draw over; unlock it to move or resize it. Not part of the IMAGE output.'),
+                               tooltip='Becomes a layer called input, in a locked stage under the drawing (see the Outliner): hide the layer to leave it out of the IMAGE output, unlock it to move it.'),
                 io.String.Input('poliplan', default='', socketless=True,
                                 extra_dict={'widgetType': 'GENERETI_POLIPLAN'}),
                 io.String.Input('capture', default='', socketless=True,
