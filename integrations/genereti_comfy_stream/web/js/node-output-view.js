@@ -3,6 +3,7 @@ import { overlayShell } from './overlay-shell.js';
 import { registerPreviewShortcuts } from './preview-shortcuts.js';
 // Share the overlay bar and move the live surface rather than cloning it.
 export function nodeOutputView(node,surface,{beforeOpen=()=>{},onChange=()=>{}}={}){
+ let home=surface,parked=false,quiet=false;   // home: the node's own surface; parked: the live surface is in a window, so the view follows the node's mirror (or waits)
  requestAnimationFrame(()=>{if(!node.graph)return;const widget=node.widgets?.find(w=>w.element?.contains(surface));if(widget)previewFirst(node,widget);const root=widget?.element,actions=root?.querySelector('.genereti-preview-actions');if(actions){for(const fit of root.querySelectorAll('select[aria-label="Image fit"],select[aria-label^="Preview fit"]'))actions.append(fit);}});
  if(!document.getElementById('genereti-node-output-style')){
   const style=document.createElement('style');style.id='genereti-node-output-style';style.textContent=`
@@ -25,7 +26,7 @@ export function nodeOutputView(node,surface,{beforeOpen=()=>{},onChange=()=>{}}=
    host.classList.add('genereti-output-only');
    shell=overlayShell(surface,{},()=>{
     shell=null;surface.classList.remove('genereti-visual-surface');for(const parent of paths)parent.classList.remove('genereti-visual-path');paths=[];host.classList.remove('genereti-output-only');host.style.pointerEvents=hostPointerEvents;
-    if(!disposed){node.properties.genereti_output_only=false;node.graph?.change?.(node);onChange(false);}
+    if(!disposed&&!quiet){node.properties.genereti_output_only=false;node.graph?.change?.(node);onChange(false);}
    },{node,embedded:true,inPlace:true,parent:host,surfaceSize,onThroughChange:through=>host.style.pointerEvents=through?'none':hostPointerEvents});
   }else{shell.close();return;}
   if(persist){node.properties??={};node.properties.genereti_output_only=open;node.graph?.change?.(node);}
@@ -33,7 +34,12 @@ export function nodeOutputView(node,surface,{beforeOpen=()=>{},onChange=()=>{}}=
  }
  const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);requestAnimationFrame(()=>{if(!disposed)set(!!node.properties?.genereti_output_only,false);});return result;};
  requestAnimationFrame(function mount(){if(disposed)return;if(!surface.closest('.lg-node')){requestAnimationFrame(mount);return;}set(!!node.properties?.genereti_output_only,false);});
- return {toggle(){set(!shell);},close(){set(false);},get opened(){return !!shell;},get hovered(){return shell&&(surface.matches(':hover')||shell.element.matches(':hover'));},toggleClickThrough(){shell?.toggleClickThrough();},dispose(){disposed=true;set(false,false);}};
+ const settle=()=>{if(!disposed&&surface?.closest?.('.lg-node'))set(!!node.properties?.genereti_output_only,false);};
+ return {toggle(){if(parked&&!surface){node.properties??={};node.properties.genereti_output_only=!node.properties.genereti_output_only;node.graph?.change?.(node);onChange(node.properties.genereti_output_only);return;}set(!shell);},
+  /** The live surface moved into a window: show the node's mirror in the output-only view, or just keep the state until it returns. */
+  park(mirror=null){parked=true;const was=!!shell;if(was){quiet=true;shell.close();quiet=false;}surface=mirror;if(was)requestAnimationFrame(settle);},
+  unpark(){if(!parked)return;parked=false;const was=!!shell;if(was){quiet=true;shell.close();quiet=false;}surface=home;requestAnimationFrame(settle);},
+  get parked(){return parked;},close(){set(false);},get opened(){return !!shell;},get hovered(){return shell&&(surface?.matches(':hover')||shell.element.matches(':hover'));},toggleClickThrough(){shell?.toggleClickThrough();},dispose(){disposed=true;set(false,false);}};
 }
 
 // Add the shared performance view to visual nodes without output-window controls.

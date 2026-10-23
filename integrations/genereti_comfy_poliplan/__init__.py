@@ -2,7 +2,8 @@
 
 An image board and a mask board (the sizes are the node's width and height) become the IMAGE and MASK outputs, the
 document the JSON, and the image board's vector drawing the SVG. An optional IMAGE input appears under the image
-board as a reference to draw over, and can be composited under the drawing. Independent of the Core ML generator.
+board as a locked picture to draw over (unlock it to move or resize it); it is not composited into the outputs.
+Independent of the Core ML generator.
 """
 import hashlib
 import json
@@ -57,10 +58,10 @@ class GeneretiPoliplan(io.ComfyNode):
             category='Genereti / Interactive Sources',
             description='Poliplan drawing editor with an image board and a mask board. Queue outputs IMAGE and MASK '
                         'of the configured size, the image board as SVG, and the editable document as JSON. An optional '
-                        'IMAGE input is shown under the image board to draw over.',
+                        'IMAGE input is shown under the image board to draw over (locked until you unlock it); it is not composited into the outputs.',
             inputs=[
                 io.Image.Input('image', optional=True,
-                               tooltip='Shown under the image board as a reference to draw over; see over_input.'),
+                               tooltip='Shown under the image board as a locked picture to draw over; unlock it to move or resize it. Not part of the IMAGE output.'),
                 io.String.Input('poliplan', default='', socketless=True,
                                 extra_dict={'widgetType': 'GENERETI_POLIPLAN'}),
                 io.String.Input('capture', default='', socketless=True,
@@ -69,26 +70,19 @@ class GeneretiPoliplan(io.ComfyNode):
                              tooltip='Width of the image and mask boards, in pixels.'),
                 io.Int.Input('height', default=512, min=64, max=4096, step=8,
                              tooltip='Height of the image and mask boards, in pixels.'),
-                io.Boolean.Input('over_input', default=False,
-                                 tooltip='Composite the drawing over the input image (the board has no paper then).'),
             ],
             outputs=[io.Image.Output(display_name='image'), io.Mask.Output(display_name='mask'),
                      io.String.Output(display_name='svg'), io.String.Output(display_name='json')],
         )
 
     @classmethod
-    def execute(cls, poliplan, capture, width, height, over_input, image=None):
+    def execute(cls, poliplan, capture, width, height, image=None):
         if not capture:
             raise ValueError('Open the ꘇ poliplan editor before queueing.')
         captured = json.loads(capture)
         drawing = _load(captured, 'image', 'RGBA')
         pixels = mask = None
         if drawing is not None:
-            if over_input and image is not None:
-                base = Image.fromarray((image[0].cpu().numpy()[..., :3] * 255).clip(0, 255).astype(np.uint8)).convert('RGBA')
-                if base.size != drawing.size:
-                    base = base.resize(drawing.size, Image.BILINEAR)
-                drawing = Image.alpha_composite(base, drawing)
             # Preserve alpha for transparent drawings; opaque images stay RGB.
             mode = 'RGBA' if drawing.getchannel('A').getextrema()[0] < 255 else 'RGB'
             pixels = _tensor(drawing.convert(mode))

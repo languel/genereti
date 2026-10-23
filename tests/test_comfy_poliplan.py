@@ -43,8 +43,8 @@ class PoliplanTests(unittest.TestCase):
     def tearDownClass(cls):
         cls.temp.cleanup()
 
-    def run_node(self, captured, image=None, over_input=False):
-        return self.node.execute('', json.dumps(captured), 2, 1, over_input, image=image)
+    def run_node(self, captured, image=None):
+        return self.node.execute('', json.dumps(captured), 2, 1, image=image)
 
     def test_sockets_match_the_drawing_node(self):
         schema = self.node.define_schema()
@@ -53,7 +53,7 @@ class PoliplanTests(unittest.TestCase):
 
     def test_missing_capture_fails_explicitly(self):
         with self.assertRaisesRegex(ValueError, 'poliplan editor'):
-            self.node.execute('', '', 2, 1, False)
+            self.node.execute('', '', 2, 1)
 
     def test_image_mask_svg_and_json(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -75,7 +75,7 @@ class PoliplanTests(unittest.TestCase):
             board.putpixel((1, 0), (255, 255, 255, 128))       # a soft white edge
             board.putpixel((2, 0), (255, 255, 255, 255))       # a solid white mark
             board.save(mask)
-            result = self.node.execute('', json.dumps({'mask': str(mask)}), 3, 1, False)
+            result = self.node.execute('', json.dumps({'mask': str(mask)}), 3, 1)
         grey = result.values[1]
         self.assertEqual(grey[0, 0, 0].item(), 0.0)
         self.assertAlmostEqual(grey[0, 0, 1].item(), 128 / 255, places=2)
@@ -96,10 +96,10 @@ class PoliplanTests(unittest.TestCase):
         reference = result.ui['poliplan_reference'][0]
         self.assertEqual((reference['subfolder'], reference['type']), ('genereti-poliplan', 'temp'))
         self.assertTrue((Path(self.temp.name) / 'genereti-poliplan' / reference['filename']).is_file())
-        # Not composited unless asked: the transparent drawing stays transparent.
+        # Never composited: the transparent drawing stays transparent.
         self.assertEqual(result.values[0][0, 0, 0].tolist(), [0, 0, 0, 0])
 
-    def test_over_input_composites_the_drawing_on_the_input(self):
+    def test_the_input_is_shown_under_the_board_but_never_composited(self):
         source = torch.zeros((1, 1, 2, 3))
         source[..., 2] = 1.0   # blue input
         with tempfile.TemporaryDirectory() as temp:
@@ -107,19 +107,17 @@ class PoliplanTests(unittest.TestCase):
             drawing = Image.new('RGBA', (2, 1), (0, 0, 0, 0))
             drawing.putpixel((0, 0), (255, 0, 0, 255))   # one opaque red pixel
             drawing.save(image)
-            result = self.run_node({'image': str(image)}, image=source, over_input=True)
+            result = self.run_node({'image': str(image)}, image=source)
         pixels = result.values[0]
-        self.assertEqual(tuple(pixels.shape), (1, 1, 2, 3))   # opaque result: RGB
-        self.assertEqual(pixels[0, 0, 0].tolist(), [1, 0, 0])
-        self.assertEqual(pixels[0, 0, 1].tolist(), [0, 0, 1])
+        self.assertEqual(tuple(pixels.shape), (1, 1, 2, 4))   # still RGBA: the transparent pixel stays transparent
+        self.assertEqual(pixels[0, 0, 0].tolist(), [1, 0, 0, 1])
+        self.assertEqual(pixels[0, 0, 1].tolist(), [0, 0, 0, 0])
+        self.assertIn('poliplan_reference', result.ui.as_dict() if hasattr(result.ui, 'as_dict') else result.ui)
 
-    def test_input_is_resized_to_the_drawing(self):
-        source = torch.ones((1, 4, 4, 3))
-        with tempfile.TemporaryDirectory() as temp:
-            image = Path(temp) / 'image.png'
-            Image.new('RGBA', (2, 1), (0, 0, 0, 0)).save(image)
-            result = self.run_node({'image': str(image)}, image=source, over_input=True)
-        self.assertEqual(tuple(result.values[0].shape), (1, 1, 2, 3))
+    def test_there_is_no_over_input_switch_any_more(self):
+        inputs = self.node.define_schema().inputs
+        self.assertEqual(len(inputs), 5)   # image, poliplan, capture, width, height
+        self.assertFalse(any('over_input' in str(i.get('tooltip', '')) for i in inputs))
 
 
 if __name__ == '__main__':

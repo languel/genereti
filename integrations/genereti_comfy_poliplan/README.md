@@ -17,13 +17,13 @@ Like the other browser nodes it has the shared toolbar: delivery (Live / Comfy Q
 | `svg` | the image board as SVG, with its process record |
 | `json` | `{ "poliplan": { "version": 1, "boards": { "image": {…}, "mask": {…} } }, "document": {…} }`: the editable Poliplan document |
 
-**Input `image` (optional).** Shown under the image board, at 45% opacity, as the last run saw it (a reference to draw over; it is not part of any export). With `over_input` on, the image board is exported without paper and composited over the input (resized to the board), so `image` is the drawing on the input.
+**Input `image` (optional).** Shown under the image board, live when the input is a browser source and after a run otherwise, so you can draw over it. It is a *virtual board*: the node draws it behind the transparent editor, in the editor's own view, in the image board's place. It is locked by default. The lock glyph unlocks it; its two corner handles then move and resize it (double-click the move handle to put it back under the image board), and the frame is saved with the workflow. It is not a board of the document, because a real board in the same place would take the marks drawn on it, and it is not composited into any output: use a composite node downstream for that. The input glyph next to the lock frames it.
 
-The drawing is saved in the workflow (the `poliplan` widget). The editor's own menu (≡, first in its toolbar) has the view items, import and export, the palette and the panels (Layers, Properties, Boards); zoom controls are optional there. Image / Mask in the node's bar frame a board.
+The drawing is saved in the workflow (the `poliplan` widget). The editor's own menu (≡, first in its toolbar) has the view items, import and export, the palette and the panels (Layers, Properties, Boards); zoom controls are optional there. The image and mask glyphs beside freeze / fit frame those boards.
 
 ## Not yet
 
-More outputs (bounding boxes of marks for image generation, timing information, events), live `over_input` compositing and live SVG / JSON, an editor that stays active in both the node and the overlay at once (today there is one editor, in the node or in the overlay), and passing an input image as a mark rather than a reference.
+More outputs (bounding boxes of marks for image generation, timing information, events), live SVG / JSON, and an input that is a real board of the document. The editor is active in one place at a time (the node, the output window or the output overlay; the others show its bitmap). `genereti_multi_ui` on the node's properties opts into synced editors in every window.
 
 ## Updating Poliplan
 

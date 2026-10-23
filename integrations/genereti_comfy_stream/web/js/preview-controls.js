@@ -25,18 +25,17 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
     const state={viewport:()=>viewer.getViewport?.(),opened:false,order:0};viewers.push(state);
     const paint=value=>{
       if(opened===value)return;opened=value;state.opened=value;if(value)state.order=++viewerOrder;
-      if(!value&&live){live=false;if(owner===name){owner='node';for(const fn of ownerListeners)fn();}}
+      if(!value&&live){live=false;nodeView.unpark();if(owner===name){owner='node';for(const fn of ownerListeners)fn();}}
       b.setAttribute('aria-pressed',String(value));b.title=(value?'Close ':'Open ')+label;b.setAttribute('aria-label',b.title);b.title+=options.overlay?' (Alt+W · Shift-click / Alt+O: output-only node)':options.backdrop?' (D: solo · Shift+D: grid)':' (Alt+Shift+W)';config.onViewerChange?.(value,options);
     };
     const make=()=>config.createViewer?.(status,paint,options)??(options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:(node.properties.genereti_window_layout??={}),{node,interactiveSurface:config.interactiveSurface,mountMirror:config.mountMirror,multiUi:()=>node.properties?.genereti_multi_ui===true,onSurfaceChange:config.onSurfaceChange}));
     const closeIt=()=>{viewer.close();viewer=make();assign(viewer);viewer.setFit(config.getFit?.()||node.properties?.[config.fitKey||'genereti_preview_fit']||'contain');paint(false);};
     const openIt=async({event={},interactive=false}={})=>{
-      // An interactive surface and the visual node view both need the node's own surface.
-      if(options.overlay||interactive)nodeView.close();
       b.disabled=true;
       try{
         const success=await viewer.open({...options,interactive,grid:options.backdrop&&Boolean(event.shiftKey),initialSize:config.getRenderSize?.(),matchAspect:config.matchOutputAspect?.(),position:event.position});
-        if(success)live=interactive;paint(success);
+        if(success){live=interactive;if(interactive)nodeView.park(config.mirrorSurface?.()??null);}   // the node view (Alt+O) keeps its state and follows the node's mirror
+        paint(success);
         if(success&&config.publishOnOpen!==false)viewer.publish(config.initialFrame?.()||{bitmap:canvas});else if(!success)onError();
         return success;
       }finally{b.disabled=false;}
@@ -67,7 +66,6 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
     }else owner='node';
     for(const fn of ownerListeners)fn();
   }
-  const releaseSurface=()=>{for(const c of Object.values(controllers))if(c.isLive())c.close();};
   const surfaces=[['node','node',NODE_GLYPH,'Node: edit in the node; windows show its bitmap'],['window','output window',WINDOW_GLYPH,'Output window: edit there; the node shows its bitmap (Alt+Shift+W)'],['overlay','output overlay',OVERLAY_GLYPH,'Output overlay: edit there; the node shows its bitmap (Alt+W)']];
   const svg=paths=>`<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${paths}</svg>`;
   let surfaceButton=null;
@@ -103,7 +101,7 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   const setFit=value=>{fit.value=value;apply(false);};
   const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);fit.value=currentFit();apply();return result;};
   const visualButton=button('Visual node view · hide controls (Alt+O)','<rect x="4" y="4" width="16" height="16" rx="1"/><rect x="7" y="7" width="10" height="10" fill="currentColor"/>',()=>nodeView.toggle());visualButton.setAttribute('aria-pressed',String(!!node.properties.genereti_output_only));
-  const nodeView=nodeOutputView(node,canvas,{beforeOpen:()=>{if(config.interactiveSurface)releaseSurface();else if(overlay.element)overlayButton.click();},onChange:open=>{visualButton.setAttribute('aria-pressed',String(open));config.onNodeViewChange?.(open);}});
+  const nodeView=nodeOutputView(node,canvas,{beforeOpen:()=>{if(!config.interactiveSurface&&overlay.element)overlayButton.click();},onChange:open=>{visualButton.setAttribute('aria-pressed',String(open));config.onNodeViewChange?.(open);}});
   const unregister=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:options=>overlayButton.onclick(options),toggleWindow:options=>windowButton.onclick(options),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.onclick(),toggleBackdropGrid:()=>backdropButton.onclick({shiftKey:true}),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
   overlayButton.title+=' (Alt+W · Shift-click / Alt+O: output-only node)';backdropButton.title+=' (D: solo · Shift+D: grid)';
   if(surfaceButton)actions.append(surfaceButton);actions.append(windowButton,overlayButton,visualButton,backdropButton);if(config.fitControl!==false)toolbar.append(fit);

@@ -1,6 +1,7 @@
 import { app } from '../../../scripts/app.js';
 import { api } from '../../../scripts/api.js';
-import { attachExecutionMode, publishLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
+import { attachExecutionMode, publishLive, subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
+import { fitContain, toScreen } from './input-board.js';
 import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
 import { previewControls } from '/extensions/genereti_comfy_stream/js/preview-controls.js';
 import { routePreviewShortcut } from '/extensions/genereti_comfy_stream/js/preview-shortcuts.js';
@@ -31,24 +32,11 @@ function makePoliplan(node, name) {
   let value = '', editor = null, starting = null, saving = 0, disposed = false;
   const container = document.createElement('div');
   Object.assign(container.style, { width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: 'var(--comfy-menu-bg, #222)' });
-  const controls = document.createElement('div');
-  controls.className = 'genereti-node-controls';
-  Object.assign(controls.style, { padding: '4px', flexShrink: '0', display: 'flex', gap: '6px', alignItems: 'center' });
-  const status = Object.assign(document.createElement('span'),{className:'genereti-status'});
+  const status = Object.assign(document.createElement('span'), { className: 'genereti-status' });
   status.style.opacity = '0.7';
-  const button = (label, title, onclick) => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.textContent = label; b.title = title; b.onclick = onclick;
-    return b;
-  };
   const host = document.createElement('div');
   Object.assign(host.style, { flex: '1 1 auto', minHeight: '560px', position: 'relative' });
-  controls.append(
-    button('Image', 'Frame the image board', () => editor?.fit({ board: 'main' })),
-    button('Mask', 'Frame the mask board: draw white on the black paper', () => editor?.fit({ board: 'mask' })),
-    status);
-  container.append(controls, host);
-  controls.addEventListener('pointerdown', e => e.stopPropagation());
+  container.append(host, status);
 
   const size = () => [Number(widgetOf(node, 'width')?.value) || 512, Number(widgetOf(node, 'height')?.value) || 512];
   const say = text => { status.textContent = text || ''; };
@@ -65,7 +53,100 @@ function makePoliplan(node, name) {
   Object.assign(preview.style, { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', background: 'transparent' });
   mirror.append(preview);
   host.after(mirror);
-  const overInput = () => Boolean(widgetOf(node, 'over_input')?.value) && node.inputs?.find(i => i.name === 'image')?.link != null;
+
+  // ---- The input: a virtual board under the image board ---------------------------------------------------------------
+  // The picture arrives live (a linked browser source) or after a queue run. It is drawn here, behind the transparent editor,
+  // in the input frame: the image board's place until you move it. It is deliberately not a board of the document: a real
+  // board in the same place takes the marks drawn on it. Locked by default; unlocked, its corner handles move and resize it.
+  // The frame and the lock are kept in the node's properties, so they are saved with the workflow.
+  const props = () => (node.properties ??= {});
+  const picture = document.createElement('canvas');
+  let hasPicture = false, camera = { x: 0, y: 0, z: 1 }, underlayQueued = false, lastLive = -Infinity;
+  const linked = () => node.inputs?.find(i => i.name === 'image')?.link != null;
+  const inputLocked = () => props().poliplanInputLocked !== false;
+  const mainRect = () => { const [w, h] = size(); return { x: 0, y: 0, width: w, height: h }; };
+  const frameRect = () => props().poliplanInputFrame ?? mainRect();
+  const underlay = document.createElement('canvas');
+  Object.assign(underlay.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: '0' });
+  const grip = (glyph, title, cursor) => {
+    const g = document.createElement('div');
+    g.textContent = glyph; g.title = title;
+    Object.assign(g.style, { position: 'absolute', zIndex: '3', display: 'none', width: '20px', height: '20px', alignItems: 'center', justifyContent: 'center', cursor,
+      borderRadius: '5px', background: 'color-mix(in srgb, #fff 28%, transparent)', color: '#fff', font: '13px system-ui', touchAction: 'none', userSelect: 'none' });
+    return g;
+  };
+  const moveGrip = grip('✥', 'Move the input picture · double-click: back to the image board', 'move');
+  const sizeGrip = grip('⤡', 'Resize the input picture', 'nwse-resize');
+  host.append(underlay, moveGrip, sizeGrip);
+  const paintUnderlay = () => {
+    underlayQueued = false;
+    const dpr = window.devicePixelRatio || 1, w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    if (underlay.width !== Math.round(w * dpr) || underlay.height !== Math.round(h * dpr)) { underlay.width = Math.round(w * dpr); underlay.height = Math.round(h * dpr); }
+    const g = underlay.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, h);
+    const frame = toScreen(frameRect(), camera);
+    if (hasPicture) { const r = toScreen(fitContain(picture.width, picture.height, frameRect()), camera); g.drawImage(picture, r.x, r.y, r.width, r.height); }
+    const editing = !inputLocked() && (hasPicture || linked());
+    if (editing) { g.strokeStyle = 'rgba(255,255,255,.6)'; g.setLineDash([5, 4]); g.strokeRect(frame.x + .5, frame.y + .5, frame.width, frame.height); g.setLineDash([]); }
+    moveGrip.style.display = sizeGrip.style.display = editing ? 'flex' : 'none';
+    moveGrip.style.left = `${frame.x + 3}px`; moveGrip.style.top = `${frame.y + 3}px`;
+    sizeGrip.style.left = `${frame.x + frame.width - 23}px`; sizeGrip.style.top = `${frame.y + frame.height - 23}px`;
+  };
+  const queueUnderlay = () => { if (!underlayQueued) { underlayQueued = true; requestAnimationFrame(paintUnderlay); } };
+  const dragFrame = (handle, kind) => {
+    handle.onpointerdown = event => {
+      event.preventDefault(); event.stopPropagation();
+      try { handle.setPointerCapture(event.pointerId); } catch { /* not an active pointer */ }
+      const start = { x: event.clientX, y: event.clientY, frame: { ...frameRect() } };
+      handle.onpointermove = move => {
+        const z = camera.z || 1, dx = (move.clientX - start.x) / z, dy = (move.clientY - start.y) / z;
+        props().poliplanInputFrame = kind === 'move' ? { ...start.frame, x: start.frame.x + dx, y: start.frame.y + dy }
+          : { ...start.frame, width: Math.max(16, start.frame.width + dx), height: Math.max(16, start.frame.height + dy) };
+        queueUnderlay(); scheduleLive();
+      };
+      handle.onpointerup = handle.onpointercancel = () => { handle.onpointermove = null; node.graph?.change?.(node); };
+    };
+  };
+  dragFrame(moveGrip, 'move'); dragFrame(sizeGrip, 'size');
+  moveGrip.ondblclick = () => { delete props().poliplanInputFrame; node.graph?.change?.(node); queueUnderlay(); scheduleLive(); };
+  /** Take a copy of the input (live frames are borrowed and closed right after the callback). */
+  const setPicture = (source, width, height) => {
+    if (!(width > 0 && height > 0)) return;
+    picture.width = width; picture.height = height;
+    picture.getContext('2d').drawImage(source, 0, 0);
+    hasPicture = true;
+    refreshInputButtons(); queueUnderlay(); scheduleLive();
+  };
+  const clearPicture = () => { if (!hasPicture) return; hasPicture = false; refreshInputButtons(); queueUnderlay(); scheduleLive(); };
+  const loadPicture = url => {
+    if (performance.now() - lastLive < 1500) return;   // a live source wins over the last queued result
+    const image = new Image();
+    image.onload = () => { if (!disposed) setPicture(image, image.naturalWidth, image.naturalHeight); };
+    image.src = url;
+  };
+  /** The input under the drawing, for the node's own mirror and the windows that mirror it. */
+  const drawInputInto = ctx => {
+    if (!hasPicture) return;
+    const r = fitContain(picture.width, picture.height, frameRect());
+    ctx.drawImage(picture, r.x, r.y, r.width, r.height);
+  };
+  const stopInput = subscribeLive(node, ({ bitmap }) => { if (bitmap) { lastLive = performance.now(); setPicture(bitmap, bitmap.width, bitmap.height); } }, () => {}, { inputName: 'image' });
+  const inputPoll = setInterval(() => { if (!linked() && hasPicture) clearPicture(); }, 500);
+  const refreshCamera = async () => {
+    if (!editor) return;
+    try { const c = await editor.camera(); camera = { x: c.x, y: c.y, z: c.z }; } catch { /* the editor went away */ }
+    queueUnderlay();
+  };
+  const hostWatch = new ResizeObserver(refreshCamera);
+  hostWatch.observe(host);
+  let refreshInputButtons = () => {};
+  const focusInput = async () => {
+    if (!editor) return;
+    const c = await editor.camera(), f = frameRect(), z = Math.min(c.w / (f.width * 1.12), c.h / (f.height * 1.12));
+    await editor.camera({ x: (c.w - f.width * z) / 2 - f.x * z, y: (c.h - f.height * z) / 2 - f.y * z, z });
+  };
   /**
    * Publish soon, and never wait for the editing to stop: one export in flight, edits that arrive meanwhile are folded
    * into the next, and frames are at least LIVE_MIN_MS apart (a trailing debounce would hold every frame back until the
@@ -91,7 +172,7 @@ function makePoliplan(node, name) {
     } finally { publishing = false; }
   }
   // `draft`: a live frame also shows the stroke being drawn, which is in the document only after the pointer is released.
-  const exportBoard = board => editor.export({ board, format: 'png', scale: 1, transparent: board === 'main' && overInput(), draft: true })
+  const exportBoard = board => editor.export({ board, format: 'png', scale: 1, transparent: false, draft: true })
     .then(({ blob }) => createImageBitmap(blob));
   /** The mask board on black, as a frame: its paper is transparent. */
   const exportMask = async () => {
@@ -117,7 +198,9 @@ function makePoliplan(node, name) {
           if (live && image) publishLive(node, bitmap, 0);
           if (viewers > 0) {
             preview.width = bitmap.width; preview.height = bitmap.height;
-            preview.getContext('2d').drawImage(bitmap, 0, 0);
+            const pc = preview.getContext('2d');
+            drawInputInto(pc);
+            pc.drawImage(bitmap, 0, 0);
             output.publish({ bitmap: preview });
           }
         } finally { bitmap.close(); }
@@ -137,6 +220,7 @@ function makePoliplan(node, name) {
     fitTarget: null, initialFrame: () => ({ bitmap: preview }), getRenderSize: () => preview,
     // Alt+W moves the live editor itself into the overlay window (the node mirrors it), as livecode does with its stage.
     interactiveSurface: host, publishOnOpen: false,
+    mirrorSurface: () => mirror,
     mountMirror: container => node._poliplanMount(container),
     onSurfaceChange: open => {
       mirror.style.display = open ? 'flex' : 'none';
@@ -151,9 +235,34 @@ function makePoliplan(node, name) {
   node._generetiMountTransport = () => node._generetiExecutionModeElement?.append(output.actions);
   local = previewState(node, host, { getFit: () => node.properties?.genereti_preview_fit ?? 'contain' });
   local.actions.append(output.toolbar);
+  // Framing buttons live with freeze / fit: glyphs, not words. Input buttons only appear while there is an input.
+  const glyph = (paths, title, onclick) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.title = title; b.setAttribute('aria-label', title);
+    b.innerHTML = `<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${paths}</svg>`;
+    b.onclick = onclick;
+    return b;
+  };
+  const imageButton = glyph('<rect x="4" y="4" width="16" height="16" rx="1.5"/><circle cx="9" cy="9" r="1.4"/><path d="m4 17 5-5 4 4 3-3 4 4"/>', 'Frame the image board', () => editor?.fit({ board: 'main' }));
+  const maskButton = glyph('<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/>', 'Frame the mask board: draw white on the black paper', () => editor?.fit({ board: 'mask' }));
+  const inputButton = glyph('<rect x="9" y="4" width="11" height="16" rx="1.5" stroke-dasharray="2 2"/><path d="M3 12h9m-3-3 3 3-3 3"/>', 'Frame the input picture', () => focusInput());
+  const lockButton = glyph('<rect x="6" y="11" width="12" height="9" rx="1.5"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/>', '', () => { props().poliplanInputLocked = !inputLocked(); node.graph?.change?.(node); refreshInputButtons(); queueUnderlay(); });
+  refreshInputButtons = () => {
+    const present = hasPicture || linked();
+    inputButton.hidden = lockButton.hidden = !present;
+    const locked = inputLocked();
+    lockButton.setAttribute('aria-pressed', String(locked));
+    lockButton.title = lockButton.ariaLabel = locked ? 'Input picture locked · click to unlock and move it' : 'Input picture unlocked · drag its corner handles; click to lock';
+  };
+  refreshInputButtons();
+  local.actions.append(imageButton, maskButton, inputButton, lockButton);
+  const connections = node.onConnectionsChange;
+  node.onConnectionsChange = function () { const result = connections?.apply(this, arguments); refreshInputButtons(); queueUnderlay(); return result; };
+  const configured = node.onConfigure;
+  node.onConfigure = function () { const result = configured?.apply(this, arguments); refreshInputButtons(); queueUnderlay(); return result; };
 
   /** One configured Poliplan editor: the node's own, and every extra interactive view (the output window), are made here. */
-  const openEditor = async (container, document) => {
+  const openEditor = async (container, document, { primary = false } = {}) => {
     const { createEditor } = await import(/* @vite-ignore */ api.apiURL('/genereti/poliplan/ams-editor.js'));
     const [w, h] = size();
     const ed = await createEditor(container, {
@@ -163,7 +272,10 @@ function makePoliplan(node, name) {
       document,
       ui: { tools: true, view: true, zoom: true, panels: false },
       fit: 'main',
+      // The input picture is drawn behind the editor, so the node's own workspace must let it through.
+      ...(primary ? { background: 'transparent' } : {}),
     });
+    if (primary) Object.assign(ed.frame.style, { position: 'relative', zIndex: '1' });
     // The editor's document has no color-scheme of its own; inheriting Comfy's dark one makes Chromium put an opaque
     // backing behind the iframe, so a transparent workspace and paper would never show the graph (Alt+O, overlays).
     ed.frame.style.colorScheme = 'normal';
@@ -226,7 +338,6 @@ function makePoliplan(node, name) {
     const { document } = await editor.getDocument();
     const view = await openEditor(container, document);
     view.on('change', () => onChange(view));
-    if (node._poliplanReference) view.reference(node._poliplanReference).catch(() => {});
     views.add(view);
     return () => { views.delete(view); quiet.delete(view); view.destroy(); };
   };
@@ -239,12 +350,14 @@ function makePoliplan(node, name) {
       try {
         let saved = null;
         try { saved = value ? JSON.parse(value) : null; } catch { saved = null; }
-        editor = await openEditor(host, saved?.document);
+        editor = await openEditor(host, saved?.document, { primary: true });
+        await refreshCamera();
+        editor.on('camera', m => { camera = { x: m.x, y: m.y, z: m.z }; queueUnderlay(); });
         editor.on('change', () => { remember(); scheduleLive(); onChange(editor); });
         editor.on('draft', () => scheduleLive());   // once a frame while a stroke grows; `change` only follows the release
         say('');
-        if (node._poliplanReference) editor.reference(node._poliplanReference).catch(() => {});
-        node._poliplanShow = ref => Promise.all(everyone().map(e => e.reference(ref).catch(() => {})));
+        node._poliplanShow = ref => loadPicture(ref.url);
+        if (node._poliplanReference) loadPicture(node._poliplanReference.url);
         return editor;
       } catch (error) {
         say(`Poliplan did not start: ${error.message}`);
@@ -291,6 +404,7 @@ function makePoliplan(node, name) {
       await editor.callTool('ams_board', { action: 'update', id: 'mask', patch: { width: w, height: h, x: 0, y: h + GAP, ...MASK_FLAGS } });
       remember();
       onChange(editor);
+      queueUnderlay(); scheduleLive();
     } catch (error) { say(error.message); }
   };
 
@@ -312,8 +426,7 @@ function makePoliplan(node, name) {
       const [image, mask, svg, json] = connected(node);
       const [w, h] = size();
       const result = {};
-      const overInput = Boolean(widgetOf(node, 'over_input')?.value) && node.inputs?.find(i => i.name === 'image')?.link != null;
-      if (image) result.image = await upload((await ed.export({ board: 'main', format: 'png', scale: 1, transparent: overInput })).blob, 'image');
+      if (image) result.image = await upload((await ed.export({ board: 'main', format: 'png', scale: 1, transparent: false })).blob, 'image');
       if (mask) result.mask = await upload((await ed.export({ board: 'mask', format: 'png', scale: 1 })).blob, 'mask');
       if (svg) result.svg = (await ed.export({ board: 'main', format: 'svg' })).text;
       if (json) {
@@ -322,7 +435,7 @@ function makePoliplan(node, name) {
       }
       return JSON.stringify(result);
     },
-    dispose() { disposed = true; clearTimeout(saving); clearTimeout(liveTimer); output?.close(); for (const v of views) v.destroy(); views.clear(); editor?.destroy(); editor = null; },
+    dispose() { disposed = true; stopInput(); clearInterval(inputPoll); hostWatch.disconnect(); clearTimeout(saving); clearTimeout(liveTimer); output?.close(); for (const v of views) v.destroy(); views.clear(); editor?.destroy(); editor = null; },
   };
   return { widget };
 }
