@@ -164,8 +164,8 @@ fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {let 
     })();
     this.expressions.set(source,pending);if(this.expressions.size>64)this.expressions.delete(this.expressions.keys().next().value);return pending;
   }
-  async noisePipeline(kind,dimensions){
-    const n=Math.max(1,Math.min(4,Number(dimensions)||2)),algorithm=NOISE_KINDS[kind]??0,key=`noise:${algorithm}:${n}`,range=NOISE_RANGE[Object.keys(NOISE_KINDS)[algorithm]][n-1];
+  async noisePipeline(kind,dimensions,loop=false){
+    const n=loop?4:Math.max(1,Math.min(4,Number(dimensions)||2)),algorithm=NOISE_KINDS[kind]??0,key=`noise:${algorithm}:${n}${loop?':loop':''}`,range=NOISE_RANGE[Object.keys(NOISE_KINDS)[algorithm]][n-1];
     this.expressions??=new Map();if(this.expressions.has(key))return this.expressions.get(key);
     const code=SHADER.slice(0,SHADER.indexOf('@fragment'))+`
 ${NOISE_WGSL}
@@ -175,7 +175,7 @@ fn pigment(t:f32,x:f32,y:f32,c:f32)->f32 {
  for(var o=0u;o<count;o++){
   let shift=p.v[5].y*.123+f32(o)*19.19+select(0.,c*31.7,p.v[6].w>0.);
   var q=vec4f(x*frequency+shift,y*frequency,p.v[5].z+p.v[4].x,t*p.v[5].w);
-  ${n<3?'q.x+=t*p.v[5].w;':''}${n===3?'q.z+=t*p.v[5].w;':''}
+  ${loop?'let ang=6.28318531*t/max(p.v[7].w,.000001);q=vec4f(q.x,q.y,p.v[5].z+p.v[4].x+p.v[8].x*cos(ang),p.v[8].x*sin(ang));':`${n<3?'q.x+=t*p.v[5].w;':''}${n===3?'q.z+=t*p.v[5].w;':''}`}
   var s=gn_noise(q,${n}u,${algorithm}u);
   if(p.v[7].z>0.){s=clamp(2.*(s-(${range[0]}))/${range[1]-range[0]}-1.,-1.,1.);}
   sum+=weight*s;total+=weight;weight*=p.v[6].z;frequency*=p.v[6].y;
@@ -186,7 +186,9 @@ fn pigment(t:f32,x:f32,y:f32,c:f32)->f32 {
  let t=p.v[0].x;let x=in.uv.x+p.v[3].z;let y=in.uv.y+p.v[3].w;
  let r=pigment(t,x,y,0.);var rgb=vec3f(r);
  if(p.v[6].w>0.){rgb=vec3f(r,pigment(t,x,y,1.),pigment(t,x,y,2.));}
- return vec4f(rgb,select(1.,sample(a,in.uv).a,p.v[0].w>0.));
+ var alpha=select(1.,sample(a,in.uv).a,p.v[0].w>0.);
+ if(p.v[6].w>1.5){alpha=pigment(t,x,y,3.);}
+ return vec4f(rgb,alpha);
 }`;
     const pending=(async()=>{const module=this.device.createShaderModule({label:key,code});const errors=(await module.getCompilationInfo()).messages.filter(m=>m.type==='error');if(errors.length)throw Error(errors.map(m=>m.message).join('; '));this.stats.shaderCompiles=(this.stats.shaderCompiles??0)+1;return this.device.createRenderPipelineAsync({layout:this.layout,vertex:{module,entryPoint:'vertex'},fragment:{module,entryPoint:'fragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list'}});})();
     this.expressions.set(key,pending);return pending;
