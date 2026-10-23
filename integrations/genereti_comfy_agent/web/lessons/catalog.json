@@ -3585,7 +3585,7 @@
       },
       {
         "title": "Play the body",
-        "text": "Press ▶ in mediamime, then Start on the speakers node. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.",
+        "text": "Press ▶ in mediamime (it stays silent until then), then Start on the speakers node and raise your system volume; the meter on the speakers shows the level. Index fingers striking a body zone play the drum kit (velocity follows the strike speed); hands in a gate hold a synth note; feet crossing the floor line play a low note.",
         "target": {
           "nodeType": "GeneretiPerceptionMime",
           "ref": "9a972566-12a1-53f1-b75a-882045a233f4",

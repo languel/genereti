@@ -23,8 +23,9 @@ let active=null,candidate=null,users=false,pending=false,raf=0,startTime=perform
 // One persistent texture surface; input frames never recompile the sketch.
 const inputCanvas=document.createElement('canvas');inputCanvas.width=inputCanvas.height=1;
 const bridge=window.__={params:Object.create(null),image:inputCanvas,inputSize:{width:0,height:0},render};
-let perceptionRecords=[],perceptionReceived=0;const perceptionHandlers=new Map();
-bridge.streams={list:()=>perceptionRecords.map(({result,...descriptor})=>descriptor),read:(name,maxAgeMs=500)=>{const r=perceptionRecords.find(d=>d.name===name)?.result;if(!r)return null;const age=r.age_ms+Math.max(0,performance.now()-perceptionReceived);return age<=maxAgeMs?{...r,age_ms:age}:null;}};
+let perceptionRecords=[],regionRecords=[],perceptionReceived=0;const perceptionHandlers=new Map();
+bridge.streams={list:()=>perceptionRecords.map(({result,...descriptor})=>descriptor),read:(name,maxAgeMs=500)=>{const r=perceptionRecords.find(d=>d.name===name)?.result;if(!r)return null;const age=r.age_ms+Math.max(0,performance.now()-perceptionReceived);return r.held||age<=maxAgeMs?{...r,age_ms:age}:null;}};
+bridge.regions={list:()=>regionRecords.map(r=>r.name),read:name=>{const box=regionRecords.find(r=>r.name===name)?.box;return box?[...box]:null;}};
 bridge.events={on:(name,fn)=>{if(typeof fn!=='function')throw Error('Event callback must be a function');let set=perceptionHandlers.get(name);if(!set)perceptionHandlers.set(name,set=new Set());set.add(fn);return ()=>set.delete(fn);}};
 const sharedTime=performanceBridge(bridge,(type,values)=>send(type,values));
 window.katex=katex;window.renderMathInElement=renderHtmlMath;ensureMathStyle(mathCss);
@@ -114,7 +115,7 @@ async function renderFrame(now,clock='raf'){try{active?.sample?.();active?.paint
 }
 // Transfer ownership rather than cloning every frame.
 window.addEventListener('message',async e=>{if(e.source!==parent)return;const d=e.data;
- if(d.type==='perception-state'){perceptionRecords=d.records??[];perceptionReceived=performance.now();}
+ if(d.type==='perception-state'){perceptionRecords=d.records??[];regionRecords=d.regions??[];perceptionReceived=performance.now();}
  if(d.type==='perception-event'){for(const fn of perceptionHandlers.get(d.event.name)??[]){try{fn(d.event);}catch(error){diagnostic(error);}}}
  if(d.type==='performance-state')sharedTime.update(d);
  if(d.type==='compile'){render={width:512,height:512,...d.render};newestRevision=d.revision;compileQueue=compileQueue.then(()=>{if(d.revision===newestRevision)return compile(d.mode,d.source,d.revision,d.parameters);});}

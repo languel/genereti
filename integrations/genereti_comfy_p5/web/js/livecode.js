@@ -17,8 +17,8 @@ import {publishLive} from './live-runtime.js';
 import {routePreviewShortcut} from '../../genereti_comfy_stream/js/preview-shortcuts.js';
 import {previewControls} from '../../genereti_comfy_stream/js/preview-controls.js';
 import {SETTINGS_GLYPH,ensureControlStyle} from './control-style.js';
-import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=d9d388a80a70e629';
-const LIBRARY_VERSION='d9d388a80a70e629';
+import {createEditor,examples,defaultAppearance,appearanceValues} from '../lib/editor.mjs?v=0603047622e31987';
+const LIBRARY_VERSION='0603047622e31987';
 ensureControlStyle();
 if(!document.getElementById('genereti-livecode-style')){const style=document.createElement('style');style.id='genereti-livecode-style';style.textContent=`
 .genereti-livecode-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;position:relative;flex-shrink:0}
@@ -181,7 +181,7 @@ function editorWidget(node,name){
  function sendInputURL(image){return new Promise((resolve,reject)=>{const id=++inputId;const timeout=setTimeout(()=>{inputWaiters.delete(id);reject(Error('Input frame timed out'));},8000);inputWaiters.set(id,{resolve,reject,timeout});post(active,{type:'input-url',image,id});});}
  async function pumpInput(){if(queuedSizing||inputBusy||!inputDirty||!active)return;inputBusy=true;inputDirty=false;try{const frame=active,bitmap=await createImageBitmap(inputCanvas);if(frame!==active){bitmap.close();inputDirty=true;return;}const id=++inputId;frame.contentWindow.postMessage({type:'input-frame',bitmap,id},'*',[bitmap]);const timeout=setTimeout(()=>{inputBusy=false;void pumpInput();},2000);inputWaiters.set(id,{timeout,resolve(){inputBusy=false;void pumpInput();},reject(){inputBusy=false;}});}catch(error){inputBusy=false;status.textContent=error.message;}}
  function syncPerformance(snapshot=window.generetiPerformance?.snapshot(),frozen=false){if(!snapshot)return;const message={type:'performance-state',snapshot,linked:!!window.generetiPerformance?.linked(node),frozen};post(active,message);post(candidate,message);}
- const syncPerception=()=>{const service=window.generetiPerception;const records=service?.streams.list().map(d=>({...d,result:service.streams.read(d.name,10000)}))??[];const message={type:'perception-state',records:queuedSizing?[]:records};post(active,message);post(candidate,message);};
+ const syncPerception=()=>{const service=window.generetiPerception;const records=service?.streams.list().map(d=>({...d,result:service.streams.read(d.name,10000)}))??[];const regionRecords=service?.regions?.list().map(name=>({name,box:service.regions.read(name)}))??[];const message={type:'perception-state',records:queuedSizing?[]:records,regions:queuedSizing?[]:regionRecords};post(active,message);post(candidate,message);};
  const perceptionPoll=setInterval(syncPerception,100);
  const onPerceptionEvent=e=>{if(!queuedSizing)post(active,{type:'perception-event',event:e.detail});};window.addEventListener('genereti-perception-event',onPerceptionEvent);
  const onPerformanceFrame=()=>{if(!queuedSizing)syncPerformance();};window.addEventListener('genereti-performance-frame',onPerformanceFrame);

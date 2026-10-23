@@ -1,5 +1,5 @@
 import {app} from '../../../scripts/app.js';
-import {defaultAppearance} from '../lib/editor.mjs?v=d9d388a80a70e629';
+import {defaultAppearance} from '../lib/editor.mjs?v=0603047622e31987';
 const listeners=new Set();
 const definitions=[
  ['theme','Theme','combo','dark',['dark','light','midnight','paper','mono-dark','mono-light','transparent-dark','transparent-light']],

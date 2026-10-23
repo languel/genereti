@@ -8,7 +8,7 @@ export function standaloneHTML({source,mode,parameters={},render={width:512,heig
  const data=JSON.stringify(config).replaceAll('<','\\u003c');
  if(mode==='html'||mode==='svg'){
   const interpolated=source.replace(/\{\{\s*(params\.\w+|render\.(?:width|height)|inputSize\.(?:width|height))\s*\}\}/g,(_,path)=>{const [group,key]=path.split('.');return String((group==='params'?values:group==='render'?render:{width:0,height:0})[key]??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));});
-  const bridge=`<script>window.__={params:${JSON.stringify(values).replaceAll('<','\\u003c')},render:${JSON.stringify(render)},inputSize:{width:0,height:0},streams:{read:()=>null,list:()=>[]},events:{on:()=>()=>{}}};window.inputImage=null;</script>`;
+  const bridge=`<script>window.__={params:${JSON.stringify(values).replaceAll('<','\\u003c')},render:${JSON.stringify(render)},inputSize:{width:0,height:0},streams:{read:()=>null,list:()=>[]},regions:{list:()=>[],read:()=>null},events:{on:()=>()=>{}}};window.inputImage=null;</script>`;
   if(mode==='html'){
    if(/<head(?:\s[^>]*)?>/i.test(interpolated))return interpolated.replace(/<head(?:\s[^>]*)?>/i,m=>m+bridge);
    return `<!doctype html><meta charset="utf-8">${bridge}${interpolated}`;

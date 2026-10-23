@@ -3,7 +3,7 @@ import {performPreviewAction} from '/extensions/genereti_comfy_stream/js/preview
 import {previewControls} from '/extensions/genereti_comfy_stream/js/preview-controls.js';
 import {documentViewer} from './webview-windows.js';
 import {app} from '../../../scripts/app.js';
-import {createEditor} from '../lib/editor.mjs?v=d9d388a80a70e629';
+import {createEditor} from '../lib/editor.mjs?v=0603047622e31987';
 import {webviewDocument} from '../lib/webview/document.js';
 import {editorAppearance,subscribeEditorAppearance,captureFontShortcut} from './editor-settings.js';
 import {captureEditorInput} from './editor-input.js';
