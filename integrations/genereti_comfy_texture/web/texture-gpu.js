@@ -176,11 +176,12 @@ fn pigment(t:f32,x:f32,y:f32,c:f32)->f32 {
   let shift=p.v[5].y*.123+f32(o)*19.19+select(0.,c*31.7,p.v[6].w>0.);
   var q=vec4f(x*frequency+shift,y*frequency,p.v[5].z+p.v[4].x,t*p.v[5].w);
   ${loop?'let ang=6.28318531*t/max(p.v[7].w,.000001);q=vec4f(q.x,q.y,p.v[5].z+p.v[4].x+p.v[8].x*cos(ang),p.v[8].x*sin(ang));':`${n<3?'q.x+=t*p.v[5].w;':''}${n===3?'q.z+=t*p.v[5].w;':''}`}
+  if(p.v[8].z>0.){let da=gn_noise(q+vec4f(17.31),${n}u,${algorithm}u);let db=gn_noise(q+vec4f(43.77),${n}u,${algorithm}u);q.x+=p.v[8].z*da;q.y+=p.v[8].z*db;}
   var s=gn_noise(q,${n}u,${algorithm}u);
-  if(p.v[7].z>0.){s=clamp(2.*(s-(${range[0]}))/${range[1]-range[0]}-1.,-1.,1.);}
-  sum+=weight*s;total+=weight;weight*=p.v[6].z;frequency*=p.v[6].y;
+  if(p.v[7].z>0.||p.v[8].y>0.){s=clamp(2.*(s-(${range[0]}))/${range[1]-range[0]}-1.,-1.,1.);}
+  sum+=weight*gn_shape(s,p.v[8].y);total+=weight;weight*=p.v[6].z;frequency*=p.v[6].y;
  }
- return clamp(.5+.5*p.v[7].x*sum/max(total,.000001)+p.v[7].y,0.,1.);
+ return clamp(pow(clamp(.5+.5*p.v[7].x*sum/max(total,.000001),0.,1.),p.v[8].w)+p.v[7].y,0.,1.);
 }
 @fragment fn fragment(in:Vertex)->@location(0) vec4f {
  let t=p.v[0].x;let x=in.uv.x+p.v[3].z;let y=in.uv.y+p.v[3].w;

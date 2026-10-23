@@ -34,6 +34,14 @@ class NoiseLoopTests(unittest.TestCase):
         self.assertGreater(rgba[..., 3].std(), .02)
         self.assertTrue((self.frame(0, color='RGB')[..., 3] == 1).all())
 
+    def test_shapes_warp_and_power_change_the_image_and_stay_in_range(self):
+        base = self.frame(0, octaves=3)
+        for extra in (dict(shape='ridged'), dict(shape='billow'), dict(shape='hybrid'), dict(warp=2.), dict(power=3.), dict(algorithm='cracks')):
+            frame = self.frame(0, octaves=3, **extra)
+            self.assertGreater(np.abs(frame - base).mean(), .01, extra)
+            self.assertTrue(frame.min() >= 0 and frame.max() <= 1, extra)
+        self.assertLess(self.frame(0, power=3.).mean(), self.frame(0).mean())
+
     def test_without_a_loop_time_just_moves(self):
         self.assertGreater(np.abs(self.frame(4) - self.frame(0)).mean(), .01)
 

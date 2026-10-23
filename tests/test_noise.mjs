@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {noise,noiseExpression} from '../integrations/genereti_comfy_texture/web/noise.js';
 import {parseExpression,evaluateExpression,expressionWGSL} from '../integrations/genereti_comfy_texture/web/expression.js';
-for(const kind of ['perlin','simplex','value','worley','voronoi'])for(let n=1;n<=4;n++)test(`${kind} ${n}D is deterministic, bounded, continuous and nonconstant`,()=>{
+for(const kind of ['perlin','simplex','value','worley','voronoi','cracks'])for(let n=1;n<=4;n++)test(`${kind} ${n}D is deterministic, bounded, continuous and nonconstant`,()=>{
  const points=Array.from({length:40},(_,i)=>Array.from({length:n},(_,j)=>i*.19+j*.37-2.1));
  const values=points.map(p=>noise(kind,...p));assert.ok(Math.max(...values)-Math.min(...values)>.1);
  for(const p of points){const v=noise(kind,...p);assert.equal(v,noise(kind,...p));assert.ok(v>=-1&&v<=1);assert.ok(Math.abs(v-noise(kind,...p.map(x=>x+1e-5)))<.001);}

@@ -1,29 +1,31 @@
 // Deterministic lattice noise shared by scalar expressions and WebGPU.
 const mask=0xffffffff;
 function hash(cell){let h=2166136261;for(const p of cell)h=Math.imul(h^(p|0),16777619)>>>0;h=Math.imul(h^(h>>>16),2246822519)>>>0;h=Math.imul(h^(h>>>13),3266489917)>>>0;return (h^(h>>>16))>>>0;}
-export const NOISE_KINDS={perlin:0,value:1,simplex:2,hash:3,worley:4,voronoi:5};
+export const NOISE_KINDS={perlin:0,value:1,simplex:2,hash:3,worley:4,voronoi:5,cracks:6};
 // Where each algorithm's signed value really lives (0.5th–99.5th percentile, by dimension 1–4). Perlin only reaches about ±0.5,
 // so 'stretch' maps this range to −1..1 and uses the whole 0..1 output.
-export const NOISE_RANGE={"perlin":[[-0.5,0.5],[-0.5,0.48],[-0.44,0.45],[-0.4,0.4]],"value":[[-0.99,0.92],[-0.93,0.92],[-0.88,0.88],[-0.83,0.83]],"simplex":[[-0.5,0.5],[-0.94,0.94],[-1.0,1.0],[-0.92,0.92]],"hash":[[-0.99,0.88],[-0.99,0.99],[-0.99,0.99],[-0.99,0.99]],"worley":[[-0.69,1.0],[-0.8,0.92],[-0.86,0.79],[-0.89,0.64]],"voronoi":[[-0.86,0.97],[-0.99,0.99],[-0.99,0.99],[-0.99,0.99]]};
+export const NOISE_RANGE={"perlin":[[-0.5,0.5],[-0.5,0.48],[-0.44,0.45],[-0.4,0.4]],"value":[[-0.99,0.92],[-0.93,0.92],[-0.88,0.88],[-0.83,0.83]],"simplex":[[-0.5,0.5],[-0.94,0.94],[-1.0,1.0],[-0.92,0.92]],"hash":[[-0.99,0.88],[-0.99,0.99],[-0.99,0.99],[-0.99,0.99]],"worley":[[-0.69,1.0],[-0.8,0.92],[-0.86,0.79],[-0.89,0.64]],"voronoi":[[-0.86,0.97],[-0.99,0.99],[-0.99,0.99],[-0.99,0.99]],"cracks":[[-0.99,1.0],[-1.0,0.77],[-1.0,0.42],[-1.0,0.23]]};
 export const stretchNoise=(kind,n,value)=>{const [lo,hi]=NOISE_RANGE[kind][n-1];return Math.max(-1,Math.min(1,2*(value-lo)/(hi-lo)-1));};
 // A second, salted hash for feature points: independent values from one cell hash.
 function mix(h,salt){h=(h+Math.imul(salt+1,0x9e3779b9))>>>0;h=Math.imul(h^(h>>>16),2246822519)>>>0;h=Math.imul(h^(h>>>13),3266489917)>>>0;return (h^(h>>>16))>>>0;}
 // Worley (distance to the nearest feature point, bright at the points) and voronoi (a random value per nearest cell), any dimension.
 function cellular(kind,p){
- const n=p.length,cell=p.map(Math.floor),total=3**n;let best=Infinity,bestCell=cell;
+ const n=p.length,cell=p.map(Math.floor),total=3**n;let best=Infinity,second=Infinity,bestCell=cell;
  for(let k=0;k<total;k++){
   let r=k;const c=cell.map(x=>{const o=r%3-1;r=(r-r%3)/3;return x+o;}),h=hash(c);let dist=0;
   for(let i=0;i<n;i++){const f=c[i]+mix(h,i)/mask-p[i];dist+=f*f;}
-  if(dist<best){best=dist;bestCell=c;}
+  if(dist<best){second=best;best=dist;bestCell=c;}else if(dist<second)second=dist;
  }
- return kind==='worley'?Math.max(-1,Math.min(1,1-2*Math.sqrt(best))):mix(hash(bestCell),7)/mask*2-1;
+ if(kind==='worley')return Math.max(-1,Math.min(1,1-2*Math.sqrt(best)));
+ if(kind==='cracks')return Math.min(1,Math.sqrt(second)-Math.sqrt(best))*2-1;
+ return mix(hash(bestCell),7)/mask*2-1;
 }
 const fade=x=>x*x*x*(x*(x*6-15)+10);
 function gradient(cell,delta){const h=hash(cell);return delta.reduce((sum,x,i)=>sum+x*((h>>>i)&1?1:-1),0);}
 export function noise(kind,...p){
  const n=p.length;if(n<1||n>4)throw Error('Noise requires 1–4 coordinates');if(p.some(x=>!Number.isFinite(x)))return 0;
  if(kind==='hash')return hash(p.map(Math.floor))/mask*2-1;
- if(kind==='worley'||kind==='voronoi')return cellular(kind,p);
+ if(kind==='worley'||kind==='voronoi'||kind==='cracks')return cellular(kind,p);
  if(kind==='simplex'&&n>1){
   const f=(Math.sqrt(n+1)-1)/n,g=(1-1/Math.sqrt(n+1))/n,s=p.reduce((a,b)=>a+b,0)*f,cell=p.map(x=>Math.floor(x+s)),u=cell.reduce((a,b)=>a+b,0)*g,d=p.map((x,i)=>x-cell[i]+u);
   const rank=d.map((x,i)=>d.reduce((r,y,j)=>r+(x>y||x===y&&i>j?1:0),0));let sum=0;
@@ -34,7 +36,14 @@ export function noise(kind,...p){
  for(let k=0;k<2**n;k++){const o=p.map((_,i)=>(k>>>i)&1),c=cell.map((x,i)=>x+o[i]),weight=u.reduce((a,x,i)=>a*(o[i]?x:1-x),1);sum+=weight*(kind==='value'?(hash(c)/mask*2-1):gradient(c,d.map((x,i)=>x-o[i])));}
  return kind==='value'?sum:sum/Math.sqrt(n);
 }
+// Per-octave shaping of a value already stretched to −1..1: ridged crests, billow lumps, hybrid (their average).
+export const NOISE_SHAPES=['fbm','ridged','billow','hybrid'];
+export const shapeNoise=(shape,s)=>{const ridged=2*(1-Math.abs(s))**2-1;return shape==='ridged'?ridged:shape==='billow'?2*Math.abs(s)-1:shape==='hybrid'?.5*(s+ridged):s;};
 export const NOISE_WGSL=`
+fn gn_shape(s:f32,id:f32)->f32 {
+ let r=1.-abs(s);let ridged=2.*r*r-1.;
+ if(id<.5){return s;}if(id<1.5){return ridged;}if(id<2.5){return 2.*abs(s)-1.;}return .5*(s+ridged);
+}
 fn gn_hash(cell:vec4i,n:u32)->u32 {
  var h=2166136261u;for(var j=0u;j<n;j++){h=(h^bitcast<u32>(cell[j]))*16777619u;}
  h=(h^(h>>16u))*2246822519u;h=(h^(h>>13u))*3266489917u;return h^(h>>16u);
@@ -48,14 +57,15 @@ fn gn_mix(h0:u32,salt:u32)->u32 {
 fn gn_cellular(p:vec4f,n:u32,kind:u32)->f32 {
  var cell=vec4i(0);for(var j=0u;j<n;j++){cell[j]=i32(floor(p[j]));}
  var total=1u;for(var j=0u;j<n;j++){total*=3u;}
- var best=1e9;var bestCell=cell;
+ var best=1e9;var second=1e9;var bestCell=cell;
  for(var k=0u;k<total;k++){
   var r=k;var c=cell;for(var j=0u;j<n;j++){c[j]=cell[j]+i32(r%3u)-1;r/=3u;}
   let h=gn_hash(c,n);var dist=0.;
   for(var j=0u;j<n;j++){let f=f32(c[j])+f32(gn_mix(h,j))/4294967295.-p[j];dist+=f*f;}
-  if(dist<best){best=dist;bestCell=c;}
+  if(dist<best){second=best;best=dist;bestCell=c;}else if(dist<second){second=dist;}
  }
  if(kind==4u){return clamp(1.-2.*sqrt(best),-1.,1.);}
+ if(kind==6u){return min(1.,sqrt(second)-sqrt(best))*2.-1.;}
  return f32(gn_mix(gn_hash(bestCell,n),7u))/4294967295.*2.-1.;
 }
 fn gn_noise(p:vec4f,n:u32,kind:u32)->f32 {

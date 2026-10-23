@@ -3,7 +3,7 @@ import {noise,NOISE_KINDS} from './noise.js';
 // Small shared arithmetic language: parsed once, evaluated per sample or compiled
 // to WGSL. No eval, property access, loops, or access to browser globals.
 const arity={sin:1,cos:1,tan:1,abs:1,sqrt:1,floor:1,ceil:1,exp:1,log:1,fract:1,min:2,max:2,pow:2,clamp:3,mix:3,step:2};
-const noiseNames=new Set(['noise','perlin','simplex','value','hash','worley','voronoi']);
+const noiseNames=new Set(['noise','perlin','simplex','value','hash','worley','voronoi','cracks']);
 const precedence={'+':1,'-':1,'*':2,'/':2,'%':2,'^':3};
 export function parseExpression(source,variables=['t','i','x','y','z','c','v','a','b','w','h','g_time','g_beat','g_bar','g_bpm','g_ticks','g_phase','g_playing','g_rate','g_root','g_tuning'],symbolic=false){
  if(source.length>2048)throw Error('Expression is limited to 2048 characters');
