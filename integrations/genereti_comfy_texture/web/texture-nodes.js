@@ -83,7 +83,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
    p.set([(window.generetiPerformance?.timeFor(node,now)??now/1000)+Number(values.time)+Number(values.offset_t??0),a.width,a.height,state.inputs[0]?1:0]);
    if(kind==='Expression')p.set(values.expressionParameters??[],20);
    const global=window.generetiPerformance?.expressionValues()??{};p.set(['g_time','g_beat','g_bar','g_bpm','g_ticks','g_phase','g_playing','g_rate','g_root','g_tuning'].map(k=>Number(global[k]??(k==='g_bpm'?120:k==='g_tuning'?440:k==='g_rate'?1:0))),4);p[14]=Number(values.offset_x??0);p[15]=Number(values.offset_y??0);p[16]=Number(values.offset_z??0);
-   if(kind==='Noise')p.set([Number(values.scale),Number(values.seed),Number(values.z),Number(values.speed),Number(values.octaves),Number(values.lacunarity),Number(values.gain),+(values.color==='RGB')],20);
+   if(kind==='Noise')p.set([Number(values.scale),Number(values.seed),Number(values.z),Number(values.speed),Number(values.octaves),Number(values.lacunarity),Number(values.gain),+(values.color==='RGB')],20);p.set([Number(values.amplitude??1),Number(values.bias??0),+(values.normalize==='stretch'),0],28);
    frame=gpu.expression(a,p,prefix+'output',a.width,a.height,state.expressionPipeline);
   }else if(kind==='OpticalFlow'){
    const meta=JSON.stringify([state.sourceKey,a.width,a.height,signature]);

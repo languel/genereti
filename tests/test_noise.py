@@ -12,7 +12,7 @@ module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 class NoiseTests(unittest.TestCase):
     def test_vectorized_queue_matches_scalar_browser_in_all_dimensions(self):
         script="""import {noise} from './integrations/genereti_comfy_texture/web/noise.js';
-        const cases=[];for(const kind of ['perlin','simplex','value'])for(let n=1;n<=4;n++){
+        const cases=[];for(const kind of ['perlin','simplex','value','hash','worley','voronoi'])for(let n=1;n<=4;n++){
         const points=Array.from({length:64},(_,i)=>Array.from({length:n},(_,j)=>i*.19+j*.37-2.1));
         cases.push({kind,points,values:points.map(p=>noise(kind,...p))});}console.log(JSON.stringify(cases));"""
         cases=json.loads(subprocess.check_output(['node','--input-type=module','-e',script],cwd=ROOT))

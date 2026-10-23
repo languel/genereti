@@ -23,7 +23,7 @@ except ImportError:
     _noise_module=importlib.util.module_from_spec(_noise_spec)
     _noise_spec.loader.exec_module(_noise_module)
     noise=_noise_module.noise
-FUNCTIONS.update({name:(lambda *p, kind=name:noise('perlin' if kind=='noise' else kind,*p)) for name in ('noise','perlin','simplex','value')})
+FUNCTIONS.update({name:(lambda *p, kind=name:noise('perlin' if kind=='noise' else kind,*p)) for name in ('noise','perlin','simplex','value','hash','worley','voronoi')})
 OPS={ast.Add:operator.add,ast.Sub:operator.sub,ast.Mult:operator.mul,ast.Div:operator.truediv,ast.Mod:np.fmod,ast.Pow:np.power}
 
 @lru_cache(maxsize=128)

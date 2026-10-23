@@ -1,9 +1,9 @@
 import {prepareExpression,parseExpressionParameters} from './expression-parameters.js';
-import {noise} from './noise.js';
+import {noise,NOISE_KINDS} from './noise.js';
 // Small shared arithmetic language: parsed once, evaluated per sample or compiled
 // to WGSL. No eval, property access, loops, or access to browser globals.
 const arity={sin:1,cos:1,tan:1,abs:1,sqrt:1,floor:1,ceil:1,exp:1,log:1,fract:1,min:2,max:2,pow:2,clamp:3,mix:3,step:2};
-const noiseNames=new Set(['noise','perlin','simplex','value']);
+const noiseNames=new Set(['noise','perlin','simplex','value','hash','worley','voronoi']);
 const precedence={'+':1,'-':1,'*':2,'/':2,'%':2,'^':3};
 export function parseExpression(source,variables=['t','i','x','y','z','c','v','a','b','w','h','g_time','g_beat','g_bar','g_bpm','g_ticks','g_phase','g_playing','g_rate','g_root','g_tuning'],symbolic=false){
  if(source.length>2048)throw Error('Expression is limited to 2048 characters');
@@ -18,4 +18,4 @@ export function parseExpression(source,variables=['t','i','x','y','z','c','v','a
 }
 const functions={...Math,fract:x=>x-Math.floor(x),mix:(a,b,k)=>a+(b-a)*k,clamp:(x,a,b)=>Math.max(a,Math.min(b,x)),step:(a,x)=>x<a?0:1};
 export function evaluateExpression(tree,values){if(tree.value!==undefined)return tree.value;if(tree.name)return values[tree.name]??0;const args=tree.args.map(t=>evaluateExpression(t,values));switch(tree.op){case '+':return args[0]+args[1];case '-':return args[0]-args[1];case '*':return args[0]*args[1];case '/':return args[0]/args[1];case '%':return args[0]%args[1];case '^':return Math.pow(...args);case 'neg':return -args[0];case 'pos':return args[0];default:if(noiseNames.has(tree.op))return noise(tree.op==='noise'?'perlin':tree.op,...args);return (functions[tree.op]??Math[tree.op])(...args);}}
-export function expressionWGSL(tree,bindings={}){if(tree.value!==undefined)return Number.isInteger(tree.value)?`${tree.value}.0`:String(tree.value);if(tree.name)return bindings[tree.name]??tree.name;const args=tree.args.map(t=>expressionWGSL(t,bindings));if(tree.op==='neg'||tree.op==='pos')return `(${tree.op==='neg'?'-':''}${args[0]})`;if(tree.op==='^')return `pow(${args.join(',')})`;if(precedence[tree.op]!==undefined)return `(${args[0]} ${tree.op} ${args[1]})`;if(noiseNames.has(tree.op))return `gn_noise(vec4f(${[...args,...Array(4-args.length).fill('0.')].join(',')}),${args.length}u,${tree.op==='simplex'?2:tree.op==='value'?1:0}u)`;return `${tree.op}(${args.join(',')})`;}
+export function expressionWGSL(tree,bindings={}){if(tree.value!==undefined)return Number.isInteger(tree.value)?`${tree.value}.0`:String(tree.value);if(tree.name)return bindings[tree.name]??tree.name;const args=tree.args.map(t=>expressionWGSL(t,bindings));if(tree.op==='neg'||tree.op==='pos')return `(${tree.op==='neg'?'-':''}${args[0]})`;if(tree.op==='^')return `pow(${args.join(',')})`;if(precedence[tree.op]!==undefined)return `(${args[0]} ${tree.op} ${args[1]})`;if(noiseNames.has(tree.op))return `gn_noise(vec4f(${[...args,...Array(4-args.length).fill('0.')].join(',')}),${args.length}u,${NOISE_KINDS[tree.op==='noise'?'perlin':tree.op]}u)`;return `${tree.op}(${args.join(',')})`;}

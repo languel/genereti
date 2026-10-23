@@ -1,7 +1,7 @@
 import {parseExpressionParameters} from './expression-parameters.js';
 import {UTILITY_WGSL,UTILITY_KINDS,utilityParameters} from './utilities.js';
 import {CLEANUP_WGSL} from './cleanup.js';
-import {NOISE_WGSL} from './noise.js';
+import {NOISE_WGSL,NOISE_RANGE,NOISE_KINDS} from './noise.js';
 import {parseExpression,expressionWGSL} from './expression.js';
 // One device per module/Comfy page. Intermediate frames are borrowed GPUTexture
 // handles, never CPU pixels. Commands are ordered on the shared queue.
@@ -165,7 +165,7 @@ fn value(t:f32,x:f32,y:f32,i:f32,c:f32,v:f32,a:f32,b:f32,w:f32,h:f32)->f32 {let 
     this.expressions.set(source,pending);if(this.expressions.size>64)this.expressions.delete(this.expressions.keys().next().value);return pending;
   }
   async noisePipeline(kind,dimensions){
-    const n=Math.max(1,Math.min(4,Number(dimensions)||2)),algorithm={perlin:0,value:1,simplex:2}[kind]??0,key=`noise:${algorithm}:${n}`;
+    const n=Math.max(1,Math.min(4,Number(dimensions)||2)),algorithm=NOISE_KINDS[kind]??0,key=`noise:${algorithm}:${n}`,range=NOISE_RANGE[Object.keys(NOISE_KINDS)[algorithm]][n-1];
     this.expressions??=new Map();if(this.expressions.has(key))return this.expressions.get(key);
     const code=SHADER.slice(0,SHADER.indexOf('@fragment'))+`
 ${NOISE_WGSL}
@@ -176,9 +176,11 @@ fn pigment(t:f32,x:f32,y:f32,c:f32)->f32 {
   let shift=p.v[5].y*.123+f32(o)*19.19+select(0.,c*31.7,p.v[6].w>0.);
   var q=vec4f(x*frequency+shift,y*frequency,p.v[5].z+p.v[4].x,t*p.v[5].w);
   ${n<3?'q.x+=t*p.v[5].w;':''}${n===3?'q.z+=t*p.v[5].w;':''}
-  sum+=weight*gn_noise(q,${n}u,${algorithm}u);total+=weight;weight*=p.v[6].z;frequency*=p.v[6].y;
+  var s=gn_noise(q,${n}u,${algorithm}u);
+  if(p.v[7].z>0.){s=clamp(2.*(s-(${range[0]}))/${range[1]-range[0]}-1.,-1.,1.);}
+  sum+=weight*s;total+=weight;weight*=p.v[6].z;frequency*=p.v[6].y;
  }
- return clamp(.5+.5*sum/max(total,.000001),0.,1.);
+ return clamp(.5+.5*p.v[7].x*sum/max(total,.000001)+p.v[7].y,0.,1.);
 }
 @fragment fn fragment(in:Vertex)->@location(0) vec4f {
  let t=p.v[0].x;let x=in.uv.x+p.v[3].z;let y=in.uv.y+p.v[3].w;

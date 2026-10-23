@@ -110,27 +110,30 @@ class Noise(io.ComfyNode):
     @classmethod
     def define_schema(cls):
         return schema('Noise',[
-            io.Combo.Input('algorithm',options=['perlin','simplex','value']),
+            io.Combo.Input('algorithm',options=['perlin','simplex','value','hash','worley','voronoi']),
             io.Int.Input('dimensions',default=3,min=1,max=4),
             io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),
             number('scale',8,.01,256),io.Int.Input('seed',default=0,min=0,max=65535,control_after_generate=False),
             number('z',0,-10000,10000),number('time',0,-100000,100000),number('speed',.2,-10,10),
-            io.Int.Input('octaves',default=1,min=1,max=6),number('lacunarity',2,1,4),number('gain',.5,0,1),
-            io.Combo.Input('color',options=['Grayscale','RGB']),performance_input(),*domain_offsets()],
-            'Coherent 1–4D Perlin, simplex or value noise. Signed noise is mapped to 0..1; layered octaves are normalized. Seed offsets the domain. 1/2D animation translates x; 3D animates z; 4D uses z and a separate time coordinate. Live WebGPU; Queue samples the explicit time.')
+            io.Int.Input('octaves',default=1,min=1,max=6),number('lacunarity',2,1,4),number('gain',.5,0,1,'Persistence: how much each extra octave contributes. Needs octaves above 1.'),
+            io.Combo.Input('color',options=['Grayscale','RGB']),performance_input(),*domain_offsets(),
+            io.Float.Input('amplitude',default=1.,min=-4,max=4,step=.01,optional=True,tooltip='Contrast around the middle grey; negative inverts.'),
+            io.Float.Input('bias',default=0.,min=-1,max=1,step=.01,optional=True,tooltip='Added to the 0..1 result (a value offset).'),
+            io.Combo.Input('normalize',options=['off','stretch'],default='off',optional=True,tooltip='stretch: fill the full 0..1 range per octave. Perlin alone spans only about 0.25..0.75.')],
+            'Coherent 1–4D Perlin, simplex, value, hash (white), worley (nearest-point distance) or voronoi (value per cell) noise. Signed noise is mapped to 0..1; layered octaves are normalized. Seed offsets the domain. 1/2D animation translates x; 3D animates z; 4D uses z and a separate time coordinate. Live WebGPU; Queue samples the explicit time.')
     @classmethod
-    def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}"):
+    def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}",amplitude=1.,bias=0.,normalize='off'):
         import numpy as np
         import torch
-        from .noise import noise
+        from .noise import noise,stretch
         y,x=np.mgrid[:height,:width];x=(x+.5)/width+offset_x;y=(y+.5)/height+offset_y;z+=offset_z;time+=offset_t
         result=np.empty((1,height,width,4),dtype=np.float32);result[...,3]=1
         for c in range(3 if color=='RGB' else 1):
             frequency=scale;weight=1.;total=0.;out=0.
             for o in range(octaves):
                 coordinates=[x*frequency+seed*.123+o*19.19+(c*31.7 if color=='RGB' else 0)+(time*speed if dimensions<3 else 0),y*frequency,z+(time*speed if dimensions==3 else 0),time*speed][:dimensions]
-                out+=weight*noise(algorithm,*coordinates);total+=weight;weight*=gain;frequency*=lacunarity
-            result[...,c]=np.clip(.5+.5*out/total,0,1)
+                value=noise(algorithm,*coordinates);out+=weight*(stretch(algorithm,dimensions,value) if normalize=='stretch' else value);total+=weight;weight*=gain;frequency*=lacunarity
+            result[...,c]=np.clip(.5+.5*amplitude*out/total+bias,0,1)
         if color!='RGB':result[...,1]=result[...,2]=result[...,0]
         return io.NodeOutput(torch.from_numpy(result))
 
