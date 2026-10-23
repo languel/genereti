@@ -161,6 +161,16 @@ The output-window and overlay glyphs are independent toggles: their pressed stat
 Output toolbar glyphs share 18px SVG bounds, 1.5px strokes and centered 30px hit targets. Overlay geometry is stored per node in workflow properties and reused on reopen. The backdrop toggle beside the overlay draws output in Comfy’s background pass, fixed to the viewport, behind nodes and links; it does not capture pointer input. Only one Genereti backdrop is active at a time. Closing restores the previous background renderer.
 
 
+**Where the interactive view lives.** A node with a live editor, sketch or timeline has
+one interactive view at a time: in the node, the output window or the output overlay.
+The others show its bitmap. The window or overlay that opens last takes the view
+(Alt+W, Alt+Shift+W or their glyphs); closing the owner returns it to the node. The
+menu glyph first in the output toolbar (node, window, overlay) sets it explicitly,
+for example to keep editing in the node while a window shows the bitmap. Windows
+remember their placement. `genereti_multi_ui` on a node's properties opts a poliplan
+into several synced editors at once. The backdrop glyph is a plane behind two nodes,
+so it no longer reads as an image.
+
 The overlay glyph (Alt+W) of an interactive editor (drawing, poliplan) moves the
 **active editor** into a viewport overlay; drawing and live outputs continue there
 and the node mirrors the last frame, with Freeze holding the mirror and delivery.

@@ -17,7 +17,8 @@ IME composition alone. Select one node when a shortcut needs a graph selection.
 | Alt+O | Output-only node | Selected node or output-only node under pointer |
 | Cmd/Ctrl+[ / ] | Stack backward / forward | Hovered or last interacted view; add Shift to send back / front |
 | D | Toggle graph backdrop | Selected preview-capable node |
-| Alt+W | Toggle in-Comfy overlay | Hovered overlay first, otherwise selected node |
+| Alt+W | Toggle in-Comfy overlay | Node or overlay under the pointer, otherwise the selected node; an interactive node's editor moves there |
+| Alt+Shift+W | Toggle output window | Same targeting as Alt+W. Ctrl+W is the browser's close-tab key and cannot be used |
 | Alt+F | Fill window / restore | Hovered overlay first, otherwise selected node; opens its overlay if needed |
 | Escape | Restore filled overlay | Restore its previous position and size |
 | Alt+P | Presentation visibility | Hide/show graph nodes, code and links; rendering continues |

@@ -29,8 +29,9 @@ function mountTimelineNode(node){
  host.className='genereti-timeline-host';host.style.cssText='flex:1;min-height:0;overflow:hidden;position:relative;background:var(--comfy-menu-bg,#222);color:var(--input-text,#ddd)';
  status.style.cssText='font:11px monospace;opacity:.8;padding:0 6px;color:var(--input-text,#ddd)';
  const controls=previewControls(host,status,node,()=>{},{fitTarget:null,fitControl:false,interactiveSurface:host,publishOnOpen:false,initialFrame:()=>null,getRenderSize:()=>({width:Math.max(host.clientWidth,900),height:Math.max(host.clientHeight+120,380)})});
- const [,overlay,visual]=[...controls.actions.children];
- bar.className='genereti-node-controls';bar.append(overlay,visual,button('▥','Dock the timeline in the bottom panel',toggle));
+ const pick=pattern=>[...controls.actions.children].find(b=>pattern.test(b.getAttribute('aria-label')||''));
+ const [surface,win,overlay,visual]=[pick(/interactive view location/i),pick(/output window/i),pick(/output overlay/i),pick(/visual node view/i)];
+ bar.className='genereti-node-controls';bar.append(...[surface,win,overlay,visual].filter(Boolean),button('▥','Dock the timeline in the bottom panel',toggle));
  bar.addEventListener('pointerdown',e=>e.stopPropagation());
  wrap.append(bar,host,status);
  const dispose=mountTimeline(host,service,{visible:()=>host.isConnected});

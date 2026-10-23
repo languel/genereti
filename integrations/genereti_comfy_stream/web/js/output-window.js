@@ -8,11 +8,12 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
   let win = null, canvas = null, context = null, disposed = false, revision = 0;
   let frames = 0, since = performance.now(), fit = 'contain', localSurface = null, localCleanup = null, localShell = null;
   function setFit(next){native?.setFit(next);fit=['contain','cover','fill','native'].includes(next)?next:'contain';if(!canvas)return;canvas.style.cssText=fit==='native'?'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:none;max-height:none':'position:fixed;inset:0;width:100vw;height:100vh;object-fit:'+fit;}
-  function inAppOutput(initialSize,matchAspect,position){
+  function inAppOutput(initialSize,matchAspect,position,takeSurface=false){
     if(initialSize?.width>0&&initialSize?.height>0&&(matchAspect||!layout.rect)){const width=layout.rect?.width||innerWidth*.7;const scale=Math.min(1,innerHeight*.7/(width*initialSize.height/initialSize.width));layout.rect={left:layout.rect?.left??innerWidth*.1,top:layout.rect?.top??innerHeight*.12,width:width*scale,height:width*scale*initialSize.height/initialSize.width};}
     // Alt+W moves the node's live surface here. A window instead asks the node for its own interactive view
     // (config.mountMirror), which stays in sync with the node and every other view.
-    const moved=config.interactiveSurface,mirror=!moved&&config.mountMirror;
+    // `takeSurface`: this window takes the node's live surface (the node then shows its bitmap). Otherwise it is a bitmap mirror.
+    const moved=takeSurface?config.interactiveSurface:null,mirror=!moved&&typeof config.mountMirror==='function'&&(config.multiUi?config.multiUi():true);
     const interactive=moved||(mirror?document.createElement('div'):null);
     const frame=interactive||document.createElement('iframe');if(!interactive)frame.title='Local output';
     let unmount=null,closed=false;
@@ -21,7 +22,7 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
     if(moved){config.onSurfaceChange?.(true);status.textContent='Interactive output overlay';}
     else if(mirror){
       status.textContent='Interactive view · synced with the node';
-      Promise.resolve(mirror(interactive)).then(dispose=>{if(closed)dispose?.();else unmount=dispose;}).catch(error=>{status.textContent=`Interactive view: ${error.message}`;});
+      Promise.resolve(config.mountMirror(interactive)).then(dispose=>{if(closed)dispose?.();else unmount=dispose;}).catch(error=>{status.textContent=`Interactive view: ${error.message}`;});
     }
     else{attach(frame.contentWindow,true);status.textContent='Output overlay · direct';}
   }
@@ -70,19 +71,19 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
     }
   }
   return {
-    async open({floating = false, overlay = false, initialSize=null, matchAspect=false, position=null} = {}) {
+    async open({floating = false, overlay = false, initialSize=null, matchAspect=false, position=null, interactive=false} = {}) {
       if(disposed) return false;
       if(localSurface)return true;
       if(win && !win.closed){win.focus();return true;}
       try {
-        if(desktop&&!overlay){nativeMode=true;const opened=await native.open();onStateChange(opened);return opened;}
-        if(overlay){inAppOutput(initialSize,matchAspect,position);}
+        if(desktop&&!overlay&&!interactive){nativeMode=true;const opened=await native.open();onStateChange(opened);return opened;}
+        if(overlay||interactive){inAppOutput(initialSize,matchAspect,position,interactive);}
         else if(floating && window.documentPictureInPicture?.requestWindow){
           attach(await window.documentPictureInPicture.requestWindow({width:960,height:720}));
 
         } else {
           // Popups are often blocked, so the fallback is the same live mirror as the overlay, drawn from bitmaps.
-          inAppOutput(initialSize,matchAspect,position);
+          inAppOutput(initialSize,matchAspect,position,false);
         }
         if(disposed){win?.close();win=null;return false;}
         onStateChange(true);return true;

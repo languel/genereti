@@ -152,14 +152,24 @@ test('minimal-view header glyph restores node controls',()=>{
  restore.onclick();assert.equal(restored,true);assert.equal(shell.element.removed,true);
 });
 
-test('a node can mount its own interactive view in the window, which is disposed on close; Alt+W moves the surface instead',async()=>{
+test('windows are bitmap mirrors unless they take the live surface; synced editors are opt-in',async()=>{
  const f=fixture(),mounted=[],disposed=[];
- const view=f.make({}, {mountMirror:container=>{mounted.push(container);return ()=>disposed.push(container);}});
+ // Default: a bitmap mirror, even when the node could mount an extra editor.
+ const plain=f.make({}, {mountMirror:c=>{mounted.push(c);},multiUi:()=>false});
+ assert.equal(await plain.open(),true);assert.equal(mounted.length,0);assert.ok(plain.window);plain.close();
+ // Opt-in (genereti_multi_ui): the node mounts its own synced editor, disposed on close.
+ const view=f.make({}, {mountMirror:container=>{mounted.push(container);return ()=>disposed.push(container);},multiUi:()=>true});
  assert.equal(await view.open(),true);await Promise.resolve();
- assert.equal(f.popups.length,0);assert.equal(f.panels.length,1);assert.equal(mounted.length,1);assert.equal(mounted[0].tag,'div');assert.equal(disposed.length,0);
+ assert.equal(f.popups.length,0);assert.equal(mounted.length,1);assert.equal(mounted[0].tag,'div');assert.equal(disposed.length,0);
  view.close();await Promise.resolve();assert.equal(disposed.length,1);assert.equal(disposed[0],mounted[0]);
- // Alt+W: the node's surface is moved into the overlay and no extra view is mounted.
- const surface={tag:'div',style:{},children:[],classList:{add(){}},addEventListener(){},removeEventListener(){},append(){},setAttribute(){},parentNode:null};
- const overlay=f.make({}, {interactiveSurface:surface,mountMirror:container=>{mounted.push(container);}, onSurfaceChange(){}});
- assert.equal(await overlay.open({overlay:true}),true);assert.equal(mounted.length,1);overlay.close();
+ // Taking the surface (Alt+W, Alt+Shift+W or the menu): the node's surface moves in, nothing is mounted, and closing says so.
+ const changes=[],surface={tag:'div',style:{},children:[],classList:{add(){}},addEventListener(){},removeEventListener(){},append(){},setAttribute(){},parentNode:null};
+ for(const overlay of [true,false]){
+  const live=f.make({}, {interactiveSurface:surface,mountMirror:c=>{mounted.push(c);},multiUi:()=>true,onSurfaceChange:open=>changes.push(open)});
+  assert.equal(await live.open({overlay,interactive:true}),true);assert.equal(mounted.length,1);live.close();
+ }
+ assert.deepEqual(changes,[true,false,true,false]);
+ // A mirror of a node that has a live surface never touches the surface.
+ const mirror=f.make({}, {interactiveSurface:surface,onSurfaceChange:open=>changes.push(open)});
+ assert.equal(await mirror.open({overlay:true,interactive:false}),true);assert.equal(changes.length,4);assert.ok(mirror.window);mirror.close();assert.equal(changes.length,4);
 });
