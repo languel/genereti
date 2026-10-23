@@ -37,7 +37,7 @@ export function noise(kind,...p){
  return kind==='value'?sum:sum/Math.sqrt(n);
 }
 // Per-octave shaping of a value already stretched to −1..1: ridged crests, billow lumps, hybrid (their average).
-export const NOISE_SHAPES=['fbm','ridged','billow','hybrid'];
+export const NOISE_SHAPES=['off','ridged','billow','hybrid'];
 export const shapeNoise=(shape,s)=>{const ridged=2*(1-Math.abs(s))**2-1;return shape==='ridged'?ridged:shape==='billow'?2*Math.abs(s)-1:shape==='hybrid'?.5*(s+ridged):s;};
 export const NOISE_WGSL=`
 fn gn_shape(s:f32,id:f32)->f32 {

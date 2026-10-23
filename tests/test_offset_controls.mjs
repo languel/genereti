@@ -12,7 +12,7 @@ test('old expression keeps code, dimensions, time, performance and connected off
  assert.equal(node.widgets_values.length,9);
 });
 test('new offset values survive reload and unrelated nodes are untouched',()=>{
- const node={type:'GeneretiTextureNoise',widgets_values:[...Array(14).fill(1),2,3,4,5]};
+ const node={type:'GeneretiTextureNoise',properties:{genereti_noise_layout:2},widgets_values:[...Array(14).fill(1),2,3,4,5]};
  const saved=structuredClone(node);migrateOffsetControls(node);assert.deepEqual(node,saved);
  const other={type:'GeneretiTextureTransform',widgets_values:[1,2,3]};
  assert.equal(migrateOffsetControls(other),false);
@@ -28,4 +28,15 @@ test('old delivery modes and missing performance snapshots keep their positions'
  const chop={type:'GeneretiChopNoise',widgets_values:[0,'randomize',1,0,1,1,60,0,'']};
  migrateOffsetControls(chop);
  assert.deepEqual(chop.widgets_values,[0,'randomize',1,0,1,1,60,0,0,0,0,0]);
+});
+
+test('top.noise saved before the layout change keeps every value by name',()=>{
+ const old=['simplex',3,512,256,8,7,.5,1.5,.25,3,2,.5,'RGB','{}',.1,.2,.3,.4];
+ const node={type:'GeneretiTextureNoise',widgets_values:[...old,'Live']};
+ migrateOffsetControls(node);
+ assert.deepEqual(node.widgets_values,['simplex',3,512,256,8,7,.5,3,2,.5,1.5,.25,0,1,'RGB','{}',.1,.2,.3,.4,1,0,'off',0,1,'off','Live']);
+ const again=structuredClone(node);migrateOffsetControls(node);assert.deepEqual(node,again);
+ const newer={type:'GeneretiTextureNoise',widgets_values:[...old,1.2,.1,4,2,'fbm',1,.5,'stretch']};
+ migrateOffsetControls(newer);
+ assert.deepEqual(newer.widgets_values.slice(10,14),[1.5,.25,4,2]);assert.equal(newer.widgets_values.at(-4),'off');assert.equal(newer.widgets_values.at(-1),'stretch');
 });

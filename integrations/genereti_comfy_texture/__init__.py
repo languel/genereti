@@ -114,20 +114,21 @@ class Noise(io.ComfyNode):
             io.Int.Input('dimensions',default=3,min=1,max=4,tooltip='Noise space dimensions. 1/2: time slides the pattern sideways. 3: time travels along z. 4: z and time are separate axes. Higher is smoother in time but slower. Looping always uses 4.'),
             io.Int.Input('width',default=512,min=1,max=4096),io.Int.Input('height',default=512,min=1,max=4096),
             number('scale',8,.01,256,'Features across the image: higher is finer detail, lower is broader blobs.'),io.Int.Input('seed',default=0,min=0,max=65535,control_after_generate=False,tooltip='Shifts the pattern: a different seed is a different, repeatable noise field.'),
-            number('z',0,-10000,10000,'Position along the third axis: slide through the noise volume (a slice of 3D/4D noise). Moves the circle centre when looping.'),number('time',0,-100000,100000,'Time offset in seconds, added to the live clock; Queue uses it as the sample time.'),number('speed',.2,-10,10,'How fast the pattern moves per second of time (negative runs backwards). Ignored while looping: the radius sets that.'),
+            number('z',0,-10000,10000,'Position along the third axis: slide through the noise volume (a slice of 3D/4D noise). Moves the circle centre when looping.'),
             io.Int.Input('octaves',default=1,min=1,max=6,tooltip='Layers of noise added together, each finer than the last. 1 is smooth; more adds detail (fractal noise). Costs time per layer.'),number('lacunarity',2,1,4,'Frequency multiplier from one octave to the next: 2 doubles the detail each layer, higher is more gap between layers. Needs octaves above 1.'),number('gain',.5,0,1,'Persistence: how much each extra octave contributes. Needs octaves above 1.'),
+            number('time',0,-100000,100000,'Time offset in seconds, added to the live clock; Queue uses it as the sample time.'),number('speed',.2,-10,10,'How fast the pattern moves per second of time (negative runs backwards). Ignored while looping: the radius sets that.'),
+            io.Float.Input('loop',default=0.,min=0,max=3600,step=.1,tooltip='Loop length in seconds; 0 is off. Time travels once around a circle in the z–w plane of 4D noise, so the image at t and t+loop is identical (forces 4D). Speed and dimensions are ignored while looping.'),
+            io.Float.Input('loop_radius',default=1.,min=.01,max=16,step=.01,tooltip='Circle radius in noise cells: a small circle drifts slowly, a large one changes quickly. z moves its centre.'),
             io.Combo.Input('color',options=['Grayscale','RGB','RGBA'],tooltip='RGB samples independent noise fields for red, green and blue; RGBA adds one for alpha (transparent where it is low).'),performance_input(),*domain_offsets(),
             io.Float.Input('amplitude',default=1.,min=-4,max=4,step=.01,optional=True,tooltip='Contrast around the middle grey; negative inverts.'),
             io.Float.Input('bias',default=0.,min=-1,max=1,step=.01,optional=True,tooltip='Added to the 0..1 result (a value offset).'),
-            io.Float.Input('loop',default=0.,min=0,max=3600,step=.1,optional=True,tooltip='Loop length in seconds; 0 is off. Time travels once around a circle in the z–w plane of 4D noise, so the image at t and t+loop is identical (forces 4D). Speed and dimensions are ignored while looping.'),
-            io.Float.Input('loop_radius',default=1.,min=.01,max=16,step=.01,optional=True,tooltip='Circle radius in noise cells: a small circle drifts slowly, a large one changes quickly. z moves its centre.'),
-            io.Combo.Input('shape',options=['fbm','ridged','billow','hybrid'],default='fbm',optional=True,tooltip='How each octave is shaped before layering. fbm: plain. ridged: sharp bright crests (mountains, veins). billow: soft round lumps (clouds). hybrid: average of fbm and ridged. Shaping always uses the stretched range.'),
+            io.Combo.Input('shape',options=['off','ridged','billow','hybrid'],default='off',optional=True,tooltip='How each octave is shaped before layering. off: plain fbm. ridged: sharp bright crests (mountains, veins). billow: soft round lumps (clouds). hybrid: average of fbm and ridged. Shaping always uses the stretched range.'),
             io.Float.Input('warp',default=0.,min=0,max=8,step=.01,optional=True,tooltip='Domain warp: bends the sampling position with two more noise lookups, in noise cells. 0 is off; about 1–3 gives marble and flowing swirls.'),
             io.Float.Input('power',default=1.,min=.1,max=8,step=.01,optional=True,tooltip='Redistribution: the result is raised to this power. Above 1 flattens valleys and sharpens peaks (terrain); below 1 lifts the shadows.'),
             io.Combo.Input('normalize',options=['off','stretch'],default='off',optional=True,tooltip='stretch: fill the full 0..1 range per octave. Perlin alone spans only about 0.25..0.75.')],
             'Coherent 1–4D Perlin, simplex, value, hash (white), worley (nearest-point distance) or voronoi (value per cell) noise. Signed noise is mapped to 0..1; layered octaves are normalized. Seed offsets the domain. 1/2D animation translates x; 3D animates z; 4D uses z and a separate time coordinate. Live WebGPU; Queue samples the explicit time.')
     @classmethod
-    def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}",amplitude=1.,bias=0.,normalize='off',loop=0.,loop_radius=1.,shape='fbm',warp=0.,power=1.):
+    def execute(cls,algorithm,dimensions,width,height,scale,seed,z,time,speed,octaves,lacunarity,gain,color,offset_x=0,offset_y=0,offset_z=0,offset_t=0,performance="{}",amplitude=1.,bias=0.,normalize='off',loop=0.,loop_radius=1.,shape='off',warp=0.,power=1.):
         import math
         import numpy as np
         import torch
@@ -146,7 +147,7 @@ class Noise(io.ComfyNode):
                     coordinates[0]=coordinates[0]+warp*dx
                     if len(coordinates)>1:coordinates[1]=coordinates[1]+warp*dy
                 value=noise(algorithm,*coordinates)
-                if normalize=='stretch' or shape!='fbm':value=stretch(algorithm,dimensions,value)
+                if normalize=='stretch' or shape not in ('off','fbm'):value=stretch(algorithm,dimensions,value)
                 out+=weight*shape_noise(shape,value);total+=weight;weight*=gain;frequency*=lacunarity
             result[...,c]=np.clip(np.power(np.clip(.5+.5*amplitude*out/total,0,1),power)+bias,0,1)
         if color=='Grayscale':result[...,1]=result[...,2]=result[...,0]

@@ -44,6 +44,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  if(!node.comfyClass?.startsWith('GeneretiTexture'))return;
  const kind=node.comfyClass.slice('GeneretiTexture'.length),prefix=`texture:${node.id}:${crypto.randomUUID()}:`;
  if(kind==='Expression')attachExpressionParameters(node);
+ if(kind==='Noise'){node.properties??={};node.properties.genereti_noise_layout??=2;}
  const surface=document.createElement('div');surface.className='genereti-live-surface genereti-texture-surface';surface.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%';
  const canvas=document.createElement('canvas');canvas.width=canvas.height=512;canvas.style.cssText='display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:transparent';
  const status=Object.assign(document.createElement('span'),{className:'genereti-status'});status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.textContent='Initializing WebGPU';
