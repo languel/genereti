@@ -148,6 +148,12 @@ function makePoliplan(node, name) {
   };
   let mirrorTimer = 0;
   const scheduleMirror = () => { if (viewers <= 0 || mirrorTimer) return; mirrorTimer = setTimeout(() => { mirrorTimer = 0; paintMirror(); }, 66); };
+  const bitmapExport = { broken: false };   // an older editor build has no 'bitmap' export: fall back to PNG
+  const timing = { export: 0, decode: 0, frames: 0, since: performance.now(), fps: 0 };
+  const ema = (key, value) => { timing[key] = timing[key] ? timing[key] * .8 + value * .2 : value; };
+  node._poliplanTiming = timing;
+  /** Frames are at least this far apart: never less than LIVE_MIN_MS, and long enough that exports leave the editor's thread mostly free for drawing. */
+  const liveGap = () => Math.max(LIVE_MIN_MS, Math.min(250, timing.export * 2.5));
   /**
    * Publish soon, and never wait for the editing to stop: one export in flight, edits that arrive meanwhile are folded
    * into the next, and frames are at least LIVE_MIN_MS apart (a trailing debounce would hold every frame back until the
@@ -156,7 +162,7 @@ function makePoliplan(node, name) {
   const scheduleLive = () => {
     dirty = true;
     if (publishing || liveTimer) return;
-    liveTimer = setTimeout(pump, Math.max(0, LIVE_MIN_MS - (performance.now() - lastPublish)));
+    liveTimer = setTimeout(pump, Math.max(0, liveGap() - (performance.now() - lastPublish)));
   };
   async function pump() {
     liveTimer = 0;
@@ -164,7 +170,7 @@ function makePoliplan(node, name) {
     publishing = true;
     try {
       while (dirty && !disposed) {
-        const wait = LIVE_MIN_MS - (performance.now() - lastPublish);
+        const wait = liveGap() - (performance.now() - lastPublish);
         if (wait > 0) await new Promise(resolve => setTimeout(resolve, wait));
         dirty = false;
         await publishLatest();
@@ -174,10 +180,6 @@ function makePoliplan(node, name) {
   }
   // `draft`: a live frame also shows the stroke being drawn, which is in the document only after the pointer is released.
   // Where a live frame's time goes: the editor's export (an ImageBitmap; PNG encoding was the slow part). Shown in the status line.
-  const bitmapExport = { broken: false };   // an older editor build has no 'bitmap' export: fall back to PNG
-  const timing = { export: 0, decode: 0, frames: 0, since: performance.now(), fps: 0 };
-  const ema = (key, value) => { timing[key] = timing[key] ? timing[key] * .8 + value * .2 : value; };
-  node._poliplanTiming = timing;
   const exportBoard = async (board, transparent = false) => {
     const t0 = performance.now();
     let bitmap;
