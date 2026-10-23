@@ -16,6 +16,7 @@ RECIPES = {
     'sandow': ('Sandow*.webm', 1, 9),
     'discus': ('Lancement_du_disque*.webm', 2, 8),
     'shotput': ('Lancement_du_poids*.webm', 2, 9),
+    'dance': ('Danse_serpentine*.webm', 0, 14),
 }
 
 def wire_clean_underlay(graph):
@@ -93,6 +94,10 @@ def rebuild():
             n['properties']['generetiSelectionMap'] = 'face'
             n['properties']['generetiFeatureSelectedOnly'] = True
     graphs['ꘇ-Perception-05-Region-Study.json'] = study
+    for name in ['ꘇ-Perception-06-Measures-Regions.json','ꘇ-Perception-07-Movement-Painting-Lesson.json']:
+        extra = WORKFLOWS / name
+        if extra.exists():
+            graphs[extra.name] = json.loads(extra.read_text())
     for name, graph in graphs.items():
         wire_clean_underlay(graph)
         (WORKFLOWS / name).write_text(json.dumps(graph, ensure_ascii=False, indent=2) + '\n')
@@ -110,7 +115,7 @@ def prepare(args, graphs):
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for name, graph in graphs.items():
         local = copy.deepcopy(graph)
-        key = 'discus' if '02-' in name else 'shotput' if '03-' in name else 'sandow'
+        key = 'dance' if '07-' in name else 'discus' if '02-' in name else 'shotput' if '03-' in name else 'sandow'
         url = '/view?' + urlencode({'filename': key + '.webm', 'type': 'input', 'subfolder': 'genereti-demo-local/earlyfilm'})
         for n in local['nodes']:
             if n['type'] == 'GeneretiMediaStream':
