@@ -27,4 +27,4 @@ More outputs (bounding boxes of marks for image generation, timing information, 
 
 ## Updating Poliplan
 
-In the Artist Model Studio repository: `npm run build:poliplan`, then copy `dist-embed/` into `web/vendor/poliplan/` and write the commit into `VERSION`. The vendored bundle carries one local patch: `export` accepts `format: 'bitmap'` and answers with an `ImageBitmap` instead of encoding a PNG (live frames were limited by the PNG encode, about 16 ms at 512 px and 60 ms at 2048 px). Reapply it to a rebuild (or upstream it); without it the node falls back to PNG on its own. See that repository's `docs/EMBEDDING.md` (the protocol: `ams-editor-v1`).
+In the Artist Model Studio repository: `npm run build:poliplan`, then copy `dist-embed/` into `web/vendor/poliplan/` and write the commit into `VERSION`. Live frames use `export({ format: 'bitmap' })` (an `ImageBitmap`, no PNG encode; upstream since 81805bc), and the node falls back to PNG on its own with an older build. The editor's Lazy and Smoothing settings apply to every stroke since 433b027. See that repository's `docs/EMBEDDING.md` (the protocol: `ams-editor-v1`).

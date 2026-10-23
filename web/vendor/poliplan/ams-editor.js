@@ -86,9 +86,11 @@ export function createEditor(container, { src, ns = 'ams-embed', theme = 'host',
     /** { rev, document }: the whole drawing as plain JSON. */
     getDocument: () => request('get-document'),
     /**
-     * { format: png | svg | json | excalidraw, blob | text | document | scene, … } for one board, or with `ids` just those marks as png or svg (a blob, on no paper).
+     * { format: png | bitmap | svg | json | excalidraw, blob | bitmap | text | document | scene, … } for one board, or with `ids` just those marks as png or svg (a blob, on no paper).
      * `draft: true` (png) also draws the stroke still being drawn, which is not in the document until the pointer is released:
      * answer the `draft` event with it for a live view (`change` only follows the release).
+     * `format: 'bitmap'` answers `{ bitmap: ImageBitmap }`, with no encode, for live views (a PNG costs about 16 ms at 512 px, 33 ms at 1024, 60 ms at 2048, on the editor's own thread).
+     * An editor without it answers "Unknown export format": fall back to png.
      */
     export: opts => request('export', opts),
     /** Any studio tool call (ams_add, ams_board, ams_view, …); editor.listTools() lists them. */
@@ -104,6 +106,9 @@ export function createEditor(container, { src, ns = 'ams-embed', theme = 'host',
     reference: opts => request('reference', opts || {}),
     /** Read ({ x, y, z, w, h }) or set the view: screen = world × z + (x, y). The `camera` event reports the editor's own pans and zooms. */
     camera: cam => request('camera', cam || {}),
+    /** Select marks enclosed by a host selection box in shared world coordinates. */
+    selectBox: box => request('select-box', box),
+    key: event => request('host-key', event),
     fit: opts => request('fit', opts),
     focus: () => { frame.focus(); return request('focus'); },
     ready: () => readyPromise,
