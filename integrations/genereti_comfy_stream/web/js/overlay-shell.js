@@ -2,7 +2,7 @@ import { registerViewStack } from './view-stack.js';
 import { routePreviewShortcut, performPreviewAction } from './preview-shortcuts.js';
 // Shared content-only chrome for image output and the interactive drawing editor.
 export function overlayShell(frame,layout={},onClose=()=>{},config={}) {
-    const panel=document.createElement('div');panel.className='genereti-output-overlay';panel.setAttribute('data-chrome','auto');panel.style.cssText='position:fixed;left:10vw;top:12vh;width:70vw;height:70vh;min-width:240px;min-height:180px;z-index:10000;background:transparent;border:0;box-shadow:none';
+    const panel=document.createElement('div');panel.className='genereti-output-overlay';if(config.node)panel.setAttribute('data-node-id',String(config.node.id));panel.setAttribute('data-chrome','auto');panel.style.cssText='position:fixed;left:10vw;top:12vh;width:70vw;height:70vh;min-width:240px;min-height:180px;z-index:10000;background:transparent;border:0;box-shadow:none';
     if(config.embedded){panel.classList.add('genereti-output-only-view');panel.style.cssText='position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;visibility:visible;pointer-events:auto;background:transparent';}
     if(config.embedded&&config.surfaceSize?.width>0&&config.surfaceSize?.height>0){
       panel.style.inset='auto';panel.style.left=(config.surfaceSize.left||0)+'px';panel.style.top=(config.surfaceSize.top||0)+'px';

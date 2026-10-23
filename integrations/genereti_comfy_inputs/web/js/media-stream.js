@@ -12,7 +12,7 @@ import {ensureControlStyle} from '/extensions/genereti_comfy_p5/js/control-style
 app.registerExtension({name:'Genereti.MediaStream',getCustomWidgets(){return {GENERETI_MEDIA_STREAM(node,name){
  ensureControlStyle();node.properties??={};let hasFrame=false,media,decoder,gifBusy=false,gifIndex=0,gifDue=0,blobUrl,raf=0,last=0,running=false,users=0,disposed=false,revision=0,release;
  const root=document.createElement('div');root.style.cssText='width:100%;display:flex;flex-direction:column;gap:4px';const canvas=document.createElement('canvas'),sampled=document.createElement('canvas'),unframed=document.createElement('canvas');let hasUnframed=false;canvas.width=canvas.height=sampled.width=sampled.height=512;canvas.style.cssText='display:block;width:100%;height:auto;aspect-ratio:1';
- const status=document.createElement('span');status.style.fontSize='11px';status.textContent='Load an image, video or GIF · or connect IMAGE';
+ const status=Object.assign(document.createElement('span'),{className:'genereti-status'});status.style.fontSize='11px';status.textContent='Load an image, video or GIF · or connect IMAGE';
  const controls=document.createElement('div');controls.className='genereti-node-controls';
  const button=(text,title,fn)=>{const b=document.createElement('button');b.textContent=text;b.title=title;b.setAttribute('aria-label',title);b.type='button';b.onclick=fn;controls.append(b);return b;};
  const file=document.createElement('input');file.type='file';file.accept='image/*,video/*';file.hidden=true;

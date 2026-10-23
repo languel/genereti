@@ -17,12 +17,12 @@ function fixture(desktop=false){
  const status={textContent:''};return {shell:(frame,layout,onClose,config)=>context.overlayShell(frame,layout,onClose,config),make:(layout,config)=>context.outputWindow(status,undefined,layout,config),status,panels,popups,draws,nativeFrames,nativeOpens:()=>nativeOpens};
 }
 
-test('separate window and explicit overlay coexist and both draw the current frame',async()=>{
+test('the window button is a live in-Comfy mirror (no blocked popup) and coexists with the overlay',async()=>{
  const f=fixture(),window=f.make(),overlay=f.make();
  assert.equal(await window.open(),true);assert.equal(await overlay.open({overlay:true}),true);
- assert.equal(f.popups.length,1);assert.equal(f.panels.length,1);assert.notEqual(window.window,overlay.window);
+ assert.equal(f.popups.length,0);assert.equal(f.panels.length,2);
  const bitmap={width:32,height:24};window.publish({bitmap});overlay.publish({bitmap});assert.equal(f.draws.length,2);
- overlay.close();assert.equal(f.panels[0].removed,true);assert.equal(Boolean(f.popups[0].closed),false);window.close();assert.equal(f.popups[0].closed,true);
+ overlay.close();assert.equal(f.panels[1].removed,true);assert.equal(f.panels[0].removed,undefined);window.close();assert.equal(f.panels[0].removed,true);
 });
 
 test('Desktop uses the native companion while the overlay stays in the host',async()=>{

@@ -3,7 +3,8 @@ import { editing, routeNativeShortcut } from './keybinding-router.js';
 import { app } from '../../../scripts/app.js';
 
 const previews=new Map();
-let pointer;window.addEventListener('pointermove',event=>{pointer={x:event.clientX,y:event.clientY};},{passive:true,capture:true});
+// Hover: pointermove over the page, pointerover when entering an iframe (its own moves never reach this window).
+let pointer;const trackPointer=event=>{pointer={x:event.clientX,y:event.clientY};};window.addEventListener('pointermove',trackPointer,{passive:true,capture:true});window.addEventListener('pointerover',trackPointer,{passive:true,capture:true});
 export function registerPreviewShortcuts(node,controls){
   previews.set(node,controls);
   return ()=>{if(previews.get(node)===controls)previews.delete(node);};
@@ -18,8 +19,9 @@ export function performPreviewAction(kind){
   const escape=kind==='restore';
   if(escape){const filled=[...previews].reverse().find(([node,controls])=>node.graph===app.graph&&controls.isFilled?.());if(!filled)return false;filled[1].toggleFill();return true;}
   const selected=[...new Set([...Object.values(app.canvas?.selected_nodes||{}),...Array.from(app.canvas?.selectedItems||[])])].filter(node=>node.graph===app.graph);
-  const pointerNode=['outputOnly','backdrop','backdropGrid'].includes(kind)&&pointer?document.elementFromPoint?.(pointer.x,pointer.y)?.closest?.('.lg-node')?.dataset?.nodeId:undefined;
-  const hovered=([...previews].reverse().find(([node,controls])=>node.graph===app.graph&&(['outputOnly','backdrop','backdropGrid'].includes(kind)?(pointerNode!==undefined?String(node.id)===pointerNode:controls.isOutputHovered?.()):controls.isHovered?.()||(kind==='through'&&controls.isOutputHovered?.()))));
+  const pointerKinds=['outputOnly','backdrop','backdropGrid','overlay'];
+  const pointerNode=pointerKinds.includes(kind)&&pointer?document.elementFromPoint?.(pointer.x,pointer.y)?.closest?.('[data-node-id]')?.dataset?.nodeId:undefined;
+  const hovered=([...previews].reverse().find(([node,controls])=>node.graph===app.graph&&(pointerKinds.includes(kind)?(pointerNode!==undefined?String(node.id)===pointerNode:controls.isOutputHovered?.())||(kind==='overlay'&&controls.isHovered?.()):controls.isHovered?.()||(kind==='through'&&controls.isOutputHovered?.()))));
   const node=hovered?.[0]||(selected.length===1?selected[0]:null);
   const action=previews.get(node)?.[{outputOnly:'toggleOutputOnly',through:'toggleClickThrough',backdrop:'toggleBackdrop',backdropGrid:'toggleBackdropGrid',fill:'toggleFill',overlay:'toggleOverlay'}[kind]];
   if(!action)return false;

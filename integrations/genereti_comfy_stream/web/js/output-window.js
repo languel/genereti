@@ -73,9 +73,8 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
           attach(await window.documentPictureInPicture.requestWindow({width:960,height:720}));
 
         } else {
-          const target=window.open('about:blank', 'genereti-output-'+crypto.randomUUID(), 'popup,width=960,height=720');
-          if(!target) throw new Error('Output popup blocked. Allow popups for this Comfy address, or use Open output overlay.');
-          attach(target);
+          // Popups are often blocked, so the fallback is the same live mirror as the overlay, drawn from bitmaps.
+          inAppOutput(initialSize,matchAspect,position);
         }
         if(disposed){win?.close();win=null;return false;}
         onStateChange(true);return true;

@@ -14,7 +14,7 @@ app.registerExtension({name:'Genereti.PerceptionFeatures',nodeCreated(node){
  if(node.comfyClass!=='GeneretiPerceptionFeatures')return;
  if(!node.inputs?.some(i=>i.name==='image'))node.addInput('image','IMAGE');
  const underlayImage=document.createElement('canvas');let hasUnderlay=false,liveUnderlay=false,queuedImage=null;
- const host=document.createElement('div'),canvas=document.createElement('canvas'),status=document.createElement('span'),image=document.createElement('canvas'),ctx=image.getContext('2d');canvas.width=640;canvas.height=360;canvas.style.cssText='width:100%;height:auto;touch-action:none';status.style.cssText='font:11px monospace';
+ const host=document.createElement('div'),canvas=document.createElement('canvas'),status=Object.assign(document.createElement('span'),{className:'genereti-status'}),image=document.createElement('canvas'),ctx=image.getContext('2d');canvas.width=640;canvas.height=360;canvas.style.cssText='width:100%;height:auto;touch-action:none';status.style.cssText='font:11px monospace';
  const preview=previewControls(canvas,status,node);host.append(preview.toolbar,canvas,status);let running=true,dead=false,claimed='',result=null,selected=null,points=[],visiblePoints=[],channels={},lastKey='';
  const names=()=>String(value(node,'features')??'').split(/[\s,]+/).filter(Boolean);
  const write=next=>{const w=node.widgets.find(w=>w.name==='features');w.value=next.join(' ');w.callback?.(w.value);node.graph?.change?.(node);tick();};

@@ -29,7 +29,7 @@ function makeProjectorWidget(node, inputName) {
     width: "100%", border: "1px solid rgba(255,255,255,.2)", borderRadius: "5px", padding: "8px 10px",
     color: "var(--fg-color, #eee)", background: "var(--comfy-input-bg, #333)", cursor: "pointer",
   });
-  const status = document.createElement("div");
+  const status = Object.assign(document.createElement("div"),{className:'genereti-status'});
   status.textContent = "Queue this workflow to send its image here.";
   Object.assign(status.style, { fontSize: "11px", opacity: ".75" });
   state.status = status;

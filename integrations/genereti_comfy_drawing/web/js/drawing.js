@@ -24,7 +24,7 @@ function makeDrawing(node, name) {
   const setMatchTheme=enabled=>{matchEditorTheme=enabled;matchTheme.setAttribute('aria-pressed',String(enabled));};
   setMatchTheme(false);
   matchTheme.onclick=()=>{setMatchTheme(!matchEditorTheme);send({type:'export-appearance',enabled:matchEditorTheme});};
-  const status = document.createElement('span');
+  const status = Object.assign(document.createElement('span'),{className:'genereti-status'});
   const render=renderSettings(size=>send({type:'output-size',size}));
   const frame = document.createElement('iframe');
   frame.title = 'ꘇ interactive drawing';

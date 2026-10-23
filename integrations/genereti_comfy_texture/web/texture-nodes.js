@@ -45,7 +45,7 @@ app.registerExtension({name:'Genereti.Textures',nodeCreated(node){
  if(kind==='Expression')attachExpressionParameters(node);
  const surface=document.createElement('div');surface.className='genereti-live-surface genereti-texture-surface';surface.style.cssText='display:flex;flex-direction:column;gap:4px;width:100%';
  const canvas=document.createElement('canvas');canvas.width=canvas.height=512;canvas.style.cssText='display:block;width:100%;height:auto;aspect-ratio:1;object-fit:contain;background:transparent';
- const status=document.createElement('span');status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.textContent='Initializing WebGPU';
+ const status=Object.assign(document.createElement('span'),{className:'genereti-status'});status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.textContent='Initializing WebGPU';
  const preview=document.createElement('div');preview.style.cssText='position:relative;width:100%;overflow:hidden;aspect-ratio:1';preview.append(canvas);
  const local=previewState(node,preview,{capture:()=>{
    if(!frame)throw Error('Run the source before freezing its preview');

@@ -36,7 +36,7 @@ function makeCaptureWidget(node, inputName, kind) {
   const icon=(glyph,label)=>{const el=document.createElement('button');el.type='button';el.textContent=glyph;el.title=label;el.setAttribute('aria-label',label);return el;};
   const flip=icon('↔','Flip horizontally · affects preview and output');
   controls.append(device,flip,rate);
-  const status=document.createElement('span');Object.assign(status.style,{fontSize:'11px',opacity:'.75'});
+  const status=Object.assign(document.createElement('span'),{className:'genereti-status'});Object.assign(status.style,{fontSize:'11px',opacity:'.75'});
   const video=document.createElement('video'); video.muted=true;video.playsInline=true;
   const canvas=document.createElement('canvas');canvas.width=512;canvas.height=288;
   Object.assign(canvas.style,{display:'block',width:'100%',height:'auto',aspectRatio:'16 / 9',objectFit:'contain',background:'transparent',borderRadius:'4px'});

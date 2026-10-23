@@ -23,7 +23,7 @@ app.registerExtension({name:'Genereti.Webview',getCustomWidgets(){return {
   const previewHeight=()=>Math.max(160,Math.min(1600,Number(node.properties.generetiWebviewHeight)||320));
   const code=document.createElement('div');code.style.cssText='height:0;flex:1 1 0;min-height:0;overflow:hidden';
   const surface=document.createElement('div');surface.style.cssText='height:0;flex:1 1 0;min-height:0;width:100%;overflow:hidden';
-  const status=document.createElement('span');status.style.cssText='font-size:11px;color:var(--fg-color);overflow-wrap:anywhere';status.hidden=true;status.setAttribute('role','status');root.append(windowTools,surface,code,status);
+  const status=Object.assign(document.createElement('span'),{className:'genereti-status'});status.style.cssText='font-size:11px;color:var(--fg-color);overflow-wrap:anywhere';status.hidden=true;status.setAttribute('role','status');root.append(windowTools,surface,code,status);
   const format=()=>queuedFormat??node.widgets?.find(w=>w.name==='format')?.value??'markdown';
   const source=()=>queued??draft;
   const appearance=()=>({...editorAppearance(node),fillHeight:true});

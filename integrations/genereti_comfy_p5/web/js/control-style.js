@@ -47,6 +47,8 @@ export function ensureControlStyle() {
 .genereti-choice-icon svg{width:14px;height:14px;display:block}
 .genereti-glyph-choice::picker(select){min-width:160px!important}
 .genereti-node-controls button{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;width:20px;min-width:20px;padding:0;line-height:1}
+/* Text labels (Image / Mask) size to their words; glyph-only buttons keep the 20px square. */
+.genereti-node-controls button:not(:has(svg)){width:auto;padding:0 5px}
 .genereti-node-controls button svg{display:block;width:14px;height:14px;flex:none}
 .genereti-node-controls select:hover{background:color-mix(in srgb,currentColor 8%,transparent)}
 .genereti-node-controls button:hover,.genereti-node-controls button[aria-pressed=true]{background:color-mix(in srgb,currentColor 12%,transparent)}

@@ -23,7 +23,7 @@ app.registerExtension({
     let disposed = false, revision = 0, last = 0, lastBrowserFrame = 0, unsubscribe = null, frameTimes = [], lastStatus = -Infinity;
     const container = document.createElement('div');container.classList.add('genereti-live-surface');
     container.style.cssText = 'width:100%;display:flex;flex-direction:column;gap:6px';
-    const status = document.createElement('span');
+    const status = Object.assign(document.createElement('span'),{className:'genereti-status'});
     status.style.cssText = 'font-size:11px;font-variant-numeric:tabular-nums';
     status.textContent = 'Live browser source · Comfy Queue for Python IMAGE results';
     const canvas = document.createElement('canvas');

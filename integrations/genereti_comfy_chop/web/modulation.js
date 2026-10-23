@@ -32,7 +32,7 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
  const tools=document.createElement('div');tools.className='genereti-node-controls genereti-preview-actions';
  const canvas=document.createElement('canvas');canvas.className='genereti-chop-preview';canvas.width=512;canvas.height=gesture?300:120;canvas.style.cssText='display:block;width:100%;height:auto;touch-action:none;cursor:crosshair';canvas.ariaLabel=gesture?'Gesture recording pad':'LFO waveform';
  let previewVisible=true;const visibility=new IntersectionObserver(entries=>{previewVisible=entries[0]?.isIntersecting??false;});visibility.observe(canvas);
- const status=document.createElement('span');status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.setAttribute('role','status');surface.append(tools,canvas);
+ const status=Object.assign(document.createElement('span'),{className:'genereti-status'});status.style.cssText='font-size:11px;font-variant-numeric:tabular-nums';status.setAttribute('role','status');surface.append(tools,canvas);
  const state={node,status,manual:[.5,.5],playing:!gesture,armed:false,capturing:false,latest:null,running:false,previous:[],start:performance.now()/1000,phase:0,clip:validateGesture({version:1,duration:1,points:[]})};
  const play=button(gesture?'▶':'Ⅱ',gesture?'Play or pause recorded gesture':'Pause or resume LFO',()=>{
   if(gesture&&state.capturing)state.finish();

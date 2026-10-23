@@ -10,7 +10,7 @@ import {documentExportControls} from '/extensions/genereti_comfy_p5/js/document-
 import {display} from './inspect-value.js';
 app.registerExtension({name:'Genereti.Inspect',nodeCreated(node){
  if(node.comfyClass!=='GeneretiDatInspect')return;ensureControlStyle();
- const surface=document.createElement('div'),tools=document.createElement('div'),body=document.createElement('div'),status=document.createElement('span');surface.style.cssText='width:100%;display:flex;flex-direction:column;gap:4px;min-height:0;overflow:hidden';tools.className='genereti-node-controls';body.style.cssText='height:0;flex:1 1 0;min-height:0;overflow:hidden';status.style.cssText='font:11px monospace;opacity:.8';surface.append(tools,body,status);
+ const surface=document.createElement('div'),tools=document.createElement('div'),body=document.createElement('div'),status=Object.assign(document.createElement('span'),{className:'genereti-status'});surface.style.cssText='width:100%;display:flex;flex-direction:column;gap:4px;min-height:0;overflow:hidden';tools.className='genereti-node-controls';body.style.cssText='height:0;flex:1 1 0;min-height:0;overflow:hidden';status.style.cssText='font:11px monospace;opacity:.8';surface.append(tools,body,status);
  visualNodeControls(node,body,tools);
  const appearance=()=>({...editorAppearance(node),fillHeight:true,readOnly:true,autocomplete:false,hoverDocs:false});
  const editor=createEditor(body,'Connect an input to inspect its value.','javascript',()=>{},()=>{},appearance());editor.dom.style.height='100%';editor.contentDOM.setAttribute('aria-label','Inspected value');

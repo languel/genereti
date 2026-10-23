@@ -7,7 +7,7 @@ app.registerExtension({name:'Genereti.ImageCompare',nodeCreated(node){
  if(node.comfyClass!=='GeneretiImageCompare')return;
  node.properties??={};let disposed=false;const buffers=[document.createElement('canvas'),document.createElement('canvas')],ready=[false,false],revisions=[0,0],releases=[];
  const layers=[document.createElement('canvas'),document.createElement('canvas')];const root=document.createElement('div');root.style.cssText='display:flex;flex-direction:column;width:100%;gap:4px';const work=document.createElement('canvas'),canvas=document.createElement('canvas');canvas.width=canvas.height=512;canvas.style.cssText='display:block;width:100%;height:auto;aspect-ratio:1';
- const status=document.createElement('span');status.style.fontSize='11px';status.textContent='Connect A and B · Live or Comfy Queue';
+ const status=Object.assign(document.createElement('span'),{className:'genereti-status'});status.style.fontSize='11px';status.textContent='Connect A and B · Live or Comfy Queue';
  const mode=document.createElement('select');mode.title='Comparison view';mode.setAttribute('aria-label',mode.title);for(const v of ['wipe','side-by-side','difference'])mode.add(new Option(v,v));
  const split=document.createElement('input');split.type='range';split.min=0;split.max=1;split.step=.01;split.title='A/B split';split.setAttribute('aria-label',split.title);split.style.width='100%';
  const visibility=observeSurface(canvas,draw);const output=previewControls(canvas,status,node);const dimensions=frameControls(node,work,draw);const preview=previewState(node,canvas,{resize:draw});

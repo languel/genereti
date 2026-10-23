@@ -55,7 +55,7 @@ const value=(node,name)=>node.widgets.find(w=>w.name===name)?.value;
 function editorWidget(node,name){
  const container=document.createElement('div');container.className='genereti-livecode';container.style.cssText='display:flex;flex-direction:column;gap:6px;width:100%;min-height:220px;overflow:visible;background:var(--comfy-input-bg,#171b22);color:var(--fg-color,#eee)';
  let localPreview;
- const tools=document.createElement('div'),run=document.createElement('button'),stop=document.createElement('button'),status=document.createElement('div'),code=document.createElement('div'),stage=document.createElement('div');
+ const tools=document.createElement('div'),run=document.createElement('button'),stop=document.createElement('button'),status=Object.assign(document.createElement('div'),{className:'genereti-status'}),code=document.createElement('div'),stage=document.createElement('div');
  const outputHost=document.createElement('div');outputHost.style.cssText='position:absolute;inset:0;overflow:hidden;background:transparent';stage.append(outputHost);
  stage.className='genereti-livecode-stage';iconButton(run,'Run','<path d="m8 5 11 7-11 7Z" fill="currentColor" stroke="none"/>');run.title='Evaluate (Cmd/Ctrl+Enter)';iconButton(stop,'Stop','<rect x="5" y="5" width="14" height="14" rx="1" fill="currentColor" stroke="none"/>');stop.title='Stop · keep last frame (Ctrl+.)';tools.className='genereti-livecode-toolbar';tools.append(run,stop);
  const minimizeEditor=document.createElement('button');iconButton(minimizeEditor,'Minimize code editor','<path d="m6 9 6 6 6-6"/>');minimizeEditor.title='Minimize code editor';minimizeEditor.setAttribute('aria-expanded','true');tools.prepend(minimizeEditor);

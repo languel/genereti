@@ -34,7 +34,7 @@ function makePoliplan(node, name) {
   const controls = document.createElement('div');
   controls.className = 'genereti-node-controls';
   Object.assign(controls.style, { padding: '4px', flexShrink: '0', display: 'flex', gap: '6px', alignItems: 'center' });
-  const status = document.createElement('span');
+  const status = Object.assign(document.createElement('span'),{className:'genereti-status'});
   status.style.opacity = '0.7';
   const button = (label, title, onclick) => {
     const b = document.createElement('button');
