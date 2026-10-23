@@ -46,6 +46,7 @@ function makePoliplan(node, name) {
   let liveUsers = 0, liveTimer = 0, viewers = 0, local = null, output = null;
   let publishing = false, dirty = false, lastPublish = 0;
   const preview = document.createElement('canvas');
+  const composed = document.createElement('canvas');   // the IMAGE frame with the input shown
   const drawing = document.createElement('canvas');   // the last exported image board, kept so the mirror can repaint without asking the editor
   [preview.width, preview.height] = size();
   // While the live editor is in the Alt+W overlay (an active window you draw in), the node mirrors it: the last frame published.
@@ -100,9 +101,16 @@ function makePoliplan(node, name) {
     const first = !hasPicture;
     hasPicture = true;
     if (first) refreshInputButtons();
-    queueUnderlay(); scheduleMirror();
+    queueUnderlay(); scheduleMirror(); republishInput();
   };
-  const clearPicture = () => { if (!hasPicture) return; hasPicture = false; refreshInputButtons(); queueUnderlay(); scheduleMirror(); };
+  const clearPicture = () => { if (!hasPicture) return; hasPicture = false; refreshInputButtons(); queueUnderlay(); scheduleMirror(); scheduleLive(); };
+  let republishAt = 0;
+  /** A new input frame changes the composite but not the drawing: recomposite from the cached drawing. */
+  const republishInput = () => {
+    if (liveUsers <= 0 || !shown() || node._generetiLivePaused || !connected(node)[0] || performance.now() - republishAt < LIVE_MIN_MS) return;
+    republishAt = performance.now();
+    if (drawing.width) publishComposite().catch(() => {}); else scheduleLive();
+  };
   const loadPicture = url => {
     if (performance.now() - lastLive < 1500) return;   // a live source wins over the last queued result
     const image = new Image();
@@ -165,8 +173,21 @@ function makePoliplan(node, name) {
     } finally { publishing = false; }
   }
   // `draft`: a live frame also shows the stroke being drawn, which is in the document only after the pointer is released.
-  const exportBoard = board => editor.export({ board, format: 'png', scale: 1, transparent: false, draft: true })
+  const exportBoard = (board, transparent = false) => editor.export({ board, format: 'png', scale: 1, transparent, draft: true })
     .then(({ blob }) => createImageBitmap(blob));
+  /** The IMAGE frame while the input is shown: the cached drawing laid over the input (no editor call per input frame). */
+  const composite = () => {
+    const c = composed, g = c.getContext('2d');
+    c.width = drawing.width || size()[0]; c.height = drawing.height || size()[1];
+    g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+    drawInputInto(g);
+    if (drawing.width) g.drawImage(drawing, 0, 0);
+    return c;
+  };
+  const publishComposite = async () => {
+    const bitmap = await createImageBitmap(composite());
+    try { publishLive(node, bitmap, 0); } finally { bitmap.close(); }
+  };
   /** The mask board on black, as a frame: its paper is transparent. */
   const exportMask = async () => {
     const bitmap = await exportBoard('mask');
@@ -186,14 +207,15 @@ function makePoliplan(node, name) {
     const live = liveUsers > 0 && !node._generetiLivePaused;
     try {
       if (live && image || viewers > 0) {
-        const bitmap = await exportBoard('main');
+        const over = hasPicture && shown();
+        const bitmap = await exportBoard('main', over);
         try {
-          if (live && image) publishLive(node, bitmap, 0);
-          if (viewers > 0) {
+          if (over || viewers > 0) {
             drawing.width = bitmap.width; drawing.height = bitmap.height;
             drawing.getContext('2d').drawImage(bitmap, 0, 0);
-            paintMirror();
           }
+          if (live && image) { if (over) await publishComposite(); else publishLive(node, bitmap, 0); }
+          if (viewers > 0) paintMirror();
         } finally { bitmap.close(); }
       }
       if (live && mask) {
@@ -237,7 +259,7 @@ function makePoliplan(node, name) {
   const imageButton = glyph('<rect x="4" y="4" width="16" height="16" rx="1.5"/><circle cx="9" cy="9" r="1.4"/><path d="m4 17 5-5 4 4 3-3 4 4"/>', 'Frame the image board', () => editor?.fit({ board: 'main' }));
   const maskButton = glyph('<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/>', 'Frame the mask board: draw white on the black paper', () => editor?.fit({ board: 'mask' }));
   const inputButton = glyph('<rect x="9" y="4" width="11" height="16" rx="1.5" stroke-dasharray="2 2"/><path d="M3 12h9m-3-3 3 3-3 3"/>', '', () => {
-    props().poliplanInputShown = !shown(); node.graph?.change?.(node);
+    props().poliplanInputShown = !shown(); node.graph?.change?.(node); scheduleLive();
     refreshInputButtons(); queueUnderlay(); scheduleMirror();
   });
   refreshInputButtons = () => {
