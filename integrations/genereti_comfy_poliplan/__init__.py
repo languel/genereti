@@ -1,9 +1,8 @@
 """ꘇ poliplan: the Poliplan drawing editor as an interactive source node.
 
 An image board and a mask board (the sizes are the node's width and height) become the IMAGE and MASK outputs, the
-document the JSON, and the image board's vector drawing the SVG. An optional IMAGE input becomes a layer called
-"input" in its own locked stage, under the drawing: hide it in the Outliner to leave it out of the IMAGE output.
-Independent of the Core ML generator.
+document the JSON, and the image board's vector drawing the SVG. An optional IMAGE input is shown under the image
+board as a reference to draw over; it is not part of the drawing or any output. Independent of the Core ML generator.
 """
 import hashlib
 import json
@@ -58,10 +57,10 @@ class GeneretiPoliplan(io.ComfyNode):
             category='Genereti / Interactive Sources',
             description='Poliplan drawing editor with an image board and a mask board. Queue outputs IMAGE and MASK '
                         'of the configured size, the image board as SVG, and the editable document as JSON. An optional '
-                        'IMAGE input becomes a layer under the drawing, in its own locked stage; hide it in the Outliner to leave it out of the IMAGE output.',
+                        'IMAGE input is shown under the image board to draw over; it is a reference only, not part of any output.',
             inputs=[
                 io.Image.Input('image', optional=True,
-                               tooltip='Becomes a layer called input, in a locked stage under the drawing (see the Outliner): hide the layer to leave it out of the IMAGE output, unlock it to move it.'),
+                               tooltip='Shown under the image board as a reference to draw over (follows a live source; freeze it upstream to hold it). Not part of the drawing or any output.'),
                 io.String.Input('poliplan', default='', socketless=True,
                                 extra_dict={'widgetType': 'GENERETI_POLIPLAN'}),
                 io.String.Input('capture', default='', socketless=True,

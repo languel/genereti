@@ -1,7 +1,7 @@
 import { app } from '../../../scripts/app.js';
 import { api } from '../../../scripts/api.js';
 import { attachExecutionMode, publishLive, subscribeLive } from '/extensions/genereti_comfy_p5/js/live-runtime.js';
-import { fitContain } from './input-board.js';
+import { fitContain, toScreen } from './input-board.js';
 import { previewState } from '/extensions/genereti_comfy_p5/js/preview-state.js';
 import { previewControls } from '/extensions/genereti_comfy_stream/js/preview-controls.js';
 import { routePreviewShortcut } from '/extensions/genereti_comfy_stream/js/preview-shortcuts.js';
@@ -46,6 +46,7 @@ function makePoliplan(node, name) {
   let liveUsers = 0, liveTimer = 0, viewers = 0, local = null, output = null;
   let publishing = false, dirty = false, lastPublish = 0;
   const preview = document.createElement('canvas');
+  const drawing = document.createElement('canvas');   // the last exported image board, kept so the mirror can repaint without asking the editor
   [preview.width, preview.height] = size();
   // While the live editor is in the Alt+W overlay (an active window you draw in), the node mirrors it: the last frame published.
   const mirror = document.createElement('div');
@@ -54,75 +55,91 @@ function makePoliplan(node, name) {
   mirror.append(preview);
   host.after(mirror);
 
-  // ---- The input: an image layer in the drawing -------------------------------------------------------------------------------
-  // The IMAGE input becomes a layer called "input" in its own, lowest stage, "Input". It is listed in the Outliner: hide the stage
-  // and the picture is gone and out of the image output; leave it visible and it is part of the image, like any other mark.
-  // The stage is locked when created, so the picture stays put until you unlock it. The picture is taken from a linked source
-  // when it first arrives, for each queued run, and whenever you press "update input" (live frames would fill the undo history).
+  // ---- The input: an underlay for the node --------------------------------------------------------------------------------
+  // The IMAGE input is drawn behind the (transparent) editor, in the image board's place, following the editor's pan and zoom
+  // (and the offset the Boards panel gives its canvas). It belongs to the node, not to the drawing: nothing is written into
+  // the document, so it never touches undo, the saved drawing or the outputs. It follows the connected source live (freeze
+  // the source upstream to hold it) and the glyph beside freeze / fit switches it on and off.
   const props = () => (node.properties ??= {});
   const picture = document.createElement('canvas');
-  let hasPicture = false, lastLive = -Infinity, pushed = '', pushing = false, pushAgain = false, allowCreate = true;
+  let hasPicture = false, lastLive = -Infinity, camera = { x: 0, y: 0, z: 1 }, underlayQueued = false, lastBox = '';
   const linked = () => node.inputs?.find(i => i.name === 'image')?.link != null;
-  async function pushInput() {
-    if (!editor || disposed || !hasPicture) return;
-    if (pushing) { pushAgain = true; return; }
-    pushing = true;
+  const shown = () => props().poliplanInputShown !== false;
+  const underlay = document.createElement('canvas');
+  Object.assign(underlay.style, { position: 'absolute', inset: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: '0' });
+  host.append(underlay);
+  /** Where the editor's drawing canvas sits inside its frame: the camera is relative to it, and its panels move it. */
+  const canvasBox = () => {
     try {
-      const src = picture.toDataURL('image/png');
-      if (src === pushed) return;
-      const doc = (await editor.getDocument()).document, id = props().poliplanInputLayer;
-      const layer = doc.elements.find(e => e.role === 'image' && (e.id === id || e.label === 'input'));
-      if (layer) {
-        await editor.callTool('ams_update', { id: layer.id, patch: { src } });
-        props().poliplanInputLayer = layer.id;
-      } else if (allowCreate) {
-        // The first picture. The layer has to arrive through a document load: one made from a shape and turned into an image
-        // is still drawn as a flat fill. So: a stage of its own at the bottom, then a clean image element fitted in the image board.
-        let stage = doc.stages.find(st => st.name === 'Input');
-        if (!stage) {
-          stage = await editor.callTool('ams_stage', { action: 'add', name: 'Input', kind: 'marks' });
-          for (let i = 0; i < doc.stages.length; i++) await editor.callTool('ams_stage', { action: 'move', id: stage.id, delta: -1 });
-        }
-        const camera = await editor.camera().catch(() => null);
-        const fresh = (await editor.getDocument()).document;
-        const [w, h] = size(), r = fitContain(picture.width, picture.height, { x: 0, y: 0, width: w, height: h });
-        const id = `input-${Date.now().toString(36)}`;
-        fresh.elements.unshift({ id, role: 'image', stage: stage.id, src, label: 'input', why: 'poliplan input',
-          points: [[r.x, r.y, 0, .5], [r.x + r.width, r.y, 0, .5], [r.x + r.width, r.y + r.height, 0, .5], [r.x, r.y + r.height, 0, .5]] });
-        await editor.load(fresh, { boards: boardsFor(w, h) });
-        if (camera) await editor.camera({ x: camera.x, y: camera.y, z: camera.z }).catch(() => {});
-        await hideMaskLabel(editor).catch(() => {});
-        await editor.callTool('ams_stage', { action: 'update', id: stage.id, patch: { locked: true } });
-        props().poliplanInputLayer = id;
-        allowCreate = false;   // if you delete the layer, it stays deleted until the input is connected again
-        node.graph?.change?.(node);
-      }
-      pushed = src;
-    } catch (error) { say(`Input: ${error.message}`); } finally {
-      pushing = false;
-      if (pushAgain) { pushAgain = false; pushInput(); }
-    }
-  }
+      const el = editor?.frame.contentDocument?.querySelector('canvas.wb-canvas');
+      if (el) { const r = el.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; }
+    } catch { /* the editor went away */ }
+    return { left: 0, top: 0, width: host.clientWidth, height: host.clientHeight };
+  };
+  const paintUnderlay = () => {
+    underlayQueued = false;
+    const dpr = window.devicePixelRatio || 1, w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    if (underlay.width !== Math.round(w * dpr) || underlay.height !== Math.round(h * dpr)) { underlay.width = Math.round(w * dpr); underlay.height = Math.round(h * dpr); }
+    const g = underlay.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, h);
+    if (!hasPicture || !shown()) return;
+    const box = canvasBox(), [bw, bh] = size();
+    g.beginPath(); g.rect(box.left, box.top, box.width, box.height); g.clip();
+    g.translate(box.left, box.top);
+    const r = toScreen(fitContain(picture.width, picture.height, { x: 0, y: 0, width: bw, height: bh }), camera);
+    g.drawImage(picture, r.x, r.y, r.width, r.height);
+  };
+  const queueUnderlay = () => { if (!underlayQueued) { underlayQueued = true; requestAnimationFrame(paintUnderlay); } };
   /** Take a copy of the input (live frames are borrowed and closed right after the callback). */
-  const setPicture = (source, width, height, { push = false } = {}) => {
+  const setPicture = (source, width, height) => {
     if (!(width > 0 && height > 0)) return;
     picture.width = width; picture.height = height;
     picture.getContext('2d').drawImage(source, 0, 0);
     const first = !hasPicture;
     hasPicture = true;
-    refreshInputButtons();
-    if (first || push) pushInput();
+    if (first) refreshInputButtons();
+    queueUnderlay(); scheduleMirror();
   };
-  const clearPicture = () => { hasPicture = false; allowCreate = true; refreshInputButtons(); };
+  const clearPicture = () => { if (!hasPicture) return; hasPicture = false; refreshInputButtons(); queueUnderlay(); scheduleMirror(); };
   const loadPicture = url => {
     if (performance.now() - lastLive < 1500) return;   // a live source wins over the last queued result
     const image = new Image();
-    image.onload = () => { if (!disposed) setPicture(image, image.naturalWidth, image.naturalHeight, { push: true }); };
+    image.onload = () => { if (!disposed) setPicture(image, image.naturalWidth, image.naturalHeight); };
     image.src = url;
   };
+  /** The input under the drawing, for the node's own mirror and the windows that mirror it. */
+  const drawInputInto = ctx => {
+    if (!hasPicture || !shown()) return;
+    const [bw, bh] = size(), r = fitContain(picture.width, picture.height, { x: 0, y: 0, width: bw, height: bh });
+    ctx.drawImage(picture, r.x, r.y, r.width, r.height);
+  };
   const stopInput = subscribeLive(node, ({ bitmap }) => { if (bitmap) { lastLive = performance.now(); setPicture(bitmap, bitmap.width, bitmap.height); } }, () => {}, { inputName: 'image' });
-  const inputPoll = setInterval(() => { if (!linked() && hasPicture) clearPicture(); }, 500);
+  const inputPoll = setInterval(() => {
+    if (!linked() && hasPicture) clearPicture();
+    const box = JSON.stringify(canvasBox());   // panels opening or closing move the canvas without any event
+    if (box !== lastBox) { lastBox = box; queueUnderlay(); }
+  }, 300);
+  const refreshCamera = async () => {
+    if (!editor) return;
+    try { const c = await editor.camera(); camera = { x: c.x, y: c.y, z: c.z }; } catch { /* the editor went away */ }
+    queueUnderlay();
+  };
+  const hostWatch = new ResizeObserver(refreshCamera);
+  hostWatch.observe(host);
   let refreshInputButtons = () => {};
+  /** The mirror (node preview and windows): the input under the last drawing. Cheap, and never asks the editor for anything. */
+  const paintMirror = () => {
+    if (!drawing.width) return;
+    preview.width = drawing.width; preview.height = drawing.height;
+    const pc = preview.getContext('2d');
+    drawInputInto(pc);
+    pc.drawImage(drawing, 0, 0);
+    output?.publish({ bitmap: preview });
+  };
+  let mirrorTimer = 0;
+  const scheduleMirror = () => { if (viewers <= 0 || mirrorTimer) return; mirrorTimer = setTimeout(() => { mirrorTimer = 0; paintMirror(); }, 66); };
   /**
    * Publish soon, and never wait for the editing to stop: one export in flight, edits that arrive meanwhile are folded
    * into the next, and frames are at least LIVE_MIN_MS apart (a trailing debounce would hold every frame back until the
@@ -173,9 +190,9 @@ function makePoliplan(node, name) {
         try {
           if (live && image) publishLive(node, bitmap, 0);
           if (viewers > 0) {
-            preview.width = bitmap.width; preview.height = bitmap.height;
-            preview.getContext('2d').drawImage(bitmap, 0, 0);
-            output.publish({ bitmap: preview });
+            drawing.width = bitmap.width; drawing.height = bitmap.height;
+            drawing.getContext('2d').drawImage(bitmap, 0, 0);
+            paintMirror();
           }
         } finally { bitmap.close(); }
       }
@@ -219,8 +236,17 @@ function makePoliplan(node, name) {
   };
   const imageButton = glyph('<rect x="4" y="4" width="16" height="16" rx="1.5"/><circle cx="9" cy="9" r="1.4"/><path d="m4 17 5-5 4 4 3-3 4 4"/>', 'Frame the image board', () => editor?.fit({ board: 'main' }));
   const maskButton = glyph('<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/>', 'Frame the mask board: draw white on the black paper', () => editor?.fit({ board: 'mask' }));
-  const inputButton = glyph('<path d="M20 12a8 8 0 1 1-2.5-5.8"/><path d="M20 4v5h-5"/><rect x="9" y="9" width="6" height="6" rx="1"/>', 'Update the input layer from the connected input (it stays in the Input stage of the Outliner)', () => pushInput());
-  refreshInputButtons = () => { inputButton.hidden = !(hasPicture || linked()); };
+  const inputButton = glyph('<rect x="9" y="4" width="11" height="16" rx="1.5" stroke-dasharray="2 2"/><path d="M3 12h9m-3-3 3 3-3 3"/>', '', () => {
+    props().poliplanInputShown = !shown(); node.graph?.change?.(node);
+    refreshInputButtons(); queueUnderlay(); scheduleMirror();
+  });
+  refreshInputButtons = () => {
+    inputButton.hidden = !(hasPicture || linked());
+    inputButton.setAttribute('aria-pressed', String(shown()));
+    inputButton.title = inputButton.ariaLabel = shown()
+      ? 'Input shown under the drawing (a reference only, not part of any output) · click to hide it'
+      : 'Input hidden · click to show it under the drawing';
+  };
   refreshInputButtons();
   local.actions.append(imageButton, maskButton, inputButton);
   const connections = node.onConnectionsChange;
@@ -241,7 +267,10 @@ function makePoliplan(node, name) {
       document,
       ui: { tools: true, view: true, zoom: true, panels: false },
       fit: 'main',
+      // The input is drawn behind the editor, so the node's own workspace has to let it through.
+      ...(primary ? { background: 'transparent' } : {}),
     });
+    if (primary) Object.assign(ed.frame.style, { position: 'relative', zIndex: '1' });
     // The editor's document has no color-scheme of its own; inheriting Comfy's dark one makes Chromium put an opaque
     // backing behind the iframe, so a transparent workspace and paper would never show the graph (Alt+O, overlays).
     ed.frame.style.colorScheme = 'normal';
@@ -316,6 +345,8 @@ function makePoliplan(node, name) {
       try {
         const saved = () => { try { return value ? JSON.parse(value)?.document : undefined; } catch { return undefined; } };
         editor = await openEditor(host, saved, { primary: true });
+        await refreshCamera();
+        editor.on('camera', m => { camera = { x: m.x, y: m.y, z: m.z }; queueUnderlay(); });
         editor.on('change', () => { remember(); scheduleLive(); onChange(editor); });
         editor.on('draft', () => scheduleLive());   // once a frame while a stroke grows; `change` only follows the release
         say('');
@@ -370,7 +401,7 @@ function makePoliplan(node, name) {
       await editor.callTool('ams_board', { action: 'update', id: 'mask', patch: { width: w, height: h, x: 0, y: h + GAP, ...MASK_FLAGS } });
       remember();
       onChange(editor);
-      scheduleLive();
+      queueUnderlay(); scheduleLive();
     } catch (error) { say(error.message); }
   };
 
@@ -401,7 +432,7 @@ function makePoliplan(node, name) {
       }
       return JSON.stringify(result);
     },
-    dispose() { disposed = true; stopInput(); clearInterval(inputPoll); clearTimeout(saving); clearTimeout(liveTimer); output?.close(); for (const v of views) v.destroy(); views.clear(); editor?.destroy(); editor = null; },
+    dispose() { disposed = true; stopInput(); clearInterval(inputPoll); clearTimeout(mirrorTimer); hostWatch.disconnect(); clearTimeout(saving); clearTimeout(liveTimer); output?.close(); for (const v of views) v.destroy(); views.clear(); editor?.destroy(); editor = null; },
   };
   return { widget };
 }
