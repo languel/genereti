@@ -173,8 +173,23 @@ function makePoliplan(node, name) {
     } finally { publishing = false; }
   }
   // `draft`: a live frame also shows the stroke being drawn, which is in the document only after the pointer is released.
-  const exportBoard = (board, transparent = false) => editor.export({ board, format: 'png', scale: 1, transparent, draft: true })
-    .then(({ blob }) => createImageBitmap(blob));
+  // Where a live frame's time goes: the editor's export (an ImageBitmap; PNG encoding was the slow part). Shown in the status line.
+  const bitmapExport = { broken: false };   // an older editor build has no 'bitmap' export: fall back to PNG
+  const timing = { export: 0, decode: 0, frames: 0, since: performance.now(), fps: 0 };
+  const ema = (key, value) => { timing[key] = timing[key] ? timing[key] * .8 + value * .2 : value; };
+  node._poliplanTiming = timing;
+  const exportBoard = async (board, transparent = false) => {
+    const t0 = performance.now();
+    let bitmap;
+    if (!bitmapExport.broken) {
+      try { ({ bitmap } = await editor.export({ board, format: 'bitmap', scale: 1, transparent, draft: true })); } catch (error) { if (!/Unknown export format/.test(error.message)) throw error; bitmapExport.broken = true; }
+    }
+    if (!bitmap) { const { blob } = await editor.export({ board, format: 'png', scale: 1, transparent, draft: true }); bitmap = await createImageBitmap(blob); }
+    const t1 = performance.now();
+    ema('export', t1 - t0); ema('decode', 0);
+    if (++timing.frames >= 10) { timing.fps = timing.frames * 1000 / (performance.now() - timing.since); timing.frames = 0; timing.since = performance.now(); say(`live ${timing.fps.toFixed(0)} fps · export ${timing.export.toFixed(0)} ms${bitmapExport.broken ? ' (png)' : ''}`); }
+    return bitmap;
+  };
   /** The IMAGE frame while the input is shown: the cached drawing laid over the input (no editor call per input frame). */
   const composite = () => {
     const c = composed, g = c.getContext('2d');

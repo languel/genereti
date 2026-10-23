@@ -1,2 +1,3 @@
 2999eb6
 2026-10-17T20:50Z
+local patch: export format 'bitmap' (an ImageBitmap, no PNG encode) for live frames; reapply after a rebuild (see README)
