@@ -114,6 +114,20 @@ class PoliplanTests(unittest.TestCase):
         self.assertEqual(pixels[0, 0, 1].tolist(), [0, 0, 0, 0])
         self.assertIn('poliplan_reference', result.ui.as_dict() if hasattr(result.ui, 'as_dict') else result.ui)
 
+    def test_a_shown_input_is_composited_under_the_drawing(self):
+        source = torch.zeros((1, 1, 2, 3))
+        source[..., 2] = 1.0   # blue input
+        with tempfile.TemporaryDirectory() as temp:
+            image = Path(temp) / 'image.png'
+            drawing = Image.new('RGBA', (2, 1), (0, 0, 0, 0))
+            drawing.putpixel((0, 0), (255, 0, 0, 255))
+            drawing.save(image)
+            result = self.run_node({'image': str(image), 'over': True}, image=source)
+        pixels = result.values[0]
+        self.assertEqual(tuple(pixels.shape), (1, 1, 2, 3))
+        self.assertEqual(pixels[0, 0, 0].tolist(), [1, 0, 0])   # the mark stays on top
+        self.assertEqual(pixels[0, 0, 1].tolist(), [0, 0, 1])   # the input shows through
+
     def test_there_is_no_over_input_switch_any_more(self):
         inputs = self.node.define_schema().inputs
         self.assertEqual(len(inputs), 5)   # image, poliplan, capture, width, height

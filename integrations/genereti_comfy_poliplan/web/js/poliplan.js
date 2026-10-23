@@ -244,7 +244,7 @@ function makePoliplan(node, name) {
     inputButton.hidden = !(hasPicture || linked());
     inputButton.setAttribute('aria-pressed', String(shown()));
     inputButton.title = inputButton.ariaLabel = shown()
-      ? 'Input shown under the drawing (a reference only, not part of any output) · click to hide it'
+      ? 'Input shown under the drawing and composited into the IMAGE output · click to hide it'
       : 'Input hidden · click to show it under the drawing';
   };
   refreshInputButtons();
@@ -423,7 +423,12 @@ function makePoliplan(node, name) {
       const [image, mask, svg, json] = connected(node);
       const [w, h] = size();
       const result = {};
-      if (image) result.image = await upload((await ed.export({ board: 'main', format: 'png', scale: 1, transparent: false })).blob, 'image');
+      if (image) {
+        // With the input shown, the drawing goes out transparent and python lays it over the input.
+        const over = linked() && shown();
+        result.image = await upload((await ed.export({ board: 'main', format: 'png', scale: 1, transparent: over })).blob, 'image');
+        if (over) result.over = true;
+      }
       if (mask) result.mask = await upload((await ed.export({ board: 'mask', format: 'png', scale: 1 })).blob, 'mask');
       if (svg) result.svg = (await ed.export({ board: 'main', format: 'svg' })).text;
       if (json) {

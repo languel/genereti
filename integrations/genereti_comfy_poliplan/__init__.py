@@ -2,7 +2,7 @@
 
 An image board and a mask board (the sizes are the node's width and height) become the IMAGE and MASK outputs, the
 document the JSON, and the image board's vector drawing the SVG. An optional IMAGE input is shown under the image
-board as a reference to draw over; it is not part of the drawing or any output. Independent of the Core ML generator.
+board as a reference to draw over; it is not saved in the drawing, but while shown the IMAGE output is the drawing over it. Independent of the Core ML generator.
 """
 import hashlib
 import json
@@ -48,6 +48,17 @@ def _tensor(array):
     return torch.from_numpy((np.asarray(array, dtype=np.float32) / 255.0).copy()).unsqueeze(0)
 
 
+def _over_input(drawing, image):
+    """The drawing laid over the input, which is fitted inside the board (contain, centred) like the editor's underlay."""
+    w, h = drawing.size
+    source = Image.fromarray((image[0].cpu().numpy()[..., :3] * 255).clip(0, 255).astype(np.uint8))
+    scale = min(w / source.width, h / source.height)
+    fitted = source.resize((max(1, round(source.width * scale)), max(1, round(source.height * scale))), Image.LANCZOS)
+    base = Image.new('RGBA', (w, h), (255, 255, 255, 255))
+    base.paste(fitted, ((w - fitted.width) // 2, (h - fitted.height) // 2))
+    return Image.alpha_composite(base, drawing.convert('RGBA')).convert('RGB')
+
+
 class GeneretiPoliplan(io.ComfyNode):
     @classmethod
     def define_schema(cls):
@@ -57,10 +68,10 @@ class GeneretiPoliplan(io.ComfyNode):
             category='Genereti / Interactive Sources',
             description='Poliplan drawing editor with an image board and a mask board. Queue outputs IMAGE and MASK '
                         'of the configured size, the image board as SVG, and the editable document as JSON. An optional '
-                        'IMAGE input is shown under the image board to draw over; it is a reference only, not part of any output.',
+                        'IMAGE input is shown under the image board to draw over; with the input shown the IMAGE output is the drawing composited over it.',
             inputs=[
                 io.Image.Input('image', optional=True,
-                               tooltip='Shown under the image board as a reference to draw over (follows a live source; freeze it upstream to hold it). Not part of the drawing or any output.'),
+                               tooltip='Shown under the image board as a reference to draw over (follows a live source; freeze it upstream to hold it). Not saved in the drawing. While shown, the IMAGE output is the drawing over it; hide it to output the drawing alone.'),
                 io.String.Input('poliplan', default='', socketless=True,
                                 extra_dict={'widgetType': 'GENERETI_POLIPLAN'}),
                 io.String.Input('capture', default='', socketless=True,
@@ -81,6 +92,8 @@ class GeneretiPoliplan(io.ComfyNode):
         captured = json.loads(capture)
         drawing = _load(captured, 'image', 'RGBA')
         pixels = mask = None
+        if drawing is not None and captured.get('over') and image is not None:
+            drawing = _over_input(drawing, image)
         if drawing is not None:
             # Preserve alpha for transparent drawings; opaque images stay RGB.
             mode = 'RGBA' if drawing.getchannel('A').getextrema()[0] < 255 else 'RGB'
