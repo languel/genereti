@@ -56,7 +56,7 @@ def _over_input(drawing, image):
     fitted = source.resize((max(1, round(source.width * scale)), max(1, round(source.height * scale))), Image.LANCZOS)
     base = Image.new('RGBA', (w, h), (255, 255, 255, 255))
     base.paste(fitted, ((w - fitted.width) // 2, (h - fitted.height) // 2))
-    return Image.alpha_composite(base, drawing.convert('RGBA')).convert('RGB')
+    return Image.alpha_composite(base, drawing.convert('RGBA'))
 
 
 class GeneretiPoliplan(io.ComfyNode):
