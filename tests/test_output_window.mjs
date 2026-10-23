@@ -151,3 +151,15 @@ test('minimal-view header glyph restores node controls',()=>{
  assert.match(restore.innerHTML,/fill="currentColor"/);
  restore.onclick();assert.equal(restored,true);assert.equal(shell.element.removed,true);
 });
+
+test('a node can mount its own interactive view in the window, which is disposed on close; Alt+W moves the surface instead',async()=>{
+ const f=fixture(),mounted=[],disposed=[];
+ const view=f.make({}, {mountMirror:container=>{mounted.push(container);return ()=>disposed.push(container);}});
+ assert.equal(await view.open(),true);await Promise.resolve();
+ assert.equal(f.popups.length,0);assert.equal(f.panels.length,1);assert.equal(mounted.length,1);assert.equal(mounted[0].tag,'div');assert.equal(disposed.length,0);
+ view.close();await Promise.resolve();assert.equal(disposed.length,1);assert.equal(disposed[0],mounted[0]);
+ // Alt+W: the node's surface is moved into the overlay and no extra view is mounted.
+ const surface={tag:'div',style:{},children:[],classList:{add(){}},addEventListener(){},removeEventListener(){},append(){},setAttribute(){},parentNode:null};
+ const overlay=f.make({}, {interactiveSurface:surface,mountMirror:container=>{mounted.push(container);}, onSurfaceChange(){}});
+ assert.equal(await overlay.open({overlay:true}),true);assert.equal(mounted.length,1);overlay.close();
+});

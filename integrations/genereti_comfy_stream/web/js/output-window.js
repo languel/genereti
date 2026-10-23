@@ -10,11 +10,19 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
   function setFit(next){native?.setFit(next);fit=['contain','cover','fill','native'].includes(next)?next:'contain';if(!canvas)return;canvas.style.cssText=fit==='native'?'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:none;max-height:none':'position:fixed;inset:0;width:100vw;height:100vh;object-fit:'+fit;}
   function inAppOutput(initialSize,matchAspect,position){
     if(initialSize?.width>0&&initialSize?.height>0&&(matchAspect||!layout.rect)){const width=layout.rect?.width||innerWidth*.7;const scale=Math.min(1,innerHeight*.7/(width*initialSize.height/initialSize.width));layout.rect={left:layout.rect?.left??innerWidth*.1,top:layout.rect?.top??innerHeight*.12,width:width*scale,height:width*scale*initialSize.height/initialSize.width};}
-    const interactive=config.interactiveSurface;
+    // Alt+W moves the node's live surface here. A window instead asks the node for its own interactive view
+    // (config.mountMirror), which stays in sync with the node and every other view.
+    const moved=config.interactiveSurface,mirror=!moved&&config.mountMirror;
+    const interactive=moved||(mirror?document.createElement('div'):null);
     const frame=interactive||document.createElement('iframe');if(!interactive)frame.title='Local output';
-    const shell=overlayShell(frame,layout,()=>{onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;config.onSurfaceChange?.(false);},{...config,position});
+    let unmount=null,closed=false;
+    const shell=overlayShell(frame,layout,()=>{closed=true;unmount?.();unmount=null;onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;if(moved)config.onSurfaceChange?.(false);},{...config,position});
     localShell=shell;localSurface=shell.element;localCleanup=shell.close;
-    if(interactive){config.onSurfaceChange?.(true);status.textContent='Interactive output overlay';}
+    if(moved){config.onSurfaceChange?.(true);status.textContent='Interactive output overlay';}
+    else if(mirror){
+      status.textContent='Interactive view · synced with the node';
+      Promise.resolve(mirror(interactive)).then(dispose=>{if(closed)dispose?.();else unmount=dispose;}).catch(error=>{status.textContent=`Interactive view: ${error.message}`;});
+    }
     else{attach(frame.contentWindow,true);status.textContent='Output overlay · direct';}
   }
   function attach(target,overlay=false) {

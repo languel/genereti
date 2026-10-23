@@ -19,7 +19,7 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   const toggle=(label,paths,options)=>{
     let viewer,opened=false;const state={viewport:()=>viewer.getViewport?.(),opened:false,order:0};viewers.push(state);
     const paint=value=>{if(opened===value)return;opened=value;state.opened=value;if(value)state.order=++viewerOrder;b.setAttribute('aria-pressed',String(value));b.title=(value?'Close ':'Open ')+label;b.setAttribute('aria-label',b.title);b.title+=options.overlay?' (Alt+W · Shift-click / Alt+O: output-only node)':options.backdrop?' (D: solo · Shift+D: grid)':'';config.onViewerChange?.(value,options);};
-    const make=()=>config.createViewer?.(status,paint,options)??(options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:{},{node,interactiveSurface:options.overlay?config.interactiveSurface:null,onSurfaceChange:config.onSurfaceChange}));
+    const make=()=>config.createViewer?.(status,paint,options)??(options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:{},{node,interactiveSurface:options.overlay?config.interactiveSurface:null,mountMirror:options.overlay?null:config.mountMirror,onSurfaceChange:config.onSurfaceChange}));
     const b=button('Open '+label,paths,async(event={})=>{
       if(options.overlay&&event.shiftKey){nodeView.toggle();return;}
       if(opened&&(!options.backdrop||Boolean(event.shiftKey)===Boolean(viewer.gridMode))){viewer.close();viewer=make();assign(viewer);viewer.setFit(config.getFit?.()||node.properties?.[config.fitKey||'genereti_preview_fit']||'contain');paint(false);return;}

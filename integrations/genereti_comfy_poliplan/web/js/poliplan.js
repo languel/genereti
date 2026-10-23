@@ -137,6 +137,7 @@ function makePoliplan(node, name) {
     fitTarget: null, initialFrame: () => ({ bitmap: preview }), getRenderSize: () => preview,
     // Alt+W moves the live editor itself into the overlay window (the node mirrors it), as livecode does with its stage.
     interactiveSurface: host, publishOnOpen: false,
+    mountMirror: container => node._poliplanMount(container),
     onSurfaceChange: open => {
       mirror.style.display = open ? 'flex' : 'none';
       if (!open) say('');
@@ -151,38 +152,99 @@ function makePoliplan(node, name) {
   local = previewState(node, host, { getFit: () => node.properties?.genereti_preview_fit ?? 'contain' });
   local.actions.append(output.toolbar);
 
+  /** One configured Poliplan editor: the node's own, and every extra interactive view (the output window), are made here. */
+  const openEditor = async (container, document) => {
+    const { createEditor } = await import(/* @vite-ignore */ api.apiURL('/genereti/poliplan/ams-editor.js'));
+    const [w, h] = size();
+    const ed = await createEditor(container, {
+      src: api.apiURL('/genereti/poliplan/embed.html'),
+      ns: 'genereti-poliplan',
+      boards: boardsFor(w, h),
+      document,
+      ui: { tools: true, view: true, zoom: true, panels: false },
+      fit: 'main',
+    });
+    // The editor's document has no color-scheme of its own; inheriting Comfy's dark one makes Chromium put an opaque
+    // backing behind the iframe, so a transparent workspace and paper would never show the graph (Alt+O, overlays).
+    ed.frame.style.colorScheme = 'normal';
+    await ed.setMode('standalone');
+    await ed.setUI({ tools: true, view: true, zoom: true, panels: false });
+    await hideMaskLabel(ed);
+    // Keys the editor does not use (Alt+O, Alt+W, D …) reach Comfy's shortcuts, as when the focus is outside the iframe.
+    ed.on('key', m => routePreviewShortcut({ key: m.key, code: m.code, altKey: m.alt, ctrlKey: m.ctrl, metaKey: m.meta, shiftKey: m.shift,
+      preventDefault() { this.defaultPrevented = true; }, stopPropagation() {}, stopImmediatePropagation() {} }));
+    return ed;
+  };
+
+  /**
+   * Views: the node's editor plus any number of extra ones (the output window). A drawing is edited in one at a time, but
+   * every view shows it and accepts input. After a change the whole document is loaded into the others (each keeps its
+   * own pan and zoom); changes caused by that load are ignored, and syncs run one at a time, newest source last.
+   */
+  const views = new Set();
+  const quiet = new Set();
+  let lastDocument = '', syncing = false, pendingSource = null;
+  const everyone = () => [editor, ...views].filter(Boolean);
+  const onChange = source => {
+    if (quiet.has(source)) { source._changedWhileQuiet = true; return; }
+    pendingSource = source;
+    if (!syncing) syncViews();
+  };
+  async function syncViews() {
+    syncing = true;
+    try {
+      while (pendingSource && !disposed) {
+        const source = pendingSource;
+        pendingSource = null;
+        const others = everyone().filter(e => e !== source);
+        if (!others.length) continue;
+        const { document } = await source.getDocument();
+        const json = JSON.stringify(document);
+        if (json === lastDocument) continue;
+        lastDocument = json;
+        const [w, h] = size();
+        await Promise.all(others.map(async target => {
+          quiet.add(target);
+          target._changedWhileQuiet = false;
+          try {
+            const camera = await target.camera().catch(() => null);
+            await target.load(document, { boards: boardsFor(w, h) });
+            if (camera) await target.camera({ x: camera.x, y: camera.y, z: camera.z }).catch(() => {});
+            await hideMaskLabel(target).catch(() => {});
+            if (target === editor) { remember(); scheduleLive(); }
+          } catch (error) { say(error.message); }
+          // Its change events from the load arrive a moment later; an edit made in that gap is picked up below.
+          setTimeout(() => { quiet.delete(target); if (target._changedWhileQuiet) onChange(target); }, 300);
+        }));
+      }
+    } finally { syncing = false; }
+  }
+  node._poliplanViews = () => everyone();
+  /** The output window: another editor on the same drawing. Returns its disposer. */
+  node._poliplanMount = async container => {
+    await start();
+    const { document } = await editor.getDocument();
+    const view = await openEditor(container, document);
+    view.on('change', () => onChange(view));
+    if (node._poliplanReference) view.reference(node._poliplanReference).catch(() => {});
+    views.add(view);
+    return () => { views.delete(view); quiet.delete(view); view.destroy(); };
+  };
+
   const start = async () => {
     if (editor) return editor;
     if (starting) return starting;
     say('Loading Poliplan…');
     starting = (async () => {
       try {
-        const { createEditor } = await import(/* @vite-ignore */ api.apiURL('/genereti/poliplan/ams-editor.js'));
-        const [w, h] = size();
         let saved = null;
         try { saved = value ? JSON.parse(value) : null; } catch { saved = null; }
-        editor = await createEditor(host, {
-          src: api.apiURL('/genereti/poliplan/embed.html'),
-          ns: 'genereti-poliplan',
-          boards: boardsFor(w, h),
-          document: saved?.document,
-          ui: { tools: true, view: true, zoom: true, panels: false },
-          fit: 'main',
-        });
-        // The editor's document has no color-scheme of its own; inheriting Comfy's dark one makes Chromium put an opaque
-        // backing behind the iframe, so a transparent workspace and paper would never show the graph (Alt+O, overlays).
-        editor.frame.style.colorScheme = 'normal';
-        await editor.setMode('standalone');
-        await editor.setUI({ tools: true, view: true, zoom: true, panels: false });
-        await hideMaskLabel(editor);
-        editor.on('change', () => { remember(); scheduleLive(); });
+        editor = await openEditor(host, saved?.document);
+        editor.on('change', () => { remember(); scheduleLive(); onChange(editor); });
         editor.on('draft', () => scheduleLive());   // once a frame while a stroke grows; `change` only follows the release
-        // Keys the editor does not use (Alt+O, Alt+W, D …) reach Comfy's shortcuts, as when the focus is outside the iframe.
-        editor.on('key', m => routePreviewShortcut({ key: m.key, code: m.code, altKey: m.alt, ctrlKey: m.ctrl, metaKey: m.meta, shiftKey: m.shift,
-          preventDefault() { this.defaultPrevented = true; }, stopPropagation() {}, stopImmediatePropagation() {} }));
         say('');
         if (node._poliplanReference) editor.reference(node._poliplanReference).catch(() => {});
-        node._poliplanShow = ref => editor?.reference(ref);
+        node._poliplanShow = ref => Promise.all(everyone().map(e => e.reference(ref).catch(() => {})));
         return editor;
       } catch (error) {
         say(`Poliplan did not start: ${error.message}`);
@@ -213,7 +275,7 @@ function makePoliplan(node, name) {
     setValue(next) {
       value = typeof next === 'string' ? next : '';
       if (editor && value) {
-        try { const saved = JSON.parse(value); const [w, h] = size(); editor.load(saved.document, { boards: boardsFor(w, h), fit: 'main' }).then(() => hideMaskLabel(editor)).catch(() => say('Could not restore the drawing')); } catch { say('Could not restore the drawing'); }
+        try { const saved = JSON.parse(value); const [w, h] = size(); editor.load(saved.document, { boards: boardsFor(w, h), fit: 'main' }).then(() => hideMaskLabel(editor)).then(() => onChange(editor)).catch(() => say('Could not restore the drawing')); } catch { say('Could not restore the drawing'); }
       }
     },
   });
@@ -228,6 +290,7 @@ function makePoliplan(node, name) {
       await editor.callTool('ams_board', { action: 'update', id: 'main', patch: { width: w, height: h } });
       await editor.callTool('ams_board', { action: 'update', id: 'mask', patch: { width: w, height: h, x: 0, y: h + GAP, ...MASK_FLAGS } });
       remember();
+      onChange(editor);
     } catch (error) { say(error.message); }
   };
 
@@ -259,7 +322,7 @@ function makePoliplan(node, name) {
       }
       return JSON.stringify(result);
     },
-    dispose() { disposed = true; clearTimeout(saving); clearTimeout(liveTimer); output?.close(); editor?.destroy(); editor = null; },
+    dispose() { disposed = true; clearTimeout(saving); clearTimeout(liveTimer); output?.close(); for (const v of views) v.destroy(); views.clear(); editor?.destroy(); editor = null; },
   };
   return { widget };
 }
