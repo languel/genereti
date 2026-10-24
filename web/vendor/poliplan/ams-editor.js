@@ -105,6 +105,12 @@ export function createEditor(container, { src, ns = 'ams-embed', theme = 'host',
       request('score-subscribe', { names, hz, subId });
       return () => { window.removeEventListener('message', handler); request('score-unsubscribe', { subId }); };
     },
+    /** Host clock: init({ clock: 'host' }) first; then transport({ time, playing, rate }) each frame (seconds). */
+    transport: ({ time, playing, rate } = {}) => request('transport', { time, playing, rate }),
+    /** A designated input (an element whose play.in is the name): setScoreInput('place', 0.5) places a traveler. */
+    setScoreInput: (name, value) => request('score-input', { name, value }),
+    /** The whole score as plain JSON (scoreExport), for the standalone runtime (score-runtime.js). */
+    exportScore: () => request('score-export'),
     /** The current signals: readScore('lead') → { t, features } (prefix names). */
     readScore: name => request('score-read', { name }),
     /** Events since a sequence number, newest last: recentEvents(0, 'gate') → { events }. */
