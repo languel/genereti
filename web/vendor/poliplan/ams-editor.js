@@ -93,6 +93,22 @@ export function createEditor(container, { src, ns = 'ams-embed', theme = 'host',
      * An editor without it answers "Unknown export format": fall back to png.
      */
     export: opts => request('export', opts),
+    /**
+     * The score as signals (see src/score/bus.js). subscribeScore({ names?, hz? }, onFrame, onEvent) → unsubscribe.
+     * onFrame gets { t, playing, features: { 'lead.x': 0.4, 'lead.u': 0.2, … } } at hz (25 by default; names are prefixes).
+     * onEvent gets { seq, t, name, phase: entry|exit|cross|end|arrive|collide, x, y, u, lat, dir, speed, traveler, other, tag }.
+     */
+    subscribeScore: ({ names, hz } = {}, onFrame, onEvent) => {
+      const subId = Math.random().toString(36).slice(2, 10);
+      const handler = e => { if (e.data?.channel === CHANNEL && e.data.subId === subId) { if (e.data.type === 'score-frame') onFrame?.(e.data); else if (e.data.type === 'score-event') onEvent?.(e.data); } };
+      window.addEventListener('message', handler);
+      request('score-subscribe', { names, hz, subId });
+      return () => { window.removeEventListener('message', handler); request('score-unsubscribe', { subId }); };
+    },
+    /** The current signals: readScore('lead') → { t, features } (prefix names). */
+    readScore: name => request('score-read', { name }),
+    /** Events since a sequence number, newest last: recentEvents(0, 'gate') → { events }. */
+    recentEvents: (since = 0, name = null) => request('score-recent', { since, name }),
     /** Any studio tool call (ams_add, ams_board, ams_view, …); editor.listTools() lists them. */
     callTool: (name, args) => request('call', { name, args }),
     listTools: () => request('list-tools'),
