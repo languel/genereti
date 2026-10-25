@@ -105,6 +105,8 @@ export function createEditor(container, { src, ns = 'ams-embed', theme = 'host',
       request('score-subscribe', { names, hz, subId });
       return () => { window.removeEventListener('message', handler); request('score-unsubscribe', { subId }); };
     },
+    /** Hide the editor's tools, zoom and transport; shortcuts keep working (Alt+Z does it too, in the editor or on the host page). zen() toggles, zen(true|false) sets; the `zen` event ({ on }) says when it changed. */
+    zen: on => request('zen', on === undefined ? {} : { on }),
     /** Host clock: init({ clock: 'host' }) first; then transport({ time, playing, rate }) each frame (seconds). */
     transport: ({ time, playing, rate } = {}) => request('transport', { time, playing, rate }),
     /** A designated input (an element whose play.in is the name): setScoreInput('place', 0.5) places a traveler. */

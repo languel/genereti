@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poliplan: host-owned clock and sound</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f3efe6; --fg: #2b2a27; --mute: #7a766c; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1b1b1b; --fg: #e8e4da; --mute: #9a968c; } }
+  html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font: 13px/1.4 system-ui, sans-serif; }
+  body { display: flex; flex-direction: column; }
+  header { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 8px 12px; }
+  header h1 { font-size: 14px; margin: 0; }
+  button, select { font: inherit; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--mute); background: transparent; color: var(--fg); }
+  #clock { font-variant-numeric: tabular-nums; min-width: 5em; }
+  #blurb { flex: 1 1 320px; } #listen { color: var(--mute); flex: 1 1 100%; margin: 0; }
+  #editor { flex: 1; min-height: 0; position: relative; }
+  #signals { position: absolute; right: 10px; bottom: 10px; margin: 0; font-size: 11px; color: var(--mute); pointer-events: none; z-index: 5; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Host-owned clock and sound</h1>
+  <select id="example" aria-label="Example"></select>
+  <button id="play">Play</button><button id="rewind" title="Back to the start">⏮</button><span id="clock">0.00 s</span>
+  <label>Speed <input id="rate" type="range" min="0.25" max="2" step="0.05" value="1"> <span id="rate-out">1.00×</span></label>
+  <span id="blurb"></span>
+  <p id="listen"></p>
+</header>
+<div id="editor"><pre id="signals" aria-label="Signals the score makes"></pre></div>
+<script type="module" src="./host-owned.js"></script>
+</body>
+</html>
