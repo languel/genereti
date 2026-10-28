@@ -3,6 +3,7 @@ import { app } from '../../../../scripts/app.js';
 const shortcuts=[
   ['Ctrl+right-drag','Cut crossed connections','Start on blank canvas; release applies one undoable edit; Escape cancels'],
   ['Shift+right-drag','Insert reroutes','Cross connections on blank canvas; preserves existing reroutes and shared branches'],
+  ['Cmd+right-drag','Tie cables','Cross two or more cables; drag the tie to move it, Cmd+right-click the tie to remove it'],
   ['D','Solo backdrop','One selected preview-capable node'],
   ['Shift+D','Toggle backdrop grid source','Add/remove hovered or selected image; automatically tile backgrounds'],
   ['Alt+O','Toggle output-only node','Selected node, or output-only node under the pointer; reveal restore control just outside an edge'],

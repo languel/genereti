@@ -65,4 +65,14 @@ class Gesture(io.ComfyNode):
             raw=np.interp(p*clip['duration'],[p['t'] for p in points],[p[axis] for p in points]) if points else np.full(len(phase),.5)
             values.append(filtered(v[axis+'_low']+(v[axis+'_high']-v[axis+'_low'])*raw,rate,v['smooth']))
         x,y=values;value=y if v['mode']=='Y' else x;return io.NodeOutput(signal(dict(x=x,y=y),rate,float(t[0])),float(x[-1]),float(y[-1]),float(value[-1]))
-MODULATION=[Lfo,Gesture]
+class Curve(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        return io.Schema(node_id='GeneretiChopCurve',display_name='ꘇ chop.curve',category='Genereti / CHOP',search_aliases=['curve','automation','genereti'],description='Editable normalized transfer curve. The FLOAT output can drive a numeric input; the points are saved in the workflow.',inputs=[io.String.Input('name',default='curve'),number('input',0,0,1),io.String.Input('points',default='[[0,0],[1,1]]',socketless=True)],outputs=[CHOP.Output(display_name='channels'),io.Float.Output(display_name='value')])
+    @classmethod
+    def execute(cls,name='curve',input=0,points='[[0,0],[1,1]]'):
+        p=json.loads(points);assert isinstance(p,list) and 2<=len(p)<=128
+        a=sorted((float(x),float(y)) for x,y in p)
+        if any(not math.isfinite(x) or not math.isfinite(y) or not 0<=x<=1 or not 0<=y<=1 for x,y in a):raise ValueError('Curve points must be normalized')
+        value=float(np.interp(float(input),[x for x,y in a],[y for x,y in a]));return io.NodeOutput(signal({'value':[value]}),value)
+MODULATION=[Lfo,Gesture,Curve]

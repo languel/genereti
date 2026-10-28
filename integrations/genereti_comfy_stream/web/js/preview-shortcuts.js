@@ -18,7 +18,18 @@ export function performPreviewAction(kind){
   }
   const escape=kind==='restore';
   if(escape){const filled=[...previews].reverse().find(([node,controls])=>node.graph===app.graph&&controls.isFilled?.());if(!filled)return false;filled[1].toggleFill();return true;}
-  const selected=[...new Set([...Object.values(app.canvas?.selected_nodes||{}),...Array.from(app.canvas?.selectedItems||[])])].filter(node=>node.graph===app.graph);
+  const items=[...new Set([...Object.values(app.canvas?.selected_nodes||{}),...Array.from(app.canvas?.selectedItems||[])])];
+  if(kind==='outputOnly'){
+    const groups=items.filter(item=>app.graph?._groups?.includes(item));
+    if(groups.length){
+      const inside=(node,group)=>{const [x,y]=node.pos??[], [w,h]=node.size??[];const [gx,gy]=group.pos??[], [gw,gh]=group.size??[];return [x,y,w,h,gx,gy,gw,gh].every(Number.isFinite)&&x+w/2>=gx&&x+w/2<=gx+gw&&y+h/2>=gy&&y+h/2<=gy+gh;};
+      const targets=[...previews].filter(([node,controls])=>node.graph===app.graph&&controls.toggleOutputOnly&&groups.some(group=>inside(node,group)));
+      const open=targets.some(([node])=>!node.properties?.genereti_output_only);
+      for(const [node,controls] of targets)if(Boolean(node.properties?.genereti_output_only)!==open)controls.toggleOutputOnly();
+      return targets.length>0;
+    }
+  }
+  const selected=items.filter(node=>node.graph===app.graph);
   const pointerKinds=['outputOnly','backdrop','backdropGrid','overlay','window'];
   const pointerNode=pointerKinds.includes(kind)&&pointer?document.elementFromPoint?.(pointer.x,pointer.y)?.closest?.('[data-node-id]')?.dataset?.nodeId:undefined;
   const hovered=([...previews].reverse().find(([node,controls])=>node.graph===app.graph&&(pointerKinds.includes(kind)?(pointerNode!==undefined?String(node.id)===pointerNode:controls.isOutputHovered?.())||(kind==='overlay'&&controls.isHovered?.()):controls.isHovered?.()||(kind==='through'&&controls.isOutputHovered?.()))));

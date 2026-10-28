@@ -1,10 +1,22 @@
 // Event timing is in AudioContext seconds, independent of graph redraws.
-import {parseDrumPattern,DRUM_LEVEL} from './audio-ui-core.js';
+import {parseDrumPattern,DRUM_LEVEL,snapToScale} from './audio-ui-core.js';
 export function pattern(text, drums=false){
  if(drums)return parseDrumPattern(text);
  const steps=String(text).replaceAll(',',' ').trim().split(/\s+/).map(s=>s==='-'||s==='.'?-1:Number(s));if(!steps.length||steps.length>64||steps.some(n=>!Number.isFinite(n)||n< -1||n>127))throw Error('Use 1..64 MIDI pitches (0..127) or - for a rest');return [{name:'note',steps}];
 }
 export function stepTime(step,anchor,bpm,division,swing=0){return anchor+(step+(step%2?swing:0))*60/bpm/division;}
-export function events(rows,step,time,duration,velocity){return rows.flatMap(row=>{const value=row.steps[step%row.steps.length];if(row.muted)return [];return row.name==='note'?(value<0?[]:[{note:value,time,duration,velocity}]):(value?[{note:row.note,time,duration,velocity:Math.min(1.5,velocity*(DRUM_LEVEL[value]??1))}]:[]);});}
+export function events(rows,step,time,duration,velocity,ratchet=1,stepDuration=duration){const count=Math.max(1,Math.min(8,Math.round(Number(ratchet)||1)));return rows.flatMap(row=>{const value=row.steps[step%row.steps.length];if(row.muted)return [];const hit=row.name==='note'?value>=0:Boolean(value);if(!hit)return [];const note=row.name==='note'?value:row.note,v=row.name==='note'?velocity:Math.min(1.5,velocity*(DRUM_LEVEL[value]??1));return Array.from({length:count},(_,i)=>({note,time:time+i*stepDuration/count,duration:duration/count,velocity:v}));});}
 export function heldNotes(data){const ch=data?.channels??{};const midi=Object.entries(ch).filter(([name])=>/note\d+$/.test(name));if(midi.length)return midi.filter(([,a])=>a.at(-1)>0).map(([name,a])=>({key:name,note:Number(name.match(/note(\d+)$/)[1]),velocity:Math.min(1,a.at(-1))}));return ch.gate?.at(-1)>.5?[{key:'note',note:ch.note?.at(-1)??60,velocity:ch.velocity?.at(-1)??.7}]:[];}
 export function noteFrame(rows,step,gate,velocity,time,rate){const active=gate?events(rows,step,time,0,velocity):[],first=active[0],channels={note:new Float32Array([first?.note??0]),gate:new Float32Array([first?1:0]),velocity:new Float32Array([first?.velocity??0]),step:new Float32Array([step])};if(rows[0].name!=='note')for(const row of rows)channels[`ch10.note${row.note}`]=new Float32Array([active.some(e=>e.note===row.note)?velocity:0]);return {channels,sampleRate:rate,start:time};}
+
+// Evenly distributed hits with a stable downbeat; rotation shifts the pattern right.
+export function euclidean(steps,pulses,rotation=0,note=36){
+ const n=Math.max(1,Math.min(64,Math.round(Number(steps)||1))),k=Math.max(0,Math.min(n,Math.round(Number(pulses)||0))),r=((Math.round(Number(rotation)||0)%n)+n)%n;
+ return [{name:'note',steps:Array.from({length:n},(_,i)=>{const j=(i-r+n)%n;return k>0&&(j*k)%n<k?Math.max(0,Math.min(127,Number(note)||0)):-1;})}];
+}
+
+export function transformPattern(text,operation,amount=1,root=0,scale='minor'){
+ let notes=pattern(text)[0].steps.slice();const n=notes.length,shift=((Math.round(Number(amount)||0)%n)+n)%n;
+ if(operation==='reverse')notes.reverse();else if(operation==='shift'&&shift)notes=[...notes.slice(-shift),...notes.slice(0,-shift)];else if(operation==='transpose')notes=notes.map(p=>p<0?-1:Math.max(0,Math.min(127,p+Number(amount))));else if(operation==='quantize'){const scales={major:[0,2,4,5,7,9,11],minor:[0,2,3,5,7,8,10],pentatonic:[0,2,4,7,9],chromatic:[0,1,2,3,4,5,6,7,8,9,10,11]};if(!scales[scale])throw Error('Unknown scale');notes=notes.map(p=>p<0?-1:snapToScale(p,Number(root),scales[scale]));}
+ return notes.map(n=>n<0?'-':String(n)).join(' ');
+}

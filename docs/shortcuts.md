@@ -21,6 +21,7 @@ IME composition alone. Select one node when a shortcut needs a graph selection.
 | Alt+Shift+W | Toggle output window | Same targeting as Alt+W. Ctrl+W is the browser's close-tab key and cannot be used |
 | Alt+F | Fill window / restore | Hovered overlay first, otherwise selected node; opens its overlay if needed |
 | Escape | Restore filled overlay | Restore its previous position and size |
+| Alt+L | Show/hide cables | Keeps connections active; independent of presentation mode |
 | Alt+P | Presentation visibility | Hide/show graph nodes, code and links; rendering continues |
 | Alt+Shift+Z | Satori | Hide/show Comfy chrome and canvas diagnostics |
 | Alt+Shift+I | Canvas diagnostics | Independent toggle, including in presentation/Satori |

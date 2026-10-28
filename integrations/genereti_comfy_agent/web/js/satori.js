@@ -6,11 +6,14 @@ const MODE = 'genereti-satori';
 const PEEK = 'genereti-satori-panels';
 const PROPERTIES_PEEK='genereti-satori-properties';
 const PRESENTATION='genereti-presentation';
+const HIDDEN_CABLES='genereti-hidden-cables';
+function syncCableVisibility(canvas){const hidden=globalThis.LiteGraph?.HIDDEN_LINK??-1;const mode=app.ui?.settings?.getSettingValue('Comfy.LinkRenderMode',canvas.links_render_mode)??canvas.links_render_mode;document.documentElement.classList.toggle(HIDDEN_CABLES,mode===hidden);}
 let dot,statsWanted,statsPeek=false;
 const hooked=new WeakSet();
 function presentation(){return document.documentElement.classList.contains(PRESENTATION);}
 function syncCanvas(){
   const canvas=app.canvas;if(!canvas)return;
+  syncCableVisibility(canvas);
   statsWanted??=canvas.show_info;
   canvas.show_info=(presentation()||document.documentElement.classList.contains(MODE))?statsPeek:statsWanted;
   if(!hooked.has(canvas)){
@@ -18,6 +21,7 @@ function syncCanvas(){
     for(const method of ['drawConnections','drawGroups']){const original=canvas[method];if(original)canvas[method]=function(){if(!presentation())return original.apply(this,arguments);};}
     const front=canvas.drawFrontCanvas;
     canvas.drawFrontCanvas=function(){
+      syncCableVisibility(this);
       if(!presentation())return front.apply(this,arguments);
       this.dirty_canvas=false;
       const ctx=this.ctx,ratio=this.canvas.ownerDocument.defaultView.devicePixelRatio||1;
@@ -60,12 +64,13 @@ function markChrome() {
 }
 app.registerExtension({
   name: 'Genereti.Satori',
-  commands: [{id:'Genereti.TogglePropertiesPanel',label:'ꘇ Parameters sidebar',tooltip:'Toggle the right properties/parameters panel. P on blank canvas also toggles it; with selected nodes P keeps Comfy pin behavior.',icon:'pi pi-sidebar',function:toggleProperties},{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', tooltip:'Hide Comfy chrome and diagnostics; renderers continue.', icon:'pi pi-circle', function:toggle},{id:'Genereti.TogglePresentation',label:'ꘇ Presentation visibility',tooltip:'Hide graph nodes, code and links; renderers continue.',icon:'pi pi-eye-slash',function:togglePresentation},{id:'Genereti.ToggleCanvasStats',label:'ꘇ Canvas diagnostics',tooltip:'T: graph time; I: iterations; N: total [visible] nodes; V: revision; FPS: graph redraw rate, not output/generation FPS.',icon:'pi pi-chart-line',function:toggleStats}],
-  keybindings: [{commandId:'Genereti.TogglePropertiesPanel',combo:{key:'r',alt:true,shift:true}},{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}},{commandId:'Genereti.TogglePresentation',combo:{key:'p',alt:true}},{commandId:'Genereti.ToggleCanvasStats',combo:{key:'i',alt:true,shift:true}}],
+  commands: [{id:'Genereti.ToggleCables',label:'ꘇ Show / hide cables',tooltip:'Toggle Comfy cable visibility; connections remain active.',icon:'pi pi-eye-slash',function:()=>app.extensionManager.command.execute('Comfy.Canvas.ToggleLinkVisibility')},{id:'Genereti.TogglePropertiesPanel',label:'ꘇ Parameters sidebar',tooltip:'Toggle the right properties/parameters panel. P on blank canvas also toggles it; with selected nodes P keeps Comfy pin behavior.',icon:'pi pi-sidebar',function:toggleProperties},{id:'Genereti.ToggleSatori', label:'ꘇ Satori mode', tooltip:'Hide Comfy chrome and diagnostics; renderers continue.', icon:'pi pi-circle', function:toggle},{id:'Genereti.TogglePresentation',label:'ꘇ Presentation visibility',tooltip:'Hide graph nodes, code and links; renderers continue.',icon:'pi pi-eye-slash',function:togglePresentation},{id:'Genereti.ToggleCanvasStats',label:'ꘇ Canvas diagnostics',tooltip:'T: graph time; I: iterations; N: total [visible] nodes; V: revision; FPS: graph redraw rate, not output/generation FPS.',icon:'pi pi-chart-line',function:toggleStats}],
+  keybindings: [{commandId:'Genereti.ToggleCables',combo:{key:'l',alt:true}},{commandId:'Genereti.TogglePropertiesPanel',combo:{key:'r',alt:true,shift:true}},{commandId:'Genereti.ToggleSatori', combo:{key:'z',alt:true,shift:true}},{commandId:'Genereti.TogglePresentation',combo:{key:'p',alt:true}},{commandId:'Genereti.ToggleCanvasStats',combo:{key:'i',alt:true,shift:true}}],
   afterConfigureGraph(){syncCanvas();},
   setup() {
     const style = document.createElement('style');
     style.textContent = `
+html.${HIDDEN_CABLES} .lg-node.genereti-output-only .genereti-minimal-slot [data-testid="slot-connection-dot"] {visibility:hidden!important;pointer-events:none!important}
 html.${PRESENTATION} .lg-node,html.${PRESENTATION} .dom-widget {visibility:hidden!important;pointer-events:none!important}
 html.${PRESENTATION} .selection-toolbox {display:none!important}
 html.${MODE} .comfy-menu,
@@ -99,6 +104,10 @@ html.${MODE} .comfyui-body {grid-template-rows:0 1fr 0!important;grid-template-c
     dot.addEventListener('click', toggle);
     document.body.append(dot);
     markChrome();syncCanvas();
+    // The toolbar changes a Vue setting without necessarily redrawing the
+    // foreground canvas. Keep DOM-only minimal sockets in sync as well.
+    const cableVisibilityTimer=setInterval(()=>{if(app.canvas)syncCableVisibility(app.canvas);},200);
+    window.addEventListener('pagehide',()=>clearInterval(cableVisibilityTimer),{once:true});
     // Comfy mounts/replaces shell regions when tabs and panels change.
     new MutationObserver(markChrome).observe(document.getElementById('vue-app') || document.body, {childList:true,subtree:true});
     const handleKey=event=>{

@@ -20,9 +20,19 @@ function ensureStyle() {
 .gap-seg button[aria-pressed=true],.gap-btn[aria-pressed=true]{background:color-mix(in srgb,currentColor 20%,transparent)}
 .gap-btn:focus-visible,.gap-seg button:focus-visible,.gap canvas:focus-visible{outline:1px solid currentColor}
 .gap canvas.gap-plot{width:100%;display:block;touch-action:none;border-radius:6px;background:color-mix(in srgb,currentColor 5%,transparent)}
+.gap-transport-controls,.gap-transport-scale{align-items:center;gap:6px 10px}
+.gap-transport-controls select,.gap-transport-scale select{border:0;border-radius:5px;background:transparent;color:inherit;font:inherit;padding:3px;max-width:130px}
+.gap-transport-controls select:hover,.gap-transport-scale select:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
+.gap-synth{gap:10px}
+.gap-synth-oscillator{align-items:center;gap:4px 14px}
+.gap-synth-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}
+.gap-synth-charts .gap-grow{min-width:0}
+.gap-synth-filter-controls{min-height:50px;align-items:center;justify-content:space-between;gap:4px}
+.gap-synth-knobs{align-items:flex-start;justify-content:space-between;gap:6px}
+.gap-synth .gap-keys{margin-top:2px}
 .gap-keys{display:flex;gap:2px}.gap-keys button{flex:1;min-width:0;padding:5px 0;border:0;border-radius:4px;color:inherit;font:9px monospace;cursor:pointer;background:color-mix(in srgb,currentColor 9%,transparent)}
 .gap-keys button.black{background:color-mix(in srgb,currentColor 22%,transparent)}
-.gap-keys button:active,.gap-keys button[aria-pressed=true]{background:color-mix(in srgb,currentColor 38%,transparent)}
+.gap-keys button:active,.gap-keys button[aria-pressed=true],.gap-keys button.gap-playing{background:color-mix(in srgb,currentColor 38%,transparent)}
 `;
   document.head.append(style);
 }
@@ -42,6 +52,14 @@ function hiDPI(canvas, w, h) {
   canvas.style.height = `${h}px`;
   const g = canvas.getContext('2d'); g.setTransform(r, 0, 0, r, 0, 0); g.clearRect(0, 0, w, h); return g;
 }
+// DOM widgets are transformed with the graph zoom. Canvas drawing uses local CSS
+// pixels; pointer events and bounding boxes use screen pixels.
+export function canvasPoint(canvas, event) {
+  const r = canvas.getBoundingClientRect();
+  return [(event.clientX - r.left) * (canvas.clientWidth / (r.width || 1)),
+    (event.clientY - r.top) * (canvas.clientHeight / (r.height || 1))];
+}
+export function canvasWidth(canvas, fallback) { return canvas.clientWidth || fallback; }
 /** Redraw a canvas when its box changes size. */
 function observe(canvas, draw) { if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => draw()).observe(canvas); }
 
@@ -74,8 +92,8 @@ export function knob(node, {name, label = name, min = 0, max = 1, curve = 'lin',
   const apply = (n) => { const v = snap(fromNorm(n, min, max, curve), step); setValue(node, name, clamp(Number(v.toFixed(4)), min, max)); last = null; draw(); };
   let drag;
   canvas.style.width = canvas.style.height = `${size}px`;
-  canvas.onpointerdown = e => { e.stopPropagation(); canvas.focus(); canvas.setPointerCapture(e.pointerId); drag = {y: e.clientY, n: toNorm(getValue(node, name, min), min, max, curve)}; };
-  canvas.onpointermove = e => { if (!drag) return; apply(drag.n + (drag.y - e.clientY) / (e.shiftKey ? 600 : 140)); };
+  canvas.onpointerdown = e => { e.stopPropagation(); canvas.focus(); canvas.setPointerCapture(e.pointerId); drag = {y: canvasPoint(canvas, e)[1], n: toNorm(getValue(node, name, min), min, max, curve)}; };
+  canvas.onpointermove = e => { if (!drag) return; apply(drag.n + (drag.y - canvasPoint(canvas, e)[1]) / (e.shiftKey ? 600 : 140)); };
   canvas.onpointerup = canvas.onpointercancel = () => { drag = null; };
   canvas.ondblclick = e => { e.stopPropagation(); setValue(node, name, initial); last = null; draw(); };
   canvas.onwheel = e => { e.preventDefault(); e.stopPropagation(); apply(toNorm(getValue(node, name, min), min, max, curve) - Math.sign(e.deltaY) * (e.shiftKey ? .004 : .03)); };
@@ -104,8 +122,8 @@ export function fader(node, {name, label = name, max = 2, height = 96, width = 3
   const apply = p => { setValue(node, name, Number(faderToGain(p, max).toFixed(3))); last = null; draw(); };
   const fromEvent = e => { const r = canvas.getBoundingClientRect(); return 1 - (e.clientY - r.top - 5) / (height - 10); };
   let drag;
-  canvas.onpointerdown = e => { e.stopPropagation(); canvas.focus(); canvas.setPointerCapture(e.pointerId); drag = {y: e.clientY, p: gainToFader(getValue(node, name, 0), max)}; };
-  canvas.onpointermove = e => { if (!drag) return; apply(clamp(drag.p + (drag.y - e.clientY) / ((e.shiftKey ? 6 : 1) * (height - 10)), 0, 1)); };
+  canvas.onpointerdown = e => { e.stopPropagation(); canvas.focus(); canvas.setPointerCapture(e.pointerId); drag = {y: canvasPoint(canvas, e)[1], p: gainToFader(getValue(node, name, 0), max)}; };
+  canvas.onpointermove = e => { if (!drag) return; apply(clamp(drag.p + (drag.y - canvasPoint(canvas, e)[1]) / ((e.shiftKey ? 6 : 1) * (height - 10)), 0, 1)); };
   canvas.onpointerup = canvas.onpointercancel = () => { drag = null; };
   canvas.ondblclick = e => { e.stopPropagation(); setValue(node, name, 1); last = null; draw(); };
   canvas.onwheel = e => { e.preventDefault(); e.stopPropagation(); apply(clamp(gainToFader(getValue(node, name, 0), max) - Math.sign(e.deltaY) * (e.shiftKey ? .005 : .03), 0, 1)); };
@@ -136,7 +154,7 @@ export function segmented(node, {name, options, title = name}) {
 export function envelope(node, names = {attack: 'attack', decay: 'decay', sustain: 'sustain', release: 'release'}, {height = 92} = {}) {
   const canvas = el('canvas', {className: 'gap-plot', tabIndex: 0, title: 'Envelope · drag the points: attack, decay + sustain, release · double-click resets'});
   const read = () => ({attack: Number(getValue(node, names.attack, .02)), decay: Number(getValue(node, names.decay, .15)), sustain: Number(getValue(node, names.sustain, .6)), release: Number(getValue(node, names.release, .3))});
-  const size = () => { const r = canvas.getBoundingClientRect(); return [Math.max(120, r.width || 200), height]; };
+  const size = () => { return [Math.max(120, canvasWidth(canvas, 200)), height]; };
   let last, hover = null, active = null;
   const draw = () => {
     const env = read(), [w, h] = size(), key = JSON.stringify([env, w, hover, active]); if (key === last) return; last = key;
@@ -149,7 +167,7 @@ export function envelope(node, names = {attack: 'attack', decay: 'decay', sustai
     g.fillStyle = alpha(c, .65); g.font = '10px system-ui'; g.textBaseline = 'top';
     g.fillText(`A ${formatValue(env.attack, 's')}   D ${formatValue(env.decay, 's')}   S ${env.sustain.toFixed(2)}   R ${formatValue(env.release, 's')}`, 8, 5);
   };
-  const point = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const point = e => { return canvasPoint(canvas, e); };
   const set = env => { for (const k of ['attack', 'decay', 'sustain', 'release']) setValue(node, names[k], Number(env[k].toFixed(k === 'sustain' ? 3 : 4))); last = null; draw(); };
   canvas.onpointerdown = e => { e.stopPropagation(); const [x, y] = point(e), [w, h] = size(), hit = nearestHandle(envelopePoints(read(), w, h), x, y, 14); if (!hit) return; active = hit; canvas.setPointerCapture(e.pointerId); canvas.focus(); draw(); };
   canvas.onpointermove = e => {
@@ -173,7 +191,7 @@ export function filterGraph(node, names = {cutoff: 'cutoff', resonance: 'resonan
   let last, dragging = false;
   const xOf = (f, w) => 4 + toNorm(f, 20, 20000, 'log') * (w - 8);
   const draw = () => {
-    const s = read(), w = Math.max(120, canvas.getBoundingClientRect().width || 200), key = JSON.stringify([s, w, dragging]); if (key === last) return; last = key;
+    const s = read(), w = Math.max(120, canvasWidth(canvas, 200)), key = JSON.stringify([s, w, dragging]); if (key === last) return; last = key;
     const g = hiDPI(canvas, w, height), c = color(canvas), curve = filterCurve(s.mode, s.cutoff, s.q, Math.round(w / 3));
     g.strokeStyle = alpha(c, .12); g.lineWidth = 1; g.fillStyle = alpha(c, .4); g.font = '9px system-ui'; g.textBaseline = 'bottom';
     for (const f of [100, 1000, 10000]) { const x = xOf(f, w); g.beginPath(); g.moveTo(x, 2); g.lineTo(x, height - 12); g.stroke(); g.fillText(f >= 1000 ? `${f / 1000}k` : String(f), x + 2, height - 1); }
@@ -186,7 +204,7 @@ export function filterGraph(node, names = {cutoff: 'cutoff', resonance: 'resonan
   };
   const curveAt = (curve, x) => Math.pow(10, (curve.reduce((best, p) => Math.abs(p.x - x) < Math.abs(best.x - x) ? p : best, curve[0]).db) / 20);
   const apply = e => {
-    const r = canvas.getBoundingClientRect(), nx = (e.clientX - r.left - 4) / (r.width - 8), ny = 1 - (e.clientY - r.top - 2) / (height - 14);
+    const [x, y] = canvasPoint(canvas, e), w = Math.max(120, canvasWidth(canvas, 200)), nx = (x - 4) / (w - 8), ny = 1 - (y - 2) / (height - 14);
     setValue(node, names.cutoff, Math.round(fromNorm(nx, 20, 20000, 'log')));
     setValue(node, names.resonance, Number(qFrom(ny).toFixed(2))); last = null; draw();
   };

@@ -1,5 +1,6 @@
 import unittest
-from integrations.genereti_comfy_chop.modular import MODULAR,Sequence,Output,Mixer,Scope,Spectrum,Lissajous,Analyze
+from integrations.genereti_comfy_chop.modular import MODULAR,Sequence,Output,Mixer,Scope,Spectrum,Lissajous,Analyze,Pattern,Euclidean,Karplus,Granular,Reverb,Distortion
+from integrations.genereti_comfy_chop.modulation import Curve
 class ModularTests(unittest.TestCase):
  def test_schemas_are_independent_and_discoverable(self):
   for node in MODULAR:
@@ -11,6 +12,14 @@ class ModularTests(unittest.TestCase):
  def test_queue_only_describes_routes_and_silent_notes(self):
   self.assertEqual(Output.execute(input={'route':1},level=.3,mute=False).result[0]['format'],'genereti-audio-route')
   self.assertEqual(Sequence.execute(pattern='60 64').result[0]['channels']['gate'][0],0)
+ def test_pattern_transforms_keep_rests_and_new_nodes_discoverable(self):
+  for node in (Euclidean,Karplus,Granular,Reverb,Distortion,Pattern):node.GET_SCHEMA()
+  self.assertEqual(Pattern.execute('60 - 64','reverse').result[0],'64 - 60')
+  self.assertEqual(Pattern.execute('61 - 66','quantize',root=0,scale='major').result[0],'60 - 65')
+ def test_curve_interpolates_saved_points(self):
+  Curve.GET_SCHEMA()
+  result=Curve.execute('shape',.25,'[[0,0],[0.5,1],[1,0]]').result
+  self.assertAlmostEqual(result[1],.5)
  def test_analysis_queue_is_silent_and_has_matching_ports(self):
   for node in (Scope,Spectrum,Lissajous,Analyze):
    node.GET_SCHEMA()

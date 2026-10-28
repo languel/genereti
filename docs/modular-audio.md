@@ -18,13 +18,27 @@ stops all modular outputs. Removing an output or leaving the page also stops it.
 | `ꘇ mod.transport` | Shared BPM/swing clock, pause and reset |
 | `ꘇ mod.sequence` | Editable MIDI pitches, `-` rests, division, gate and velocity |
 | `ꘇ mod.drumsequence` | Editable kick/snare/hi-hat rows, division and velocity |
+| `ꘇ mod.euclidean` | Circular, clocked evenly distributed hits; set steps, pulses, rotation and MIDI note |
+| `ꘇ mod.pattern` | Transform a text melody with shift, reverse, transpose or explicit scale quantization |
+| `ꘇ mod.karplus` | Plucked-string delay-line voice |
+| `ꘇ mod.granular` | Procedural pitched grain cloud; no sample import |
 | `ꘇ mod.synth` | Polyphonic sine, subtractive, FM or square/reed-style voice; ADSR, filter, vibrato and audition keys |
 | `ꘇ mod.drumkit` | Procedural kick, noise snare and hi-hat; no samples/downloads |
 | `ꘇ mod.gain` | Gain, stereo pan and mute |
 | `ꘇ mod.filter` | Low/high/bandpass or notch BiquadFilter |
 | `ꘇ mod.delay` | Wet/dry delay and bounded internal feedback |
+| `ꘇ mod.reverb` | Procedural convolution reverb with decay and wet/dry mix |
+| `ꘇ mod.distortion` | Waveshaping drive with wet/dry mix |
 | `ꘇ mod.mixer` | Four buses with gain, pan, mute, solo and master level |
 | `ꘇ mod.output` | Explicit Start, output level/mute, compressor, peak meter and Panic |
+
+Hover a modular node and press **Alt+W** for an interactive overlay, **Alt+Shift+W** for an interactive output window, or **Alt+O** for the minimal node view. The window controls also provide these options. Opening a view does not start audio.
+
+Transport provides local/project clock selection and the shared global musical root and scale. Optional live waveform traces for modular audio cables can be enabled under **Settings → Genereti → Audio → Audio cable waveforms**. They use the actual audio signal, apply to spline-style audio-bus cables, and add analyser and canvas work only while enabled. They are also disabled with Performance indicators.
+
+Clock and note activity lights, sequencer playheads, triggered pads and keys, and meters are enabled by default. To reduce UI work, turn off **Settings → Genereti → Audio → Performance indicators**. Analysis nodes continue to produce their connected signals.
+
+The melody grid supports Shift-drag for a straight line, rotation, reverse, and quantizing all notes to the project scale. The drill control repeats every active step; Shift on the drum grid retains accent painting. `chop.curve` maps a normalized numeric input through editable points. Its FLOAT output can feed supported numeric sockets. Named curve values are visible in Livecode as `__.curves[name].value`; recorded `chop.gesture` XY data is published as `__.curves["gesture_NODEID"]`. Curves currently use linear segments; importing Poliplan curves is not implemented.
 
 Search `mod` or `genereti mod`. Stable internal IDs are `GeneretiAudio…`; saved
 workflows keep these regardless of labels. The older `chop.synth` and

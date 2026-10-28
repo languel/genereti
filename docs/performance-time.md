@@ -1,5 +1,8 @@
 # Performance time and timeline
 
+
+The timeline's **Linked transport** menu lists the named `mod.transport` nodes. Choose one to switch it to the project clock and adopt its BPM; the timeline and linked transports then share position, play/pause, loop and tempo. Change its clock source back to **local clock** to make it independent. The timeline and transport use the same global root and scale. Timeline toolbars remain visible while scrolling. Press Home to start project time and End to stop and return to zero; these shortcuts do not start audio.
+
 Genereti has its own workflow-scoped browser transport. It runs while the timeline
 is hidden and is independent of Comfy's queue. This first implementation reuses
 Underscores' time-value parser, ruler, zoom, loop and clip interactions; the shared

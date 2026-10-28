@@ -41,7 +41,7 @@ class Sequence(Route):
     @classmethod
     def define_schema(cls):
         return schema('Sequence', [CLOCK.Input('clock'), io.String.Input('pattern', default='60 64 67 72 67 64 - 55 60 - 67 - 72 67 64 -'),
-            io.Int.Input('division', default=4,min=1,max=16), f('gate',.55,.05,.95), f('velocity',.65)], [CHOP.Output(display_name='notes')])
+            io.Int.Input('division', default=4,min=1,max=16), f('gate',.55,.05,.95), f('velocity',.65),io.Int.Input('ratchet',default=1,min=1,max=8,optional=True)], [CHOP.Output(display_name='notes')])
     @classmethod
     def execute(cls, **values):
         # No implicit offline playback; the browser clock owns the event timeline.
@@ -51,7 +51,40 @@ class DrumSequence(Sequence):
     @classmethod
     def define_schema(cls):
         return schema('DrumSequence', [CLOCK.Input('clock'), io.String.Input('pattern', default='kick:1000100010001000;snare:0000100000001000;hat:1010101010101010'),
-            io.Int.Input('division',default=4,min=1,max=16), f('velocity',.65)], [CHOP.Output(display_name='notes')])
+            io.Int.Input('division',default=4,min=1,max=16), f('velocity',.65),io.Int.Input('ratchet',default=1,min=1,max=8,optional=True)], [CHOP.Output(display_name='notes')])
+
+class Euclidean(Sequence):
+    @classmethod
+    def define_schema(cls):
+        return schema('Euclidean', [CLOCK.Input('clock'), io.Int.Input('steps',default=16,min=1,max=64),io.Int.Input('pulses',default=5,min=0,max=64),io.Int.Input('rotation',default=0,min=-64,max=64),io.Int.Input('note',default=36,min=0,max=127),io.Int.Input('division',default=4,min=1,max=16),f('gate',.5,.05,.95),f('velocity',.7)], [CHOP.Output(display_name='notes')])
+
+class Karplus(Route):
+    @classmethod
+    def define_schema(cls):
+        return schema('Karplus', [CHOP.Input('notes'),f('level',.35),f('decay',1.2,.05,5),f('damping',.5,0,1),io.Int.Input('polyphony',default=8,min=1,max=32)])
+
+class Granular(Route):
+    @classmethod
+    def define_schema(cls):
+        return schema('Granular', [CHOP.Input('notes'),f('level',.25),f('grain_size',.08,.02,.3),f('density',16,1,40),f('spread',.25,0,1),f('release',.2,.01,3),io.Int.Input('polyphony',default=8,min=1,max=32)])
+
+class Pattern(Route):
+    @classmethod
+    def define_schema(cls):
+        return schema('Pattern', [io.String.Input('pattern',default='60 64 67 72 - 67 64 -'),io.Combo.Input('operation',options=['shift','reverse','transpose','quantize']),io.Int.Input('amount',default=1,min=-64,max=64),io.Int.Input('root',default=0,min=0,max=11),io.Combo.Input('scale',options=['major','minor','pentatonic','chromatic'])], [io.String.Output(display_name='pattern')])
+    @classmethod
+    def execute(cls,pattern,operation,amount=1,root=0,scale='minor'):
+        notes=[-1 if x in ('-','.') else int(x) for x in pattern.replace(',',' ').split()]
+        if not 1<=len(notes)<=64 or any(x < -1 or x > 127 for x in notes):raise ValueError('Use 1..64 MIDI notes or rests')
+        if operation=='reverse':notes.reverse()
+        elif operation=='shift':
+            k=amount%len(notes);notes=notes[-k:]+notes[:-k] if k else notes
+        elif operation=='transpose':notes=[min(127,max(0,n+amount)) if n>=0 else -1 for n in notes]
+        elif operation=='quantize':
+            degrees={'major':[0,2,4,5,7,9,11],'minor':[0,2,3,5,7,8,10],'pentatonic':[0,2,4,7,9],'chromatic':list(range(12))}.get(scale,[])
+            if not degrees:raise ValueError('Unknown scale')
+            notes=[min((p for p in range(128) if (p-root)%12 in degrees),key=lambda p:(abs(p-n),p)) if n>=0 else -1 for n in notes]
+        return io.NodeOutput(' '.join('-' if n<0 else str(n) for n in notes))
 
 class Synth(Route):
     @classmethod
@@ -84,6 +117,16 @@ class Delay(Route):
     def define_schema(cls):
         return schema('Delay', [BUS.Input('input'), f('seconds',.25,.01,2), f('feedback',.25,0,.85), f('mix',.25)])
 
+class Reverb(Route):
+    @classmethod
+    def define_schema(cls):
+        return schema('Reverb', [BUS.Input('input'),f('decay',1.5,.1,5),f('mix',.3)])
+
+class Distortion(Route):
+    @classmethod
+    def define_schema(cls):
+        return schema('Distortion', [BUS.Input('input'),f('drive',2,0,20),f('mix',.5)])
+
 class Mixer(Route):
     @classmethod
     def define_schema(cls):
@@ -113,4 +156,4 @@ class Spectrum(Scope): KIND = 'Spectrum'
 class Lissajous(Scope): KIND = 'Lissajous'
 class Analyze(Scope): KIND = 'Analyze'
 
-MODULAR=[Transport,Sequence,DrumSequence,Synth,DrumKit,Gain,Filter,Delay,Mixer,Output,Scope,Spectrum,Lissajous,Analyze]
+MODULAR=[Transport,Sequence,DrumSequence,Euclidean,Pattern,Synth,Karplus,Granular,DrumKit,Gain,Filter,Delay,Reverb,Distortion,Mixer,Output,Scope,Spectrum,Lissajous,Analyze]

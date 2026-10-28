@@ -3624,5 +3624,163 @@
         "hint": "The sketch reads __.streams.read(\"mime\") for the live zones and __.events.on(\"mime\") for hits."
       }
     ]
+  },
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "ambient-song",
+    "title": "Ambient: a slow constellation",
+    "summary": "A model-free song patch with an interactive walkthrough; sound starts only when you choose.",
+    "steps": [
+      {
+        "title": "Start listening",
+        "text": "Press Start on the output to enable sound, then play the transport if it is paused. Start with a low system volume. The scope is the only visual: it shows the actual sound.",
+        "target": {
+          "nodeType": "GeneretiAudioOutput",
+          "ref": "6040952c-3bd3-5a4f-9323-3e27e3358908",
+          "part": "node"
+        },
+        "hint": "Audio requires your own Start gesture; loading or queueing this workflow does not start sound."
+      },
+      {
+        "title": "Set the pulse",
+        "text": "The project clock drives all three parts. Try a small change in tempo or swing and listen to the relationship between the parts.",
+        "target": {
+          "nodeType": "GeneretiAudioTransport",
+          "ref": "b519147e-44c2-55f8-b5ce-8f72a31ffbb2",
+          "part": "node"
+        },
+        "hint": "The timeline and this transport share the project clock."
+      },
+      {
+        "title": "Edit the melody",
+        "text": "Click a piano-roll cell to place or remove a note; drag to draw a phrase. Listen to the spaces between notes.",
+        "target": {
+          "nodeType": "GeneretiAudioSequence",
+          "ref": "e735cd5f-423e-5400-83c6-681e8f914b07",
+          "part": "node"
+        },
+        "hint": "Use the octave and transpose controls to find another register."
+      },
+      {
+        "title": "Shape the low part",
+        "text": "Change the bass notes, then adjust the low voice filter and envelope. Solo its mixer channel to hear it on its own.",
+        "target": {
+          "nodeType": "GeneretiAudioSynth",
+          "ref": "156cf36c-9d89-5e7d-a2a4-96c80cd98560",
+          "part": "node"
+        },
+        "hint": "A longer release overlaps notes; a lower cutoff softens the sound."
+      },
+      {
+        "title": "Make the rhythm your own",
+        "text": "Draw hits in the drum grid. Shift-click makes an accent and Alt-click makes a ghost hit. Mute or solo the drum channel to compare the arrangement.",
+        "target": {
+          "nodeType": "GeneretiAudioDrumSequence",
+          "ref": "45081f99-72c3-5f42-bee7-4c01d42000b8",
+          "part": "node"
+        },
+        "hint": "The sparse percussion is optional; mute it for a beatless version."
+      },
+      {
+        "title": "Create space",
+        "text": "Adjust the delay mix and feedback, then the reverb mix. Bring the melody channel down if the echoes cover the bass or drums.",
+        "target": {
+          "nodeType": "GeneretiAudioReverb",
+          "ref": "141c8555-147b-50b3-a4ec-0bfcd700d95a",
+          "part": "node"
+        },
+        "hint": "The effects process only the melody; the bass and drums remain clear."
+      },
+      {
+        "title": "Perform and finish",
+        "text": "Use the mixer mute and solo buttons to bring parts in and out. Press Stop on the output when finished; record with the output record button if you want to keep a take.",
+        "target": {
+          "nodeType": "GeneretiAudioMixer",
+          "ref": "7c25cff5-e54a-5a0a-9e84-d64672dd3eb7",
+          "part": "node"
+        },
+        "hint": "Try an introduction with only the melody, then add bass and rhythm one at a time."
+      }
+    ]
+  },
+  {
+    "format": "genereti-guide",
+    "version": 1,
+    "id": "braindance-breaks",
+    "title": "Braindance: fractured breaks",
+    "summary": "A model-free song patch with an interactive walkthrough; sound starts only when you choose.",
+    "steps": [
+      {
+        "title": "Start listening",
+        "text": "Press Start on the output to enable sound, then play the transport if it is paused. Start with a low system volume. The scope is the only visual: it shows the actual sound.",
+        "target": {
+          "nodeType": "GeneretiAudioOutput",
+          "ref": "668f5982-5557-5811-8130-6a03434ecb2d",
+          "part": "node"
+        },
+        "hint": "Audio requires your own Start gesture; loading or queueing this workflow does not start sound."
+      },
+      {
+        "title": "Set the pulse",
+        "text": "The project clock drives all three parts. Try a small change in tempo or swing and listen to the relationship between the parts.",
+        "target": {
+          "nodeType": "GeneretiAudioTransport",
+          "ref": "3cdb0dce-083d-5c56-aed5-42fd3a60fcff",
+          "part": "node"
+        },
+        "hint": "The timeline and this transport share the project clock."
+      },
+      {
+        "title": "Edit the melody",
+        "text": "Click a piano-roll cell to place or remove a note; drag to draw a phrase. Listen to the spaces between notes.",
+        "target": {
+          "nodeType": "GeneretiAudioSequence",
+          "ref": "c8482f86-af32-5773-b324-b1e9bb204b8e",
+          "part": "node"
+        },
+        "hint": "Use the octave and transpose controls to find another register."
+      },
+      {
+        "title": "Shape the low part",
+        "text": "Change the bass notes, then adjust the low voice filter and envelope. Solo its mixer channel to hear it on its own.",
+        "target": {
+          "nodeType": "GeneretiAudioSynth",
+          "ref": "4f656bf3-cc07-5956-9c36-7e71465dfb3d",
+          "part": "node"
+        },
+        "hint": "A longer release overlaps notes; a lower cutoff softens the sound."
+      },
+      {
+        "title": "Make the rhythm your own",
+        "text": "Draw hits in the drum grid. Shift-click makes an accent and Alt-click makes a ghost hit. Mute or solo the drum channel to compare the arrangement.",
+        "target": {
+          "nodeType": "GeneretiAudioDrumSequence",
+          "ref": "0a260495-0b8e-551a-9c14-3e016d89d64d",
+          "part": "node"
+        },
+        "hint": "For a break, add a few quiet snare or rim hits and leave space around the main snare."
+      },
+      {
+        "title": "Create space",
+        "text": "Adjust the delay mix and feedback, then the reverb mix. Bring the melody channel down if the echoes cover the bass or drums.",
+        "target": {
+          "nodeType": "GeneretiAudioReverb",
+          "ref": "5dfc4740-bbe0-5603-86e9-6e714123086b",
+          "part": "node"
+        },
+        "hint": "The effects process only the melody; the bass and drums remain clear."
+      },
+      {
+        "title": "Perform and finish",
+        "text": "Use the mixer mute and solo buttons to bring parts in and out. Press Stop on the output when finished; record with the output record button if you want to keep a take.",
+        "target": {
+          "nodeType": "GeneretiAudioMixer",
+          "ref": "dd01ea0e-cc50-5c15-ba49-a5098fe0fbaa",
+          "part": "node"
+        },
+        "hint": "Try an introduction with only the melody, then add bass and rhythm one at a time."
+      }
+    ]
   }
 ]

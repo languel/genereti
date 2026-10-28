@@ -97,3 +97,14 @@ test('D prioritizes the pointer node and falls back to selection outside nodes',
 });
 
 test('Shift D adds the selected or hovered output to the background grid',()=>{const f=fixture();f.key('KeyD',{shiftKey:true});assert.deepEqual(f.calls,['grid']);});
+
+test('Alt-O toggles all preview nodes inside a selected group together',()=>{
+ const f=fixture(),group={pos:[0,0],size:[400,300]};
+ f.app.graph._groups=[group];f.node.pos=[20,20];f.node.size=[100,100];f.node.properties={genereti_output_only:false};
+ f.other.pos=[220,20];f.other.size=[100,100];f.other.properties={genereti_output_only:true};
+ f.controls.toggleOutputOnly=()=>{f.node.properties.genereti_output_only=!f.node.properties.genereti_output_only;};
+ f.context.registerPreviewShortcuts(f.other,{toggleOutputOnly:()=>{f.other.properties.genereti_output_only=!f.other.properties.genereti_output_only;}});
+ f.app.canvas.selected_nodes={};f.app.canvas.selectedItems=new Set([group]);
+ f.key('KeyO',{altKey:true});assert.equal(f.node.properties.genereti_output_only,true);assert.equal(f.other.properties.genereti_output_only,true);
+ f.key('KeyO',{altKey:true});assert.equal(f.node.properties.genereti_output_only,false);assert.equal(f.other.properties.genereti_output_only,false);
+});

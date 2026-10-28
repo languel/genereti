@@ -91,6 +91,7 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
   }
   state.lastClock=s;const raw=gesture?state.manual:[wave(v.wave,state.phase+Number(v.phase),Number(v.seed))];
   state.output=raw.map((x,i)=>{const key=i?'y':'x',low=Number(v[gesture?key+'_low':'low']),high=Number(v[gesture?key+'_high':'high']);return smooth(state.previous[i],low+(high-low)*x,dt,Number(v.smooth));});state.previous=state.output;
+  if(gesture&&window.generetiPerformance){window.generetiPerformance.liveCurves??=new Map();if(!state.sharedSource)state.sharedSource={get:()=>({x:state.output?.[0]??0,y:state.output?.[1]??0,points:state.clip.points.slice(0,256)})};window.generetiPerformance.liveCurves.set(node,state.sharedSource);}
   state.latest={channels:gesture?{x:new Float32Array([state.output[0]]),y:new Float32Array([state.output[1]])}:{lfo:new Float32Array([state.output[0]])},sampleRate:60,start:now/1000};
   window.dispatchEvent(new CustomEvent('genereti-control-frame',{detail:{nodeId:node.id}}));
   // Modulation and gesture recording continue when only the presentation is offscreen.
@@ -108,5 +109,5 @@ app.registerExtension({name:'Genereti.Modulation',nodeCreated(node){
   text(status,state.capturing?`Recording · ${(now/1000-state.recordStart).toFixed(2)} s`:state.armed?'Armed · drag to record':state.pending?'Waiting for musical boundary':`${gesture?state.clip.duration.toFixed(2)+' s gesture':state.output[0].toFixed(3)} · ${free?'free time':v.interval+' · project '+(s?.playing?'running':'paused')}${gesture&&!state.clip.points.length?' · press Record then drag':''}`);
  };
  states.add(state);if(!raf)raf=requestAnimationFrame(tick);
- const removed=node.onRemoved;node.onRemoved=function(){visibility.disconnect();states.delete(state);return removed?.apply(this,arguments);};
+ const removed=node.onRemoved;node.onRemoved=function(){visibility.disconnect();window.generetiPerformance?.liveCurves?.delete(node);states.delete(state);return removed?.apply(this,arguments);};
 }});

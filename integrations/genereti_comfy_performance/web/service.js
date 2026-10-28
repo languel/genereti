@@ -12,8 +12,8 @@ export function validateDocument(value){
 }
 export class PerformanceService {
  cursor(){return new MusicalCursor();}
- constructor(app){this.app=app;this.listeners=new Set();this.uiListeners=new Set();this.lastUI=0;this.overridden=new Set();this.local=new Map();this.bindings=new Map();this.pending=[];this.history=[];this.future=[];this.queueSnapshot=null;this.recording=null;this.load();this.timer=setInterval(()=>this.tick(),40);}
- load(value){const document=value?validateDocument(value):freshDocument();this.clearOverrides();this.recording=null;this.pending=[];for(const stop of this.local.values())stop.unsubscribe?.();this.local.clear();this.document=document;this.clock=new Transport(this.document.transport);this.clock.subscribe(e=>{this.pending=[];this.resetBindings(e);this.publish();});this.lastLoop=0;this.history=[];this.future=[];this.publish();}
+ constructor(app){this.app=app;this.listeners=new Set();this.uiListeners=new Set();this.lastUI=0;this.overridden=new Set();this.local=new Map();this.projectTransportBpm=new Map();this.bindings=new Map();this.pending=[];this.history=[];this.future=[];this.queueSnapshot=null;this.recording=null;this.load();this.timer=setInterval(()=>this.tick(),40);}
+ load(value){const document=value?validateDocument(value):freshDocument();this.clearOverrides();this.recording=null;this.pending=[];for(const stop of this.local.values())stop.unsubscribe?.();this.local.clear();this.projectTransportBpm.clear();this.document=document;this.clock=new Transport(this.document.transport);this.clock.subscribe(e=>{this.pending=[];this.resetBindings(e);this.publish();});this.lastLoop=0;this.history=[];this.future=[];this.publish();}
  subscribe(fn){this.listeners.add(fn);return()=>this.listeners.delete(fn);}
  subscribeUI(fn){this.uiListeners.add(fn);return()=>this.uiListeners.delete(fn);}
  publish(continuous=false){for(const fn of this.listeners)fn();const now=performance.now();if(!continuous||now-this.lastUI>=200){this.lastUI=now;for(const fn of this.uiListeners)fn();}}
@@ -22,9 +22,24 @@ export class PerformanceService {
  undo(){if(!this.history.length)return false;this.future.push(structuredClone(this.document));this.document=this.history.pop();this.clock.configure(this.document.transport);this.save();return true;}
  redo(){if(!this.future.length)return false;this.history.push(structuredClone(this.document));this.document=this.future.pop();this.clock.configure(this.document.transport);this.save();return true;}
  transportFor(node){const name=node?.widgets?.find(w=>w.name==='clock_name')?.value??node?.properties?.generetiClock??'project';if(name==='project')return this.clock;const id=`${name}:${node?.properties?.generetiLessonRef??node?.id}`;if(!this.local.has(id)){const bpm=node?.widgets?.find(w=>w.name==='bpm')?.value??110,clock=new Transport({bpm});clock.play();this.local.set(id,clock);}return this.local.get(id);}
+ syncProjectTransports(){
+  const nodes=(this.app.graph?._nodes??[]).filter(n=>n.comfyClass==='GeneretiAudioTransport'&&n.widgets?.find(w=>w.name==='clock_name')?.value==='project');
+  const live=new Set(nodes);for(const node of this.projectTransportBpm.keys())if(!live.has(node))this.projectTransportBpm.delete(node);
+  let changed=false;
+  for(const node of nodes){const widget=node.widgets?.find(w=>w.name==='bpm');if(!widget)continue;const previous=this.projectTransportBpm.get(node),value=Number(widget.value);if(previous!==undefined&&Number.isFinite(value)&&value!==previous){this.clock.tempo(value);changed=true;break;}}
+  const bpm=this.clock.read().bpm;
+  for(const node of nodes){const widget=node.widgets?.find(w=>w.name==='bpm');if(!widget)continue;if(Number(widget.value)!==bpm){widget.value=bpm;widget.callback?.(bpm,null,node);node.setDirtyCanvas?.(true,true);}this.projectTransportBpm.set(node,bpm);}
+  if(changed)this.save();
+ }
+ linkProjectTransport(node){
+  if(!node||node.comfyClass!=='GeneretiAudioTransport')return false;
+  const mode=node.widgets?.find(w=>w.name==='clock_name'),bpm=node.widgets?.find(w=>w.name==='bpm');if(!mode)return false;
+  mode.value='project';mode.callback?.('project',null,node);if(bpm&&Number.isFinite(Number(bpm.value)))this.clock.tempo(Number(bpm.value));
+  this.projectTransportBpm.delete(node);this.syncProjectTransports();node.setDirtyCanvas?.(true,true);this.save();return true;
+ }
  linked(node){return node?.properties?.generetiTimeMode==='linked';}
  timeFor(node,now){return this.linked(node)?this.clock.read().seconds:now/1000;}
- snapshot(){return {...this.clock.read(),music:structuredClone(this.document.music),data:structuredClone(this.document.data)};}
+ snapshot(){const curves=Object.create(null);for(const [node,source] of this.liveCurves??[]){if(node.graph!==this.app.graph)continue;const name=String(node.widgets?.find(w=>w.name==='name')?.value??`gesture_${node.id}`).trim();if(name&&name.length<=80)curves[name]=source.get();}return {...this.clock.read(),music:structuredClone(this.document.music),data:structuredClone(this.document.data),curves};}
  expressionValues(){const s=this.clock.read(),music=this.document.music;return {g_time:s.seconds,g_beat:s.beat,g_bar:s.bar,g_bpm:s.bpm,g_ticks:s.ticks,g_phase:s.phase,g_playing:+s.playing,g_rate:s.rate,g_root:music.root,g_tuning:music.tuning};}
  node(ref){return this.app.graph?._nodes?.find(n=>n.properties?.generetiLessonRef===ref);}
  target(node,param){node.properties??={};node.properties.generetiLessonRef??=crypto.randomUUID();return {ref:node.properties.generetiLessonRef,param};}
@@ -32,7 +47,7 @@ export class PerformanceService {
  resetBindings(event){for(const [node,reset] of this.bindings)if(this.linked(node))reset?.(event);}
  clearOverrides(){for(const node of this.overridden){delete node._generetiPerformanceValues;}this.overridden.clear();}
  launch(expression,action){const target=this.clock.nextBoundary(expression);this.pending.push({...target,action,id:crypto.randomUUID()});this.publish();return target;}
- tick(){if(!this.ready)return;const workStart=performance.now();const s=this.clock.read();if(s.iteration!==this.lastLoop){this.lastLoop=s.iteration;this.pending=[];this.resetBindings({type:'wrap',...s});}
+ tick(){if(!this.ready)return;const workStart=performance.now();this.syncProjectTransports();const s=this.clock.read();if(s.iteration!==this.lastLoop){this.lastLoop=s.iteration;this.pending=[];this.resetBindings({type:'wrap',...s});}
   const active=new Map();this.conflicts=[];
   for(const {target,value} of evaluateAutomation(this.document,s.seconds)){const node=this.node(target?.ref);if(!node)continue;const input=node.inputs?.find(i=>(i.widget?.name??i.name)===target.param);if(input?.link!=null){this.conflicts.push(`${node.title}: ${target.param} has a wire`);continue;}if(!active.has(node))active.set(node,{});active.get(node)[target.param]=value;}
   // Retain the transient value bank. Recreating it on every tick invalidated

@@ -736,7 +736,7 @@ const TransportTimeline = memo(function TransportTimeline({
       tabIndex={-1}
       onKeyDown={handleTimelineKeyDown}
     >
-      <div className="iannix-timeline-ruler">
+      <div className="iannix-timeline-ruler" onPointerDown={startPlayheadDrag} title="Drag to seek · Shift-drag to mark a loop">
         {(showArrangement || showTimeline) ? <button
           type="button"
           className="iannix-arrangement-label-toggle"

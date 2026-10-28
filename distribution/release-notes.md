@@ -1,3 +1,12 @@
+# ꘇ Genereti 0.1.5 — drawing, audio and performance
+
+- Adds the Poliplan drawing node, with live image output, an optional image underlay, interactive output views and score sequencing.
+- Expands modular audio with sequencers, instrument and mixer panels, key and MIDI bindings, recording, and ambient and braindance teaching workflows.
+- Adds MediaMime body regions and perception measures, with movement-painting and body-drum teaching examples.
+- Expands timeline transport, time-value controls and embedded performance views; improves live output views and shortcuts.
+- Extends procedural noise with additional algorithms, shaping, domain warp and seamless looping.
+- Continues the early alpha classroom preview. Camera and screen capture remain user-started; optional perception models are not bundled.
+
 # ꘇ Genereti 0.1.4 — Holistic streams and feature selection
 
 - Holistic is the default coordinated pose/hand/face provider. Start loads installed models; observations hold when the source is deliberately paused.

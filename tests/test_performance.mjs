@@ -23,3 +23,17 @@ test('automation remains transient, respects wires, and saves recorded tails acr
  try{const {clip}=service.addAutomation(node,'scale');clip.keys=[{time:0,value:2},{time:4,value:10}];service.clock.seek(2);service.tick();near(node._generetiPerformanceValues.scale,6);assert.equal(node.widgets[0].value,4);node.inputs=[{name:'scale',link:2}];service.tick();assert.equal(node._generetiPerformanceValues,undefined);assert.equal(service.conflicts.length,1);node.inputs=[];service.record(node,'scale');service.recording.monotonic-=9;node.widgets[0].value=8;service.stopRecord();const take=service.document.clips.at(-1);assert.ok(take.timing.duration>=9);assert.equal(take.keys.at(-1).value,8);assert.ok(app.graph.extra.generetiPerformance.clips.length===2);const copy=validateDocument(JSON.parse(JSON.stringify(service.document)));assert.equal(copy.version,1);assert.equal(copy.clips.at(-1).keys.at(-1).value,8);const before=service.document;assert.throws(()=>service.load({version:3}));assert.equal(service.document,before);
  }finally{service.dispose();globalThis.window=previous;}
 });
+
+test('timeline links a named transport and synchronizes tempo both ways',()=>{
+ const app={graph:{_nodes:[],extra:{},change(){}}},service=new PerformanceService(app);
+ const transport={id:7,title:'Drum clock',comfyClass:'GeneretiAudioTransport',widgets:[{name:'bpm',value:138},{name:'clock_name',value:'local'}],setDirtyCanvas(){}};
+ app.graph._nodes.push(transport);
+ try{assert.equal(service.linkProjectTransport(transport),true);assert.equal(service.transportFor(transport),service.clock);assert.equal(service.clock.read().bpm,138);
+ service.clock.tempo(94);service.syncProjectTransports();assert.equal(transport.widgets[0].value,94);
+ transport.widgets[0].value=121;service.syncProjectTransports();assert.equal(service.clock.read().bpm,121);assert.equal(app.graph.extra.generetiPerformance.transport.bpm,121);
+ service.clock.setLoop({enabled:true,start:2,end:4});service.clock.seek(3);assert.equal(service.transportFor(transport).read().seconds,3);assert.equal(service.transportFor(transport).loop.enabled,true);
+ transport.widgets[1].value='local';service.syncProjectTransports();assert.notEqual(service.transportFor(transport),service.clock);
+ }finally{service.dispose();}
+});
+
+test('named live curves appear in the shared performance snapshot',()=>{const app={graph:{_nodes:[],extra:{},change(){}}},service=new PerformanceService(app);const node={id:12,graph:app.graph,widgets:[{name:'name',value:'shape'}]};try{service.liveCurves=new Map([[node,{get:()=>({input:.5,value:.25,points:[[0,0],[1,1]]})}]]);assert.equal(service.snapshot().curves.shape.value,.25);node.graph={};assert.equal(service.snapshot().curves.shape,undefined);}finally{service.dispose();}});

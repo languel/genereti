@@ -79,15 +79,17 @@ Generator prompt submission has a glyph toggle with hover text: live typing or a
 held draft. The send glyph and Cmd/Ctrl+Enter commit a held draft. Save drafts and
 the applied prompt separately, so reopening a workflow preserves that choice.
 
+In Alt+O view, visible socket dots and their cable endpoints move alongside the top of the interactive panel. Restoring the node restores its normal socket layout.
+
 ### Connection gestures
 
 Start on blank canvas and drag with the right mouse button: **Ctrl** cuts each
-crossed connection; **Shift** inserts a native reroute at each crossed segment.
+crossed connection; **Shift** inserts a native reroute at each crossed segment. **Cmd** ties two or more crossed cable segments into a bundle. Drag its bar to move the bundle; Cmd-right-click the bar to untie it while preserving connections.
 Release applies one undoable transaction. Escape cancels before release.
 Cut gestures show a dashed red trail and highlight pending connections red;
 canceling or releasing restores their original colors and clears the trail.
 Existing
-reroute chains and shared cable trunks are handled through Comfy's native APIs;
+reroute chains and shared cable trunks are handled through Comfy's native APIs; cable ties group separate native reroutes and are stored in workflow metadata;
 normal right-click menus and canvas panning remain available without modifiers.
 Enable or disable both under **Settings → Genereti → Shortcuts → Connection
 drag gestures**, beside Keyboard shortcuts. The saved toggle defaults to on;

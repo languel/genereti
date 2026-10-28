@@ -10,9 +10,20 @@ export function nodeOutputView(node,surface,{beforeOpen=()=>{},onChange=()=>{}}=
   .lg-node:has(>.genereti-output-only-view){background:transparent!important;border-color:transparent!important;box-shadow:none!important;filter:none!important;outline:none!important;overflow:visible!important}
   .lg-node:has(>.genereti-output-only-view) :not(:has(.genereti-visual-surface)):not(.genereti-visual-surface):not(.genereti-visual-surface *):not(.genereti-output-only-view):not(.genereti-output-only-view *){opacity:0!important}
   .lg-node:has(>.genereti-output-only-view) :has(.genereti-visual-surface){background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+  .lg-node.genereti-output-only .genereti-slot-path,.lg-node.genereti-output-only .genereti-minimal-slot,.lg-node.genereti-output-only .genereti-minimal-slot [data-testid="slot-connection-dot"],.lg-node.genereti-output-only .genereti-minimal-slot [data-testid="slot-connection-dot"] *{opacity:1!important}
+  .lg-node.genereti-output-only .genereti-minimal-slot{translate:0 var(--genereti-slot-shift,0px);pointer-events:none}
+  .lg-node.genereti-output-only .genereti-minimal-slot [data-testid="slot-connection-dot"]{pointer-events:auto}
     `;document.head.append(style);
  }
- let host,shell,hostPointerEvents,paths=[],disposed=false;
+ let host,shell,hostPointerEvents,paths=[],disposed=false,slotPaths=[],slotNodes=[],slotShift=null,slotObserver,slotOpacity=new Map();
+ // Vue computes cable anchors from the measured slot dots. Move the actual slots
+ // and nudge its observed widget grid so its layout store remeasures them.
+ function remeasureSlots(){const grid=host?.querySelector?.('[data-testid="node-widgets"]');if(!grid)return;const previous=grid.style.width;grid.style.width='calc(100% - 1px)';requestAnimationFrame(()=>{if(grid.isConnected!==false)grid.style.width=previous;node.setDirtyCanvas?.(true,true);});}
+ function alignSlots(){if(!host||!surface)return;const slots=[...(host.querySelectorAll?.('.lg-slot')??[])];const first=slots[0]?.querySelector?.('[data-testid="slot-dot"]');if(!first)return;const bounds=host.getBoundingClientRect(),scale=host.offsetWidth?bounds.width/host.offsetWidth:1,desired=(surface.getBoundingClientRect().top-first.getBoundingClientRect().top)/(scale||1)+8,shift=Math.round(desired*10)/10+(slotShift??0);if(slotShift!==null&&Math.abs(shift-slotShift)<.5)return;slotShift=shift;host.style.setProperty?.('--genereti-slot-shift',`${shift}px`);remeasureSlots();}
+ function revealSlotPart(el){if(!el?.style||slotOpacity.has(el))return;slotOpacity.set(el,[el.style.getPropertyValue('opacity'),el.style.getPropertyPriority('opacity')]);el.style.setProperty('opacity','1','important');}
+ function showSlots(){slotNodes=[...(host.querySelectorAll?.('.lg-slot')??[])];slotPaths=[];for(const slot of slotNodes){slot.classList.add('genereti-minimal-slot');revealSlotPart(slot);const dot=slot.querySelector?.('[data-testid="slot-connection-dot"]');if(dot){revealSlotPart(dot);for(const child of dot.querySelectorAll('*'))revealSlotPart(child);}for(let p=slot.parentElement;p&&p!==host;p=p.parentElement)if(!slotPaths.includes(p)){slotPaths.push(p);p.classList.add('genereti-slot-path');revealSlotPart(p);}}alignSlots();if(typeof ResizeObserver!=='undefined'){slotObserver=new ResizeObserver(alignSlots);slotObserver.observe(surface);}}
+ function restoreSlots(){slotObserver?.disconnect();slotObserver=null;for(const slot of slotNodes)slot.classList.remove('genereti-minimal-slot');for(const p of slotPaths)p.classList.remove('genereti-slot-path');for(const [el,[value,priority]] of slotOpacity){if(value)el.style.setProperty('opacity',value,priority);else el.style.removeProperty('opacity');}slotOpacity.clear();slotNodes=[];slotPaths=[];slotShift=null;host?.style.removeProperty?.('--genereti-slot-shift');remeasureSlots();}
+
  function set(open,persist=true){
   if(open===!!shell)return;
   if(open){
@@ -23,9 +34,9 @@ export function nodeOutputView(node,surface,{beforeOpen=()=>{},onChange=()=>{}}=
    const surfaceSize={width:rect.width/(scale||1),height:rect.height/(scale||1),left:(rect.left-hostRect.left)/(scale||1),top:(rect.top-hostRect.top)/(scale||1)};
    hostPointerEvents=host.style.pointerEvents;surface.classList.add('genereti-visual-surface');
    paths=[];for(let parent=surface.parentElement;parent&&parent!==host;parent=parent.parentElement){parent.classList.add('genereti-visual-path');paths.push(parent);}
-   host.classList.add('genereti-output-only');
+   host.classList.add('genereti-output-only');showSlots();
    shell=overlayShell(surface,{},()=>{
-    shell=null;surface.classList.remove('genereti-visual-surface');for(const parent of paths)parent.classList.remove('genereti-visual-path');paths=[];host.classList.remove('genereti-output-only');host.style.pointerEvents=hostPointerEvents;
+    shell=null;restoreSlots();surface.classList.remove('genereti-visual-surface');for(const parent of paths)parent.classList.remove('genereti-visual-path');paths=[];host.classList.remove('genereti-output-only');host.style.pointerEvents=hostPointerEvents;
     if(!disposed&&!quiet){node.properties.genereti_output_only=false;node.graph?.change?.(node);onChange(false);}
    },{node,embedded:true,inPlace:true,parent:host,surfaceSize,onThroughChange:through=>host.style.pointerEvents=through?'none':hostPointerEvents});
   }else{shell.close();return;}

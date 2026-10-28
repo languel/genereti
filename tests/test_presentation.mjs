@@ -5,9 +5,9 @@ import {readFileSync} from 'node:fs';
 function fixture(){
  const classes=new Set(),listeners={},calls=[],ctx={save(){},restore(){},setTransform(){},clearRect(){},drawImage(){calls.push('background');}};
  const canvas={show_info:true,canvas:{width:800,height:600,ownerDocument:{defaultView:{devicePixelRatio:1}}},bgcanvas:{width:800,height:600},ctx,drawConnections(){calls.push('links');},drawGroups(){calls.push('groups');},drawFrontCanvas(){calls.push('nodes');},renderInfo(){calls.push('stats');},setDirty(){}};
- const document={documentElement:{classList:{contains:k=>classes.has(k),remove:k=>classes.delete(k),add:k=>classes.add(k),toggle(k){if(classes.has(k)){classes.delete(k);return false;}classes.add(k);return true;}}},head:{append(){}},body:{append(){}},querySelector(){},getElementById(){},createElement(){return {setAttribute(){},addEventListener(){}};}};
+ const document={documentElement:{classList:{contains:k=>classes.has(k),remove:k=>classes.delete(k),add:k=>classes.add(k),toggle(k,force){if(force===false||(force===undefined&&classes.has(k))){classes.delete(k);return false;}classes.add(k);return true;}}},head:{append(){}},body:{append(){}},querySelector(){},getElementById(){},createElement(){return {setAttribute(){},addEventListener(){}};}};
  let extension;const app={canvas,registerExtension:x=>extension=x},window={dispatchEvent(){},addEventListener:(key,fn)=>listeners[key]=fn};
- const context=vm.createContext({app,document,window,Element:class{},MutationObserver:class{observe(){}},Event:class{}});
+ const context=vm.createContext({app,document,window,setInterval:()=>1,clearInterval(){},Element:class{},MutationObserver:class{observe(){}},Event:class{}});
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_agent/web/js/satori.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,''),context);extension.setup();
  const key=(code,options={})=>{const binding=extension.keybindings.find(b=>b.combo.key.toUpperCase()===code.slice(3)&&Boolean(b.combo.alt)===Boolean(options.altKey)&&Boolean(b.combo.shift)===Boolean(options.shiftKey));if(binding)extension.commands.find(c=>c.id===binding.commandId).function();};
  return {canvas,classes,calls,key,listeners};
@@ -24,4 +24,8 @@ test('Satori hides diagnostics with independent stats peek and preserves normal 
 test('workspace commands have native bindings and scope tooltips',()=>{
  const f=fixture();f.key('KeyP',{altKey:true});assert.equal(f.classes.has('genereti-presentation'),true);
  const source=readFileSync(new URL('../integrations/genereti_comfy_agent/web/js/satori.js',import.meta.url),'utf8');assert.ok(source.includes("tooltip:'Toggle the right properties/parameters panel"));
+});
+test('minimal sockets follow link visibility',()=>{
+ const f=fixture();f.canvas.links_render_mode=-1;f.canvas.drawFrontCanvas();assert.equal(f.classes.has('genereti-hidden-cables'),true);
+ f.canvas.links_render_mode=2;f.canvas.drawFrontCanvas();assert.equal(f.classes.has('genereti-hidden-cables'),false);
 });
