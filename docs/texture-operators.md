@@ -225,30 +225,35 @@ it is distinct from Comfy's corner graph-redraw FPS.
 
 ## Coherent noise
 
-`ꘇ top.noise` provides Perlin gradient, simplex and interpolated value noise in
-1–4 dimensions. A shared deterministic integer hash keeps browser scalar,
-WebGPU and queued NumPy results consistent (GPU output has floating-point and
-8-bit texture rounding). Perlin uses quintic interpolation, following the
-[improved-noise approach](https://cs.nyu.edu/~perlin/noise/); this implementation
-uses its own gradients and hash, so it does not reproduce p5 or TD seed tables.
-1D simplex uses the 1D gradient-noise equivalent.
+`ꘇ top.noise` generates coherent noise in 1–4 dimensions with seven algorithms:
 
-Choose scale, seed, grayscale/RGB, and up to six normalized octaves; lacunarity
-controls the frequency multiplier and gain the amplitude multiplier. Seed offsets
-the domain. 1D/2D animation translates x; 3D moves through z; 4D keeps a separate
-z slice and time coordinate. Speed zero holds the field. Live time follows the
-graph clock; Queue samples the explicit time value. Noise stays in the shared GPU
-texture chain with no per-frame CPU readback. More octaves and dimensions cost
-more work per pixel; start with one octave for a performance baseline.
+- **perlin** (gradient noise with quintic interpolation, following the [improved-noise approach](https://cs.nyu.edu/~perlin/noise/)); **simplex** (smoother, fewer grid artefacts; 1D uses the 1D gradient equivalent); **value** (blobby, interpolated lattice values).
+- **hash**: white noise, one random value per cell (scale sets the cell size).
+- **worley**: distance to the nearest random feature point, bright at the points.
+- **voronoi**: a flat random value per nearest cell.
+- **cracks**: the difference between the two nearest feature distances, giving dark lines along cell borders (stone, dried mud).
 
-TOP and CHOP expressions accept `noise(...)` (alias for `perlin`), `perlin(...)`,
-`simplex(...)`, and `value(...)`, each with 1–4 scalar coordinates. Results are
-signed, approximately -1..1; map them to display range explicitly:
+A shared deterministic integer hash keeps the browser WebGPU path, the scalar expression path and the queued NumPy path consistent (GPU output has floating-point and 8-bit texture rounding). This implementation uses its own gradients and hash, so it does not reproduce p5 or TD seed tables.
+
+**Shaping and layering.** `octaves` (1–6) adds finer layers; `lacunarity` multiplies the frequency per layer and `gain` the amplitude per layer. `gain` only matters from two octaves up. `shape` reshapes each layer before it is added: `off` (plain), `ridged` (sharp bright crests, for mountains and veins), `billow` (soft round lumps, for clouds) or `hybrid` (the average of plain and ridged). `warp` bends the sampling position in noise cells with two extra lookups per layer (about 1–3 gives marble and flowing swirls); `0` is off. `power` raises the result to a power (above 1 flattens valleys and sharpens peaks, which suits terrain); `1` is off. `normalize = stretch` maps each algorithm's real range (perlin alone spans about ±0.5) onto the full −1..1, so the output uses the full 0..1 range. `amplitude` sets contrast around mid-grey (negative inverts) and `bias` adds a value offset.
+
+**Position and time.** `scale`, `seed` (offsets the domain), `z` (a slice through the third axis) and the offsets `offset_x`, `offset_y`, `offset_z`, `offset_t` place the field. 1–2D animation translates x, 3D moves through z, 4D keeps z and time as separate axes. `speed` sets how fast the pattern moves per second; zero holds the field. Live time follows the graph clock; Queue samples the explicit `time` value.
+
+**Seamless loops.** `loop` is a loop length in seconds (0 is off). Time travels once around a circle in the z–w plane of 4D noise, so the frame at `t` equals the frame at `t + loop`. `loop_radius` sets the circle size in noise cells: small drifts slowly, large changes quickly. `z` moves the circle's centre. Looping always uses 4D and ignores `speed`.
+
+**Colour.** `color` is Grayscale, RGB (three independent fields) or RGBA (a fourth independent field for alpha, so the output is transparent where it is low).
+
+Cost grows with pixel count and per-pixel work. Measured on the browser GPU at 2048² (relative numbers depend on the device): perlin 3D with six octaves about 5–6 ms; the same as a 4D loop about 13 ms (roughly 2×); RGB multiplies the work by three and RGBA by four; `warp` costs about 3× in 3D; worley and cracks cost several times perlin, most in 4D. Start with one octave, all optional stages off, and Grayscale for a baseline. With the optional stages off, the measured cost matched the plain shader, so leaving them at their defaults costs nothing measurable.
+
+Expression functions: `noise(...)` (alias for `perlin`), `perlin(...)`, `simplex(...)`, `value(...)`, `hash(...)`, `worley(...)`, `voronoi(...)` and `cracks(...)`, each with 1–4 scalar coordinates. The expression functions return the raw signed value, approximately -1..1, without shaping or stretch; map it to display range explicitly:
 
 - `0.5+0.5*noise(x*8,y*8)` — 2D Perlin.
 - `0.5+0.5*simplex(x*8,y*8,t*0.2)` — evolving 3D simplex.
 - `0.5+0.5*perlin(x*8,y*8,0.5,t*0.2+c*2)` — 4D colored noise.
+- `0.5+0.5*worley(x*6,y*6)` — cell-based distance field.
 - `noise(t*0.5+c*2)` — a 1D CHOP control signal.
+
+The saved widget order changed when `time`, `speed` and `loop` moved before `color`. Saved workflows are re-mapped by name when they load, so existing values keep their meaning.
 
 Open **ꘇ-Noise-Dimensions** for the four-step mini-demo. The class feedback demo
 now includes Hint and Do it on all seven steps. Do it restores the selected
@@ -311,7 +316,7 @@ Functions and argument counts:
 - One argument: `sin`, `cos`, `tan`, `abs`, `sqrt`, `floor`, `ceil`, `exp`, `log`, `fract`.
 - Two arguments: `min(a,b)`, `max(a,b)`, `pow(a,b)`, `step(edge,x)`.
 - Three arguments: `clamp(x,low,high)`, `mix(a,b,weight)`.
-- One to four coordinates: `noise(...)`, `perlin(...)`, `simplex(...)`, `value(...)`.
+- One to four coordinates: `noise(...)`, `perlin(...)`, `simplex(...)`, `value(...)`, `hash(...)`, `worley(...)`, `voronoi(...)`, `cracks(...)`.
   Noise functions return signed values; `noise` aliases Perlin. Map to 0..1 when displaying.
 
 `step(edge,x)` returns 0 below the edge and 1 otherwise. `mix` linearly blends
