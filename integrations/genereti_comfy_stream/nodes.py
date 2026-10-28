@@ -5,6 +5,19 @@ import time
 import numpy as np
 from PIL import Image
 
+class GeneretiLiveRecorder(io.ComfyNode):
+    @classmethod
+    def define_schema(cls):
+        audio = io.Custom('GENERETI_AUDIO_BUS')
+        return io.Schema(node_id='GeneretiLiveRecorder', display_name='ꘇ live recorder',
+            category='Genereti / Streams', is_output_node=True,
+            description='User-started browser recording of live IMAGE and mod.output audio. Queue does not record.',
+            inputs=[io.Image.Input('image', optional=True), audio.Input('audio', optional=True)], outputs=[])
+
+    @classmethod
+    def execute(cls, image=None, audio=None):
+        return io.NodeOutput()
+
 class GeneretiLiveImagePreview(io.ComfyNode):
     @classmethod
     def define_schema(cls):
@@ -71,4 +84,4 @@ class GeneretiPerformanceProbe(io.ComfyNode):
 
 class GeneretiStreams(ComfyExtension):
     async def get_node_list(self):
-        return [GeneretiLiveImagePreview, GeneretiImageCompare, GeneretiPerformanceProbe]
+        return [GeneretiLiveImagePreview, GeneretiImageCompare, GeneretiPerformanceProbe, GeneretiLiveRecorder]

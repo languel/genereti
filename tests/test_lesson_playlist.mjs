@@ -10,8 +10,8 @@ test('lesson outline opens indexed steps and follows playback without an active 
  // JSON has already been parsed by the author surface.
  context.validateGuide=value=>value;
  vm.runInContext(readFileSync(new URL('../integrations/genereti_comfy_dat/web/lesson.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,''),context);
- const node={comfyClass:'GeneretiDatLesson',properties:{},widgets:[{name:'guide',value:JSON.stringify(guide)}],addDOMWidget(){return {};}};
- extension.nodeCreated(node);tick(); // no active playback must not throw
+ const node={comfyClass:'GeneretiDatLesson',properties:{},widgets:[{name:'guide',value:JSON.stringify(guide)}],addDOMWidget(name){const widget={name};this.widgets.push(widget);return widget;}};
+ extension.nodeCreated(node);assert.deepEqual(node.widgets.map(w=>w.name),['lesson_toolbar','guide']);tick(); // no active playback must not throw
  const outline=elements.find(e=>e.children.length===2&&e.children.every(c=>c.firstElementChild?.title==='Open this tutorial step'));
  await outline.children[1].firstElementChild.onclick({stopPropagation(){}});
  assert.deepEqual(started,['test',1]);tick();assert.equal(outline.children[1].firstElementChild['aria-current'],'step');assert.equal(outline.children[0].firstElementChild['aria-current'],'false');

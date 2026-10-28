@@ -13,6 +13,13 @@ notes as Markdown, standalone HTML or Print / Save as PDF. Saving or queueing a
 workflow never authorizes playback. Stop toggles the output off; **■ Panic**
 stops all modular outputs. Removing an output or leaving the page also stops it.
 
+The **♫** control on `mod.transport` and on the timeline starts or stops all
+`mod.output` nodes in the current graph. Its pressed state follows those outputs,
+including changes made from an individual output or Panic. With multiple outputs,
+stopping the shared control stops all of them; starting it starts all of them.
+The separate transport play button controls the clock. Loading a workflow,
+playing the clock or queueing still does not start audio.
+
 | Operator | Purpose |
 | --- | --- |
 | `ꘇ mod.transport` | Shared BPM/swing clock, pause and reset |
@@ -142,3 +149,8 @@ patch-cable model. Our Underscores `src/expressiveSynth.js` informs per-voice
 oscillator/filter/envelope structure. This implementation adds no Bespoke C++
 code or third-party audio engine dependency. `~/dev/expressivesynth` was not a
 separate checkout on this machine.
+
+The `ꘇ live recorder` accepts the `audio` output of a running `mod.output`
+and an optional live IMAGE. It can save audio, video, or both together; the
+output itself is never started by recording. See [Neuron Dance](neuron-dance.md)
+for manual and project-loop capture, format and timing details.

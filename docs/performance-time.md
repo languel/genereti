@@ -156,7 +156,8 @@ linked TOP feedback/history and cancels scheduled modular notes. A loop wrap
 also resets linked history. This prevents stale feedback and burst playback of
 missed notes. Sequence deadlines are scheduled on Web Audio about 120 ms ahead
 by a 25 ms timer; late steps are skipped. Hiding the dock does not stop playback.
-Audio still requires explicit **Start on mod.output**; opening, importing,
+Audio still requires an explicit start: use **♫** on the timeline or transport
+to start or stop all `mod.output` nodes, or Start on an individual output. Opening, importing,
 seeking or queueing never starts it.
 
 Comfy Queue captures one frozen project-time and automation snapshot per prompt.

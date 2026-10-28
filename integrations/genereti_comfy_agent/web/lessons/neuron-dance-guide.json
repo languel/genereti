@@ -1,0 +1,69 @@
+{
+  "format": "genereti-guide",
+  "version": 1,
+  "id": "neuron-dance",
+  "title": "Neuron Dance · Braindance music video",
+  "summary": "A 16-bar sound-reactive visual performance and model-rendering experiment.",
+  "steps": [
+    {
+      "title": "Start the music",
+      "text": "Press Start on mod.output and play the project transport. Keep the volume low.",
+      "target": {
+        "nodeType": "GeneretiAudioOutput",
+        "ref": "dd881a77-4007-538e-92d8-c947b5880881",
+        "part": "node"
+      },
+      "hint": "Loading the patch never starts audio."
+    },
+    {
+      "title": "Watch the signal",
+      "text": "The mixer feeds audio analysis and the stereo lissajous. RMS controls the neuron drawing.",
+      "target": {
+        "nodeType": "GeneretiAudioAnalyze",
+        "ref": "4d7bd59c-8910-59b5-a250-991723778fad",
+        "part": "node"
+      },
+      "hint": "The analysis is sampled control data, not a recording."
+    },
+    {
+      "title": "Shape the neurons",
+      "text": "Open the p5 preview with Alt+W. Adjust the unconnected sensitivity parameter, or edit the code and colors.",
+      "target": {
+        "nodeType": "GeneretiLivecode",
+        "ref": "921ac870-f80a-556d-ac67-503ed909c828",
+        "part": "node"
+      },
+      "hint": "The drawing follows project time and audio energy."
+    },
+    {
+      "title": "Perform 16 bars",
+      "text": "The project loop spans 16 bars at 172 BPM, about 22.3 seconds. Use the mixer and instrument controls to perform.",
+      "target": {
+        "nodeType": "GeneretiAudioTransport",
+        "ref": "49e315bf-2e32-5a49-a303-cbe5b23e2f43",
+        "part": "node"
+      },
+      "hint": "Tempo changes require adjusting the loop end to 16 × 4 × 60 / BPM seconds."
+    },
+    {
+      "title": "Record sound and automation",
+      "text": "Use the record control on mod.output to save a sound take. In the performance dock select one numeric parameter and use Record to capture its changes.",
+      "target": {
+        "nodeType": "GeneretiAudioOutput",
+        "ref": "dd881a77-4007-538e-92d8-c947b5880881",
+        "part": "node"
+      },
+      "hint": "Audio and parameter recording are separate and are not automatically aligned. Numeric takes record one parameter at a time."
+    },
+    {
+      "title": "Capture and transform",
+      "text": "Choose Audio + video and One project loop, then press ● while the transport and output run. The recorder starts at the next loop and saves after one pass.",
+      "target": {
+        "nodeType": "GeneretiLiveRecorder",
+        "ref": "f6c248ba-6b54-5b38-8ba1-02e0ce6265b7",
+        "part": "node"
+      },
+      "hint": "Manual mode starts immediately; Video only and Audio only are also available. Timing follows browser scheduling, not sample-exact offline rendering. See docs/neuron-dance.md for model routes."
+    }
+  ]
+}
