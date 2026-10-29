@@ -23,7 +23,7 @@ The drawing is saved in the workflow (the `poliplan` widget). The editor's own m
 
 ## Not yet
 
-More outputs (bounding boxes of marks for image generation, timing information, events), live SVG / JSON. A cached raster of committed strokes, so that a live frame exports only the stroke being drawn, needs an editor `draftOnly` export (not requested yet). The editor is active in one place at a time (the node, the output window or the output overlay; the others show its bitmap). `genereti_multi_ui` on the node's properties opts into synced editors in every window.
+More outputs (bounding boxes of marks for image generation, timing information, events), live SVG / JSON. A cached raster of committed strokes, so that a live frame exports only the stroke being drawn, needs an editor `draftOnly` export (not requested yet). Alt+W moves the editor to an overlay and collapses the node. Alt+Shift+W opens a separate synced editor window. Enable **Settings → Genereti → Views → Interactive mirrors** to keep the node interactive when opening an overlay.
 
 ## Updating Poliplan
 

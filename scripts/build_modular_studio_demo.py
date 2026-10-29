@@ -47,7 +47,7 @@ def build(base_url='http://127.0.0.1:8188'):
     l.step('Start the sound', 'Nothing plays until you press ▷ on mod.output; keep your volume low for the first run. The ⏺ button records the output to a WAV file, ■ is panic.', out,
            'Queue never starts audio. ctrl+alt+space starts and stops it from anywhere, ctrl+alt+. is panic.')
     l.step('Set the tempo', 'Turn the bpm knob, or tap in your own tempo. Swing delays every second step. All three sequencers share this clock.', transport,
-           'Double-click a knob to reset it. Hold Shift for fine control.')
+           'Double-click a knob to type a value; Enter applies, Escape cancels. Hold Shift for fine control.')
     l.step('Play the drums', 'Click or drag cells to draw hits, Shift+click for an accent, Alt+click for a ghost note. Click a row name to mute it, right-click to remove it, + row adds one. Use 8–64 for the length and the note value for the step size.',
            drums, 'The pattern stays a plain text string you can copy: kick:1000…;snare:…. ⚄ randomizes, ↺ ↻ rotate.')
     l.step('Draw the bass', 'The piano roll is a monophonic melody: click a cell to place a note, click it again for a rest, drag to draw a line. −12 −1 +1 +12 transpose, ⚄ writes a random phrase in the project scale, ♯ snaps drawing to it.',

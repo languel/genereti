@@ -1,3 +1,4 @@
+import {readDrumVoices} from './synth-presets.js';
 import {ANALYSIS_KINDS,analysisFrame} from './audio-analysis.js';
 import {encodeWav} from './audio-wav.js';
 // Native Web Audio graph: bus connections retain AudioNodes, never PCM copies.
@@ -11,12 +12,13 @@ export class AudioPatch {
   const wanted=new Set(),visiting=new Set();const visit=id=>{if(visiting.has(id))throw Error('Audio cable cycles are unsupported; use audio.delay for feedback');if(wanted.has(id))return;const d=defs.get(id);if(!d)return;visiting.add(id);for(const source of Object.values(d.inputs??{}))visit(source);visiting.delete(id);wanted.add(id);};for(const id of outputs)visit(id);
   for(const [id,m] of this.modules)if(!wanted.has(id)){this.removeWaveformTap(id);this.dispose(m);this.modules.delete(id);}
   for(const id of wanted){const d=defs.get(id);let m=this.modules.get(id);if(m&&m.kind!==d.kind){this.removeWaveformTap(id);this.dispose(m);this.modules.delete(id);m=null;}if(!m){m=this.create(d.kind);this.modules.set(id,m);}m.settings=d.settings;this.update(m,d.settings);}
-  const next=new Map();for(const id of wanted){const d=defs.get(id),m=this.modules.get(id);for(const [slot,source] of Object.entries(d.inputs??{})){const from=this.modules.get(source)?.output,to=m.inputs[slot];if(from&&to)next.set(`${source}:${id}:${slot}`,{from,to});}if(outputs.has(id)&&m.kind==='Output')next.set(`${id}:destination`,{from:m.output,to:this.ctx.destination});}
+  const next=new Map();for(const id of wanted){const d=defs.get(id),m=this.modules.get(id);for(const [slot,source] of Object.entries(d.inputs??{})){const from=this.modules.get(source)?.output;if(m.kind==='Merge'&&from&&!m.inputs[slot]){const input=this.ctx.createGain();m.nodes.push(input);input.connect(m.output);m.inputs[slot]=input;}const to=m.inputs[slot];if(from&&to)next.set(`${source}:${id}:${slot}`,{from,to});}if(outputs.has(id)&&m.kind==='Output')next.set(`${id}:destination`,{from:m.output,to:this.ctx.destination});}
   for(const [key,e] of this.edges)if(!next.has(key)||next.get(key).from!==e.from||next.get(key).to!==e.to){try{e.from.disconnect(e.to);}catch{}}
   for(const [key,e] of next)if(!this.edges.has(key)||this.edges.get(key).from!==e.from||this.edges.get(key).to!==e.to)e.from.connect(e.to);this.edges=next;
  }
  create(kind){const c=this.ctx,m={kind,nodes:[],inputs:{},voices:new Set(),held:new Map()};const make=method=>{const n=c[method]();m.nodes.push(n);return n;};m.output=make('createGain');
-  if(['Synth','DrumKit','Karplus','Granular'].includes(kind))return m;
+  if(['Synth','DrumKit','DrumSynth','Karplus','Granular'].includes(kind))return m;
+  if(kind==='Merge')return m;
   if(kind==='Mixer'){m.meters=[];for(let i=1;i<=8;i++){const gain=make('createGain'),pan=make('createStereoPanner'),meter=make('createAnalyser');meter.fftSize=256;gain.connect(pan);pan.connect(m.output);pan.connect(meter);m.inputs[`input_${i}`]=gain;m[`pan_${i}`]=pan;m.meters.push(meter);}m.masterMeter=make('createAnalyser');m.masterMeter.fftSize=256;m.output.connect(m.masterMeter);m.meterBuffer=new Float32Array(256);return m;}
   const input=make('createGain');m.inputs.input=input;
   if(kind==='Gain'){m.pan=make('createStereoPanner');input.connect(m.pan);m.pan.connect(m.output);}
@@ -32,13 +34,23 @@ export class AudioPatch {
   else if(m.kind==='Filter'){m.filter.type=s.mode;smooth(m.filter.frequency,clamp(s.cutoff,20,18000),now);smooth(m.filter.Q,clamp(s.resonance,.1,12),now);}
   else if(m.kind==='Delay'){smooth(m.delay.delayTime,clamp(s.seconds,.01,2),now);smooth(m.feedback.gain,clamp(s.feedback,0,.85),now);smooth(m.wet.gain,clamp(s.mix,0,1),now);smooth(m.dry.gain,1-clamp(s.mix,0,1),now);}
   else if(m.kind==='Reverb'||m.kind==='Distortion'){const mix=clamp(s.mix,0,1);smooth(m.wet.gain,mix,now);smooth(m.dry.gain,1-mix,now);if(m.kind==='Reverb'){const decay=clamp(s.decay,.1,5);if(m.effectDecay!==decay){const length=Math.max(1,Math.floor(this.ctx.sampleRate*decay)),buffer=this.ctx.createBuffer(2,length,this.ctx.sampleRate);for(let channel=0;channel<2;channel++){const data=buffer.getChannelData(channel);for(let i=0;i<length;i++)data[i]=(Math.random()*2-1)*Math.pow(1-i/length,3);}m.effect.buffer=buffer;m.effectDecay=decay;}}else{const drive=clamp(s.drive,0,20);if(m.effectDrive!==drive){const curve=new Float32Array(2048);for(let i=0;i<curve.length;i++){const x=i/(curve.length-1)*2-1;curve[i]=drive?Math.tanh(x*(1+drive))/Math.tanh(1+drive):x;}m.effect.curve=curve;m.effectDrive=drive;}}}
-  else if(['Synth','DrumKit','Karplus','Granular'].includes(m.kind)){smooth(m.output.gain,clamp(s.level,0,1)*.3,now);for(const v of m.voices)if(v.filter&&m.kind==='Synth'){if(['lowpass','highpass','bandpass'].includes(s.filter_mode))v.filter.type=s.filter_mode;if(!(v.filterEnvUntil>now))smooth(v.filter.frequency,clamp(s.cutoff,20,18000),now);smooth(v.filter.Q,clamp(s.resonance,.1,12),now);if(v.carrier&&v.carrier.detune)smooth(v.carrier.detune,clamp(s.detune,-100,100),now);}}
+  else if(['Synth','DrumKit','DrumSynth','Karplus','Granular'].includes(m.kind)){smooth(m.output.gain,clamp(s.level,0,1)*.3,now);for(const v of m.voices)if(v.filter&&m.kind==='Synth'){if(['lowpass','highpass','bandpass'].includes(s.filter_mode))v.filter.type=s.filter_mode;if(!(v.filterEnvUntil>now))smooth(v.filter.frequency,clamp(s.cutoff,20,18000),now);smooth(v.filter.Q,clamp(s.resonance,.1,12),now);if(v.carrier&&v.carrier.detune)smooth(v.carrier.detune,clamp(s.detune,-100,100),now);}}
  }
- trigger(id,note,time,duration,velocity=1){const m=this.modules.get(id);if(!m||!['Synth','DrumKit','Karplus','Granular'].includes(m.kind))return;const c=this.ctx,s=m.settings,t=Math.max(c.currentTime,time),v={sources:[],nodes:[],ended:false,time:t,note};m.voices.add(v);while(m.voices.size>clamp(s.polyphony??24,1,32))this.destroyVoice(m,m.voices.values().next().value);
+ trigger(id,note,time,duration,velocity=1){const m=this.modules.get(id);if(!m||!['Synth','DrumKit','DrumSynth','Karplus','Granular'].includes(m.kind))return;const c=this.ctx,s=m.settings,t=Math.max(c.currentTime,time),v={sources:[],nodes:[],ended:false,time:t,note};m.voices.add(v);while(m.voices.size>clamp(s.polyphony??24,1,32))this.destroyVoice(m,m.voices.values().next().value);
   const gain=c.createGain(),filter=c.createBiquadFilter();v.gain=gain;v.filter=filter;v.nodes.push(gain,filter);filter.connect(gain);gain.connect(m.output);filter.type=['lowpass','highpass','bandpass'].includes(s.filter_mode)&&m.kind==='Synth'?s.filter_mode:'lowpass';filter.frequency.value=clamp(s.cutoff??18000,20,18000);filter.Q.value=clamp(s.resonance??.7,.1,12);
   const osc=(type,freq,dest=filter)=>{const o=c.createOscillator();o.type=type;o.frequency.value=freq;o.connect(dest);o.start(t);v.sources.push(o);return o;};
+  if(m.kind==='DrumSynth'){
+   const aliases={35:36,37:38,40:38,43:41,44:42,47:45,51:46,59:46},key=aliases[Math.round(note)]??Math.round(note),voice=readDrumVoices(s.kit,s).find(x=>Math.round(x.note)===key);
+   if(!voice){this.destroyVoice(m,v);return null;}
+   const decay=clamp(voice.decay,.01,3),noiseDecay=clamp(voice.noise_decay,.01,3),pitchDecay=clamp(voice.pitch_decay,.005,3),end=t+Math.max(decay,noiseDecay),wave=['sine','triangle','sawtooth','square'].includes(voice.wave)?voice.wave:'sine';
+   filter.frequency.value=clamp(voice.cutoff,20,18000);filter.Q.value=.7;gain.gain.setValueAtTime(clamp(velocity,0,1),t);
+   const tonal=c.createGain();v.nodes.push(tonal);tonal.connect(filter);tonal.gain.setValueAtTime(Math.max(.0001,clamp(voice.level,0,1)),t);tonal.gain.exponentialRampToValueAtTime(.0001,t+decay);
+   const tone=osc(wave,clamp(voice.freq_start,20,18000),tonal);tone.frequency.exponentialRampToValueAtTime(clamp(voice.freq_end,20,18000),t+pitchDecay);
+   if(voice.noise>0){this.noise??=c.createBuffer(1,c.sampleRate,c.sampleRate);if(!this.noiseFilled){const a=this.noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;this.noiseFilled=true;}const src=c.createBufferSource(),ng=c.createGain();v.nodes.push(ng);v.sources.push(src);src.buffer=this.noise;src.loop=true;src.connect(ng);ng.connect(filter);ng.gain.setValueAtTime(Math.max(.0001,clamp(voice.noise,0,1)),t);ng.gain.exponentialRampToValueAtTime(.0001,t+noiseDecay);src.start(t);}
+   this.finish(m,v,end+.02);return v;
+  }
   if(m.kind==='DrumKit'){
-   let decay=clamp(s.decay,.03,2);const tone=clamp(s.tone,.25,2);duration=decay;
+   const names={35:'kick',36:'kick',37:'rim',38:'snare',40:'snare',39:'clap',41:'tomlo',43:'tomlo',42:'hat',44:'hat',45:'tomhi',47:'tomhi',46:'openhat',51:'ride',59:'ride',56:'cowbell'},prefix=names[Math.round(note)];let decay=clamp(s[prefix+'_decay']??s.decay,.03,2);const tone=clamp(s[prefix+'_tone']??s.tone,.25,2);velocity*=clamp(s[prefix+'_level']??1,0,1);duration=decay;
    const noise=()=>{this.noise??=c.createBuffer(1,c.sampleRate,c.sampleRate);if(!this.noiseFilled){const a=this.noise.getChannelData(0);for(let i=0;i<a.length;i++)a[i]=Math.random()*2-1;this.noiseFilled=true;}const n=c.createBufferSource();n.buffer=this.noise;n.connect(filter);n.start(t);v.sources.push(n);return n;};
    const drop=(type,from,to,len=decay)=>{const o=osc(type,from*tone);o.frequency.exponentialRampToValueAtTime(to*tone,t+len);return o;};
    if(note===35||note===36)drop('sine',150,45);
@@ -66,7 +78,7 @@ export class AudioPatch {
    src.start(t);if(Number.isFinite(duration)){const end=t+Math.max(.02,duration),release=clamp(s.release??.15,.01,3);gain.gain.setValueAtTime(m.kind==='Karplus'?1:velocity,end);gain.gain.linearRampToValueAtTime(0,end+release);this.finish(m,v,end+release+.02);}return v;
   }
   const wave=['sine','triangle','sawtooth','square'].includes(s.wave)?s.wave:s.voice==='subtractive'?'sawtooth':s.voice==='reed'?'square':'sine',carrier=osc(wave,hz(note));v.carrier=carrier;if(carrier.detune)carrier.detune.value=clamp(s.detune,-100,100);
-  if(s.voice==='fm'){const g=c.createGain();g.gain.value=hz(note)*.7;g.connect(carrier.frequency);v.nodes.push(g);osc('sine',hz(note)*2,g);}
+  if(s.voice==='fm'){const g=c.createGain();g.gain.value=hz(note)*clamp(s.fm_index??.7,0,10);g.connect(carrier.frequency);v.nodes.push(g);osc('sine',hz(note)*clamp(s.fm_ratio??2,.1,10),g);}
   if(Number(s.vibrato)>0){const g=c.createGain();g.gain.value=hz(note)*(2**(Number(s.vibrato)/12)-1);g.connect(carrier.frequency);v.nodes.push(g);osc('sine',Number(s.vibrato_rate),g);}
   const attack=clamp(s.attack,.001,5),decay=clamp(s.decay,.001,5);const envAmount=clamp(s.filter_env,0,1);if(envAmount>0){const cut=clamp(s.cutoff,20,18000),top=Math.min(18000,cut*(1+envAmount*7)),end=t+attack+decay+.05;filter.frequency.setValueAtTime(cut,t);filter.frequency.linearRampToValueAtTime(top,t+attack);filter.frequency.exponentialRampToValueAtTime(Math.max(20,cut),end);v.filterEnvUntil=end;}gain.gain.setValueAtTime(0,t);gain.gain.linearRampToValueAtTime(velocity,t+attack);gain.gain.linearRampToValueAtTime(velocity*clamp(s.sustain,0,1),t+attack+decay);
   if(Number.isFinite(duration)){const releaseAt=t+Math.max(duration,attack+decay);gain.gain.setValueAtTime(velocity*clamp(s.sustain,0,1),releaseAt);gain.gain.linearRampToValueAtTime(0,releaseAt+clamp(s.release,.005,5));this.finish(m,v,releaseAt+clamp(s.release,.005,5)+.02);}return v;

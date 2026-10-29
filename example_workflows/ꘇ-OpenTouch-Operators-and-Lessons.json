@@ -1634,7 +1634,7 @@
     },
     {
       "id": 19,
-      "type": "GeneretiChopMerge",
+      "type": "GeneretiFlowMerge",
       "pos": [
         2690,
         1100
@@ -1648,42 +1648,32 @@
       "mode": 0,
       "inputs": [
         {
-          "localized_name": "input",
-          "name": "input",
-          "type": "GENERETI_CHOP",
+          "name": "sources.input_0",
+          "type": "*",
           "link": 20
         },
         {
-          "localized_name": "other",
-          "name": "other",
-          "type": "GENERETI_CHOP",
+          "name": "sources.input_1",
+          "type": "*",
           "link": 21
+        },
+        {
+          "name": "sources.input_2",
+          "type": "*",
+          "link": null
         }
       ],
       "outputs": [
         {
-          "localized_name": "channels",
-          "name": "channels",
-          "type": "GENERETI_CHOP",
-          "links": null
-        },
-        {
-          "localized_name": "value",
-          "name": "value",
-          "type": "FLOAT",
+          "name": "signal",
+          "type": "*",
           "links": null
         }
       ],
       "properties": {
-        "Node name for S&R": "GeneretiChopMerge",
-        "generetiDeviceConnected": false
+        "Node name for S&R": "GeneretiFlowMerge"
       },
-      "widgets_values": [
-        ""
-      ],
-      "widgets_values_named": {
-        "signal_preview": ""
-      }
+      "widgets_values": []
     },
     {
       "id": 20,

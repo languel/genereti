@@ -11,9 +11,10 @@ export function publishLive(node, bitmap, outputSlot=0) {
   }));
 }
 
-export function resolveLiveSource(node, seen = new Set()) {
+export function resolveLiveSource(node, seen = new Set(), outputSlot = 0) {
   if (!node || seen.has(node.id)||node._generetiExecutionMode==='Comfy Queue'||node._generetiLivePaused) return null;
   seen.add(node.id);
+  if(node._generetiFlowParents){const parents=node._generetiFlowParents(outputSlot);return parents.length===1?resolveLiveSource(parents[0].node,seen,parents[0].slot):null;}
   if (node._generetiLiveSource || node._generetiCapture) return node;
   const name = node.comfyClass === 'GeneretiInputSelect' ?
     ({ Doodle:'doodle', Webcam:'webcam', 'Window / Screen':'screen' })[node.widgets?.find(w=>w.name==='source')?.value] : 'image';
@@ -26,13 +27,14 @@ export function resolveLiveSource(node, seen = new Set()) {
   return resolveLiveSource(app.graph.getNodeById(link?.origin_id), seen);
 }
 
-function liveOutputSlot(node,source,seen=new Set()){
+function liveOutputSlot(node,source,seen=new Set(),outputSlot=0){
  if(!source||!node||node===source||seen.has(node.id))return 0;seen.add(node.id);
+ if(node._generetiFlowParents){const parents=node._generetiFlowParents(outputSlot);if(parents.length!==1)return 0;const p=parents[0];return p.node===source?p.slot:liveOutputSlot(p.node,source,seen,p.slot);}
  const name=node.comfyClass==='GeneretiInputSelect'?({Doodle:'doodle',Webcam:'webcam','Window / Screen':'screen'})[node.widgets?.find(w=>w.name==='source')?.value]:'image';
  const slot=node.inputs?.findIndex(input=>input.name===name);
  const link=slot>=0?(node.getInputLink?.(slot)??node.graph?.links?.[node.inputs[slot].link]):null;
  const parent=node.graph?.getNodeById(link?.origin_id);
- return parent===source?(link.origin_slot??0):liveOutputSlot(parent,source,seen);
+ return parent===source?(link.origin_slot??0):liveOutputSlot(parent,source,seen,link?.origin_slot??0);
 }
 
 function videoSource(node) {
@@ -62,8 +64,8 @@ export function subscribeLive(node, onFrame, onStatus=()=>{}, {gpu=false,inputNa
   const bind = () => {
     let graph;try{graph=node.graph;}catch{return;}if(inputName&&!graph)return;
     const slot=inputName?node.inputs?.findIndex(i=>i.name===inputName):-1;const link=slot>=0?(node.getInputLink?.(slot)??graph?.links?.[node.inputs[slot].link]):null;const target=inputName?graph?.getNodeById(link?.origin_id):node;
-    const next=resolveLiveSource(target);
-    const nextSlot=target===next?(link?.origin_slot??0):liveOutputSlot(target,next);
+    const next=resolveLiveSource(target,new Set(),link?.origin_slot??0);
+    const nextSlot=target===next?(link?.origin_slot??0):liveOutputSlot(target,next,new Set(),link?.origin_slot??0);
     if (next===source&&nextSlot===sourceSlot) return;
     driver?.release(sourceSlot);source=next;sourceSlot=nextSlot;driver=null;
     if (source) {

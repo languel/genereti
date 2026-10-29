@@ -10,7 +10,7 @@ import {generate,process,first,patternMatch} from './signals.js';
 import {noteControl} from './music-signals.js';
 const states=new Set();let raf=0;
 function values(node){const out=Object.fromEntries((node.widgets??[]).filter(w=>['number','string','boolean'].includes(typeof w.value)).map(w=>[w.name,w.value]));for(let i=0;i<(node.inputs?.length??0);i++){const input=node.inputs[i],link=node.getInputLink?.(i);if(!link||input.type==='GENERETI_CHOP')continue;const source=node.graph?.getNodeById(link.origin_id);const value=source?._generetiLiveValue?.(link.origin_slot)??source?.widgets?.find(w=>w.name==='value')?.value;if(value!==undefined)out[input.widget?.name??input.name]=value;}if(node.comfyClass==='GeneretiChopExpression')out.expression=node._generetiExpressionValues?.()??out.expression;return Object.assign(out,node._generetiPerformanceValues??{});}
-function clock(now){raf=0;const visiting=new Set(),done=new Set();function run(state){if(!state||done.has(state)||state.dead||!state.running)return;if(visiting.has(state))throw Error('CHOP cycles are not supported');visiting.add(state);state.update(now,run);visiting.delete(state);done.add(state);}for(const state of states){try{run(state);}catch(error){if(state.status.textContent!==error.message)state.status.textContent=error.message;visiting.clear();}}if(states.size)raf=requestAnimationFrame(clock);}
+function clock(now){raf=0;const visiting=new Set(),done=new Set();function run(state){if(!state||typeof state.update!=='function'||done.has(state)||state.dead||!state.running)return;if(visiting.has(state))throw Error('CHOP cycles are not supported');visiting.add(state);state.update(now,run);visiting.delete(state);done.add(state);}for(const state of states){try{run(state);}catch(error){state.latest=null;if(state.status.textContent!==error.message)state.status.textContent=error.message;visiting.clear();}}if(states.size)raf=requestAnimationFrame(clock);}
 async function request(path,body){const response=await api.fetchApi('/genereti/chop/osc/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!response.ok)throw Error(await response.text());return response.json();}
 app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
  if(!node.comfyClass?.startsWith('GeneretiChop')||['GeneretiChopLfo','GeneretiChopGesture'].includes(node.comfyClass))return;ensureControlStyle();const kind=node.comfyClass.slice(12);if(kind==='Expression')attachExpressionParameters(node);
@@ -23,7 +23,7 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
  let previewVisible=true;const visibility=new IntersectionObserver(entries=>{previewVisible=entries[0]?.isIntersecting??false;});visibility.observe(canvas);
  const context=canvas.getContext('2d');let previewColor='#ddd';
  const state={node,kind,status,running:true,memory:{},latest:null,connected:false,deviceChannels:{},dead:false,update(now,run){
-  const v=values(node);if(kind==='Expression')v.performanceValues=window.generetiPerformance?.expressionValues();const signature=JSON.stringify(v),link=name=>{const slot=node.inputs?.findIndex(i=>i.name===name),l=slot>=0?node.getInputLink?.(slot):null;const upstream=node.graph?.getNodeById(l?.origin_id);const s=upstream?._generetiChop;run(s);return s?.latest??upstream?._generetiDatSignal?.();};
+  const v=values(node);if(kind==='Expression')v.performanceValues=window.generetiPerformance?.expressionValues();const signature=JSON.stringify(v),link=name=>{const slot=node.inputs?.findIndex(i=>i.name===name),l=slot>=0?node.getInputLink?.(slot):null;const upstream=node.graph?.getNodeById(l?.origin_id);const s=upstream?._generetiChop;run(s);return s?.latest??upstream?._generetiLiveValue?.(l?.origin_slot??0)??upstream?._generetiDatSignal?.();};
   v.performanceValues=window.generetiPerformance?.expressionValues();const input=link('input'),other=link('other');let data;
   if(kind==='Switch'){
    const slots=sourceSlots(node);if(!slots.length){status.textContent='Connect CHOP sources';return;}
@@ -44,7 +44,7 @@ app.registerExtension({name:'Genereti.CHOP',nodeCreated(node){
    if(state.nextTime!==undefined&&t<state.nextTime)return;
    const start=state.nextTime===undefined||t-state.nextTime>.5?t:state.nextTime;state.nextTime=start+Number(v.samples)/Number(v.sample_rate);
    v.performanceValues=window.generetiPerformance?.expressionValues();data=generate(kind,v,start+Number(v.time)+Number(v.offset_t??0));
-  }else{status.textContent='Connect CHOP input';return;}
+  }else{if(state.latest){state.latest=null;window.dispatchEvent(new CustomEvent('genereti-control-frame',{detail:{nodeId:node.id}}));}status.textContent='Connect CHOP input';return;}
   state.latest=data;window.dispatchEvent(new CustomEvent('genereti-control-frame',{detail:{nodeId:node.id}}));state.lastInput=input;state.lastOther=other;state.signature=signature;
   if(state.connected)send(data,v,now);
   if(!previewFrozen&&!previewMinimized){const history=state.history??=new Map();for(const [name,samples] of Object.entries(data.channels)){const line=history.get(name)??[];for(const x of samples)line.push(x);if(line.length>256)line.splice(0,line.length-256);history.set(name,line);}for(const name of history.keys())if(!(name in data.channels))history.delete(name);}

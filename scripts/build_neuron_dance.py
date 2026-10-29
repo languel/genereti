@@ -10,7 +10,7 @@ av=json.loads((W/'ꘇ-Livecode-Audio-Visual.json').read_text())
 flow['nodes']=[n for n in flow['nodes'] if n['type']!='GeneretiDatLesson']
 flow['last_node_id']=12
 nodes={n['id']:n for n in flow['nodes']}
-for old,new,pos in [(6,13,[2700,0]),(9,14,[2700,420]),(10,15,[3100,0]),(11,16,[3450,0]),(12,17,[3850,0]),(13,18,[4320,0]),(14,19,[3850,760])]:
+for old,new,pos in [(6,13,[2700,0]),(9,14,[2700,420]),(10,15,[3100,0]),(11,16,[3450,0]),(12,17,[3850,0]),(13,18,[4320,0]),(14,19,[-850,0])]:
  n=copy.deepcopy(next(x for x in av['nodes'] if x['id']==old));n['id']=new;n['order']=new-1;n['pos']=pos
  n['properties']['generetiLessonRef']=str(uuid.uuid5(uuid.NAMESPACE_URL,'neuron-dance:'+str(new)))
  for p in n['inputs']: p['link']=None
@@ -59,6 +59,7 @@ guide={'format':'genereti-guide','version':1,'id':'neuron-dance','title':'Neuron
 for title,i,txt,hint in steps:guide['steps'].append({'title':title,'text':txt,'target':{'nodeType':nodes[i]['type'],'ref':nodes[i]['properties']['generetiLessonRef'],'part':'node'},'hint':hint})
 s=json.dumps(guide,ensure_ascii=False,indent=2); n=nodes[19];n['title']='ꘇ Neuron Dance · start here'; n['properties']['genereti_widget_values']['guide']=s;n['widgets_values_named']['guide']=s;n['widgets_values'][0]=s
 flow['last_node_id']=20;flow['last_link_id']=len(flow['links'])
+flow['extra']['ds']['offset']=[950,90]
 for path in [W/'ꘇ-Neuron-Dance.json',L/'neuron-dance.json']:path.write_text(json.dumps(flow,ensure_ascii=False,indent=2)+'\n')
 (L/'neuron-dance-guide.json').write_text(s+'\n')
 p=L/'catalog.json'; cat=json.loads(p.read_text());p.write_text(json.dumps([x for x in cat if x.get('id')!='neuron-dance']+[guide],ensure_ascii=False,indent=2)+'\n')

@@ -4,6 +4,7 @@ from . import signals
 from .music import MUSIC
 from .modular import MODULAR
 from .modulation import MODULATION
+from .flow import FLOW
 from .osc import register
 
 import importlib.util as _switch_import
@@ -65,12 +66,6 @@ class Slope(Math):
 class Select(Math):
     @classmethod
     def define_schema(cls):return schema('Select',[CHOP.Input('input'),io.String.Input('pattern',default='*')])
-class Merge(Math):
-    @classmethod
-    def define_schema(cls):return schema('Merge',[CHOP.Input('input'),CHOP.Input('other')])
-    @classmethod
-    def execute(cls,input,other):
-        data=signals.process('Merge',input,{},other);return io.NodeOutput(data,signals.first(data))
 class MidiIn(Constant):
     @classmethod
     def define_schema(cls):return schema('MidiIn',[io.String.Input('device',default=''),io.Int.Input('channel',default=0,min=0,max=16)])
@@ -100,6 +95,6 @@ class Switch(io.ComfyNode):
         return io.NodeOutput(data,signals.first(data))
 
 class ChopExtension(ComfyExtension):
-    async def get_node_list(self):return [Switch,Constant,Oscillator,Noise,Expression,Math,Lag,Logic,Speed,Slope,Select,Merge,MidiIn,MidiOut,OscIn,OscOut,*MUSIC,*MODULAR,*MODULATION]
+    async def get_node_list(self):return [Switch,Constant,Oscillator,Noise,Expression,Math,Lag,Logic,Speed,Slope,Select,MidiIn,MidiOut,OscIn,OscOut,*MUSIC,*MODULAR,*MODULATION,*FLOW]
 async def comfy_entrypoint():
     register();return ChopExtension()

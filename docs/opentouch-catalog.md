@@ -36,7 +36,6 @@ operators and five performance controllers/converters.
 | `ꘇ chop.lag` | input: GENERETI_CHOP, seconds: FLOAT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiChopLag` |
 | `ꘇ chop.logic` | input: GENERETI_CHOP, threshold: FLOAT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiChopLogic` |
 | `ꘇ chop.math` | input: GENERETI_CHOP, operation: COMBO, value: FLOAT, low: FLOAT, high: FLOAT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiChopMath` |
-| `ꘇ chop.merge` | input: GENERETI_CHOP, other: GENERETI_CHOP | channels: GENERETI_CHOP, value: FLOAT | `GeneretiChopMerge` |
 | `ꘇ chop.midiin` | device: STRING, channel: INT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiChopMidiIn` |
 | `ꘇ chop.midiout` | input: GENERETI_CHOP, device: STRING, message: COMBO, channel: INT, number: INT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiChopMidiOut` |
 | `ꘇ chop.noise` | seed: INT, amplitude: FLOAT, offset: FLOAT, channels: INT, samples: INT, sample_rate: FLOAT, time: FLOAT | channels: GENERETI_CHOP, value: FLOAT | `GeneretiChopNoise` |
@@ -83,12 +82,16 @@ See [modular audio](modular-audio.md) for routing, timing and queue boundaries.
 | `ꘇ mod.transport` | BPM, swing | GENERETI_AUDIO_CLOCK | `GeneretiAudioTransport` |
 | `ꘇ mod.sequence` | Clock, pattern, division, gate, velocity | GENERETI_CHOP | `GeneretiAudioSequence` |
 | `ꘇ mod.drumsequence` | Clock, drum rows, division, velocity | GENERETI_CHOP | `GeneretiAudioDrumSequence` |
+| `ꘇ mod.euclidean` | Clock, multitrack Euclidean rhythms | GENERETI_CHOP | `GeneretiAudioEuclidean` |
+| `ꘇ mod.circlesequence` | Clock, manually programmed circular tracks | GENERETI_CHOP | `GeneretiAudioCircleSequence` |
+| `ꘇ mod.pianoroll` | Clock, polyphonic piano roll | GENERETI_CHOP | `GeneretiAudioPianoRoll` |
 | `ꘇ mod.synth` | CHOP notes, voice, ADSR, filter, glide, vibrato, polyphony | GENERETI_AUDIO_BUS | `GeneretiAudioSynth` |
+| `ꘇ mod.drumsynth` | CHOP notes, level, eight-voice kit, polyphony | GENERETI_AUDIO_BUS | `GeneretiAudioDrumSynth` |
 | `ꘇ mod.drumkit` | CHOP notes, level, decay, tone | GENERETI_AUDIO_BUS | `GeneretiAudioDrumKit` |
 | `ꘇ mod.gain` | Audio bus, level, pan, mute | GENERETI_AUDIO_BUS | `GeneretiAudioGain` |
 | `ꘇ mod.filter` | Audio bus, mode, cutoff, resonance | GENERETI_AUDIO_BUS | `GeneretiAudioFilter` |
 | `ꘇ mod.delay` | Audio bus, seconds, feedback, mix | GENERETI_AUDIO_BUS | `GeneretiAudioDelay` |
-| `ꘇ mod.mixer` | Four optional buses, channel gain/pan/mute/solo, master | GENERETI_AUDIO_BUS | `GeneretiAudioMixer` |
+| `ꘇ mod.mixer` | Eight optional buses, channel gain/pan/mute/solo, master | GENERETI_AUDIO_BUS | `GeneretiAudioMixer` |
 | `ꘇ mod.output` | Audio bus, level, mute; explicit browser Start | GENERETI_AUDIO_BUS | `GeneretiAudioOutput` |
 | `ꘇ mod.scope` | Audio bus, FFT size, smoothing, display gain | Audio bus, stereo CHOP, RMS/peak FLOAT, IMAGE | `GeneretiAudioScope` |
 | `ꘇ mod.spectrum` | Audio bus, FFT size, smoothing, display gain | Audio bus, frequency/magnitude CHOP, RMS/peak FLOAT, IMAGE | `GeneretiAudioSpectrum` |
@@ -132,3 +135,5 @@ TOP noise/expression and CHOP noise/expression have optional XYZ/T offset ports;
 CHOP oscillator has T only. Code nodes share project `__` variables, with
 `u_genereti*` uniforms in GLSL. See [performance time](performance-time.md) for
 precise domains, frozen Queue behavior and the first automation timeline.
+
+Generic `ꘇ.send`, `ꘇ.receive`, `ꘇ.merge`, `ꘇ.route` and `ꘇ.select` nodes are described in [modular audio routing](modular-audio.md).

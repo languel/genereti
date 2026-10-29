@@ -6,10 +6,10 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
   const desktop=Boolean(/Electron/i.test(navigator.userAgent)||window.electronAPI||window.__comfyDesktop2);
   const native=desktop?nativeOutput(status,onStateChange):null;let nativeMode=false;
   let win = null, canvas = null, context = null, disposed = false, revision = 0;
-  let frames = 0, since = performance.now(), fit = 'contain', localSurface = null, localCleanup = null, localShell = null;
+  let frames = 0, since = performance.now(), fit = 'contain', localSurface = null, localCleanup = null, localShell = null, popupUnmount = null;
   function setFit(next){native?.setFit(next);fit=['contain','cover','fill','native'].includes(next)?next:'contain';if(!canvas)return;canvas.style.cssText=fit==='native'?'position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:none;max-height:none':'position:fixed;inset:0;width:100vw;height:100vh;object-fit:'+fit;}
   function inAppOutput(initialSize,matchAspect,position,takeSurface=false){
-    if(initialSize?.width>0&&initialSize?.height>0&&(matchAspect||!layout.rect)){const width=layout.rect?.width||innerWidth*.7;const scale=Math.min(1,innerHeight*.7/(width*initialSize.height/initialSize.width));layout.rect={left:layout.rect?.left??innerWidth*.1,top:layout.rect?.top??innerHeight*.12,width:width*scale,height:width*scale*initialSize.height/initialSize.width};}
+    if(initialSize?.width>0&&initialSize?.height>0&&(matchAspect||!layout.rect||!layout.manualSize)){const width=layout.manualSize&&layout.rect?layout.rect.width:initialSize.width;const height=width*initialSize.height/initialSize.width;const scale=Math.min(1,innerWidth*.7/width,innerHeight*.7/height);layout.rect={left:layout.rect?.left??innerWidth*.1,top:layout.rect?.top??innerHeight*.12,width:Math.max(240,width*scale),height:Math.max(180,height*scale)};}
     // Alt+W moves the node's live surface here. A window instead asks the node for its own interactive view
     // (config.mountMirror), which stays in sync with the node and every other view.
     // `takeSurface`: this window takes the node's live surface (the node then shows its bitmap). Otherwise it is a bitmap mirror.
@@ -17,7 +17,7 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
     const interactive=moved||(mirror?document.createElement('div'):null);
     const frame=interactive||document.createElement('iframe');if(!interactive)frame.title='Local output';
     let unmount=null,closed=false;
-    const shell=overlayShell(frame,layout,()=>{closed=true;unmount?.();unmount=null;onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;if(moved)config.onSurfaceChange?.(false);},{...config,position});
+    const shell=overlayShell(frame,layout,()=>{closed=true;unmount?.();unmount=null;onStateChange(false);localSurface=null;localCleanup=null;win=null;canvas=null;context=null;revision++;if(moved)config.onSurfaceChange?.(false);},{...config,position,dragFrame:!interactive});
     localShell=shell;localSurface=shell.element;localCleanup=shell.close;
     if(moved){config.onSurfaceChange?.(true);status.textContent='Interactive output overlay';}
     else if(mirror){
@@ -25,6 +25,12 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
       Promise.resolve(config.mountMirror(interactive)).then(dispose=>{if(closed)dispose?.();else unmount=dispose;}).catch(error=>{status.textContent=`Interactive view: ${error.message}`;});
     }
     else{attach(frame.contentWindow,true);status.textContent='Output overlay · direct';}
+  }
+  async function openInteractiveWindow(){
+    const target=window.open('','','width=960,height=720');if(!target)return false;win=target;const doc=target.document;doc.title=config.node?.title||'Genereti output';doc.documentElement.style.cssText='height:100%;background:var(--comfy-menu-bg,#222)';doc.body.classList.add('genereti-external-window');doc.body.style.cssText='margin:0;height:100%;overflow:auto;background:var(--comfy-menu-bg,#222);color:var(--input-text,#ddd)';
+    for(const style of (document.querySelectorAll?.('style,link[rel=stylesheet]')??[]))doc.head.append(style.cloneNode(true));
+    const host=doc.createElement('div');host.style.cssText='position:relative;min-height:100%;box-sizing:border-box;padding:10px';doc.body.append(host);
+    try{const dispose=await config.mountMirror(host);if(disposed||win!==target){dispose?.();return false;}popupUnmount=()=>{dispose?.();};target.addEventListener('pagehide',()=>{if(win!==target)return;popupUnmount?.();popupUnmount=null;win=null;onStateChange(false);},{once:true});status.textContent='Interactive window · synced with the node';return true;}catch(error){target.close();win=null;throw error;}
   }
   function attach(target,overlay=false) {
     win = target;
@@ -76,8 +82,10 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
       if(localSurface)return true;
       if(win && !win.closed){win.focus();return true;}
       try {
-        if(desktop&&!overlay&&!interactive){nativeMode=true;const opened=await native.open();onStateChange(opened);return opened;}
-        if(overlay||interactive){inAppOutput(initialSize,matchAspect,position,interactive);}
+        const forceMirror=typeof config.forceMirror==='function'?config.forceMirror():config.forceMirror;
+        if(desktop&&!overlay&&!interactive&&!forceMirror){nativeMode=true;const opened=await native.open();onStateChange(opened);return opened;}
+        if(forceMirror&&!overlay&&!interactive){if(!await openInteractiveWindow())inAppOutput(initialSize,matchAspect,position,false);}
+        else if(overlay||interactive){inAppOutput(initialSize,matchAspect,position,interactive);}
         else if(floating && window.documentPictureInPicture?.requestWindow){
           attach(await window.documentPictureInPicture.requestWindow({width:960,height:720}));
 
@@ -106,7 +114,7 @@ export function outputWindow(status,onStateChange=()=>{},layout={},config={}) {
       })();
     },
     setFit,
-    close(){onStateChange(false);localCleanup?.();native?.close();disposed=true;revision++;if(localSurface){localSurface.remove();localSurface=null;}else win?.close();win=null;canvas=null;context=null;},
+    close(){onStateChange(false);popupUnmount?.();popupUnmount=null;localCleanup?.();native?.close();disposed=true;revision++;if(localSurface){localSurface.remove();localSurface=null;}else win?.close();win=null;canvas=null;context=null;},
     getViewport(){if(localSurface&&config.interactiveSurface)return {width:localSurface.clientWidth,height:localSurface.clientHeight};return win&&!win.closed?{width:win.innerWidth,height:win.innerHeight}:null;},
     get window(){return win;},
     get element(){return localSurface;},

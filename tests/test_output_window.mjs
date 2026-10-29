@@ -5,9 +5,9 @@ import {readFileSync} from 'node:fs';
 
 function fixture(desktop=false){
  const panels=[],popups=[],draws=[],nativeFrames=[];let nativeOpens=0;
- const element=tag=>({tag,classList:{add(){}},style:{},children:[],attributes:{},append(...items){this.children.push(...items);},replaceChildren(){},addEventListener(){},removeEventListener(){},moveBefore(child){this.children.push(child);child.parentNode=this;},remove(){this.removed=true;},getContext(type,options){this.contextOptions=options;return {clearRect(){},drawImage(image){draws.push(image);}};},setAttribute(k,v){this.attributes[k]=v;},getAttribute(k){return this.attributes[k];},removeAttribute(k){delete this.attributes[k];},setPointerCapture(){}});
+ const element=tag=>({tag,classList:{add(){}},style:{},children:[],attributes:{},append(...items){this.children.push(...items);},replaceChildren(){},listeners:{},addEventListener(type,fn,capture){this.listeners[type+':'+Boolean(capture)]=fn;},removeEventListener(type,fn,capture){delete this.listeners[type+':'+Boolean(capture)];},moveBefore(child){this.children.push(child);child.parentNode=this;},remove(){this.removed=true;},getContext(type,options){this.contextOptions=options;return {clearRect(){},drawImage(image){draws.push(image);}};},setAttribute(k,v){this.attributes[k]=v;},getAttribute(k){return this.attributes[k];},removeAttribute(k){delete this.attributes[k];},setPointerCapture(){}});
  const doc=()=>({title:'',documentElement:element('html'),body:element('body'),head:element('head'),removeEventListener(){},createElement(tag){const e=element(tag);if(tag==='iframe')e.contentWindow=target();return e;},addEventListener(){}});
- const target=()=>({document:doc(),Option:class{},addEventListener(){},focus(){},close(){this.closed=true;}});
+ const target=()=>({document:doc(),Option:class{},listeners:{},addEventListener(type,fn){this.listeners[type]=fn;},removeEventListener(type){delete this.listeners[type];},focus(){},close(){this.closed=true;}});
  const document=doc();document.body.append=e=>panels.push(e);
  const window={open(){const w=target();popups.push(w);return w;},...(desktop?{__comfyDesktop2:{},documentPictureInPicture:{requestWindow:async()=>{throw new Error('Not allowed by this host');}}}:{})};
  const context=vm.createContext({nativeOutput:()=>({open:async()=>{nativeOpens++;return true;},publish:frame=>nativeFrames.push(frame),setFit(){},close(){}}),document,window,navigator:{userAgent:desktop?'Electron':'Chrome'},innerWidth:1200,innerHeight:900,crypto:{randomUUID:()=> 'test'},performance});
@@ -172,4 +172,58 @@ test('windows are bitmap mirrors unless they take the live surface; synced edito
  // A mirror of a node that has a live surface never touches the surface.
  const mirror=f.make({}, {interactiveSurface:surface,onSurfaceChange:open=>changes.push(open)});
  assert.equal(await mirror.open({overlay:true,interactive:false}),true);assert.equal(changes.length,4);assert.ok(mirror.window);mirror.close();assert.equal(changes.length,4);
+});
+
+test('new overlay uses the actual content size and limits oversized sources',async()=>{
+ const f=fixture(),view=f.make({});await view.open({overlay:true,initialSize:{width:384,height:256}});
+ assert.equal(view.element.style.width,'384px');assert.equal(view.element.style.height,'256px');view.close();
+ const large=f.make({});await large.open({overlay:true,initialSize:{width:4000,height:2000}});
+ assert.equal(large.element.style.width,'840px');assert.equal(large.element.style.height,'420px');large.close();
+});
+
+test('automatic overlay size is refreshed while an explicitly resized overlay keeps its size',async()=>{
+ const f=fixture(),old={rect:{left:100,top:100,width:840,height:630}},view=f.make(old);
+ await view.open({overlay:true,initialSize:{width:384,height:256}});
+ assert.equal(view.element.style.width,'384px');assert.equal(view.element.style.height,'256px');view.close();
+ const saved={manualSize:true,rect:{left:100,top:100,width:600,height:500}},next=f.make(saved);
+ await next.open({overlay:true,initialSize:{width:384,height:256}});
+ assert.equal(next.element.style.width,'600px');assert.equal(next.element.style.height,'500px');next.close();
+});
+
+test('overlay background drags while controls and canvases retain interaction',()=>{
+ const f=fixture(),frame={style:{cssText:''},isConnected:false,addEventListener(){},removeEventListener(){}};
+ const shell=f.shell(frame,{},()=>{}),panel=shell.element;
+ Object.assign(panel,{offsetLeft:100,offsetTop:80,offsetWidth:400,offsetHeight:300});
+ const blank={closest:()=>null,setPointerCapture(){}};
+ panel.onpointerdown({button:0,target:blank,clientX:100,clientY:100,pointerId:1,preventDefault(){}});
+ panel.onpointermove({clientX:140,clientY:130});assert.equal(panel.style.left,'140px');assert.equal(panel.style.top,'110px');panel.onpointerup();
+ const ui={closest:()=>true};panel.onpointerdown({button:0,target:ui,clientX:0,clientY:0,preventDefault(){throw Error('UI blocked');}});
+ panel.onpointermove({clientX:300,clientY:300});assert.equal(panel.style.left,'140px');shell.close();
+});
+
+test('a noninteractive image mirror can be dragged from its iframe',async()=>{
+ const f=fixture(),view=f.make({});await view.open({overlay:true,initialSize:{width:400,height:300}});
+ const panel=view.element,frame=panel.children.find(e=>e.tag==='iframe'),child=frame.contentWindow;
+ Object.assign(panel,{offsetLeft:100,offsetTop:80,offsetWidth:400,offsetHeight:300});
+ frame.getBoundingClientRect=()=>({left:100,top:80});
+ const target={closest:()=>null,setPointerCapture(){}};
+ child.listeners.pointerdown({button:0,target,clientX:10,clientY:10,pointerId:1,preventDefault(){}});
+ child.listeners.pointermove({clientX:40,clientY:30});
+ assert.equal(panel.style.left,'130px');assert.equal(panel.style.top,'100px');
+ child.listeners.pointerup();view.close();assert.equal(child.listeners.pointerdown,undefined);
+});
+
+
+test('overlay captures blank-surface dragging before an embedded UI stops bubbling',()=>{
+ const f=fixture(),shell=f.shell({style:{cssText:''},isConnected:false,addEventListener(){},removeEventListener(){}},{},()=>{}),panel=shell.element;Object.assign(panel,{offsetLeft:40,offsetTop:30,offsetWidth:400,offsetHeight:300});
+ const attrs={},blank={closest:()=>null,setPointerCapture(){},setAttribute(k,v){attrs[k]=v;},removeAttribute(k){delete attrs[k];}};
+ panel.listeners['pointermove:true']({target:blank,clientX:100,clientY:100});assert.ok('data-overlay-move-target' in attrs);
+ panel.listeners['pointerdown:true']({target:blank,button:0,clientX:100,clientY:100,pointerId:1,preventDefault(){}});panel.listeners['pointermove:true']({target:blank,clientX:130,clientY:120});assert.equal(panel.style.left,'70px');assert.equal(panel.style.top,'50px');panel.listeners['pointerup:true']();
+ const timeline={closest:selector=>selector.includes('.iannix-timeline')?{}:null};panel.listeners['pointermove:true']({target:timeline});assert.ok(!('data-overlay-move-target' in attrs));panel.listeners['pointerdown:true']({target:timeline,button:0,preventDefault(){throw Error('timeline interaction blocked');}});shell.close();
+});
+
+test('independent music views mount an interactive mirror and keep the node surface in place',async()=>{
+ const f=fixture(true),mounted=[],disposed=[],surface={style:{cssText:''},classList:{add(){}},addEventListener(){},removeEventListener(){},append(){},setAttribute(){},parentNode:null};
+ const view=f.make({}, {forceMirror:true,interactiveSurface:surface,mountMirror:c=>{mounted.push(c);return ()=>disposed.push(c);},multiUi:()=>true});
+ assert.equal(await view.open(),true);await Promise.resolve();assert.equal(mounted.length,1);assert.equal(surface.parentNode,null);assert.equal(f.popups.length,1);view.close();await Promise.resolve();assert.deepEqual(disposed,mounted);
 });

@@ -6,6 +6,12 @@ export function ensureControlStyle() {
   const style = document.createElement('style');
   style.id = 'genereti-node-controls-style';
   style.textContent = `
+/* Neutralize browser-native bevels at zero specificity. Existing node/editor
+   classes and Comfy's component styles still control their own appearance. */
+:where(html[data-genereti-theme^="genereti-"],.genereti-ui,.lg-node:has([class*="genereti-"]),[id^="Genereti."],.genereti-output-overlay,.genereti-external-window) :where(button){appearance:none;border:0;border-radius:6px;box-shadow:none;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px 6px}
+:where(html[data-genereti-theme^="genereti-"],.genereti-ui,.lg-node:has([class*="genereti-"]),[id^="Genereti."]) :where(button):hover{background:color-mix(in srgb,currentColor 10%,transparent)}
+:where(html[data-genereti-theme^="genereti-"],.genereti-ui,.lg-node:has([class*="genereti-"]),[id^="Genereti."]) :where(button):focus-visible{outline:1px solid currentColor;outline-offset:1px}
+:where(html[data-genereti-theme^="genereti-"],.genereti-ui,.lg-node:has([class*="genereti-"]),[id^="Genereti."]) :where(input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]),textarea){appearance:none;border:0;border-radius:6px;box-shadow:none;background:var(--comfy-input-bg,#282828);color:inherit;font:inherit;padding:4px 6px}
 .genereti-node-controls{display:flex;align-items:center;flex-wrap:wrap;gap:0;font-size:12px;color:var(--fg-color,#eee)}
 .genereti-lightning{display:inline-block;line-height:1;transform:scaleY(1.2);transform-origin:center}
 .genereti-node-controls:empty{display:none}
@@ -34,6 +40,7 @@ export function ensureControlStyle() {
  :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select::picker-icon{content:"";display:block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);color:inherit;transition:none}
  :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
 }
+:is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option::checkmark{display:none!important}
 /* Chromium can retain its native value text alongside a dynamically inserted
    selectedcontent. Zero only the trigger's text; keep the menu's readable font. */
 .genereti-glyph-choice{height:20px!important;min-height:20px!important;box-sizing:border-box;width:20px!important;min-width:20px!important;padding:0!important;font-size:0!important;gap:0!important;align-items:center!important;justify-content:center!important;line-height:1}

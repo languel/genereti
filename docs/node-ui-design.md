@@ -22,8 +22,9 @@ and portable adoption checklist.
   below that width without covering the workspace.
 - Preserve keyboard operation and a visible focus ring. Borderless resting
   controls must still be discoverable on hover and operable without a mouse.
-- Show status text for loading, errors or useful running feedback. Avoid repeated
-  headings and labels already supplied by the node title or sockets.
+- Keep narrative status, loading and error details in the Genereti footer pill’s
+  hover tip. Clicking the pill reveals only compact measurements; keep the
+  full message available in the tip.
 - Let connected sockets determine output formats. **Live / Comfy Queue** chooses
   delivery, rather than which outputs exist. Interactive editors (drawing,
   poliplan) use the same transport row above the editor as every other browser
@@ -63,8 +64,7 @@ paint their own opaque background.
 Keep inference and display separate: **ꘇ generator** owns model parameters and
 start/pause, while **ꘇ image preview** owns its canvas and local window controls. Projector links
 and relay transport belong to the separate projector node. Place independent window and overlay glyphs beside play/pause. Put the fit
-dropdown beside freeze in the top preview toolbar; collapse performance details
-under a triangle below it.
+dropdown beside freeze in the top preview toolbar; put performance details in the footer pill.
 Both participate in the shared Live / Comfy Queue delivery contract. Preserve the
 legacy combined node's identity for saved workflows.
 
@@ -163,15 +163,7 @@ The output-window and overlay glyphs are independent toggles: their pressed stat
 Output toolbar glyphs share 18px SVG bounds, 1.5px strokes and centered 30px hit targets. Overlay geometry is stored per node in workflow properties and reused on reopen. The backdrop toggle beside the overlay draws output in Comfy’s background pass, fixed to the viewport, behind nodes and links; it does not capture pointer input. Only one Genereti backdrop is active at a time. Closing restores the previous background renderer.
 
 
-**Where the interactive view lives.** A node with a live editor, sketch or timeline has
-one interactive view at a time: in the node, the output window or the output overlay.
-The others show its bitmap. The window or overlay that opens last takes the view
-(Alt+W, Alt+Shift+W or their glyphs); closing the owner returns it to the node. The
-menu glyph first in the output toolbar (node, window, overlay) sets it explicitly,
-for example to keep editing in the node while a window shows the bitmap. Windows
-remember their placement. `genereti_multi_ui` on a node's properties opts a poliplan
-into several synced editors at once. The backdrop glyph is a plane behind two nodes,
-so it no longer reads as an image.
+**Where the interactive view lives.** Alt+W moves the interactive surface to an overlay and collapses the empty node. Closing the overlay restores the node. Alt+Shift+W opens a separate window with a mirrored view; supported music and Poliplan views remain interactive in both places. Under **Settings → Genereti → Views → Interactive mirrors**, enable interactive overlay mirrors as well. The setting is off by default, and applies to newly opened views. Nodes without a mirror implementation show their rendered output in a separate window.
 
 The overlay glyph (Alt+W) of an interactive editor (drawing, poliplan) moves the
 **active editor** into a viewport overlay; drawing and live outputs continue there

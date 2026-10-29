@@ -1,0 +1,2 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {compactStatus} from '../integrations/genereti_comfy_p5/web/js/status-core.js';
+test('status summaries retain measurements and discard narrative text',()=>{assert.equal(compactStatus('Transport running · 20 BPM · use ♫ to start audio'),'20 bpm');assert.equal(compactStatus('Waiting for a source'),'');assert.equal(compactStatus('1280 × 720 · 30 fps · 2 channels'),'1280 × 720 · 30 fps · 2 ch');assert.equal(compactStatus('RMS 0.32 · peak 0.8'),'RMS 0.32 · peak 0.8');});

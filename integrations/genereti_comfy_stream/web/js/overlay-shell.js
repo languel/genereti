@@ -35,6 +35,7 @@ export function overlayShell(frame,layout={},onClose=()=>{},config={}) {
 .genereti-output-overlay:has(.output-edge:hover,.output-header:hover):not([data-chrome=hidden]) .output-header,.genereti-output-overlay:has(.output-header:focus-within) .output-header,.genereti-output-overlay[data-chrome=visible] .output-header{opacity:1;pointer-events:auto}
 .genereti-output-overlay[data-locked=true] .output-edge{cursor:default!important}
 .genereti-output-overlay .output-edge{position:absolute;background:transparent;touch-action:none}
+.genereti-output-overlay [data-overlay-move-target]{cursor:move!important}
 
 .genereti-output-overlay[data-filled=true] .output-header{top:0;bottom:auto;z-index:2}
 .genereti-output-overlay[data-filled=true] .output-edge{z-index:3;cursor:default!important}
@@ -80,34 +81,50 @@ export function overlayShell(frame,layout={},onClose=()=>{},config={}) {
     opacity.oninput=()=>{frame.style.opacity=String(Number(opacity.value)/100);opacity.title=`Output opacity · ${opacity.value}%`;};
     through.onclick=()=>{clickThrough=!clickThrough;frame.style.pointerEvents=clickThrough?'none':'auto';panel.style.pointerEvents=clickThrough||config.inPlace?'none':'auto';config.onThroughChange?.(clickThrough);through.setAttribute('aria-pressed',String(clickThrough));};
     const recover=event=>{if(config.node){routePreviewShortcut(event);return;}if(event.defaultPrevented)return;if(event.altKey&&event.shiftKey&&event.code==='KeyC'&&!event.repeat){event.preventDefault();event.stopPropagation?.();through.onclick();}};document.addEventListener('keydown',recover);
-    let frameWindow;const bindKeys=()=>{frameWindow?.removeEventListener?.('keydown',recover,true);try{frameWindow=frame.contentWindow;frameWindow?.addEventListener?.('keydown',recover,true);}catch{frameWindow=null;}};
-    bindKeys();frame.addEventListener('load',bindKeys);
-    const cleanup=()=>{stack.dispose();document.removeEventListener('keydown',recover);frameWindow?.removeEventListener?.('keydown',recover,true);frame.removeEventListener('load',bindKeys);};
+    let frameWindow;const bindKeys=()=>{frameWindow?.removeEventListener?.('keydown',recover,true);frameWindow?.removeEventListener?.('pointerdown',frameDown,true);frameWindow?.removeEventListener?.('pointermove',frameMove,true);frameWindow?.removeEventListener?.('pointerup',endDrag,true);frameWindow?.removeEventListener?.('pointercancel',endDrag,true);try{frameWindow=frame.contentWindow;frameWindow?.addEventListener?.('keydown',recover,true);if(config.dragFrame){frameWindow?.addEventListener?.('pointerdown',frameDown,true);frameWindow?.addEventListener?.('pointermove',frameMove,true);frameWindow?.addEventListener?.('pointerup',endDrag,true);frameWindow?.addEventListener?.('pointercancel',endDrag,true);}}catch{frameWindow=null;}};
     let drag=null;
-    header.onpointerdown=event=>{
+    const startDrag=(event,frameCoordinates=false)=>{
       if(locked||filled||event.button!==0||event.target.closest?.('button,input,select'))return;
       event.preventDefault();
       const host=config.parent,scale=config.embedded?host.getBoundingClientRect().width/host.offsetWidth:1;
-      drag={x:event.clientX,y:event.clientY,left:panel.offsetLeft,top:panel.offsetTop,scale:scale||1,pos:config.node?[...config.node.pos]:null};
-      header.setPointerCapture(event.pointerId);
+      const rect=frameCoordinates?frame.getBoundingClientRect():{left:0,top:0};
+      drag={x:event.clientX+rect.left,y:event.clientY+rect.top,left:panel.offsetLeft,top:panel.offsetTop,scale:scale||1,pos:config.node?[...config.node.pos]:null};
+      event.target.setPointerCapture?.(event.pointerId);
     };
-    header.onpointermove=event=>{if(!drag)return;const dx=(event.clientX-drag.x)/drag.scale,dy=(event.clientY-drag.y)/drag.scale;
+    const moveDrag=(event,frameCoordinates=false)=>{if(!drag)return;const rect=frameCoordinates?frame.getBoundingClientRect():{left:0,top:0};const dx=(event.clientX+rect.left-drag.x)/drag.scale,dy=(event.clientY+rect.top-drag.y)/drag.scale;
       if(config.embedded&&config.node){config.node.pos=[drag.pos[0]+dx,drag.pos[1]+dy];config.node.setDirtyCanvas?.(true,true);}
       else{panel.style.left=drag.left+dx+'px';panel.style.top=drag.top+dy+'px';}
     };
     const endDrag=()=>{if(drag){if(config.embedded)config.node?.graph?.change?.(config.node);else saveLayout();}drag=null;};
+    const frameDown=event=>{if(!event.target.closest?.('button,input,select,textarea,[contenteditable]'))startDrag(event,true);};
+    const frameMove=event=>moveDrag(event,true);
+    bindKeys();frame.addEventListener('load',bindKeys);
+    const cleanup=()=>{stack.dispose();document.removeEventListener('keydown',recover);frameWindow?.removeEventListener?.('keydown',recover,true);frameWindow?.removeEventListener?.('pointerdown',frameDown,true);frameWindow?.removeEventListener?.('pointermove',frameMove,true);frameWindow?.removeEventListener?.('pointerup',endDrag,true);frameWindow?.removeEventListener?.('pointercancel',endDrag,true);frame.removeEventListener('load',bindKeys);};
+    header.onpointerdown=event=>{event.stopPropagation?.();startDrag(event);};header.onpointermove=event=>moveDrag(event);
     header.onpointerup=header.onpointercancel=header.onlostpointercapture=endDrag;
+    // Capture is needed for embedded UI frameworks that stop bubbling at their root.
+    // The timeline grid itself is interactive even though it is built from divs.
+    const blocked='.output-header,.output-edge,button,input,select,textarea,canvas,iframe,a,label,summary,[draggable=true],[role=textbox],[role=switch],[contenteditable]:not([contenteditable=false]),[role=slider],[role=button],[role=menuitem],[role=combobox],.iannix-timeline,.cm-editor,[data-overlay-interactive]';
+    const movable=target=>!config.embedded&&!locked&&!filled&&!!target&&!target.closest?.(blocked);
+    let moveTarget=null;
+    const clearMoveTarget=()=>{moveTarget?.removeAttribute?.('data-overlay-move-target');moveTarget=null;};
+    const surfaceDown=event=>{if(!drag&&movable(event.target))startDrag(event);};
+    const surfaceMove=event=>{if(drag){moveDrag(event);return;}const next=movable(event.target)?event.target:null;if(next!==moveTarget){clearMoveTarget();moveTarget=next;moveTarget?.setAttribute?.('data-overlay-move-target','');}};
+    panel.addEventListener('pointerdown',surfaceDown,true);panel.addEventListener('pointermove',surfaceMove,true);panel.addEventListener('pointerup',endDrag,true);panel.addEventListener('pointercancel',endDrag,true);panel.addEventListener('pointerleave',clearMoveTarget);
+    panel.onpointerdown=surfaceDown;panel.onpointermove=surfaceMove;panel.onpointerup=panel.onpointercancel=panel.onlostpointercapture=endDrag;
     // Hit targets sit outside the content; hovering the picture never reveals chrome.
     for(const [edge,css] of [['n','left:0;right:0;top:-8px;height:8px'],['s','left:0;right:0;bottom:-8px;height:8px'],['w','top:0;bottom:0;left:-8px;width:8px'],['e','top:0;bottom:0;right:-8px;width:8px'],['se','right:-8px;bottom:-8px;width:16px;height:16px']]){
       const handle=document.createElement('div');handle.className='output-edge';handle.setAttribute('data-edge',edge);handle.style.cssText=css+';pointer-events:auto;cursor:'+edge+'-resize';let sizing;
-      handle.onpointerdown=event=>{if(config.embedded||locked||filled)return;event.preventDefault();sizing={x:event.clientX,y:event.clientY,width:panel.offsetWidth,height:panel.offsetHeight,left:panel.offsetLeft,top:panel.offsetTop};panel.setAttribute('data-dragging','true');handle.setPointerCapture(event.pointerId);};
+      handle.onpointerdown=event=>{if(config.embedded||locked||filled)return;event.preventDefault();layout.manualSize=true;sizing={x:event.clientX,y:event.clientY,width:panel.offsetWidth,height:panel.offsetHeight,left:panel.offsetLeft,top:panel.offsetTop};panel.setAttribute('data-dragging','true');handle.setPointerCapture(event.pointerId);};
       handle.onpointermove=event=>{if(!sizing)return;const dx=event.clientX-sizing.x,dy=event.clientY-sizing.y;if(edge.includes('e'))panel.style.width=Math.max(240,sizing.width+dx)+'px';if(edge.includes('s'))panel.style.height=Math.max(180,sizing.height+dy)+'px';if(edge==='w'){const width=Math.max(240,sizing.width-dx);panel.style.width=width+'px';panel.style.left=sizing.left+sizing.width-width+'px';}if(edge==='n'){const height=Math.max(180,sizing.height-dy);panel.style.height=height+'px';panel.style.top=sizing.top+sizing.height-height+'px';}};
       handle.onpointerup=handle.onpointercancel=()=>{if(sizing)saveLayout();sizing=null;panel.removeAttribute('data-dragging');};panel.append(handle);
     }
     let closed=false;
     const dismiss=()=>{if(closed)return;closed=true;saveLayout();cleanup();
-      if(!config.inPlace&&originalParent?.isConnected){if(originalParent.moveBefore)originalParent.moveBefore(frame,originalNext?.parentNode===originalParent?originalNext:null);else originalParent.insertBefore(frame,originalNext?.parentNode===originalParent?originalNext:null);frame.style.cssText=originalStyle;}
-      if(config.inPlace)frame.style.cssText=originalStyle;panel.remove();onClose();
+      const restore=()=>{if(!config.inPlace&&originalParent){const next=originalNext?.parentNode===originalParent?originalNext:null;try{if(originalParent.moveBefore&&originalParent.isConnected&&frame.isConnected)originalParent.moveBefore(frame,next);else originalParent.insertBefore(frame,next);}catch{originalParent.insertBefore(frame,next);}frame.style.cssText=originalStyle;}if(config.inPlace)frame.style.cssText=originalStyle;panel.remove();};
+      // Expanding a collapsed Vue node reattaches its widget on the next frame.
+      // Keep the surface connected until then so an embedded iframe is not reset.
+      if(!config.inPlace&&originalParent&&!originalParent.isConnected&&config.node?.graph&&typeof requestAnimationFrame==='function'){onClose();requestAnimationFrame(restore);}else{restore();onClose();}
     };
     close.onclick=dismiss;
     return {element:panel,close:dismiss,move:stack.move,toggleFill,toggleClickThrough:()=>through.onclick(),get filled(){return filled;}};

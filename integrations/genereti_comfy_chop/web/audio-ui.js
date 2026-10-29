@@ -14,6 +14,9 @@ function ensureStyle() {
 .gap-cell{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:36px}
 .gap-cell canvas{touch-action:none;cursor:ns-resize}
 .gap-label{opacity:.6;font-size:10px;white-space:nowrap}.gap-value{font-size:10px;font-variant-numeric:tabular-nums;min-height:12px}
+.gap-value-edit{width:64px;box-sizing:border-box;border:0;border-radius:4px;background:var(--comfy-input-bg,#282828);color:inherit;font:11px monospace;text-align:center;padding:2px;user-select:text}
+.gap-value-edit:focus{outline:1px solid currentColor}
+.gap-value-edit[hidden]{display:none}
 .gap-seg{display:inline-flex;gap:0}
 .gap-seg button,.gap-btn{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px 6px;border-radius:5px;line-height:1.2}
 .gap-seg button:hover,.gap-btn:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
@@ -32,6 +35,7 @@ function ensureStyle() {
 .gap-synth .gap-keys{margin-top:2px}
 .gap-keys{display:flex;gap:2px}.gap-keys button{flex:1;min-width:0;padding:5px 0;border:0;border-radius:4px;color:inherit;font:9px monospace;cursor:pointer;background:color-mix(in srgb,currentColor 9%,transparent)}
 .gap-keys button.black{background:color-mix(in srgb,currentColor 22%,transparent)}
+.gap-keys button svg{display:block;width:18px;height:18px;margin:auto}
 .gap-keys button:active,.gap-keys button[aria-pressed=true],.gap-keys button.gap-playing{background:color-mix(in srgb,currentColor 38%,transparent)}
 `;
   document.head.append(style);
@@ -74,11 +78,12 @@ const stopDrag = e => { e.stopPropagation(); };
 
 // ---- Knob ----
 export function knob(node, {name, label = name, min = 0, max = 1, curve = 'lin', unit = '', step = 0, size = 34, def}) {
-  const canvas = el('canvas', {tabIndex: 0, title: `${label} · drag, wheel or arrows · Shift: fine · double-click: reset`});
+  const canvas = el('canvas', {tabIndex: 0, title: `${label} · drag, wheel or arrows · Shift: fine · double-click or Enter: edit value`});
   canvas.setAttribute('role', 'slider'); canvas.setAttribute('aria-label', label);
   const value = el('div', {className: 'gap-value'}), lab = el('div', {className: 'gap-label', textContent: label});
   const cell = el('div', {className: 'gap-cell'}, lab, canvas, value);
-  const initial = def ?? getValue(node, name, min);
+  const editor = el('input', {className:'gap-value-edit',type:'number',min:String(min),max:String(max),step:step>0?String(step):'any',hidden:true});
+  editor.setAttribute('aria-label', `Edit ${label}`);cell.append(editor);
   let last;
   const draw = () => {
     const v = Number(getValue(node, name, min)), key = `${v}|${size}`; if (key === last) return; last = key;
@@ -95,9 +100,18 @@ export function knob(node, {name, label = name, min = 0, max = 1, curve = 'lin',
   canvas.onpointerdown = e => { e.stopPropagation(); canvas.focus(); canvas.setPointerCapture(e.pointerId); drag = {y: canvasPoint(canvas, e)[1], n: toNorm(getValue(node, name, min), min, max, curve)}; };
   canvas.onpointermove = e => { if (!drag) return; apply(drag.n + (drag.y - canvasPoint(canvas, e)[1]) / (e.shiftKey ? 600 : 140)); };
   canvas.onpointerup = canvas.onpointercancel = () => { drag = null; };
-  canvas.ondblclick = e => { e.stopPropagation(); setValue(node, name, initial); last = null; draw(); };
+  const closeEditor = commit => {
+    if(editor.hidden)return;
+    if(commit){const text=editor.value.trim(),v=Number(text);if(!text||!Number.isFinite(v)||v<min||v>max){editor.setAttribute('aria-invalid','true');return false;}setValue(node,name,clamp(snap(v,step),min,max));}
+    editor.hidden=true;value.hidden=false;editor.removeAttribute('aria-invalid');last=null;draw();return true;
+  };
+  const editValue = e => {e.preventDefault();e.stopPropagation();drag=null;editor.value=String(getValue(node,name,min));editor.hidden=false;value.hidden=true;editor.removeAttribute('aria-invalid');editor.focus();editor.select();};
+  canvas.ondblclick=editValue;value.ondblclick=editValue;
+  editor.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();if(closeEditor(true))canvas.focus();}else if(e.key==='Escape'){e.preventDefault();closeEditor(false);canvas.focus();}};
+  editor.onblur=()=>{if(closeEditor(true)===false)closeEditor(false);};
+  editor.oninput=()=>editor.removeAttribute('aria-invalid');
   canvas.onwheel = e => { e.preventDefault(); e.stopPropagation(); apply(toNorm(getValue(node, name, min), min, max, curve) - Math.sign(e.deltaY) * (e.shiftKey ? .004 : .03)); };
-  canvas.onkeydown = e => { const d = e.key === 'ArrowUp' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowDown' || e.key === 'ArrowLeft' ? -1 : 0; if (d) { e.preventDefault(); e.stopPropagation(); apply(toNorm(getValue(node, name, min), min, max, curve) + d * (e.shiftKey ? .005 : .03)); } };
+  canvas.onkeydown = e => { if(e.key==='Enter'){editValue(e);return;} const d = e.key === 'ArrowUp' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowDown' || e.key === 'ArrowLeft' ? -1 : 0; if (d) { e.preventDefault(); e.stopPropagation(); apply(toNorm(getValue(node, name, min), min, max, curve) + d * (e.shiftKey ? .005 : .03)); } };
   cell.addEventListener('pointerdown', stopDrag);
   draw(); return component(cell, draw);
 }

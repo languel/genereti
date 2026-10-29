@@ -12,6 +12,8 @@ IME composition alone. Select one node when a shortcut needs a graph selection.
 | --- | --- | --- |
 | Alt+Shift+T | Timeline dock | Show/hide; project time keeps running |
 | Alt+Space | Project play / pause | Outside editors; audio still requires explicit Start |
+| Home / End | Stop and reset / play transport | Controls the project clock and local mod.transport nodes |
+| Cmd+Shift+End | Start audio and play | Enables mod.output nodes and starts project and local transports |
 | P | Parameters sidebar | Canvas with no selection; selected items retain Comfy pin/unpin. Follows the native Pin binding if remapped |
 | Alt+Shift+R | Parameters sidebar | Independent toggle, including in Satori |
 | Alt+O | Output-only node | Selected node or output-only node under pointer |
@@ -22,6 +24,7 @@ IME composition alone. Select one node when a shortcut needs a graph selection.
 | Alt+F | Fill window / restore | Hovered overlay first, otherwise selected node; opens its overlay if needed |
 | Escape | Restore filled overlay | Restore its previous position and size |
 | Alt+L | Show/hide cables | Keeps connections active; independent of presentation mode |
+| Cmd+Shift+click | Collapse or expand a node | Click anywhere on the node; uses Comfy's normal minimized state |
 | Alt+P | Presentation visibility | Hide/show graph nodes, code and links; rendering continues |
 | Alt+Shift+Z | Satori | Hide/show Comfy chrome and canvas diagnostics |
 | Alt+Shift+I | Canvas diagnostics | Independent toggle, including in presentation/Satori |

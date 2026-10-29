@@ -2188,8 +2188,8 @@
       "type": "GeneretiDatLesson",
       "title": "ꘇ Neuron Dance · start here",
       "pos": [
-        3850,
-        760
+        -850,
+        0
       ],
       "size": [
         630,
@@ -2450,7 +2450,7 @@
     "ds": {
       "scale": 0.42,
       "offset": [
-        70,
+        950,
         90
       ]
     },

@@ -7,9 +7,10 @@ import {registerHelpView,showHelpView,helpViewHost,closeHelpPanel,isHelpPanelOpe
 const headerButtons=new Map();
 function mountHeaderButtons(){
  for(const [node,button] of headerButtons){
+  if(!node.graph||node.graph!==app.graph||node.graph.getNodeById?.(node.id)!==node){button.remove();headerButtons.delete(node);continue;}
   const header=document.querySelector(`[data-node-id="${CSS.escape(String(node.id))}"] .lg-node-header`);
   const row=header?.firstElementChild;
-  if(row&&button.parentElement!==row)row.append(button);
+  if(row){for(const stale of row.querySelectorAll('.genereti-header-reference'))if(stale!==button)stale.remove();if(button.parentElement!==row)row.append(button);}
  }
 }
 function watchNodeHeaders(){
@@ -72,7 +73,7 @@ app.registerExtension({name:'Genereti.NodeReference',setup(){watchNodeHeaders();
   requestAnimationFrame(()=>{
    if(!node.graph)return;
    const button=document.createElement('button');button.type='button';button.textContent='?';button.title='Quick reference';button.setAttribute('aria-label',`Quick reference for ${node.title}`);
-   button.className='genereti-header-reference';headerButtons.set(node,button);const removed=node.onRemoved;node.onRemoved=function(){headerButtons.delete(node);return removed?.apply(this,arguments);};
+   button.className='genereti-header-reference';headerButtons.get(node)?.remove();headerButtons.set(node,button);const removed=node.onRemoved;node.onRemoved=function(){headerButtons.delete(node);return removed?.apply(this,arguments);};
    button.onpointerdown=event=>event.stopPropagation();button.onclick=event=>{event.stopPropagation();if(opener===button&&isHelpPanelOpen())close();else void showReference(node,button);};
    const controls=node._generetiExecutionModeElement||node.widgets?.map(w=>w.element?.querySelector?.('.genereti-node-controls')).find(Boolean);
    if(controls){controls.append(button);mountHeaderButtons();return;}

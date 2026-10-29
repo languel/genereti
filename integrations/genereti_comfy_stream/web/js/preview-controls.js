@@ -1,8 +1,18 @@
+import {app} from '/scripts/app.js';
 import { nodeOutputView } from './node-output-view.js';
 import { graphBackdrop } from './graph-backdrop.js';
 import { registerPreviewShortcuts } from './preview-shortcuts.js';
 import { outputWindow } from './output-window.js';
 import { ensureControlStyle } from '/extensions/genereti_comfy_p5/js/control-style.js';
+
+const MIRROR_SETTING='Genereti.Views.interactiveMirrors';
+if(typeof app!=='undefined')app.registerExtension({name:'Genereti.ViewPreferences',settings:[{id:MIRROR_SETTING,name:'Interactive mirrors',category:['Genereti','Views'],type:'boolean',defaultValue:false,tooltip:'Keep the node interactive when opening a supported output window or overlay. Uses additional UI resources; reopen views after changing.'}]});
+const mirrorSetting=()=>{try{return app.ui.settings.getSettingValue(MIRROR_SETTING,false)===true;}catch{return false;}};
+
+// Keep the actual view buttons in the Vue node header, including when collapsed.
+const headerActions=new Map();let headerObserver;
+function mountHeaderActions(){for(const [node,actions] of headerActions){if(!node.graph||node.graph!==app.graph||node.graph.getNodeById?.(node.id)!==node){actions.remove();headerActions.delete(node);continue;}const header=document.querySelector(`[data-node-id="${CSS.escape(String(node.id))}"] .lg-node-header`),row=header?.firstElementChild;if(!row||actions.parentElement===row)continue;const reference=row.querySelector?.('.genereti-header-reference');row.insertBefore(actions,reference??null);}}
+function registerHeaderActions(node,actions){headerActions.set(node,actions);actions.classList?.add?.('genereti-header-view-actions');if(!headerObserver&&typeof MutationObserver!=='undefined'){let pending=false;headerObserver=new MutationObserver(records=>{if(pending||!records.some(r=>[...r.addedNodes].some(e=>e.nodeType===1&&(e.matches?.('.lg-node,.lg-node-header,.genereti-header-view-actions')||e.querySelector?.('.lg-node,.lg-node-header,.genereti-header-view-actions')))))return;pending=true;requestAnimationFrame(()=>{pending=false;mountHeaderActions();});});headerObserver.observe(document.body,{subtree:true,childList:true});const style=document.createElement('style');style.textContent='.genereti-header-view-actions{display:inline-flex!important;flex:none;align-items:center;margin-left:auto;gap:0}.genereti-header-view-actions button{width:20px;height:20px;flex:0 0 20px}.genereti-header-view-actions svg{width:14px;height:14px}';document.head.append(style);}if(typeof requestAnimationFrame==='function')requestAnimationFrame(mountHeaderActions);return ()=>{headerActions.delete(node);actions.remove?.();};}
 
 // Local viewing only: projector transport belongs to the projector node.
 export function previewControls(canvas, status, node, onError=()=>{}, config={}) {
@@ -21,20 +31,21 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   // closing the owner changes that. Nodes without a live surface just get bitmap mirrors.
   let owner='node';const ownerListeners=new Set();
   const toggle=(label,paths,options)=>{
-    let viewer,opened=false,live=false;const name=options.overlay?'overlay':options.backdrop?'backdrop':'window';
+    let viewer,opened=false,live=false,autoCollapsed=false;const name=options.overlay?'overlay':options.backdrop?'backdrop':'window';
     const state={viewport:()=>viewer.getViewport?.(),opened:false,order:0};viewers.push(state);
     const paint=value=>{
-      if(opened===value)return;opened=value;state.opened=value;if(value)state.order=++viewerOrder;
-      if(!value&&live){live=false;nodeView.unpark();if(owner===name){owner='node';for(const fn of ownerListeners)fn();}}
+      if(opened===value)return;opened=value;state.opened=value;if(options.backdrop){node.properties.genereti_backdrop={open:Boolean(value),grid:Boolean(viewer?.gridMode)};node.graph?.change?.();}if(value)state.order=++viewerOrder;
+      if(!value&&live){live=false;nodeView.unpark();if(autoCollapsed&&node.flags?.collapsed)node.collapse?.();autoCollapsed=false;if(owner===name){owner='node';for(const fn of ownerListeners)fn();}}
       b.setAttribute('aria-pressed',String(value));b.title=(value?'Close ':'Open ')+label;b.setAttribute('aria-label',b.title);b.title+=options.overlay?' (Alt+W · Shift-click / Alt+O: output-only node)':options.backdrop?' (D: solo · Shift+D: grid)':' (Alt+Shift+W)';config.onViewerChange?.(value,options);
     };
-    const make=()=>config.createViewer?.(status,paint,options)??(options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:(node.properties.genereti_window_layout??={}),{node,interactiveSurface:config.interactiveSurface,mountMirror:config.mountMirror,multiUi:()=>node.properties?.genereti_multi_ui===true,onSurfaceChange:config.onSurfaceChange}));
+    const make=()=>config.createViewer?.(status,paint,options)??(options.backdrop?graphBackdrop(status,paint):outputWindow(status,paint,options.overlay?node.properties.genereti_output_layout:(node.properties.genereti_window_layout??={}),{node,forceMirror:()=>typeof config.mountMirror==='function'&&(!options.overlay||mirrorSetting()),interactiveSurface:config.interactiveSurface,mountMirror:config.mountMirror,multiUi:()=>!options.overlay||mirrorSetting(),onSurfaceChange:config.onSurfaceChange}));
     const closeIt=()=>{viewer.close();viewer=make();assign(viewer);viewer.setFit(config.getFit?.()||node.properties?.[config.fitKey||'genereti_preview_fit']||'contain');paint(false);};
     const openIt=async({event={},interactive=false}={})=>{
       b.disabled=true;
       try{
-        const success=await viewer.open({...options,interactive,grid:options.backdrop&&Boolean(event.shiftKey),initialSize:config.getRenderSize?.(),matchAspect:config.matchOutputAspect?.(),position:event.position});
-        if(success){live=interactive;if(interactive)nodeView.park(config.mirrorSurface?.()??null);}   // the node view (Alt+O) keeps its state and follows the node's mirror
+        const fallbackSize={width:canvas.width||canvas.clientWidth,height:canvas.height||canvas.scrollHeight||canvas.clientHeight};
+        const success=await viewer.open({...options,interactive,grid:options.backdrop&&Boolean(event.shiftKey),initialSize:config.getRenderSize?.()??fallbackSize,matchAspect:config.matchOutputAspect?.(),position:event.position});
+        if(success){live=interactive;if(interactive){nodeView.park(null);if(!node.flags?.collapsed&&node.collapse){node.collapse();autoCollapsed=true;}}}   // the node view (Alt+O) keeps its state and follows the node's mirror
         paint(success);
         if(success&&config.publishOnOpen!==false)viewer.publish(config.initialFrame?.()||{bitmap:canvas});else if(!success)onError();
         return success;
@@ -43,7 +54,7 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
     const b=button('Open '+label,paths,async(event={})=>{
       if(options.overlay&&event.shiftKey){nodeView.toggle();return;}
       if(opened&&(!options.backdrop||Boolean(event.shiftKey)===Boolean(viewer.gridMode))){closeIt();return;}
-      if(!options.backdrop&&config.interactiveSurface){await setOwner(name,event);return;}
+      if(options.overlay&&config.interactiveSurface&&!(mirrorSetting()&&config.mountMirror)){await setOwner(name,event);return;}
       await openIt({event});
     });
     b.controller={isOpen:()=>opened,isLive:()=>live,open:openIt,close:()=>{if(opened)closeIt();}};
@@ -99,12 +110,15 @@ export function previewControls(canvas, status, node, onError=()=>{}, config={})
   const currentFit=()=>config.getFit?.()||config.initialFit||node.properties?.[config.fitKey||'genereti_preview_fit']||'contain';
   fit.value=currentFit();fit.onchange=()=>apply(true);apply();
   const setFit=value=>{fit.value=value;apply(false);};
-  const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);fit.value=currentFit();apply();return result;};
+  const restoreBackdrop=()=>{const saved=node.properties?.genereti_backdrop;if(saved?.open&&!backdropButton.controller.isOpen())void backdropButton.controller.open({event:{shiftKey:saved.grid===true}});};
+  const configure=node.onConfigure;node.onConfigure=function(){const result=configure?.apply(this,arguments);fit.value=currentFit();apply();queueMicrotask(restoreBackdrop);return result;};
+  queueMicrotask(restoreBackdrop);
   const visualButton=button('Visual node view · hide controls (Alt+O)','<rect x="4" y="4" width="16" height="16" rx="1"/><rect x="7" y="7" width="10" height="10" fill="currentColor"/>',()=>nodeView.toggle());visualButton.setAttribute('aria-pressed',String(!!node.properties.genereti_output_only));
   const nodeView=nodeOutputView(node,canvas,{beforeOpen:()=>{if(!config.interactiveSurface&&overlay.element)overlayButton.click();},onChange:open=>{visualButton.setAttribute('aria-pressed',String(open));config.onNodeViewChange?.(open);}});
   const unregister=registerPreviewShortcuts(node,{toggleOutputOnly:()=>nodeView.toggle(),isOutputHovered:()=>nodeView.hovered,toggleOverlay:options=>overlayButton.onclick(options),toggleWindow:options=>windowButton.onclick(options),toggleClickThrough:()=>nodeView.opened?nodeView.toggleClickThrough():overlay.toggleClickThrough?.(),toggleBackdrop:()=>backdropButton.onclick(),toggleBackdropGrid:()=>backdropButton.onclick({shiftKey:true}),toggleFill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},isFilled:()=>overlay.filled,isHovered:()=>overlay.element?.matches(':hover')});
   overlayButton.title+=' (Alt+W · Shift-click / Alt+O: output-only node)';backdropButton.title+=' (D: solo · Shift+D: grid)';
   if(surfaceButton)actions.append(surfaceButton);actions.append(windowButton,overlayButton,visualButton,backdropButton);if(config.fitControl!==false)toolbar.append(fit);
   for(const row of [toolbar,actions])row.addEventListener('pointerdown',event=>event.stopPropagation());
-  return {toolbar,actions,shortcut(action){const run={outputOnly:()=>nodeView.toggle(),overlay:()=>overlayButton.onclick(),window:()=>windowButton.onclick(),backdrop:()=>backdropButton.onclick(),backdropGrid:()=>backdropButton.onclick({shiftKey:true}),fill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},through:()=>nodeView.opened?nodeView.toggleClickThrough():overlay.toggleClickThrough?.(),restore:()=>{if(overlay.filled)overlay.toggleFill();}};run[action]?.();},getViewport(){return viewers.filter(v=>v.opened).sort((a,b)=>b.order-a.order).map(v=>v.viewport()).find(Boolean)||null;},publish(frame){output.publish(frame);overlay.publish(frame);backdrop.publish(frame);},setFit,close(){nodeView.dispose();unregister();output.close();overlay.close();backdrop.close();}};
+  const unregisterHeader=registerHeaderActions(node,actions);
+  return {toolbar,actions,shortcut(action){const run={outputOnly:()=>nodeView.toggle(),overlay:()=>overlayButton.onclick(),window:()=>windowButton.onclick(),backdrop:()=>backdropButton.onclick(),backdropGrid:()=>backdropButton.onclick({shiftKey:true}),fill:async()=>{if(!overlay.element)await overlayButton.onclick();overlay.toggleFill();},through:()=>nodeView.opened?nodeView.toggleClickThrough():overlay.toggleClickThrough?.(),restore:()=>{if(overlay.filled)overlay.toggleFill();}};run[action]?.();},getViewport(){return viewers.filter(v=>v.opened).sort((a,b)=>b.order-a.order).map(v=>v.viewport()).find(Boolean)||null;},publish(frame){output.publish(frame);overlay.publish(frame);backdrop.publish(frame);},setFit,close(){unregisterHeader();nodeView.dispose();unregister();output.close();overlay.close();const savedBackdrop=node.properties.genereti_backdrop;backdrop.close();node.properties.genereti_backdrop=savedBackdrop;}};
 }

@@ -97,11 +97,13 @@ export function parseDrumPattern(text) {
   if (!rows.length || rows.length > 16) throw Error('Use 1..16 drum rows');
   return rows.map(([rawName, bits]) => {
     const muted = rawName.endsWith('~'), name = rawName.replace(/~$/, '');
-    if (!DRUM_ROWS[name] || !bits || !/^[0-3]{1,64}$/.test(bits)) throw Error(`Row "${rawName}": use a drum name and 1..64 steps of 0 1 2 3`);
-    return {name, note: DRUM_ROWS[name], steps: [...bits].map(Number), muted};
+    if (!DRUM_ROWS[name] || !bits) throw Error(`Row "${rawName}": invalid drum pattern`);
+    const tokens=bits.includes(',')||bits.startsWith('v')?bits.split(','):[...bits];
+    if(!tokens.length||tokens.length>64||tokens.some(x=>!(/^[0-3]$/.test(x)||/^v(?:0(?:\.\d+)?|1(?:\.0+)?)$/.test(x))))throw Error(`Row "${rawName}": use 0 1 2 3 or v0..1`);
+    return {name, note: DRUM_ROWS[name], steps: tokens.map(x=>x[0]==='v'?Number(x.slice(1)):Number(x)), muted};
   });
 }
-export const formatDrumPattern = rows => rows.map(r => `${r.name}${r.muted ? '~' : ''}:${r.steps.join('')}`).join(';');
+export const formatDrumPattern = rows => rows.map(r => `${r.name}${r.muted ? '~' : ''}:${r.steps.every(x=>Number.isInteger(x)&&x>=0&&x<=3)?r.steps.join(''):r.steps.map(x=>Number.isInteger(x)?String(x):'v'+Number(x.toFixed(2))).join(',')}`).join(';');
 /** Resize every row to `length`, repeating the existing pattern when it grows. */
 export function resizeRows(rows, length) {
   const n = clamp(Math.round(length), 1, 64);
@@ -109,13 +111,19 @@ export function resizeRows(rows, length) {
 }
 export const nextStepValue = v => ({0: 1, 1: 2, 2: 3, 3: 0}[v] ?? 0);
 
-// Note sequence text: "60 64 - 67" (- is a rest).
-export function parseNotePattern(text) {
+// Optional per-step velocity uses pitch@velocity; legacy pitch-only strings remain valid.
+export function parseNoteSteps(text) {
   const tokens = String(text).replaceAll(',', ' ').trim().split(/\s+/).filter(Boolean);
-  const steps = tokens.map(s => s === '-' || s === '.' ? -1 : Number(s));
-  if (!steps.length || steps.length > 64 || steps.some(n => !Number.isFinite(n) || n < -1 || n > 127)) throw Error('Use 1..64 MIDI pitches (0..127) or - for a rest');
-  return steps;
+  if (!tokens.length || tokens.length > 64) throw Error('Use 1..64 notes or rests');
+  return tokens.map(token => {
+    if (token === '-' || token === '.') return {pitch:-1, velocity:1};
+    const match = /^(\d+(?:\.\d+)?)(?:@(0(?:\.\d+)?|1(?:\.0+)?))?$/.exec(token);
+    if (!match || Number(match[1]) > 127) throw Error('Use MIDI pitches 0..127, optionally @velocity 0..1, or -');
+    return {pitch:Number(match[1]), velocity:match[2] === undefined ? 1 : Number(match[2])};
+  });
 }
+export const parseNotePattern = text => parseNoteSteps(text).map(step => step.pitch);
+export const formatNoteSteps = steps => steps.map(s => s.pitch < 0 ? '-' : `${s.pitch}${s.velocity == null || s.velocity === 1 ? '' : '@' + Number(s.velocity.toFixed(2))}`).join(' ');
 export const formatNotePattern = steps => steps.map(n => n < 0 ? '-' : n).join(' ');
 const NAMES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
 export const noteName = n => `${NAMES[((n % 12) + 12) % 12]}${Math.floor(n / 12) - 1}`;

@@ -1,61 +1,30 @@
 import {app} from '../../../scripts/app.js';
-
-// Every node's status line sits in one bottom bar, below all controls and sockets, so it never overlaps toolbar
-// buttons or the node's own labels. Nodes tag their status element with `genereti-status`; this moves it.
-const BAR = 'genereti_status_bar';
-const STYLE_ID = 'genereti-status-bar-style';
-
-function ensureStyle() {
-  if (document.getElementById(STYLE_ID)) return;
-  const style = document.createElement('style');
-  style.id = STYLE_ID;
-  style.textContent = `
-.genereti-status-bar{display:flex;align-items:center;gap:6px;min-height:18px;padding:2px 6px 0;box-sizing:border-box;width:100%;overflow:hidden;color:var(--fg-color,#eee);font:11px system-ui,sans-serif}
-.genereti-status-bar .genereti-status{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;opacity:.7;font-variant-numeric:tabular-nums}
-.genereti-status-bar .genereti-status:empty{display:none}
-.genereti-status-bar .genereti-status[hidden]{display:none}
-`;
-  document.head.append(style);
+import {compactStatus} from './status-core.js';
+const BAR='genereti_status_bar', STYLE_ID='genereti-status-bar-style', bars=new Map();
+function ensureStyle(){if(document.getElementById(STYLE_ID))return;const style=document.createElement('style');style.id=STYLE_ID;style.textContent=`
+.genereti-status-sources{display:none!important}
+.genereti-status-values{font:10px system-ui,sans-serif;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.75}
+.genereti-status-bar{display:flex;align-items:center;justify-content:flex-end;margin-left:auto;min-width:0;pointer-events:auto}
+.genereti-status-pill{cursor:help}
+.genereti-status-pill:focus-visible{outline:1px solid currentColor;outline-offset:2px}
+.genereti-output-overlay .genereti-status,.genereti-external-window .genereti-status{display:none!important}
+details:has(>summary[aria-label="Performance details"]){display:none!important}
+.lg-node [data-widget-name="genereti_status_bar"]{display:none!important}
+`;document.head.append(style);}
+function makeTip(className){
+ const bar=document.createElement('div'),values=document.createElement('span'),sources=document.createElement('div');bar.className=className;values.className='genereti-status-values';values.hidden=true;sources.className='genereti-status-sources';bar.append(values,sources);
+ const state={sources,values,pill:null,open:false,lastText:null};
+ const update=()=>{const messages=[...sources.querySelectorAll('.genereti-status')].filter(x=>!x.hidden).map(x=>x.textContent.trim()).filter(Boolean);const extra=state.external?.();if(extra)messages.push(String(extra).trim());const full=[...new Set(messages)].filter(Boolean).join('\n');if(state.pill){const tip=full||'Genereti node information';if(state.pill.title!==tip)state.pill.title=tip;state.pill.setAttribute('aria-label',`Genereti information: ${tip}`);}if(state.open&&full!==state.lastText)values.textContent=compactStatus(full);state.lastText=full;};
+ const toggle=e=>{e.stopPropagation();state.open=!state.open;values.hidden=!state.open;state.pill?.setAttribute('aria-pressed',String(state.open));state.lastText=null;update();if(state.open)opened.add(state);else opened.delete(state);syncTimer();};
+ const key=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle(e);}};
+ const detach=()=>{const p=state.pill;if(!p)return;p.removeEventListener('mouseenter',update);p.removeEventListener('focus',update);p.removeEventListener('click',toggle);p.removeEventListener('keydown',key);p.removeEventListener('pointerdown',stop);p.classList.remove('genereti-status-pill');p.removeAttribute('role');p.removeAttribute('tabindex');p.removeAttribute('aria-pressed');p.removeAttribute('aria-label');state.pill=null;};
+ const stop=e=>e.stopPropagation();state.attach=p=>{if(state.pill===p)return;detach();if(!p)return;state.pill=p;p.classList.add('genereti-status-pill');p.setAttribute('role','button');p.setAttribute('tabindex','0');p.setAttribute('aria-pressed',String(state.open));p.addEventListener('mouseenter',update);p.addEventListener('focus',update);p.addEventListener('click',toggle);p.addEventListener('keydown',key);p.addEventListener('pointerdown',stop);update();};state.update=update;state.dispose=()=>{detach();opened.delete(state);syncTimer();};bar._generetiStatus=state;return bar;
 }
-
-/** Move every tagged status (outside disclosure panels, which keep their own) into the node's bottom bar. */
-export function dockStatus(node) {
-  if (!node?.widgets) return;
-  const statuses = [];
-  for (const widget of node.widgets) {
-    if (widget.name === BAR || !widget.element) continue;
-    for (const status of widget.element.querySelectorAll?.('.genereti-status') ?? []) {
-      if (!status.closest('details')) statuses.push(status);
-    }
-  }
-  if (!statuses.length && !node._generetiStatusBar) return;
-  ensureStyle();
-  if (!node._generetiStatusBar) {
-    const bar = document.createElement('div');
-    bar.className = 'genereti-status-bar';
-    bar.addEventListener('pointerdown', event => event.stopPropagation());
-    const widget = node.addDOMWidget(BAR, 'GENERETI_STATUS_BAR', bar, {serialize: false, hideOnZoom: false});
-    widget.computeSize = width => [width, 22];
-    node._generetiStatusBar = bar;
-  }
-  // Keep the bar last so it sits under every control and socket row added before it.
-  const widget = node.widgets.find(w => w.name === BAR);
-  node.widgets.splice(node.widgets.indexOf(widget), 1);
-  node.widgets.push(widget);
-  node._generetiStatusBar.append(...statuses);
-  node.setDirtyCanvas?.(true, true);
-}
-
-app.registerExtension({
-  name: 'Genereti.StatusBar',
-  nodeCreated(node) {
-    // Runs after the node's own setup, which creates its status elements.
-    queueMicrotask(() => dockStatus(node));
-    const configured = node.onConfigure;
-    node.onConfigure = function () {
-      const result = configured?.apply(this, arguments);
-      queueMicrotask(() => dockStatus(node));
-      return result;
-    };
-  },
-});
+const opened=new Set();let timer=null;
+function syncTimer(){for(const bar of bars.values()){const s=bar._generetiStatus;if(s.open)opened.add(s);else opened.delete(s);}if(opened.size&&!timer)timer=setInterval(()=>{for(const s of opened){if(!s.pill?.isConnected){opened.delete(s);continue;}s.update();}if(!opened.size)syncTimer();},500);if(!opened.size&&timer){clearInterval(timer);timer=null;}}
+function mountBars(){for(const [node,bar] of bars){if(!node.graph||node.graph!==app.graph||node.graph.getNodeById?.(node.id)!==node){bar._generetiStatus.dispose();bar.remove();bars.delete(node);continue;}const id=CSS.escape(String(node.id)),host=document.querySelector(`.lg-node[data-node-id="${id}"]`)??document.querySelector(`[data-node-id="${id}"] .lg-node`),footer=host?.querySelector('[class~="mt-auto"][class~="h-5"][class~="w-full"]');if(!footer)continue;const pill=footer.querySelector('[class~="rounded-full"]');bar._generetiStatus.attach(pill);if(bar.parentElement!==footer)footer.append(bar);}}
+let observing=false,pending=false;
+function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>{pending=false;mountBars();});}
+function watch(){if(observing)return;observing=true;new MutationObserver(records=>{for(const r of records){if(r.target.closest?.('.genereti-status-sources'))continue;for(const e of r.addedNodes){if(e.nodeType===1&&(e.matches?.('.lg-node,.lg-node-header,.genereti-output-overlay,.genereti-status,[class~="mt-auto"][class~="h-5"][class~="w-full"]')||e.querySelector?.('.lg-node,.genereti-output-overlay,.genereti-status'))){schedule();return;}}}}).observe(document.body,{subtree:true,childList:true});}
+export function dockStatus(node){if(!node?.widgets)return;const statuses=[];for(const widget of node.widgets){if(widget.name===BAR||!widget.element)continue;if(widget.element.matches?.('.genereti-status'))statuses.push(widget.element);for(const status of widget.element.querySelectorAll?.('.genereti-status')??[])statuses.push(status);}if(!statuses.length&&!node._generetiStatusBar)return;ensureStyle();watch();if(!node._generetiStatusBar){const bar=makeTip('genereti-status-bar'),widget=node.addDOMWidget(BAR,'GENERETI_STATUS_BAR',bar,{serialize:false,hideOnZoom:false});widget.computeSize=()=>[0,0];node._generetiStatusBar=bar;bars.set(node,bar);const removed=node.onRemoved;node.onRemoved=function(){bar._generetiStatus.dispose();bar.remove();bars.delete(node);return removed?.apply(this,arguments);};}const widget=node.widgets.find(w=>w.name===BAR);if(widget){node.widgets.splice(node.widgets.indexOf(widget),1);node.widgets.push(widget);}node._generetiStatusBar._generetiStatus.sources.append(...statuses);schedule();}
+app.registerExtension({name:'Genereti.StatusBar',nodeCreated(node){if(!node.comfyClass?.startsWith('Genereti'))return;queueMicrotask(()=>dockStatus(node));const configured=node.onConfigure;node.onConfigure=function(){const result=configured?.apply(this,arguments);queueMicrotask(()=>dockStatus(node));return result;};}});
