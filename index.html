@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Genereti · live visuals, sound and code as ComfyUI nodes</title>
+<meta name="description" content="Genereti is an open-source (MIT) ComfyUI node pack for realtime creative coding and live performance: livecode, drawing, textures, modular audio and perception, running live in the browser.">
+<meta property="og:title" content="Genereti">
+<meta property="og:description" content="Live visuals, sound and code, as ComfyUI nodes.">
+<meta property="og:image" content="media/poster.jpg">
+<style>
+  :root { --bg: #06070b; --panel: #0e1017; --line: #1d2030; --text: #e9edf5; --dim: #9aa3b5; --accent: #7fe3ff; --red: #ff3b3b;
+          --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; --sans: "Avenir Next", system-ui, -apple-system, "Segoe UI", sans-serif; }
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.6 var(--sans); }
+  a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  header { padding: 56px 0 28px; }
+  .tag { font: 13px var(--mono); color: var(--dim); letter-spacing: .04em; }
+  .tag b { color: var(--red); font-weight: 400; margin-right: .6em; }
+  h1 { font-size: clamp(44px, 8vw, 88px); line-height: 1; margin: 14px 0 10px; letter-spacing: -.02em; }
+  .lede { font-size: clamp(18px, 2.4vw, 24px); color: var(--accent); margin: 0 0 22px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn { font: 15px var(--mono); padding: 10px 16px; border: 1px solid var(--line); border-radius: 8px; color: var(--text); background: var(--panel); }
+  .btn.primary { border-color: var(--accent); color: var(--bg); background: var(--accent); }
+  .btn:hover { text-decoration: none; border-color: var(--accent); }
+  .video { margin: 18px 0 8px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 16/9; }
+  .video video { width: 100%; height: 100%; display: block; }
+  .note { font: 13px var(--mono); color: var(--dim); }
+  section { padding: 44px 0 8px; border-top: 1px solid var(--line); margin-top: 36px; }
+  h2 { font: 14px var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 18px; }
+  h2 b { color: var(--red); font-weight: 400; margin-right: .6em; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; border-bottom: 1px solid var(--line); }
+  .card div { padding: 12px 14px 14px; }
+  .card h3 { margin: 0 0 4px; font-size: 18px; }
+  .card p { margin: 0; color: var(--dim); font-size: 15px; }
+  ol { padding-left: 1.2em; } ol li { margin: 0 0 14px; }
+  pre { font: 14px/1.5 var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; overflow-x: auto; color: var(--text); margin: 8px 0 0; }
+  code { font-family: var(--mono); font-size: .92em; color: var(--accent); }
+  .two { display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; }
+  @media (max-width: 820px) { .two { grid-template-columns: 1fr; } }
+  ul.flows { list-style: none; padding: 0; margin: 0; columns: 2; column-gap: 18px; }
+  ul.flows li { font: 14px var(--mono); color: var(--dim); padding: 3px 0; break-inside: avoid; }
+  ul.flows li::before { content: "ꘇ "; color: var(--accent); }
+  footer { padding: 40px 0 60px; color: var(--dim); font-size: 14px; border-top: 1px solid var(--line); margin-top: 44px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="tag"><b>ꘇ</b>OPEN-SOURCE COMFYUI NODE PACK · MIT · EARLY ALPHA</div>
+    <h1>Genereti</h1>
+    <p class="lede">Live visuals, sound and code, as ComfyUI nodes.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/languel/genereti">GitHub repo</a>
+      <a class="btn" href="#try">Try it</a>
+      <a class="btn" href="media/genereti-launch.mp4" download>Download video</a>
+    </div>
+    <div class="video"><video src="media/genereti-launch.mp4" poster="media/poster.jpg" controls playsinline preload="metadata"></video></div>
+    <p class="note">1:03 · every shot recorded inside ComfyUI with Genereti; the music is a Genereti modular-audio patch.</p>
+  </header>
+
+  <section>
+    <h2><b>00</b>What it is</h2>
+    <p>Genereti turns ComfyUI into an instrument. Its nodes run <em>live in the browser</em> on WebGPU and Web Audio, instead of going through the render queue: you type code, draw, patch audio or point a camera at a film, and the graph answers every frame. The standard demos need no model downloads, no model server and no extra node packs.</p>
+  </section>
+
+  <section>
+    <h2><b>01</b>Inside the pack · 100+ nodes</h2>
+    <div class="grid">
+      <div class="card"><img src="media/livecode.jpg" alt="Three.js torus knot code being typed" loading="lazy"><div><h3>Livecode</h3><p>p5, GLSL, Three.js, tixy, html, svg, orca, LaTeX, Markdown and more, edited live inside a node.</p></div></div>
+      <div class="card"><img src="media/tiles.jpg" alt="p5 source feeding a mirrored-tile sketch" loading="lazy"><div><h3>Pipelines</h3><p>Sketches feed sketches: a p5 source into mirrored tiles into a live output, all as wires.</p></div></div>
+      <div class="card"><img src="media/audio.jpg" alt="Modular audio drum sequencer" loading="lazy"><div><h3>Modular audio</h3><p>Transport, sequencers, drum kit, synths, filters, delays and a mixer, with cables that dance to the signal.</p></div></div>
+      <div class="card"><img src="media/drawing.jpg" alt="Excalidraw spiral feeding a feedback chain" loading="lazy"><div><h3>Drawing</h3><p>Excalidraw and Poliplan inside the graph, every stroke driving texture operators in real time.</p></div></div>
+      <div class="card"><img src="media/footage.jpg" alt="Muybridge's horse through a feedback chain" loading="lazy"><div><h3>2D streams + textures</h3><p>Video, GIFs and images through feedback, colormap, bloom, displace and 30 texture operators.</p></div></div>
+      <div class="card"><img src="media/perception.jpg" alt="MediaPipe pose on Sandow, 1894" loading="lazy"><div><h3>Perception (optional)</h3><p>MediaPipe pose, hands and face on film or camera, with a region picker for body, face and hands.</p></div></div>
+      <div class="card"><img src="media/homunculus.jpg" alt="Perception feature picker" loading="lazy"><div><h3>Regions + measures</h3><p>Pick torso, wrists, iris or lips and route their motion into sketches, sound or events.</p></div></div>
+      <div class="card"><img src="media/ink.jpg" alt="Drawing into a local SDXS ink-wash model" loading="lazy"><div><h3>GeneretiCore (separate, optional)</h3><p>Experimental local models on Apple silicon: draw, and an SDXS model answers live. Not needed for Genereti.</p></div></div>
+      <div class="card"><img src="media/scale.jpg" alt="Grid of Genereti workflows" loading="lazy"><div><h3>40+ example workflows</h3><p>Lessons and performance patches ship with the pack under Workflows → Genereti.</p></div></div>
+    </div>
+  </section>
+
+  <section id="try">
+    <h2><b>02</b>Try it</h2>
+    <div class="two">
+      <div>
+        <ol>
+          <li>Install <b>ꘇ Genereti</b> from ComfyUI's <b>Manager / Extensions</b>, then restart and refresh the browser. Or, with ComfyUI stopped, from your ComfyUI directory:
+            <pre>git clone https://github.com/languel/genereti.git custom_nodes/genereti
+./.venv/bin/python -m pip install -r custom_nodes/genereti/requirements.txt</pre></li>
+          <li>Restart ComfyUI and refresh its page. Use a recent ComfyUI and a WebGPU browser (recent Chrome or Edge).</li>
+          <li>Open <b>Workflows → Genereti</b> (or <b>Templates → genereti</b>). Audio starts when you press ▷ on <code>mod.output</code>.</li>
+        </ol>
+        <p class="note">More: <a href="https://github.com/languel/genereti/blob/main/docs/comfy-distribution.md">installation guide</a> for Windows, Portable and Desktop.</p>
+      </div>
+      <div>
+        <p style="margin-top:0">Good first workflows:</p>
+        <ul class="flows">
+          <li>Performance-Timeline</li><li>Livecode-Languages</li><li>Livecode-P5-Pipeline</li><li>Livecode-Math</li>
+          <li>Modular-Audio</li><li>Neuron-Dance</li><li>Feedback-Reference-Chain</li><li>Painterly-Feedback-Patch</li>
+          <li>2D-Stream-Compare</li><li>OpenTouch-Operators-and-Lessons</li><li>Perception-01-Streams</li><li>Braindance-Breaks</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Genereti · MIT licence · <a href="https://github.com/languel/genereti">github.com/languel/genereti</a> · #OpenSourceHiggsfield</p>
+    <p class="note">Archival footage in the video: Eadweard Muybridge, <i>Animal Locomotion</i> (1887); Edison, <i>Sandow</i> (1894); <i>Serpentine dance</i> (1895). Public domain.</p>
+  </footer>
+</div>
+</body>
+</html>
