@@ -1,3 +1,13 @@
+# ꘇ Genereti 0.1.6 — recording, modular instruments and Neuron Dance
+
+- Adds a live audiovisual recorder for images and sound, with source, 720p, 1080p and 1440p sizes, 6–50 Mbps video bitrate and up to 60 fps.
+- Adds Neuron Dance, a generative music-video workflow and guided lesson.
+- Expands modular audio: instrument panels, polyphonic and multitrack sequencers, synth presets, note visualizers, named routing, mixer layout and audio cable waveforms.
+- Sequencers get a step-count knob (1–128, editable up to 1024 steps), a step-duration menu that also accepts typed values such as 1/16, 125ms or 8 Hz, compact action pads and drum row glyphs.
+- Updates themes, number-input drafts, node collapse gestures, control styles, graph backdrop and preview shortcuts.
+- Refreshes the README with a feature overview and quick start, and adds a documentation index.
+- Continues the early alpha classroom preview. Camera and screen capture remain user-started; optional perception models are not bundled.
+
 # ꘇ Genereti 0.1.5 — drawing, audio and performance
 
 - Adds the Poliplan drawing node, with live image output, an optional image underlay, interactive output views and score sequencing.
