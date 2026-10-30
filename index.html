@@ -17,9 +17,8 @@
   a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: underline; }
   .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
   header { padding: 56px 0 28px; }
-  .tag { font: 13px var(--mono); color: var(--dim); letter-spacing: .04em; }
-  .tag b { color: var(--red); font-weight: 400; margin-right: .6em; }
-  h1 { font-size: clamp(44px, 8vw, 88px); line-height: 1; margin: 14px 0 10px; letter-spacing: -.02em; }
+  h1 { font-size: clamp(44px, 8vw, 88px); line-height: 1; margin: 0 0 10px; letter-spacing: -.02em; }
+  h1 .mark { color: #fff; font-weight: 400; margin-right: .08em; }
   .lede { font-size: clamp(18px, 2.4vw, 24px); color: var(--accent); margin: 0 0 22px; }
   .cta { display: flex; flex-wrap: wrap; gap: 10px; }
   .btn { font: 15px var(--mono); padding: 10px 16px; border: 1px solid var(--line); border-radius: 8px; color: var(--text); background: var(--panel); }
@@ -51,8 +50,7 @@
 <body>
 <div class="wrap">
   <header>
-    <div class="tag"><b>ꘇ</b>OPEN-SOURCE COMFYUI NODE PACK · MIT · EARLY ALPHA</div>
-    <h1>Genereti</h1>
+    <h1><span class="mark">ꘇ</span> Genereti</h1>
     <p class="lede">Live visuals, sound and code, as ComfyUI nodes.</p>
     <div class="cta">
       <a class="btn primary" href="https://github.com/languel/genereti">GitHub repo</a>
