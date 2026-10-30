@@ -27,20 +27,20 @@ export function ensureControlStyle() {
 .genereti-node-controls select,.genereti-node-controls button{height:20px;margin:0;border:0!important;border-radius:6px;box-shadow:none;background:transparent;color:inherit;font:inherit;cursor:pointer}
 .genereti-node-controls select{padding:0 7px}
 .genereti-node-controls select option{background:var(--comfy-input-bg,#222);color:var(--fg-color,#eee)}
-:is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select:focus-visible{outline:2px solid currentColor!important;outline-offset:1px;box-shadow:none!important}
+:is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select:focus-visible{outline:2px solid currentColor!important;outline-offset:1px;box-shadow:none!important}
 /* Browser-native menus use OS fonts and selection colors. Customizable selects
    keep native keyboard behavior while letting the popup follow Comfy's theme. */
 @supports (appearance:base-select){
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select,
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select::picker(select){appearance:base-select}
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select{display:inline-flex;align-items:center;gap:8px}
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select::picker(select){font:inherit;font-size:calc(1em * var(--genereti-picker-scale,1));color:var(--fg-color,#eee);background:var(--comfy-input-bg,#222);border:1px solid var(--border-color,#555);border-radius:6px;padding:.333em;box-shadow:0 4px 16px #0004;min-width:anchor-size(width)}
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option{font:inherit;min-height:2.5em;padding:.333em .667em;border-radius:4px;background:transparent;color:inherit;gap:.667em;cursor:pointer}
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option:is(:checked,:hover,:focus){background:color-mix(in srgb,var(--fg-color,#eee) 12%,var(--comfy-input-bg,#222));color:var(--fg-color,#eee)}
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select::picker-icon{content:"";display:block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);color:inherit;transition:none}
- :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select,
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select::picker(select){appearance:base-select}
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select{display:inline-flex;align-items:center;gap:8px}
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select::picker(select){font:inherit;font-size:calc(1em * var(--genereti-picker-scale,1));color:var(--fg-color,#eee);background:var(--comfy-input-bg,#222);border:1px solid var(--border-color,#555);border-radius:6px;padding:.333em;box-shadow:0 4px 16px #0004;min-width:anchor-size(width)}
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select option{font:inherit;min-height:2.5em;padding:.333em .667em;border-radius:4px;background:transparent;color:inherit;gap:.667em;cursor:pointer}
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select option:is(:checked,:hover,:focus){background:color-mix(in srgb,var(--fg-color,#eee) 12%,var(--comfy-input-bg,#222));color:var(--fg-color,#eee)}
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select::picker-icon{content:"";display:block;width:6px;height:6px;margin-left:8px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:translateY(-2px) rotate(45deg);color:inherit;transition:none}
+ :is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select option:focus-visible{outline:1px solid currentColor;outline-offset:-1px}
 }
-:is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel) select option::checkmark{display:none!important}
+:is(.genereti-node-controls,.genereti-livecode,.genereti-drawing-settings-panel,.gap) select option::checkmark{display:none!important}
 /* Chromium can retain its native value text alongside a dynamically inserted
    selectedcontent. Zero only the trigger's text; keep the menu's readable font. */
 .genereti-glyph-choice{height:20px!important;min-height:20px!important;box-sizing:border-box;width:20px!important;min-width:20px!important;padding:0!important;font-size:0!important;gap:0!important;align-items:center!important;justify-content:center!important;line-height:1}

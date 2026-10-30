@@ -70,3 +70,17 @@ test('note patterns, names and pitch window', () => {
   assert.equal(c.snapToScale(66, 0, [0, 2, 4, 5, 7, 9, 11]), 65);
   assert.equal(c.snapToScale(63, 0, [0, 3, 7]), 63);
 });
+
+test('step patterns accept arbitrary lengths through 1024',()=>{const notes=Array.from({length:1024},(_,i)=>i%2?'-':'60').join(' ');assert.equal(c.parseNotePattern(notes).length,1024);assert.equal(c.resizeRows(c.parseDrumPattern('kick:1000'),777)[0].steps.length,777);assert.equal(c.parseDrumPattern('hat:'+ '10'.repeat(512))[0].steps.length,1024);});
+
+test('unit entry converts periods, rates and gain without accepting invalid drafts',()=>{
+ near(c.parseUnitValue('1 cps','bpm'),60);
+ near(c.parseUnitValue('500 ms','bpm'),120);
+ near(c.parseUnitValue('20ms','s'),.02);
+ near(c.parseUnitValue('2 kHz','hz'),2000);
+ near(c.parseUnitValue('120','bpm'),120);
+ near(c.parseUnitValue('2 beats','s',120),1);
+ near(c.parseUnitValue('125ms','division',120),4);
+ near(c.parseUnitValue('-6 dB','db'),10**(-6/20));
+ for(const text of ['', '-', '1 nope', '1.2.3'])assert.ok(Number.isNaN(c.parseUnitValue(text,'s')));
+});

@@ -2,6 +2,13 @@ import { app } from '../../../scripts/app.js';
 
 // Draw in LiteGraph's background pass: fixed to the viewport, behind nodes/links.
 const entries=new Set();let graphCanvas,previous,hook;
+const INTERPOLATION='Genereti.Views.BackdropInterpolation';
+let interpolation='Smooth';
+if(app.registerExtension)app.registerExtension({name:'Genereti.BackdropInterpolation',settings:[{
+ id:INTERPOLATION,name:'Backdrop texture interpolation',category:['Genereti','Views','Backdrop interpolation'],type:'combo',options:['Smooth','Pixelated'],defaultValue:'Smooth',
+ tooltip:'Pixelated uses nearest-neighbor scaling for crisp low-resolution backdrops. Smooth blends texture pixels. Applies to solo and grid backdrops.',
+ onChange:value=>{interpolation=value;app.canvas?.setDirty?.(true,true);},
+}],setup(){interpolation=app.ui.settings.getSettingValue(INTERPOLATION)??'Smooth';}});
 function installBackdrop(){
  if(hook)return;graphCanvas=app.canvas;previous=graphCanvas.onRenderBackground;
  hook=function(target,ctx){previous?.call(this,target,ctx);ctx.save();ctx.setTransform(1,0,0,1,0,0);
@@ -30,7 +37,7 @@ export function graphBackdrop(status,onStateChange=()=>{}) {
       const gap=entries.size>1?4:0,x=cell.x+gap,y=cell.y+gap,width=cell.width-gap*2,height=cell.height-gap*2;
       const scale=fit==='cover'?Math.max(width/canvas.width,height/canvas.height):Math.min(width/canvas.width,height/canvas.height);
       const w=fit==='fill'?width:fit==='native'?canvas.width:canvas.width*scale,h=fit==='fill'?height:fit==='native'?canvas.height:canvas.height*scale;
-      ctx.save();ctx.beginPath();ctx.rect(x,y,width,height);ctx.clip();ctx.drawImage(canvas,x+(width-w)/2,y+(height-h)/2,w,h);ctx.restore();
+      ctx.save();ctx.imageSmoothingEnabled=interpolation!=='Pixelated';ctx.beginPath();ctx.rect(x,y,width,height);ctx.clip();ctx.drawImage(canvas,x+(width-w)/2,y+(height-h)/2,w,h);ctx.restore();
     },
     publish(frame){
       if(!opened)return;const current=++revision;

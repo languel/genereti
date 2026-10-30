@@ -63,3 +63,16 @@ export function routePreviewShortcut(event){
  if(performPreviewAction('restore')){event.preventDefault();event.stopImmediatePropagation?.();event.stopPropagation?.();}
 }
 window.addEventListener('keydown',routePreviewShortcut,true);
+
+// Only the brand glyph owns minimize; the rest of the title keeps Comfy rename.
+document.addEventListener('dblclick',event=>{
+ const header=event.target.closest?.('.lg-node-header');if(!header)return;
+ const caret=document.caretPositionFromPoint?.(event.clientX,event.clientY);
+ const range=!caret?document.caretRangeFromPoint?.(event.clientX,event.clientY):null;
+ const text=caret?.offsetNode??range?.startContainer,offset=caret?.offset??range?.startOffset;
+ if(text?.nodeType!==3||!header.contains(text))return;
+ if(text.data[offset]!=='ꘇ'&&text.data[offset-1]!=='ꘇ')return;
+ const host=header.closest('[data-node-id]'),node=app.graph?.getNodeById(host?.dataset.nodeId);
+ if(!node?.collapse)return;
+ event.preventDefault();event.stopImmediatePropagation();node.collapse();node.setDirtyCanvas?.(true,true);
+},true);

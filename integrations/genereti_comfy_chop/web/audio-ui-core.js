@@ -99,14 +99,14 @@ export function parseDrumPattern(text) {
     const muted = rawName.endsWith('~'), name = rawName.replace(/~$/, '');
     if (!DRUM_ROWS[name] || !bits) throw Error(`Row "${rawName}": invalid drum pattern`);
     const tokens=bits.includes(',')||bits.startsWith('v')?bits.split(','):[...bits];
-    if(!tokens.length||tokens.length>64||tokens.some(x=>!(/^[0-3]$/.test(x)||/^v(?:0(?:\.\d+)?|1(?:\.0+)?)$/.test(x))))throw Error(`Row "${rawName}": use 0 1 2 3 or v0..1`);
+    if(!tokens.length||tokens.length>1024||tokens.some(x=>!(/^[0-3]$/.test(x)||/^v(?:0(?:\.\d+)?|1(?:\.0+)?)$/.test(x))))throw Error(`Row "${rawName}": use 0 1 2 3 or v0..1`);
     return {name, note: DRUM_ROWS[name], steps: tokens.map(x=>x[0]==='v'?Number(x.slice(1)):Number(x)), muted};
   });
 }
 export const formatDrumPattern = rows => rows.map(r => `${r.name}${r.muted ? '~' : ''}:${r.steps.every(x=>Number.isInteger(x)&&x>=0&&x<=3)?r.steps.join(''):r.steps.map(x=>Number.isInteger(x)?String(x):'v'+Number(x.toFixed(2))).join(',')}`).join(';');
 /** Resize every row to `length`, repeating the existing pattern when it grows. */
 export function resizeRows(rows, length) {
-  const n = clamp(Math.round(length), 1, 64);
+  const n = clamp(Math.round(length), 1, 1024);
   return rows.map(r => ({...r, steps: Array.from({length: n}, (_, i) => r.steps.length ? r.steps[i % r.steps.length] : 0)}));
 }
 export const nextStepValue = v => ({0: 1, 1: 2, 2: 3, 3: 0}[v] ?? 0);
@@ -114,7 +114,7 @@ export const nextStepValue = v => ({0: 1, 1: 2, 2: 3, 3: 0}[v] ?? 0);
 // Optional per-step velocity uses pitch@velocity; legacy pitch-only strings remain valid.
 export function parseNoteSteps(text) {
   const tokens = String(text).replaceAll(',', ' ').trim().split(/\s+/).filter(Boolean);
-  if (!tokens.length || tokens.length > 64) throw Error('Use 1..64 notes or rests');
+  if (!tokens.length || tokens.length > 1024) throw Error('Use 1..1024 notes or rests');
   return tokens.map(token => {
     if (token === '-' || token === '.') return {pitch:-1, velocity:1};
     const match = /^(\d+(?:\.\d+)?)(?:@(0(?:\.\d+)?|1(?:\.0+)?))?$/.exec(token);
@@ -142,4 +142,28 @@ export function snapToScale(note, root = 0, degrees = [0, 2, 3, 5, 7, 8, 10]) {
   let best = degrees[0], dist = 99;
   for (const d of [...degrees, degrees[0] + 12, degrees[degrees.length - 1] - 12]) { const dd = Math.abs(d - rel); if (dd < dist || (dd === dist && d < best)) { best = d; dist = dd; } }
   return clamp(base + best, 0, 127);
+}
+
+/** Parse an explicit physical unit, converting to the control's stored unit. */
+export function parseUnitValue(text, unit = '', bpm = 120) {
+  if(unit==='division'){const note=String(text).trim().match(/^1\/(\d+)(t)?$/i);if(note)return Number(note[1])/4*(note[2]?1.5:1);}
+  const match=String(text).trim().toLowerCase().match(/^([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)\s*([a-z%]*)$/);
+  if(!match)return NaN;
+  const value=Number(match[1]),suffix=match[2];
+  if(!suffix)return value;
+  if(suffix===unit&&unit!=='db')return value;
+  if(unit==='db'&&suffix==='db')return 10**(value/20);
+  if(suffix==='%'&&!unit)return value/100;
+  const seconds={ms:.001,s:1,sec:1,secs:1,min:60,minutes:60};
+  const rates={hz:1,cps:1,khz:1000,bpm:1/60};
+  let period;
+  if(suffix in seconds)period=value*seconds[suffix];
+  else if(suffix in rates)period=1/(value*rates[suffix]);
+  else if(['beat','beats'].includes(suffix))period=value*60/bpm;
+  else return NaN;
+  if(unit==='s')return period;
+  if(unit==='hz')return 1/period;
+  if(unit==='bpm')return 60/period;
+  if(unit==='division')return 60/(bpm*period);
+  return NaN;
 }

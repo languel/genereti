@@ -10,7 +10,7 @@ const queuedResolution=()=>Number(app.ui?.settings?.getSettingValue(resolutionId
 
 app.registerExtension({
   name: 'Genereti.LiveImagePreview',
-  settings:[{id:resolutionId,name:'Queued preview resolution',category:['Genereti','Previews','Queued resolution'],type:'combo',options:[128,256,512,1024,2048],defaultValue:512,tooltip:'Maximum thumbnail width and height after Comfy Queue, preserving proportions. Lower values reduce encoding time and data transfer; higher values show finer detail, including in Alt-O and Alt-W previews. Does not affect live streams or full-resolution image input/output.',onChange(value){for(const node of app.graph?._nodes||[]){if(node.comfyClass==='GeneretiLiveImagePreview'){const widget=node.widgets?.find(w=>w.name==='preview_size');if(widget)widget.value=Number(value);}}}}],
+  settings:[{id:resolutionId,name:'Queued preview resolution',category:['Genereti','Previews','Queued resolution'],type:'combo',options:[{text:'128 px',value:128},{text:'256 px',value:256},{text:'512 px',value:512},{text:'1K · 1024 px',value:1024},{text:'2K · 2048 px',value:2048}],defaultValue:512,tooltip:'Maximum thumbnail width and height after Comfy Queue, preserving proportions. Lower values reduce encoding time and data transfer; higher values show finer detail, including in Alt-O and Alt-W previews. Does not affect live streams or full-resolution image input/output.',onChange(value){for(const node of app.graph?._nodes||[]){if(node.comfyClass==='GeneretiLiveImagePreview'){const widget=node.widgets?.find(w=>w.name==='preview_size');if(widget)widget.value=Number(value);}}}}],
   nodeCreated(node) {
     if (node.comfyClass !== 'GeneretiLiveImagePreview') return;
     node.title='ꘇ image preview';

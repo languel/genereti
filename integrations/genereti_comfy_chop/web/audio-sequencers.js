@@ -1,16 +1,34 @@
+import {drumGlyph} from './drum-glyphs.js';
 // Step-sequencer panels: a drum grid and a piano roll. The node's `pattern` widget stays the source of truth
 // (plain text), so patterns can be linked, copied and diffed; the canvases only edit that string.
 import {segmented, knob, row, group, panelRoot, assemble, el, hiDPI, observe, color, alpha, setValue, getValue, canvasPoint, canvasWidth} from './audio-ui.js';
-import {parseDrumPattern, formatDrumPattern, resizeRows, DRUM_ROWS, DRUM_LEVEL, parseNotePattern, formatNotePattern, parseNoteSteps, formatNoteSteps, noteName, isBlackKey, pitchWindow, snapToScale, clamp} from './audio-ui-core.js';
+import {parseUnitValue, parseDrumPattern, formatDrumPattern, resizeRows, DRUM_ROWS, DRUM_LEVEL, parseNotePattern, formatNotePattern, parseNoteSteps, formatNoteSteps, noteName, isBlackKey, pitchWindow, snapToScale, clamp} from './audio-ui-core.js';
 
 const DIVISIONS = [{value: 1, label: '¼', title: 'quarter notes'}, {value: 2, label: '⅛', title: 'eighth notes'}, {value: 3, label: '⅛t', title: 'eighth triplets'}, {value: 4, label: '1/16', title: 'sixteenth notes'}, {value: 6, label: '1/16t', title: 'sixteenth triplets'}, {value: 8, label: '1/32', title: 'thirty-second notes'}];
-const LENGTHS = [8, 12, 16, 24, 32, 64];
 const DEFAULT_DRUMS = 'kick:1000100010001000;snare:0000100000001000;hat:1010101010101010';
 const button = (label, title, onclick) => { const b = el('button', {className: 'gap-btn', textContent: label, title, onclick}); b.type = 'button'; b.setAttribute('aria-label', title); b.onpointerdown = e => e.stopPropagation(); return b; };
+const padMatrix=(...pads)=>{
+ const matrix=el('div',{className:'gap-action-pads'},...pads);
+ matrix.style.gridTemplateColumns=`repeat(${pads.length>4?4:2},30px)`;
+ matrix.style.gridTemplateRows=`repeat(${pads.length>4?3:2},1fr)`;
+ for(const pad of pads){const action=pad.onclick;pad.onpointerdown=e=>{e.stopPropagation();if(e.button===0){e.preventDefault();pad.focus({preventScroll:true});action(e);}};pad.onclick=e=>{if(e.detail===0)action(e);};}
+ return matrix;
+};
 const lengthButtons = (current, set) => {
-  const wrap = el('div', {className: 'gap-seg', title: 'Pattern length in steps'}); wrap.setAttribute('role', 'group'); wrap.setAttribute('aria-label', 'Pattern length');
-  const bs = LENGTHS.map(n => { const b = el('button', {textContent: String(n), title: `${n} steps`}); b.type = 'button'; b.onclick = () => set(n); b.onpointerdown = e => e.stopPropagation(); wrap.append(b); return [n, b]; });
-  return {el: wrap, refresh() { const c = current(); for (const [n, b] of bs) b.setAttribute('aria-pressed', String(n === c)); }};
+ const widget={name:'length',get value(){return current();},set value(v){set(v);}},node={widgets:[widget]};
+ return knob(node,{name:'length',label:'steps',min:1,max:128,editMax:1024,def:16,step:1,size:34,notches:[8,12,16,24,32,64,96,128]});
+};
+const divisionControl=node=>{
+ const select=el('select',{className:'gap-btn',title:'Step duration'});select.setAttribute('aria-label','Step duration');
+ for(const option of DIVISIONS)select.append(el('option',{value:String(option.value),textContent:option.label,title:option.title}));
+ select.append(el('option',{value:'custom',textContent:'time…'}));
+ const wrap=el('div',{},select),editor=el('input',{type:'text',className:'gap-btn',hidden:true,title:'Step duration · e.g. 1/16, 125ms or 8 Hz'});
+ editor.style.cssText='width:70px;outline:none;box-shadow:none';editor.setAttribute('aria-label','Edit step duration');wrap.append(editor);
+ const finish=commit=>{if(commit){const bpm=window.generetiPerformance?.transportFor?.(node)?.read()?.bpm??120,v=parseUnitValue(editor.value,'division',bpm);if(!Number.isFinite(v)||v<=0){editor.setAttribute('aria-invalid','true');return false;}setValue(node,'division',v);}editor.hidden=true;select.hidden=false;refresh();return true;};
+ const refresh=()=>{if(!editor.hidden)return;const value=String(getValue(node,'division',4));select.value=DIVISIONS.some(o=>String(o.value)===value)?value:'custom';};
+ select.onchange=()=>{if(select.value!=='custom'){setValue(node,'division',Number(select.value));return;}select.hidden=true;editor.hidden=false;editor.value='';editor.focus();};select.onpointerdown=e=>e.stopPropagation();editor.onpointerdown=e=>e.stopPropagation();
+ editor.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();if(finish(true))select.focus();}if(e.key==='Escape'){e.preventDefault();finish(false);select.focus();}};editor.onblur=()=>{if(!finish(true))finish(false);};editor.oninput=()=>editor.removeAttribute('aria-invalid');
+ return {el:wrap,refresh};
 };
 
 /** Shared grid mechanics: paint a value over cells while dragging, with the first cell deciding paint vs erase. */
@@ -50,7 +68,7 @@ export function drumSequencerPanel({node, resize}) {
     g.font = '10px system-ui'; g.textBaseline = 'middle';
     rows.forEach((r, ri) => {
       const y = 3 + ri * ROW_H;
-      g.fillStyle = alpha(c, r.muted ? .3 : .75); g.textAlign = 'left'; g.fillText(r.name + (r.muted ? ' ✕' : ''), 4, y + ROW_H / 2);
+      g.fillStyle = alpha(c, r.muted ? .3 : .75); g.textAlign = 'left'; const path=drumGlyph(r.name).match(/<path d="([^"]+)"/)[1];g.save();g.translate(8,y+2);g.scale(.75,.75);g.strokeStyle=c;g.globalAlpha=r.muted?.3:.8;g.lineWidth=1.4;g.stroke(new Path2D(path));g.restore();
       for (let i = 0; i < n; i++) {
         const x = LABEL_W + i * cw, v = r.steps[i], beat = i % 4 === 0;
         g.fillStyle = alpha(c, beat ? .1 : .05); g.fillRect(x + 1, y + 1, cw - 2, ROW_H - 2);
@@ -107,7 +125,7 @@ export function drumSequencerPanel({node, resize}) {
   addRow.onchange = () => { if (addRow.value) { rows.push({name: addRow.value, note: DRUM_ROWS[addRow.value], steps: Array(stepCount()).fill(0), muted: false}); write(); resize?.(); } addRow.value = ''; refreshAdd(); };
   addRow.onpointerdown = e => e.stopPropagation();
   const length = lengthButtons(stepCount, n => { rows = resizeRows(rows, n); write(); });
-  const bar = row(add(segmented(node, {name: 'division', title: 'Step length', options: DIVISIONS})), add(length), button('↺', 'Rotate left', () => rotate(-1)), button('↻', 'Rotate right', () => rotate(1)), button('⚄', 'Randomize', randomize), button('✕', 'Clear', clear), addRow,
+  const bar = row(add(divisionControl(node)), add(length), padMatrix(button('↺', 'Rotate left', () => rotate(-1)), button('↻', 'Rotate right', () => rotate(1)), button('⚄', 'Randomize', randomize), button('✕', 'Clear', clear)), addRow,
     add(knob(node, {name: 'velocity', label: 'level', min: 0, max: 1, size: 26, step: .01})), add(knob(node, {name:'ratchet',label:'drill',min:1,max:8,size:26,step:1})));
   bar.style.alignItems = 'center';
   root.append(bar, canvas);
@@ -121,7 +139,7 @@ export function drumSequencerPanel({node, resize}) {
 export function noteSequencerPanel({node}) {
   const root = panelRoot(), parts = [];
   const add = c => { parts.push(c); return c.el; };
-  let steps = [], velocities = [], error = '', playhead = -1, last = '', win = {low: 48, high: 71};
+  let steps = Array(16).fill(-1), velocities = Array(16).fill(1), error = '', playhead = -1, last = '', win = {low: 48, high: 71};
   const LABEL_W = 34, ROW_H = 9;
   const canvas = el('canvas', {className: 'gap-plot', tabIndex: 0, title: 'Draw notes · Shift-drag an existing note to change velocity · Shift-drag empty grid for a line · Alt/right-click: rest'});
   canvas.style.cursor = 'crosshair'; canvas.style.touchAction = 'none';
@@ -178,9 +196,9 @@ export function noteSequencerPanel({node}) {
   const resizeSteps = n => { const old = steps, oldVel=velocities; steps = Array.from({length: n}, (_, i) => old[i % old.length] ?? -1); velocities=Array.from({length:n},(_,i)=>oldVel[i%oldVel.length]??1);write(); };
   const length = lengthButtons(() => steps.length, resizeSteps);
   const snapBtn = button('♯', 'Snap drawn notes to the project scale', () => { node.properties ??= {}; node.properties.genereti_snap_scale = !snapOn(); snapBtn.setAttribute('aria-pressed', String(snapOn())); last = null; draw(); });
-  const bar = row(add(segmented(node, {name: 'division', title: 'Step length', options: DIVISIONS})), add(length),
-    button('−12', 'Down an octave', () => transpose(-12)), button('−1', 'Down a semitone', () => transpose(-1)), button('+1', 'Up a semitone', () => transpose(1)), button('+12', 'Up an octave', () => transpose(12)),
-    button('↺', 'Rotate left', () => { steps.push(steps.shift()); velocities.push(velocities.shift());write(); }), button('↻', 'Rotate right', () => { steps.unshift(steps.pop()); velocities.unshift(velocities.pop());write(); }), button('⇄', 'Reverse', () => { steps.reverse(); velocities.reverse();write(); }), button('♬', 'Quantize all notes to the project scale', () => { const m=music(); if(m){steps=steps.map(p=>p<0?p:snapToScale(p,m.root??0,m.degrees));write();} }), button('⚄', 'Randomize within the project scale', randomize), button('✕', 'Clear', () => { steps = steps.map(() => -1); write(); }), snapBtn,
+  const bar = row(add(divisionControl(node)), add(length),
+    padMatrix(button('−12', 'Down an octave', () => transpose(-12)), button('−1', 'Down a semitone', () => transpose(-1)), button('+1', 'Up a semitone', () => transpose(1)), button('+12', 'Up an octave', () => transpose(12)),
+    button('↺', 'Rotate left', () => { steps.push(steps.shift()); velocities.push(velocities.shift());write(); }), button('↻', 'Rotate right', () => { steps.unshift(steps.pop()); velocities.unshift(velocities.pop());write(); }), button('⇄', 'Reverse', () => { steps.reverse(); velocities.reverse();write(); }), button('♬', 'Quantize all notes to the project scale', () => { const m=music(); if(m){steps=steps.map(p=>p<0?p:snapToScale(p,m.root??0,m.degrees));write();} }), button('⚄', 'Randomize within the project scale', randomize), button('✕', 'Clear', () => { steps = steps.map(() => -1); write(); }), snapBtn),
     add(knob(node, {name: 'gate', label: 'gate', min: .05, max: .95, size: 26, step: .01})), add(knob(node, {name: 'velocity', label: 'vel', min: 0, max: 1, size: 26, step: .01})), add(knob(node, {name:'ratchet',label:'drill',min:1,max:8,size:26,step:1})));
   bar.style.alignItems = 'center';
   root.append(bar, canvas);

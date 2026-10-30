@@ -1,6 +1,6 @@
 // Small canvas/DOM controls for the modular-audio panels. Every control reads and writes a node widget, so what
 // you see always matches the parameters other nodes can link to. Minimal style: no borders at rest, text colour.
-import {clamp, toNorm, fromNorm, snap, formatValue, gainToFader, faderToGain, envelopePoints, envelopeDrag, nearestHandle, filterCurve, dbToY, DB_RANGE} from './audio-ui-core.js';
+import {parseUnitValue, clamp, toNorm, fromNorm, snap, formatValue, gainToFader, faderToGain, envelopePoints, envelopeDrag, nearestHandle, filterCurve, dbToY, DB_RANGE} from './audio-ui-core.js';
 
 const STYLE_ID = 'genereti-audio-panel-style';
 function ensureStyle() {
@@ -12,11 +12,19 @@ function ensureStyle() {
 .gap-grow{flex:1 1 160px;min-width:120px}
 .gap-title{opacity:.55;font-size:10px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
 .gap-cell{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:36px}
-.gap-cell canvas{touch-action:none;cursor:ns-resize}
+.gap-cell canvas{touch-action:none;cursor:ns-resize;border:0!important;outline:none!important;box-shadow:none!important}
+.gap-cell canvas:focus-visible{filter:drop-shadow(0 0 2px currentColor)}
 .gap-label{opacity:.6;font-size:10px;white-space:nowrap}.gap-value{font-size:10px;font-variant-numeric:tabular-nums;min-height:12px}
-.gap-value-edit{width:64px;box-sizing:border-box;border:0;border-radius:4px;background:var(--comfy-input-bg,#282828);color:inherit;font:11px monospace;text-align:center;padding:2px;user-select:text}
-.gap-value-edit:focus{outline:1px solid currentColor}
+.gap-value-slot{position:relative;width:52px;height:14px;flex:none;text-align:center}
+.gap-value-slot .gap-value{line-height:14px}
+.gap-value-edit{position:absolute;inset:0;width:100%;height:100%;appearance:textfield;box-sizing:border-box;border:0;border-radius:4px;background:transparent;color:inherit;font:10px system-ui,sans-serif;font-variant-numeric:tabular-nums;line-height:14px;text-align:center;padding:0;user-select:text}
+.gap-value-edit::-webkit-inner-spin-button,.gap-value-edit::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.gap-value-edit:focus{outline:none;box-shadow:none}
 .gap-value-edit[hidden]{display:none}
+.gap-action-pads{display:grid;grid-template-columns:repeat(var(--pad-columns),30px);grid-template-rows:repeat(var(--pad-rows),1fr);gap:2px;height:62px;flex:none}
+.gap-action-pads .gap-btn{padding:0;min-width:0;display:grid;place-items:center;background:color-mix(in srgb,currentColor 6%,transparent);border-radius:4px}
+.gap-action-pads .gap-btn:hover{background:color-mix(in srgb,currentColor 15%,transparent)}
+.gap-action-pads .gap-btn:active{background:color-mix(in srgb,currentColor 30%,transparent)}
 .gap-seg{display:inline-flex;gap:0}
 .gap-seg button,.gap-btn{border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;padding:3px 6px;border-radius:5px;line-height:1.2}
 .gap-seg button:hover,.gap-btn:hover{background:color-mix(in srgb,currentColor 12%,transparent)}
@@ -77,13 +85,16 @@ function component(element, refresh) { return {el: element, refresh}; }
 const stopDrag = e => { e.stopPropagation(); };
 
 // ---- Knob ----
-export function knob(node, {name, label = name, min = 0, max = 1, curve = 'lin', unit = '', step = 0, size = 34, def}) {
-  const canvas = el('canvas', {tabIndex: 0, title: `${label} · drag, wheel or arrows · Shift: fine · double-click or Enter: edit value`});
+export function knob(node, {name, label = name, min = 0, max = 1, curve = 'lin', unit = '', step = 0, size = 34, def, editMax = max, notches = []}) {
+  const canvas = el('canvas', {tabIndex: 0, title: `${label} · drag, wheel or arrows · Shift: fine · double-click: reset · Enter: edit value`});
   canvas.setAttribute('role', 'slider'); canvas.setAttribute('aria-label', label);
   const value = el('div', {className: 'gap-value'}), lab = el('div', {className: 'gap-label', textContent: label});
-  const cell = el('div', {className: 'gap-cell'}, lab, canvas, value);
-  const editor = el('input', {className:'gap-value-edit',type:'number',min:String(min),max:String(max),step:step>0?String(step):'any',hidden:true});
-  editor.setAttribute('aria-label', `Edit ${label}`);cell.append(editor);
+  const valueSlot = el('div', {className: 'gap-value-slot'}, value);
+  const cell = el('div', {className: 'gap-cell'}, lab, canvas, valueSlot);
+  const editor = el('input', {className:'gap-value-edit',type:'text',hidden:true});
+  editor.setAttribute('aria-label', `Edit ${label}`);valueSlot.append(editor);
+  const schema=node.constructor?.nodeData?.input;
+  const defaultValue=def??widgetOf(node,name)?.options?.default??schema?.required?.[name]?.[1]?.default??schema?.optional?.[name]?.[1]?.default??getValue(node,name,min);
   let last;
   const draw = () => {
     const v = Number(getValue(node, name, min)), key = `${v}|${size}`; if (key === last) return; last = key;
@@ -91,6 +102,7 @@ export function knob(node, {name, label = name, min = 0, max = 1, curve = 'lin',
     const a0 = Math.PI * .75, a1 = Math.PI * 2.25;
     g.lineWidth = 2.5; g.lineCap = 'round'; g.strokeStyle = alpha(c, .22); g.beginPath(); g.arc(cx, cy, r, a0, a1); g.stroke();
     g.strokeStyle = c; g.beginPath(); g.arc(cx, cy, r, a0, a0 + (a1 - a0) * n); g.stroke();
+    for(const tick of notches){const angle=a0+(a1-a0)*toNorm(tick,min,max,curve);g.lineWidth=1;g.strokeStyle=alpha(c,.5);g.beginPath();g.moveTo(cx+Math.cos(angle)*(r-2),cy+Math.sin(angle)*(r-2));g.lineTo(cx+Math.cos(angle)*(r-5),cy+Math.sin(angle)*(r-5));g.stroke();}
     const a = a0 + (a1 - a0) * n; g.lineWidth = 1.5; g.beginPath(); g.moveTo(cx + Math.cos(a) * (r - 7), cy + Math.sin(a) * (r - 7)); g.lineTo(cx + Math.cos(a) * (r - 1), cy + Math.sin(a) * (r - 1)); g.stroke();
     value.textContent = formatValue(v, unit); canvas.setAttribute('aria-valuenow', String(v));
   };
@@ -102,11 +114,11 @@ export function knob(node, {name, label = name, min = 0, max = 1, curve = 'lin',
   canvas.onpointerup = canvas.onpointercancel = () => { drag = null; };
   const closeEditor = commit => {
     if(editor.hidden)return;
-    if(commit){const text=editor.value.trim(),v=Number(text);if(!text||!Number.isFinite(v)||v<min||v>max){editor.setAttribute('aria-invalid','true');return false;}setValue(node,name,clamp(snap(v,step),min,max));}
-    editor.hidden=true;value.hidden=false;editor.removeAttribute('aria-invalid');last=null;draw();return true;
+    if(commit){const text=editor.value.trim(),v=parseUnitValue(text,unit||(name==='bpm'?'bpm':''),Number(getValue(node,'bpm',120)));if(!text||!Number.isFinite(v)||v<min||v>editMax){editor.setAttribute('aria-invalid','true');return false;}setValue(node,name,clamp(snap(v,step),min,editMax));}
+    editor.hidden=true;value.style.visibility='';editor.removeAttribute('aria-invalid');last=null;draw();return true;
   };
-  const editValue = e => {e.preventDefault();e.stopPropagation();drag=null;editor.value=String(getValue(node,name,min));editor.hidden=false;value.hidden=true;editor.removeAttribute('aria-invalid');editor.focus();editor.select();};
-  canvas.ondblclick=editValue;value.ondblclick=editValue;
+  const editValue = e => {e.preventDefault();e.stopPropagation();drag=null;editor.value=String(getValue(node,name,min));editor.hidden=false;value.style.visibility='hidden';editor.removeAttribute('aria-invalid');editor.focus();editor.select();};
+  canvas.ondblclick=e=>{e.preventDefault();e.stopPropagation();drag=null;closeEditor(false);setValue(node,name,Number(defaultValue));last=null;draw();};value.ondblclick=editValue;
   editor.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter'){e.preventDefault();if(closeEditor(true))canvas.focus();}else if(e.key==='Escape'){e.preventDefault();closeEditor(false);canvas.focus();}};
   editor.onblur=()=>{if(closeEditor(true)===false)closeEditor(false);};
   editor.oninput=()=>editor.removeAttribute('aria-invalid');
