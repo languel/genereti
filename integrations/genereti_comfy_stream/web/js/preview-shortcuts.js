@@ -65,7 +65,7 @@ export function routePreviewShortcut(event){
 window.addEventListener('keydown',routePreviewShortcut,true);
 
 // Only the brand glyph owns minimize; the rest of the title keeps Comfy rename.
-document.addEventListener('dblclick',event=>{
+document.addEventListener?.('dblclick',event=>{
  const header=event.target.closest?.('.lg-node-header');if(!header)return;
  const caret=document.caretPositionFromPoint?.(event.clientX,event.clientY);
  const range=!caret?document.caretRangeFromPoint?.(event.clientX,event.clientY):null;
