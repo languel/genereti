@@ -14,6 +14,7 @@ export function choiceGlyph(value,label,kind=''){
  if(/camera|device/i.test(kind))return svg('<path d="M4 7h4l2-3h4l2 3h4v13H4Z"/><circle cx="12" cy="13" r="4"/>');
  if(/playback speed/i.test(kind))return svg('<circle cx="12" cy="12" r="9"/><path d="m9 8 6 4-6 4ZM3 12h3"/>');
  if(/fps|frame rate|sampling rate/i.test(kind))return svg('<circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/>');
+ if(/^video bitrate/i.test(kind))return svg('<path d="M4 20v-4m6 4V12m6 8V8m6 12V4"/>');
  if(/^(input |capture )?(resolution|size)/i.test(kind)||/\d+ px/.test(text))return svg('<rect x="4" y="4" width="16" height="16"/><path d="M4 9h16M4 15h16M9 4v16M15 4v16"/>');
  if(text==='split'||value==='both')return svg('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18"/>');
  if(text==='overlay'||value==='overlay')return svg('<rect x="3" y="3" width="13" height="13" rx="2"/><rect x="8" y="8" width="13" height="13" rx="2"/>');
