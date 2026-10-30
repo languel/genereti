@@ -6,6 +6,10 @@ press Start. Start loads the installed model automatically. Models and media
 remain outside Git; camera and screen capture remain explicit browser actions.
 The examples sample at 15 fps, limit input to 512 px, and play at half speed.
 
+The Holistic demos share one provider across independent feature selections. The provider
+outputs a clean image and a separate diagnostic overlay; feature selection, named sets,
+box/paint picking and source underlays live in Features.
+
 1. **ꘇ-Perception-01-Streams**: coordinated body, hand and face observations,
    visual region selection, scalar reader and DAT inspection.
 2. **ꘇ-Perception-02-Drawing**: four colored pens follow both wrists and ankles over

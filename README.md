@@ -1,64 +1,73 @@
-# Genereti
+# ꘇ Genereti
 
-**Realtime creative coding and performance tools for ComfyUI.** Build live visuals and sound with code, drawing, shaders, texture operators, signals, interactive lessons and timeline automation.
+**Live visuals, sound and code, as ComfyUI nodes.** Genereti is an open-source node pack that turns ComfyUI into an instrument: you type code, draw, patch sound or play a film, and the graph answers live, every frame, in your browser.
 
-**Super alpha — early classroom testing.** Back up your workflows before updating. Expect bugs and changing interfaces.
+[![Genereti: a ComfyUI graph whose audio cables move with the sound](docs/media/readme/hero.jpg)](https://languel.github.io/genereti/)
 
-Holistic demos share one provider across independent feature selections. The provider
-outputs a clean image and a separate diagnostic overlay; feature selection, named sets,
-box/paint picking and source underlays live in Features. All nodes appear under the
-Genereti catalog, and examples under Workflows → Genereti. See [perception demos](docs/perception-demos.md).
+▶ **[Watch the 1-minute demo](https://languel.github.io/genereti/)** · MIT licensed · 100+ nodes · 40+ example workflows · no model downloads needed
 
-## Student getting started
+> **Early alpha.** Built for classroom use and live performance. Expect bugs and changing interfaces, and back up your workflows before updating.
 
-The standard classroom demos need **no model downloads, separate model server, or extra node packs**. The separately labeled optional MediaPipe demo downloads its browser runtime and selected task only when you request it. Use a recent ComfyUI installation and a modern browser; GPU texture demos require WebGPU support.
+## What you can do
 
-1. Install **ꘇ Genereti** through Comfy's Extensions / Manager, then restart and refresh the browser. For a GitHub installation, stop Comfy and run this from your ComfyUI directory:
+<table>
+<tr>
+<td width="50%"><img src="docs/media/readme/livecode.jpg" alt="Three.js torus knot with its code"><br><b>Livecode.</b> p5, GLSL shaders, Three.js, tixy, HTML, SVG, LaTeX and more, edited inside a node and running live.</td>
+<td width="50%"><img src="docs/media/readme/pipelines.jpg" alt="p5 source feeding mirrored tiles"><br><b>Chain sketches.</b> One sketch's output wires into the next, like any ComfyUI image.</td>
+</tr>
+<tr>
+<td><img src="docs/media/readme/audio.jpg" alt="Synth envelope and filter panel"><br><b>Modular audio.</b> Transport, sequencers, drum kit, synths, filters, delays and a mixer, all in the browser.</td>
+<td><img src="docs/media/readme/drawing.jpg" alt="Excalidraw spiral driving a feedback chain"><br><b>Drawing.</b> Excalidraw and Poliplan as nodes; every stroke drives the effects downstream.</td>
+</tr>
+<tr>
+<td><img src="docs/media/readme/textures.jpg" alt="Muybridge's horse through a feedback chain"><br><b>Media and textures.</b> Videos, GIFs and images through feedback, colormaps, bloom, displacement and other texture operators.</td>
+<td><img src="docs/media/readme/perception.jpg" alt="MediaPipe pose tracking on an 1894 film"><br><b>Perception (optional).</b> MediaPipe pose, hands and face on a film or camera, as data you can wire anywhere.</td>
+</tr>
+<tr>
+<td><img src="docs/media/readme/regions.jpg" alt="Body, face and hand region picker"><br><b>Pick body regions.</b> Choose wrists, torso, lips or eyes and turn their motion into drawing, sound or events.</td>
+<td><img src="docs/media/readme/genereticore.jpg" alt="Drawing into a local ink-wash model"><br><b>GeneretiCore (separate, experimental).</b> Local models on Apple silicon that answer your drawing live. <a href="https://github.com/languel/genereticore">Its own repo</a>; not needed for Genereti.</td>
+</tr>
+</table>
+
+Also: a performance timeline with shared musical time, webview pages for notes and math, image compare views, and an optional assistant. Archival footage above: Muybridge (1887), Edison's *Sandow* (1894); both public domain.
+
+## Quick start
+
+You need a recent ComfyUI and a browser with WebGPU (recent Chrome or Edge). The standard demos need **no model downloads, separate model server or extra node packs**.
+
+1. Install **ꘇ Genereti** from ComfyUI's **Manager / Extensions**, then restart ComfyUI and refresh the browser.
+
+   Or install from GitHub: stop ComfyUI, then from your ComfyUI directory run
 
    ```sh
    git clone https://github.com/languel/genereti.git custom_nodes/genereti
-   ```
-
-2. For GitHub installs, install the requirements using **ComfyUI's Python**. On a checkout with a `.venv`:
-
-   ```sh
    ./.venv/bin/python -m pip install -r custom_nodes/genereti/requirements.txt
    ```
 
-   See the [installation guide](docs/comfy-distribution.md) for Windows, Portable, Desktop and existing installations.
-3. Restart ComfyUI and refresh its browser page.
-4. Open **Workflows → Genereti** or **Templates → genereti**. Start with **ꘇ-Performance-Timeline**; **Alt+Shift+T** opens the timeline. Audio starts explicitly on `mod.output`.
+   (use ComfyUI's own Python; see the [installation guide](docs/comfy-distribution.md) for Windows, Portable and Desktop).
+2. Restart ComfyUI and refresh its browser page.
+3. Open **Workflows → Genereti** (or **Templates → genereti**). Sound starts when you press ▷ on a `mod.output` node.
 
-Continue with the [student quickstart](docs/student-quickstart.md), [shader, p5 and audiovisual tutorials](docs/livecode-tutorials.md), or [demo list](docs/workflows.md).
+### Good first workflows
 
-## What is included
+| Try | What you will see |
+|---|---|
+| **ꘇ-Performance-Timeline** | the tour: visuals, sound and a timeline (**Alt+Shift+T** opens it) |
+| **ꘇ-Livecode-Languages** | six languages side by side; edit any of them |
+| **ꘇ-Livecode-P5-Pipeline** | a p5 sketch feeding another sketch |
+| **ꘇ-Modular-Audio** | a small synth patch to play with |
+| **ꘇ-Neuron-Dance** | a generative music video built from nodes |
+| **ꘇ-Painterly-Feedback-Patch** | texture operators painting with feedback |
+| **ꘇ-Perception-01-Streams** | MediaPipe on a film (downloads its browser model on request) |
 
-- **2D stream and image compare:** local files, video, animated GIFs and direct media URLs; live A/B wipe, side-by-side and difference viewing.
-- **Webview:** editable HTML, Markdown with local math/diagrams, plain text and embedded URL pages; unchanged text ports and interactive output controls.
-- **Livecode:** p5, GLSL/multibuffer shaders, Three.js, HTML and document rendering, with editable parameters.
-- **Drawing and capture:** interactive Excalidraw, explicitly started camera/screen sources, and image output views.
-- **OpenTouch:** `top.*` textures, `chop.*` signals and `dat.*` data/lessons.
-- **Sound:** `mod.*` browser instruments, effects, analysis and visualizers.
-- **Performance:** shared time, musical timing, scale, automation and a docked timeline.
-- **Optional perception:** globally named pose, hand, face and person-mask streams, numeric node readers and an interactive event-rule editor. See the [browser perception guide](docs/browser-perception-plan.md).
-- **Assistant:** optional local/hosted provider connections; no assistant service is needed for the bundled demos.
+Next steps: the [student quickstart](docs/student-quickstart.md), the [livecode tutorials](docs/livecode-tutorials.md) and the [full list of workflows](docs/workflows.md).
 
-See the [node catalog](docs/opentouch-catalog.md), [audio guide](docs/modular-audio.md), [performance guide](docs/performance-time.md) and [keyboard shortcuts](docs/shortcuts.md).
+## Learn more
 
-## AI inference is moving to GeneretiCore
+- [Documentation index](docs/README.md): every guide, by area
+- [Node catalog](docs/opentouch-catalog.md) · [Modular audio](docs/modular-audio.md) · [Performance timeline](docs/performance-time.md) · [Keyboard shortcuts](docs/shortcuts.md)
+- [Contributing and repository layout](docs/contributing.md)
 
-Heavy model generation, conversion and model catalogs belong in the separate experimental [GeneretiCore repository](https://github.com/languel/genereticore). It is not yet an installable replacement. Genereti's current classroom demos use the lightweight performance framework only.
+## License
 
-Old standalone apps, inference packs, conversion scripts and model-dependent demos are preserved in [the migration archive](integrations/legacy-generator/README.md). They are unsupported here and excluded from the distributed package.
-
-## For contributors
-
-- `integrations/`: the supported Comfy node packs; the legacy archive is clearly separated.
-- `example_workflows/`: bundled templates shown by Comfy.
-- `docs/`: guides and design notes.
-- `editor/` and `web/vendor/`: drawing editor source and its shared browser bundle.
-- `scripts/`, `tests/` and `distribution/`: developer build, validation and packaging tools.
-
-Canonical workflow sources remain in `integrations/comfyui_genereti/workflows/`; run `python scripts/sync_comfy_templates.py` after editing them. Students do not need npm or these build scripts.
-
-Original Genereti code is MIT licensed. Dependencies retain their own licenses and notices; see [licensing](licensing/README.md). Model weights, secrets and generated captures are not stored in this repository.
+Original Genereti code is MIT licensed. Bundled dependencies keep their own licenses and notices; see [licensing](licensing/README.md).
