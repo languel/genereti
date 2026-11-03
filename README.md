@@ -4,7 +4,7 @@
 
 [![Genereti: a ComfyUI graph whose audio cables move with the sound](docs/media/readme/hero.jpg)](https://languel.github.io/genereti/)
 
-▶ **[Watch the 1-minute demo](https://languel.github.io/genereti/)** · MIT licensed · 100+ nodes · 40+ example workflows · no model downloads needed
+▶ **[Watch the 1-minute demo on YouTube](https://www.youtube.com/watch?v=quF0C5YJ1SA)** · [Project page](https://languel.github.io/genereti/) · MIT licensed · 100+ nodes · 40+ example workflows · no model downloads needed
 
 > **Early alpha.** Built for classroom use and live performance. Expect bugs and changing interfaces, and back up your workflows before updating.
 
