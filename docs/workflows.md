@@ -4,6 +4,8 @@ Open **Workflows → Genereti** or **Templates → genereti**. These demos requi
 
 Try [ꘇ-Webview-Paper-Stage](../example_workflows/ꘇ-Webview-Paper-Stage.json) for an interactive HTML scene with optional audio and a math/diagram notebook.
 
+Try [ꘇ-Showcase-Moon](../example_workflows/ꘇ-Showcase-Moon.json) for a self-contained cut-paper silhouette film: one Livecode `three` node that plays and loops on its own.
+
 Try [ꘇ-2D-Stream-Compare](../example_workflows/ꘇ-2D-Stream-Compare.json) for browser media sources and live A/B comparison. Files, animated GIFs and direct video/image URLs share explicit sizing and fit controls.
 
 Start with Performance Timeline, then the shader, p5 and audiovisual tutorials.
@@ -28,6 +30,7 @@ Start with Performance Timeline, then the shader, p5 and audiovisual tutorials.
 - [ꘇ-Painterly-Feedback-Patch](../example_workflows/ꘇ-Painterly-Feedback-Patch.json)
 - [ꘇ-Painterly-Feedback-Tutorial](../example_workflows/ꘇ-Painterly-Feedback-Tutorial.json)
 - [ꘇ-Performance-Timeline](../example_workflows/ꘇ-Performance-Timeline.json)
+- [ꘇ-Showcase-Moon](../example_workflows/ꘇ-Showcase-Moon.json)
 - [ꘇ-Sound-Analysis](../example_workflows/ꘇ-Sound-Analysis.json)
 - [ꘇ-Texture-Lab](../example_workflows/ꘇ-Texture-Lab.json)
 - [ꘇ-Texture-Queue](../example_workflows/ꘇ-Texture-Queue.json)
