@@ -1,3 +1,10 @@
+# ꘇ Genereti 0.1.7 — two showcase workflows
+
+- Adds ꘇ-Showcase-Moon, a self-contained cut-paper silhouette film: one Livecode `three` node that plays and loops on its own.
+- Adds ꘇ-Showcase-Triadic-Disco, a dance floor in one Livecode `three` node: Schlemmer-style costume dancers driven by CMU motion capture and pose-tracked 1894 footage of Sandow, three laser harps and a body drum on every dancer that play the chord of the music, floor tiles that light under the dancers, seven sets and a TOP grade chain. Dials for atmosphere, laser bloom, tile glow, reflection and exposure; click the picture to start the sound.
+- Links the demo video from the README.
+- Continues the early alpha classroom preview. Camera and screen capture remain user-started; optional perception models are not bundled.
+
 # ꘇ Genereti 0.1.6 — recording, modular instruments and Neuron Dance
 
 - Adds a live audiovisual recorder for images and sound, with source, 720p, 1080p and 1440p sizes, 6–50 Mbps video bitrate and up to 60 fps.
