@@ -6,6 +6,8 @@ Try [ꘇ-Webview-Paper-Stage](../example_workflows/ꘇ-Webview-Paper-Stage.json)
 
 Try [ꘇ-Showcase-Moon](../example_workflows/ꘇ-Showcase-Moon.json) for a self-contained cut-paper silhouette film: one Livecode `three` node that plays and loops on its own.
 
+Try [ꘇ-Showcase-Triadic-Disco](../example_workflows/ꘇ-Showcase-Triadic-Disco.json) for a dance floor built in one Livecode `three` node: Schlemmer-style costume dancers driven by motion capture and by pose-tracked 1894 footage of Sandow, three laser harps and a body drum on every dancer that play the chord of the music, floor tiles that light under the dancers, seven sets, and a TOP grade chain. Click the picture to start the sound. The node has dials for atmosphere, laser bloom, tile glow, reflection and exposure. Motion data: CMU Graphics Lab Motion Capture Database (public use); the Sandow poses were estimated with MediaPipe from Edison's 1894 film.
+
 Try [ꘇ-2D-Stream-Compare](../example_workflows/ꘇ-2D-Stream-Compare.json) for browser media sources and live A/B comparison. Files, animated GIFs and direct video/image URLs share explicit sizing and fit controls.
 
 Start with Performance Timeline, then the shader, p5 and audiovisual tutorials.
@@ -31,6 +33,7 @@ Start with Performance Timeline, then the shader, p5 and audiovisual tutorials.
 - [ꘇ-Painterly-Feedback-Tutorial](../example_workflows/ꘇ-Painterly-Feedback-Tutorial.json)
 - [ꘇ-Performance-Timeline](../example_workflows/ꘇ-Performance-Timeline.json)
 - [ꘇ-Showcase-Moon](../example_workflows/ꘇ-Showcase-Moon.json)
+- [ꘇ-Showcase-Triadic-Disco](../example_workflows/ꘇ-Showcase-Triadic-Disco.json)
 - [ꘇ-Sound-Analysis](../example_workflows/ꘇ-Sound-Analysis.json)
 - [ꘇ-Texture-Lab](../example_workflows/ꘇ-Texture-Lab.json)
 - [ꘇ-Texture-Queue](../example_workflows/ꘇ-Texture-Queue.json)
