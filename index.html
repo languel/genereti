@@ -25,7 +25,7 @@
   .btn.primary { border-color: var(--accent); color: var(--bg); background: var(--accent); }
   .btn:hover { text-decoration: none; border-color: var(--accent); }
   .video { margin: 18px 0 8px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 16/9; }
-  .video video { width: 100%; height: 100%; display: block; }
+  .video video, .video iframe { width: 100%; height: 100%; display: block; border: 0; }
   .note { font: 13px var(--mono); color: var(--dim); }
   section { padding: 44px 0 8px; border-top: 1px solid var(--line); margin-top: 36px; }
   h2 { font: 14px var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 18px; }
@@ -55,10 +55,10 @@
     <div class="cta">
       <a class="btn primary" href="https://github.com/languel/genereti">GitHub repo</a>
       <a class="btn" href="#try">Try it</a>
-      <a class="btn" href="media/genereti-launch.mp4" download>Download video</a>
+      <a class="btn" href="https://www.youtube.com/watch?v=quF0C5YJ1SA">Watch on YouTube</a>
     </div>
-    <div class="video"><video src="media/genereti-launch.mp4" poster="media/poster.jpg" controls playsinline preload="metadata"></video></div>
-    <p class="note">1:03 · every shot recorded inside ComfyUI with Genereti; the music is a Genereti modular-audio patch.</p>
+    <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/quF0C5YJ1SA" title="Genereti demo" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+    <p class="note">0:59 · every shot recorded inside ComfyUI with Genereti; the music is a Genereti modular-audio patch.</p>
   </header>
 
   <section>
@@ -107,7 +107,7 @@
 
   <footer>
     <p>Genereti · MIT licence · <a href="https://github.com/languel/genereti">github.com/languel/genereti</a> · #OpenSourceHiggsfield</p>
-    <p class="note">Archival footage in the video: Eadweard Muybridge, <i>Animal Locomotion</i> (1887); Edison, <i>Sandow</i> (1894); <i>Serpentine dance</i> (1895). Public domain.</p>
+    <p class="note">Archival footage in the video: Eadweard Muybridge, <i>Animal Locomotion</i> (1887); Edison, <i>Sandow</i> (1894); Lumière, hand-tinted <i>Danse serpentine</i> (1897). Public domain.</p>
   </footer>
 </div>
 </body>
